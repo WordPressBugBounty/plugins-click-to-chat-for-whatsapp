@@ -12,15 +12,33 @@
     background-color: #fdfdfd;
 }
 
-/* md collapsible arrow. */
 .collapsible-header .dashicons {
     color: #ddd;
+}
+    .rtl .collapsible-header .dashicons-no-alt {
+        margin-right: auto;
+        margin-left: unset !important;
+    }
+
+
+.collapsible-header .right_icon.dashicons {
     margin-left: auto;
 }
-
-.rtl .collapsible-header .dashicons {
+/* rtl: left side */
+.rtl .collapsible-header .right_icon.dashicons {
     margin-right: auto;
     margin-left: unset;
+}
+/* rtl: right side */
+.rtl .collapsible-header .left_icon.dashicons {
+    /* margin-left: auto; */
+    margin-right: unset;
+}
+
+/* fixed: md. input icon arrow. */
+.rtl .select-wrapper .caret {
+    right: unset;
+    left: 0;
 }
 
 .active:not(.have-sub-collapsible) .collapsible-header .dashicons {

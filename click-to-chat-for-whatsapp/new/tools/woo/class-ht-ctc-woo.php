@@ -206,6 +206,12 @@ class HT_CTC_WOO_Pages {
 
         // $side_2 = 'right';
 
+        $page_display = (isset($ht_ctc_pagelevel['show_hide'])) ? esc_attr($ht_ctc_pagelevel['show_hide']) : '';
+
+        if ( 'hide' == $page_display ) {
+            return;
+        }   
+
         // call to action
         $call_to_action = (isset($ht_ctc_pagelevel['call_to_action'])) ? esc_attr($ht_ctc_pagelevel['call_to_action']) : esc_attr( $chat['call_to_action'] );
         if ( !isset($ht_ctc_pagelevel['call_to_action']) && isset( $woo_options['woo_call_to_action'] ) && '' !== $woo_options['woo_call_to_action'] ) {

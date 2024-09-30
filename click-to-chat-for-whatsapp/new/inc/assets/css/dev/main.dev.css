@@ -1,4 +1,4 @@
-.ht_ctc_chat_greetings_box *:not(ul):not(ol):not(.ht_ctc_default):not(.iti *) {
+.ht_ctc_chat_greetings_box *:not(ul):not(ol):not(.ht_ctc_default):not(.ht_ctc_defaults *):not(.iti *) {
     padding: 0px;
     margin: 0px;
     box-sizing: border-box;

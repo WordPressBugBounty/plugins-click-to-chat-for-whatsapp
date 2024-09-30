@@ -246,7 +246,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s1" data-collapsible="accordion" data-style='1'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 1', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -364,7 +364,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s2" data-collapsible="accordion" data-style='2'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 2', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -479,7 +479,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s3" data-collapsible="accordion" data-style='3'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 3', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -578,7 +578,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s3_1" data-collapsible="accordion" data-style='3_1'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 3 Extend', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -770,7 +770,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s4" data-collapsible="accordion" data-style='4'>
         <li>
         <div class="collapsible-header">Style 4
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -861,7 +861,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s5" data-collapsible="accordion" data-style='5'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 5', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1024,7 +1024,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s6" data-collapsible="accordion" data-style='6'>
         <li>
         <div class="collapsible-header">Style 6
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1117,7 +1117,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s7" data-collapsible="accordion" data-style='7'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 7', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1277,7 +1277,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s7_1" data-collapsible="accordion" data-style='7_1'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 7 Extend', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1402,7 +1402,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s8" data-collapsible="accordion" data-style='8'>
         <li>
         <div class="collapsible-header"><?php _e( 'Style 8', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1577,7 +1577,7 @@ class HT_CTC_Admin_Customize_Styles {
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s99" data-collapsible="accordion" data-style='99'>
         <li>
         <div class="collapsible-header"><?php _e( 'Add your own image / GIF (Style 99)', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 

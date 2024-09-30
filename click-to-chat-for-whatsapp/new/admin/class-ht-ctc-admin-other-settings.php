@@ -110,6 +110,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible" data-collapsible="accordion" id="ht_ctc_analytics">
         <li class="active have-sub-collapsible">
         <div class="collapsible-header"><?php _e( 'Google Analytics, Facebook Pixel, Google Ads Conversion', 'click-to-chat-for-whatsapp' ); ?>
+           <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         
@@ -139,7 +140,7 @@ class HT_CTC_Admin_Other_Settings {
         <li class="">
         <div class="collapsible-header">
             <span><?php _e( 'Google Analytics', 'click-to-chat-for-whatsapp' ); ?></span>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         <p>
@@ -370,7 +371,7 @@ class HT_CTC_Admin_Other_Settings {
         <li class="">
         <div class="collapsible-header">
             <span><?php _e( 'Pixel', 'click-to-chat-for-whatsapp' ); ?></span>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
             
@@ -612,7 +613,7 @@ class HT_CTC_Admin_Other_Settings {
         <li class="">
         <div class="collapsible-header">
             <span><?php _e( 'Google Ads Conversion', 'click-to-chat-for-whatsapp' ); ?></span>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -707,7 +708,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_webhooks" data-collapsible="accordion" id="ht_ctc_webhooks">
         <li class="">
         <div class="collapsible-header"><?php _e( 'Webhooks', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         
@@ -719,7 +720,7 @@ class HT_CTC_Admin_Other_Settings {
             <div class="input-field col s12">
                 <input name="<?= $dbrow; ?>[hook_url]" value="<?= $hook_url ?>" id="hook_url" type="text" class="input-margin">
                 <label for="hook_url"><?php _e( 'Webhook URL', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( 'Calls this webhook url after user clicks on WhatsApp Icon/Button', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p class="description"><?php _e( 'Clicking on the WhatsApp widget triggers this Webhook URL', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
         </div>
 
@@ -837,7 +838,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_animations" data-collapsible="accordion" id="ht_ctc_animations">
         <li class="">
         <div class="collapsible-header"><?php _e( 'Animations', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -932,7 +933,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_notification" data-collapsible="accordion" id="ht_ctc_notification" style="margin-top: 2rem;">
         <li class="">
         <div class="collapsible-header"><?php _e( 'Notification Badge', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         <p class="description" style="margin-bottom:25px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/notification-badge/"><?php _e( 'Notification Badge', 'click-to-chat-for-whatsapp' ); ?></a></p>
@@ -1050,7 +1051,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_other_settings" data-collapsible="accordion" id="ht_ctc_othersettings">
         <li class="">
         <div class="collapsible-header">Advanced Settings
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
@@ -1126,7 +1127,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_enable_share_group" data-collapsible="accordion" id="ht_ctc_enable_share_group">
         <li <?= $li_active_gr_sh; ?>>
         <div class="collapsible-header"><?php _e( 'Group, Share features', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         
@@ -1200,7 +1201,7 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible ht_ctc_debug" data-collapsible="accordion" id="ht_ctc_debug">
         <li>
         <div class="collapsible-header"><?php _e( 'Debug, Troubleshoot, ..', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
         <?php

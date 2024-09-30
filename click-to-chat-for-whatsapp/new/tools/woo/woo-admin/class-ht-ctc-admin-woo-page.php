@@ -222,7 +222,7 @@ class HT_CTC_Admin_Woo_Page {
             <div id="overwrite_tab-2" class="col s12 md_tab">
                 <div class="ctc_md_tab">
                     <!-- Page Level settings - for WooCommerce pages -->
-                    <p class="description">At <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">Page Level Settings</a> can overwrite: Number, Call to Action, Prefilled Message (<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO</a>: Greetings, Style, Time Delay, Scroll Delay)</p>
+                    <p class="description">At <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">Page Level Settings</a> can overwrite: Number, Call to Action, Prefilled Message, display settings. (<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO</a>: Greetings, Style, Time Delay, Scroll Delay)</p>
                     <br>
                     <?php
                     $admin_url = admin_url();

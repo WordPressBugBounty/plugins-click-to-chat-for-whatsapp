@@ -44,7 +44,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 <ul class="collapsible ht_ctc_device_settings">
 <li class="">
 <div class="collapsible-header"><?php _e( 'Style, Position - Desktop, Mobile', 'click-to-chat-for-whatsapp' ); ?>
-    <span class="dashicons dashicons-arrow-down-alt2"></span>
+    <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
 </div>
 <div class="collapsible-body">
 

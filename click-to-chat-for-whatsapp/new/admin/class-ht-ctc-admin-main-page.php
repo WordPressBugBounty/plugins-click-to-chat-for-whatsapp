@@ -382,7 +382,7 @@ class HT_CTC_Admin_Main_Page {
         <ul class="collapsible url_structure" id="url_structure">
         <li class="">
         <div class="collapsible-header"><?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?>
-            <span class="dashicons dashicons-arrow-down-alt2"></span>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 

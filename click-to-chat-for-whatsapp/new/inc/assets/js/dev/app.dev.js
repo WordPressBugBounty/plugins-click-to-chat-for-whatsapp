@@ -22,7 +22,6 @@
             console.log('screen width: is_mobile: ' + is_mobile);
         }
 
-
         var no_num = '';
 
         var ht_ctc_storage = {};

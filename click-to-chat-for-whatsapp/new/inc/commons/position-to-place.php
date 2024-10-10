@@ -31,11 +31,6 @@ if ( isset($options['same_settings']) ) {
     $mobile_side_2_value = ( isset( $options['mobile_side_2_value'])) ? esc_attr( $options['mobile_side_2_value'] ) : '';
 
     $position_mobile = "position: $position_type_mobile; $mobile_side_1: $mobile_side_1_value; $mobile_side_2: $mobile_side_2_value;";
-
-    // incase mobile position is null; - safeside can remove this later as db is handling the version updates
-    if ( '' == $mobile_side_1_value && '' == $mobile_side_2_value ) {
-        $position_mobile = $position;
-    }
 }
 
 // wp_is_mobile way of position (amp may need this)

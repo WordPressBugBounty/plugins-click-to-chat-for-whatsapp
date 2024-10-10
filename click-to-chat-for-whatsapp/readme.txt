@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.6.2
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.10
+Stable tag: 4.11
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -198,7 +198,7 @@ Creates an Event when the user clicks on the WhatsApp Icon/button.
 
 [Google Analytics](https://holithemes.com/plugins/click-to-chat/google-analytics/)
 
-[Facebook Pixel](https://holithemes.com/plugins/click-to-chat/facebook-pixel/)
+[Meta Pixel](https://holithemes.com/plugins/click-to-chat/facebook-pixel/)
 
 [Google Ads Conversations](https://holithemes.com/plugins/click-to-chat/google-ads-conversion/)
 
@@ -343,7 +343,7 @@ Help by [Translating the plugin](https://translate.wordpress.org/projects/wp-plu
 1. Webhooks
 1. prefilled, call to action for WooCommerce single product pages
 1. Animations
-1. Analytics - Google Analytics, Facebook Pixel, Google Ads Conversations
+1. Analytics - Google Analytics, Meta Pixel, Google Ads Conversations
 
 
 == Installation ==
@@ -536,6 +536,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.11 =
+* New: Custom CSS Code block.
 
 = 4.10 =
 * Fix: Page level display settings for WooCommerce single product page

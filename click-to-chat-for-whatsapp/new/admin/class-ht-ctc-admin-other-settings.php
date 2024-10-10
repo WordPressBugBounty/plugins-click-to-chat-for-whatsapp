@@ -82,12 +82,14 @@ class HT_CTC_Admin_Other_Settings {
     public function settings() {
 
         register_setting( 'ht_ctc_os_page_settings_fields', 'ht_ctc_othersettings' , array( $this, 'options_sanitize' ) );
+        register_setting( 'ht_ctc_os_page_settings_fields', 'ht_ctc_code_blocks' , array( $this, 'options_sanitize' ) );
         
         add_settings_section( 'ht_ctc_os_settings_sections_add', '', array( $this, 'main_settings_section_cb' ), 'ht_ctc_os_page_settings_sections_do' );
         
         add_settings_field( 'ht_ctc_animations', 'Animations', array( $this, 'ht_ctc_animations_cb' ), 'ht_ctc_os_page_settings_sections_do', 'ht_ctc_os_settings_sections_add' );
         add_settings_field( 'ht_ctc_analytics', 'Analytics', array( $this, 'ht_ctc_analytics_cb' ), 'ht_ctc_os_page_settings_sections_do', 'ht_ctc_os_settings_sections_add' );
         add_settings_field( 'ht_ctc_webhooks', 'Webhooks', array( $this, 'ht_ctc_webhooks_cb' ), 'ht_ctc_os_page_settings_sections_do', 'ht_ctc_os_settings_sections_add' );
+        add_settings_field( 'ht_ctc_custom_css', 'Custom CSS', array( $this, 'ht_ctc_custom_css_cb' ), 'ht_ctc_os_page_settings_sections_do', 'ht_ctc_os_settings_sections_add' );
         add_settings_field( 'ht_ctc_othersettings', 'Advanced Settings', array( $this, 'ht_ctc_othersettings_cb' ), 'ht_ctc_os_page_settings_sections_do', 'ht_ctc_os_settings_sections_add' );
         
     }
@@ -109,7 +111,7 @@ class HT_CTC_Admin_Other_Settings {
         ?>
         <ul class="collapsible" data-collapsible="accordion" id="ht_ctc_analytics">
         <li class="active have-sub-collapsible">
-        <div class="collapsible-header"><?php _e( 'Google Analytics, Facebook Pixel, Google Ads Conversion', 'click-to-chat-for-whatsapp' ); ?>
+        <div class="collapsible-header"><?php _e( 'Google Analytics, Meta Pixel, Google Ads Conversion', 'click-to-chat-for-whatsapp' ); ?>
            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
@@ -332,7 +334,7 @@ class HT_CTC_Admin_Other_Settings {
             </div>
                     
             <!-- todo:l we can add - click count, date, username, if woo... add product details, .... -->
-            <p class="description" style="margin:0px 10px;">Variables: {title}, {url}, {number} replace page title, url, and number that are assigned to the widget.</p>
+            <p class="description" style="margin:0px 10px;">Variables: {title}, {url}, and {number} replace the page's title, url, and number that were assigned to the widget.</p>
 
             <details style="margin:5px 10px;">
                 <summary>PRO: Get values from URL parameters [], cookies [[]]</summary>
@@ -360,7 +362,7 @@ class HT_CTC_Admin_Other_Settings {
         <?php
 
         /**
-         * Facebook Pixel
+         * Meta Pixel
          * updated: 3.31 (able to change event name, type, edit/add params)
          */
 
@@ -378,7 +380,7 @@ class HT_CTC_Admin_Other_Settings {
         <p>
             <label>
                 <input name="<?= $dbrow; ?>[fb_pixel]" type="checkbox" value="1" <?php checked( $fb_pixel_checkbox, 1 ); ?> id="fb_pixel" />
-                <span><?php _e( 'Facebook Pixel', 'click-to-chat-for-whatsapp' ); ?></span>
+                <span><?php _e( 'Meta Pixel', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
         </p>
         <?php
@@ -598,7 +600,7 @@ class HT_CTC_Admin_Other_Settings {
         </div>
 
 
-        <p class="description"><?php _e( 'If Facebook Pixel installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/facebook-pixel/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+        <p class="description"><?php _e( 'If Meta Pixel installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/facebook-pixel/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
         <br>
 
         </div>
@@ -793,6 +795,44 @@ class HT_CTC_Admin_Other_Settings {
         </ul>
         <?php
     }
+
+    // custom css
+    function ht_ctc_custom_css_cb() {
+
+        $options = get_option('ht_ctc_code_blocks');
+        $dbrow = 'ht_ctc_code_blocks';
+
+        $custom_css = ( isset( $options['custom_css']) ) ? esc_attr( $options['custom_css'] ) : '';
+
+        if ( !empty($custom_css) ) {
+            // $custom_css = stripslashes($custom_css);
+            $allowed_html = wp_kses_allowed_html( 'post' );
+		    $custom_css = wp_kses($custom_css, $allowed_html);
+        }
+
+        ?>
+        <ul class="collapsible ht_ctc_custom_css" data-collapsible="accordion" id="ht_ctc_custom_css">
+        <li class="active">
+        <div class="collapsible-header"><?php _e( 'Custom CSS', 'click-to-chat-for-whatsapp' ); ?>
+            <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
+        </div>
+        <div class="collapsible-body">
+
+        <p class="description">Customize the Click to Chat plugin widget by adding custom <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-css/">CSS Code</a></p>
+
+        <!-- Custom CSS -->
+        <div class="row">
+            <div class="input-field col s12">
+                <textarea name="<?= $dbrow; ?>[custom_css]" id="custom_css" class=""  placeholder="Custom CSS" style="padding:12px; height:160px;" ><?= $custom_css ?></textarea>
+            </div>
+        </div>
+
+        </div>
+        </li>
+        </ul>
+        <?php
+    }
+    
 
     // animations
     function ht_ctc_animations_cb() {
@@ -1355,6 +1395,10 @@ class HT_CTC_Admin_Other_Settings {
             wp_die( 'not allowed to modify - please contact admin ' );
         }
 
+        // to sanitize the input. custom css, ..
+        include_once HT_CTC_PLUGIN_DIR .'new/admin/admin_commons/ht-ctc-admin-formatting.php';
+
+
         $new_input = array();
 
         foreach ($input as $key => $value) {
@@ -1366,14 +1410,24 @@ class HT_CTC_Admin_Other_Settings {
                     $new_input[$key] = map_deep( $input[$key], 'sanitize_text_field' );
                 }
             } else {
+                
                 if ( 'placeholder' == $key ) {
                     if ( function_exists('sanitize_textarea_field') ) {
                         $new_input[$key] = sanitize_textarea_field( $input[$key] );
                     } else {
                         $new_input[$key] = sanitize_text_field( $input[$key] );
                     }
-                } elseif ( isset( $input[$key] ) ) {
-                    $new_input[$key] = sanitize_text_field( $input[$key] );
+                } else if ( 'custom_css' == $key ) {
+                    if ( function_exists('ht_ctc_sanitize_custom_css_code') ) {
+                        $new_input[$key] = ht_ctc_sanitize_custom_css_code( $input[$key] );
+                    }
+                } else if ( isset( $input[$key] ) ) {
+                    // $new_input[$key] = sanitize_text_field( $input[$key] );
+                    if ( function_exists('sanitize_textarea_field') ) {
+                        $new_input[$key] = sanitize_textarea_field( $input[$key] );
+                    } else {
+                        $new_input[$key] = sanitize_text_field( $input[$key] );
+                    }
                 }
             }
 

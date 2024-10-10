@@ -32,6 +32,27 @@ if ( ! function_exists('ht_ctc_wp_encode_emoji') ) {
 }
 
 
+/**
+ * sanitize text field - basic sanitize
+ * 
+ * @uses 
+ * @since 4.11
+ * @param 
+ */
+if ( ! function_exists('ht_ctc_sanitize_input_fields') ) {
+	function ht_ctc_sanitize_input_fields($value = '') {
+
+		if ( function_exists('sanitize_textarea_field') ) {
+			$value = sanitize_textarea_field( $value );
+		} else {
+			$value = sanitize_text_field( $value );
+		}
+		
+		return $value;
+	}
+}
+
+
 
 /**
  * sanitize text editor
@@ -79,5 +100,34 @@ if ( ! function_exists('ht_ctc_wp_sanitize_text_editor') ) {
 		}
 		
 		return $new_value;
+	}
+}
+
+
+/**
+ * ht_ctc_sanitize_custom_css_code - santize custom css code
+ * 
+ * @uses 
+ * 	admin other settings - options_sanitize - custom css code
+ * @since 4.11
+ */
+if ( ! function_exists('ht_ctc_sanitize_custom_css_code') ) {
+	function ht_ctc_sanitize_custom_css_code($value = '') {
+
+
+		if ( !empty( $value) ) {
+			$allowed_html = wp_kses_allowed_html( 'post' );
+			$value = wp_kses($value, $allowed_html);
+		}
+
+		if ( function_exists('sanitize_textarea_field') ) {
+			$value = sanitize_textarea_field( $value );
+		} else {
+			$value = sanitize_text_field( $value );
+		}
+
+		// $value = htmlentities( $value );
+
+		return $value;
 	}
 }

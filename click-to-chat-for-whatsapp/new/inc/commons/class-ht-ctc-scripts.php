@@ -28,6 +28,7 @@ class HT_CTC_Scripts {
     function register_scripts() {
 
         $os = get_option('ht_ctc_othersettings');
+        $cb = get_option('ht_ctc_code_blocks');
 
         /**
          * if amp_is_request no need to add scripts.
@@ -80,6 +81,18 @@ class HT_CTC_Scripts {
                 wp_enqueue_script( 'ht_ctc_woo_js', plugins_url( "new/inc/assets/js/$woo_js", HT_CTC_PLUGIN_FILE ), array ( 'jquery' ), HT_CTC_VERSION, $load_app_js_bottom );
             }
 
+        }
+
+        // custom css code. ht_ctc_main_css - already enqueued above
+
+        $custom_css = ( isset ( $cb['custom_css'] ) ) ? esc_attr( $cb['custom_css'] ) : '';
+
+        if ( !empty( $custom_css ) ) {
+
+            $allowed_html = wp_kses_allowed_html( 'post' );
+		    $custom_css = wp_kses($custom_css, $allowed_html);
+
+            wp_add_inline_style( 'ht_ctc_main_css', $custom_css );
         }
 
 

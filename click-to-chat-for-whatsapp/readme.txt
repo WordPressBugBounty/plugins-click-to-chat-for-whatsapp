@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.6.2
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.11
+Stable tag: 4.12
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,9 +20,9 @@ WhatsApp Chat. Let's make your Web page visitors contact you through "WhatsApp" 
 
 Add 'WhatsApp' or 'WhatsApp Business' Number and let your website visitors contact you with a single click.
 
-**📱 Mobile:**  Navigate to WhatsApp Mobile App.
+**📱 Mobile:**  Open the WhatsApp Mobile App for a seamless connection.
 
-**💻 Desktop:** Navigate to the WhatsApp Desktop App or Web WhatsApp page (web.whatsapp.com)
+**💻 Desktop:** Direct visitors to the WhatsApp Desktop App or Web WhatsApp page (web.whatsapp.com)
 
 
 == 💎 Styles ==
@@ -537,6 +537,9 @@ After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
 
+= 4.12 =
+* Fix: Custom CSS Code block not allowing quotes at front end
+
 = 4.11 =
 * New: Custom CSS Code block.
 
@@ -546,4 +549,4 @@ After Activating the plugin, add a WhatsApp Number in the plugin settings.
 = 4.9 =
 * Fix: Display based on device not working as expected on iPad Pro
 
-[changelog](https://holithemes.com/plugins/click-to-chat/changelog/)
+[Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)

@@ -148,7 +148,7 @@ class HT_CTC_Admin_Greetings {
                         'template' => 'editor',
                         'label' => 'Main Content',
                         'description' => "Variables: {site}, {title}, {url}",
-                        'parent_style' => "margin-bottom: 30px;",
+                        'parent_style' => "margin-bottom: 40px;",
                         'parent_class' => 'pr_main_content ctc_greetings_settings ctc_g_1 ctc_g_2 ctc_wp_editor',
                     ],
                     'bottom_content' => [
@@ -298,7 +298,7 @@ class HT_CTC_Admin_Greetings {
                         'title' => __( 'Opt-in', 'click-to-chat-for-whatsapp'),
                         'db' => 'is_opt_in',
                         'template' => 'checkbox',
-                        'description' => __( "User consent before starting the chat ", 'click-to-chat-for-whatsapp') . "- <a href='https://holithemes.com/plugins/click-to-chat/opt-in/' target='_blank'>Opt-in</a> <br> " . __( "Once website visitor opt-in, it won't display again", 'click-to-chat-for-whatsapp'),
+                        'description' => __( "Get website visitors consent before initiating the chat.", 'click-to-chat-for-whatsapp') . " <br> " . __( "Once the website visitor opt-in, the consent prompt will not reappear", 'click-to-chat-for-whatsapp') . " - <a href='https://holithemes.com/plugins/click-to-chat/opt-in/' target='_blank'>Opt-in</a>",
                         'parent_class' => 'pr_is_opt_in',
                     ],
                     [
@@ -454,12 +454,12 @@ class HT_CTC_Admin_Greetings {
                                         <li class="active">
                                             <div class="collapsible-header"><?php _e( 'PRO', 'click-to-chat-for-whatsapp' ); ?></div>	
                                             <div class="collapsible-body">
-                                                <p class="description">Greetings - Form filling</p>
-                                                <p class="description">Greetings - Multi-Agent</p>
-                                                <p class="description">&emsp;with different time ranges</p>
-                                                <p class="description">&emsp;Hide or display agent with next available time</p>
-                                                <p class="description">Actions: Time, Scroll, Viewport</p>
-                                                <p class="description">Greetings page level settings</p>
+                                                <p class="description">📝 Greetings - Form filling</p>
+                                                <p class="description">👥 Greetings - Multi-Agent</p>
+                                                <p class="description">&emsp;⏰ with different time ranges</p>
+                                                <p class="description">&emsp;👤 Hide or display agent with next available time</p>
+                                                <p class="description">🎯 Actions: Time, Scroll, Viewport</p>
+                                                <p class="description">⚙️ Greetings page level settings</p>
                                                 <p class="description" style="text-align: center; position:sticky; bottom:2px; margin-top:20px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/" class="waves-effect waves-light btn" style="width: 100%;">PRO Version</a></p>
                                             </div>	
                                         </li>

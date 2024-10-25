@@ -168,20 +168,7 @@ class HT_CTC_Admin_Others {
 
             }
 
-            // if ht_ctc_notices['pro_banner'] is set and ht_ctc_notices['pro_banner_country'] is not set.. then display pro notice based on country code.
-            if ( isset($ht_ctc_notices['pro_banner']) && !isset($ht_ctc_notices['pro_banner_country']) ) {
-
-                // pro banner is also closed before 4.3. var 'version' is 'pro_banner' closed version.
-                if ( isset($ht_ctc_notices['version']) && version_compare($ht_ctc_notices['version'], '4.3', '<') ) {
-                    add_action('admin_notices', array( $this, 'pro_notice_country') );
-                    $load_pro_notice_scripts = 'yes';
-                }
-                
-            }
-
-
-
-
+            
             // load pro notice scripts
             if ( 'yes' == $load_pro_notice_scripts ) {
                 add_action('admin_footer', array( $this, 'admin_pro_notice_scripts') );
@@ -192,7 +179,6 @@ class HT_CTC_Admin_Others {
 
         // add_action('admin_notices', array( $this, 'pro_notice') );
         // add_action('admin_footer', array( $this, 'admin_pro_notice_scripts') );
-        // add_action('admin_notices', array( $this, 'pro_notice_country') );
 
 
         /**
@@ -252,45 +238,28 @@ class HT_CTC_Admin_Others {
         <?php
     }
 
+    /**
+     * pro notice
+     */
     function pro_notice() {
         ?>
         <div class="notice notice-info is-dismissible ht-ctc-notice-pro-banner" data-db="pro_banner" style="display:flex; flex-direction:column; padding:14px; border-radius:5px;">
             <p style="margin:0; font-size:1.4rem; color:#1d2327; font-weight:600;">Click to Chat - PRO</p>
             <p style="margin:0 0 2px;">
-            <p class="description">Random number, <strong>Form filling</strong>, <strong>Multi-Agent</strong>, Webhooks, Google Ads Conversion</p>
-            <p class="description">Display based on <strong>website visitors country</strong>, Business hours (schedule), time delay, scroll delay, login status, and much more..</p>
-            <!-- WooCommerce integration -->
+              <p class="description">Form Filling, Multi-Agent, Random Number, Webhook Integration, Google Ads Conversion Tracking.</p>
+              <p class="description">Customize chat display based on visitor's country, business hours (schedule), time delay, scroll behavior, login status, and more.</p>
+            </p>
+                <!-- WooCommerce integration -->
             <p>
-                <a class="button button-primary" style="padding:2px 15px;" href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank">Buy Now</a>
-                <br>
-                <a class="button-dismiss" style="text-decoration: none;" href="#">Dismiss</a>
+            <a class="button button-primary" style="padding:2px 15px;" href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank">Get PRO Now</a>
+            <br>
+            <a class="button-dismiss" style="text-decoration: none; margin: 0 2px;" href="#">Dismiss</a>
             </p>
         </div>
         <?php
     }
 
 
-
-    /**
-     * pro notice: display based on website vistors country code.
-     * 
-     * only display if first version is before 4.3 and pro banner is also closed before 4.3 release. 
-     * 
-     */
-    function pro_notice_country() {
-        ?>
-        <div class="notice notice-info is-dismissible ht-ctc-notice-pro-banner" data-db="pro_banner_country" style="display:flex; flex-direction:column; padding:14px; border-radius:5px;">
-            <p style="margin:0; font-size:1.4rem; color:#1d2327; font-weight:600;">Click to Chat - PRO</p>
-            <p style="margin:0 0 2px;">
-            <p class="description"><strong>NEW: </strong> Display Chat Widget based on website visitors <a href="https://holithemes.com/plugins/click-to-chat/display-based-on-country/" target="_blank">country</a></p>
-            <p>
-                <a class="button button-primary" style="padding:2px 15px;" href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank">Buy Now</a>
-                <br>
-                <a class="button-dismiss" style="text-decoration: none;" href="#">Dismiss</a>
-            </p>
-        </div>
-        <?php
-    }
 
     function admin_pro_notice_scripts() {
         ?>

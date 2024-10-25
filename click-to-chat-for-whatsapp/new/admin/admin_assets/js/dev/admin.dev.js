@@ -716,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'ctc_g_opt_in',
                 'g_content_collapsible',
                 'url_structure',
+                'ht_ctc_custom_css'
             ];
 
             // dynamically add to collapsible_list

@@ -29,7 +29,7 @@ if ( '' == $g_header_image ) {
 }
 ?>
 
-<div class="template_g_header_image <?= $parent_class ?>" style="margin-bottom:15px;">
+<div class="template_g_header_image <?= $parent_class ?>" style="margin-bottom:40px;">
 
 
     <div class="row row_g_header_image">
@@ -42,7 +42,7 @@ if ( '' == $g_header_image ) {
     </div>
 
     <div class="row row_g_header_online_status" style="margin-bottom:0;">
-        <div class="col s6">
+        <div class="col s12">
             <label>
                 <input class="g_header_online_status" name="<?php echo $dbrow ?>[g_header_online_status]" type="checkbox" value="1" <?php checked( $g_header_online_status, 1 ); ?> />
                 <span><?php _e( 'Add Online Status badge at header image', 'click-to-chat-for-whatsapp' ); ?></span>

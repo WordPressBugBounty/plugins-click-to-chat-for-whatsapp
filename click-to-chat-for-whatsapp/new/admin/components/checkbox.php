@@ -20,13 +20,13 @@ $description = (isset($input['description'])) ? $input['description'] : '';
                 <input name="<?= $dbrow ?>[<?= $db_key ?>]" type="checkbox" class="<?= $db_key ?>" value="1" <?php checked( $db_value, 1 ); ?> />
                 <span><?= $title ?></span>
             </label>
-            <?php
-            if ('' !== $description) {
-                ?>
-                <p class="description"><?= $description ?></p>
-                <?php
-            }
-            ?>
         </p>
+        <?php
+        if ('' !== $description) {
+            ?>
+            <p class="description"><?= $description ?></p>
+            <?php
+        }
+        ?>
     </div>
 </div>

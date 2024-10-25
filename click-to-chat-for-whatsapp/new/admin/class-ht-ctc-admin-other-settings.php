@@ -146,6 +146,8 @@ class HT_CTC_Admin_Other_Settings {
         </div>
         <div class="collapsible-body">
         <p>
+        <p class="description"><?php _e( 'If Google Analytics installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/google-analytics/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+            <br>
             <label>
                 <input name="<?= $dbrow; ?>[g_an]" type="checkbox" value="<?= $g_an_value ?>" <?php checked( $google_analytics_checkbox, 1 ); ?> id="google_analytics" />
                 <span><?php _e( 'Google Analytics', 'click-to-chat-for-whatsapp' ); ?></span>
@@ -336,20 +338,19 @@ class HT_CTC_Admin_Other_Settings {
             <!-- todo:l we can add - click count, date, username, if woo... add product details, .... -->
             <p class="description" style="margin:0px 10px;">Variables: {title}, {url}, and {number} replace the page's title, url, and number that were assigned to the widget.</p>
 
-            <details style="margin:5px 10px;">
-                <summary>PRO: Get values from URL parameters [], cookies [[]]</summary>
+            <details style="margin:7px 10px;">
+                <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
                 <p class="description" style="margin:8px 10px 0px 10px;">
-                    <strong>Get value from url parameters:</strong> Text with in single square brackets <code>[]</code> will get value from url parameters. if not exists, return blank
-                    e.g. <code>[gclid]</code>, <code>[utm_source]</code> 
+                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
                     <br>
-                    <strong>Get value from cookies:</strong> Text with in double square brackets <code>[[]]</code> will get value from cookies. if not exists, return blank.
-                    <br> e.g. <code>[[_ga]]</code> 
-                </p>
-            </details>
+                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                    <br> Example: <code>[[_ga]]</code> 
+                </p> 
+        </details>
             
         </div>
 
-        <p class="description"><?php _e( 'If Google Analytics installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/google-analytics/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
         <p class="description"><?php _e( 'Create Event from Google Tag manager (GTM)' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/create-event-from-google-tag-manager-using-datalayer-send-to-google-analytics/"><?php _e( 'dataLayer', 'click-to-chat-for-whatsapp' ); ?></a> </p>
         <br>
 
@@ -372,11 +373,12 @@ class HT_CTC_Admin_Other_Settings {
         <ul class="collapsible col_pixel coll_active" data-coll_active="col_pixel" id="col_pixel">
         <li class="">
         <div class="collapsible-header">
-            <span><?php _e( 'Pixel', 'click-to-chat-for-whatsapp' ); ?></span>
+            <span><?php _e( 'Meta Pixel', 'click-to-chat-for-whatsapp' ); ?></span>
             <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
-            
+        <p class="description" style="margin-bottom: 15px;"><?php _e( 'If Meta Pixel installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/facebook-pixel/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+ 
         <p>
             <label>
                 <input name="<?= $dbrow; ?>[fb_pixel]" type="checkbox" value="1" <?php checked( $fb_pixel_checkbox, 1 ); ?> id="fb_pixel" />
@@ -586,21 +588,20 @@ class HT_CTC_Admin_Other_Settings {
 
             <p class="description" style="margin:0px 10px;">Variables: {title}, {url}, {number} replace page title, url, and number that are assigned to the widget.</p>
 
-            <details style="margin:5px 10px;">
-                <summary>PRO: Get values from URL parameters [], cookies [[]]</summary>
-                <p class="description" style="margin:1px 10px;">
-                    <strong>Get value from url parameters:</strong> Text with in single square brackets <code>[]</code> will get value from url parameters. if not exists, return blank
-                    e.g. <code>[gclid]</code>, <code>[utm_source]</code> 
+            <details style="margin:7px 10px;">
+                <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
+                <p class="description" style="margin:8px 10px 0px 10px;">
+                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
                     <br>
-                    <strong>Get value from cookies:</strong> Text with in double square brackets <code>[[]]</code> will get value from cookies. if not exists, return blank.
-                    <br> e.g. <code>[[_ga]]</code> 
-                </p>
-            </details>
+                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                    <br> Example: <code>[[_ga]]</code> 
+                </p> 
+        </details>
 
         </div>
 
 
-        <p class="description"><?php _e( 'If Meta Pixel installed creates an Event there', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/facebook-pixel/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
         <br>
 
         </div>
@@ -780,14 +781,14 @@ class HT_CTC_Admin_Other_Settings {
         <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO</a>: Dynamic Variables - {number}, {url}, {time}, {title} </p>
         <!-- <p class="description">{number}: Number that is assigned to the widget</p> -->
         <details style="margin:7px 0px;">
-            <summary>Get Values from cookies: [[]], URL parameters: []</summary>
-            <p class="description" style="margin:8px 10px 0px 10px;">
-                <strong>Get value from url parameters:</strong> Text with in single square brackets <code>[]</code> will get value from url parameters. if not exists, return blank
-                e.g. <code>[gclid]</code>, <code>[utm_source]</code> 
-                <br>
-                <strong>Get value from cookies:</strong> Text with in double square brackets <code>[[]]</code> will get value from cookies. if not exists, return blank.
-                <br> e.g. <code>[[_ga]]</code> 
-            </p>
+        <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
+                <p class="description" style="margin:8px 10px 0px 10px;">
+                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
+                    <br>
+                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                    <br> Example: <code>[[_ga]]</code> 
+                </p> 
         </details>
         <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/webhooks/#pro">Webhooks</a>
         </div>
@@ -812,7 +813,7 @@ class HT_CTC_Admin_Other_Settings {
 
         ?>
         <ul class="collapsible ht_ctc_custom_css" data-collapsible="accordion" id="ht_ctc_custom_css">
-        <li class="active">
+        <li class="">
         <div class="collapsible-header"><?php _e( 'Custom CSS', 'click-to-chat-for-whatsapp' ); ?>
             <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>

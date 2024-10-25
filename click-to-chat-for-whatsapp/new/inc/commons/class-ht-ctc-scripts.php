@@ -83,11 +83,23 @@ class HT_CTC_Scripts {
 
         }
 
-        // custom css code. ht_ctc_main_css - already enqueued above
+        /**
+         * Custom css
+         * custom css code. ht_ctc_main_css - already enqueued above
+         * dont use esc_attr. quotes, .. may not work.
+         */
+        $custom_css = ( isset ( $cb['custom_css'] ) ) ? ( $cb['custom_css'] ) : '';
 
-        $custom_css = ( isset ( $cb['custom_css'] ) ) ? esc_attr( $cb['custom_css'] ) : '';
+        if ( '' !== $custom_css ) {
 
-        if ( !empty( $custom_css ) ) {
+            if ( function_exists('sanitize_textarea_field') ) {
+                $custom_css = sanitize_text_field( $custom_css );
+            } else {
+                $custom_css = '';
+            }
+
+            // to compress css
+            $custom_css = preg_replace( '/\s+/', ' ', $custom_css );
 
             $allowed_html = wp_kses_allowed_html( 'post' );
 		    $custom_css = wp_kses($custom_css, $allowed_html);

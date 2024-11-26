@@ -3,6 +3,7 @@
  * Style - 1
  * 
  * theme button
+ * woo-single-styles/woo-style- .php .. specific to the single product pages.
  * 
  */
 

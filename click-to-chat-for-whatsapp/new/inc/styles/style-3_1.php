@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $s3_1_options = get_option( 'ht_ctc_s3_1' );
 $s3_1_options = apply_filters( 'ht_ctc_fh_s3_1_options', $s3_1_options );
 
-$img_size = esc_attr( $s3_1_options['s3_img_size'] );
+$img_size = isset( $s3_1_options['s3_img_size']) ? esc_attr( $s3_1_options['s3_img_size']) : '';
+// Set fallback image size if not defined
 if ( '' == $img_size ) {
     $img_size = "40px";
 }
@@ -18,18 +19,18 @@ if ( '' == $img_size ) {
 $s3_1_cta_type = (isset( $s3_1_options['cta_type'])) ? esc_attr( $s3_1_options['cta_type'] ) : 'hover';
 
 $s3_1_cta_order = "1";
-if ( isset($side_2) && 'right' == $side_2) {
+if ( isset( $side_2 ) && 'right' == $side_2) {
     // if side_2 is right then cta is left
     $s3_1_cta_order = "0";
 }
 
-$s3_1_cta_textcolor = (isset( $s3_1_options['cta_textcolor'])) ? esc_attr( $s3_1_options['cta_textcolor'] ) : '';
-$s3_1_cta_bgcolor = (isset( $s3_1_options['cta_bgcolor'])) ? esc_attr( $s3_1_options['cta_bgcolor'] ) : '#ffffff';
-$s3_1_cta_font_size = (isset( $s3_1_options['cta_font_size'])) ? esc_attr( $s3_1_options['cta_font_size'] ) : '';
+$s3_1_cta_textcolor = ( isset( $s3_1_options['cta_textcolor'] ) ) ? esc_attr( $s3_1_options['cta_textcolor'] ) : '';
+$s3_1_cta_bgcolor = ( isset( $s3_1_options['cta_bgcolor'] ) ) ? esc_attr( $s3_1_options['cta_bgcolor'] ) : '#ffffff';
+$s3_1_cta_font_size = ( isset( $s3_1_options['cta_font_size'] ) ) ? esc_attr( $s3_1_options['cta_font_size'] ) : '';
 
-$s3_1_cta_textcolor = ('' !== $s3_1_cta_textcolor) ? "color: $s3_1_cta_textcolor" : "";
-$s3_1_cta_bgcolor = ('' !== $s3_1_cta_bgcolor) ? "background-color: $s3_1_cta_bgcolor" : "";
-$s3_1_cta_font_size = ('' !== $s3_1_cta_font_size) ? "font-size: $s3_1_cta_font_size" : "";
+$s3_1_cta_textcolor = ( '' !== $s3_1_cta_textcolor ) ? "color: $s3_1_cta_textcolor" : "";
+$s3_1_cta_bgcolor = ( '' !== $s3_1_cta_bgcolor ) ? "background-color: $s3_1_cta_bgcolor" : "";
+$s3_1_cta_font_size = ( '' !== $s3_1_cta_font_size ) ? "font-size: $s3_1_cta_font_size" : "";
 
 $s3_1_cta_css = "padding: 0px 16px; line-height: 1.6; $s3_1_cta_font_size; $s3_1_cta_bgcolor; $s3_1_cta_textcolor; border-radius:10px; margin:0 10px; ";
 $s3_1_cta_class = "ht-ctc-cta ";
@@ -79,7 +80,7 @@ $others = array(
 );
 
 // defatul order is based on desktop. if desktop and mobile not same side. then add class name to change order..
-if ( isset($is_same_side) && 'no' == $is_same_side && isset($mobile_side) ) {
+if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) {
     $s3_1_cta_class .= ( 'left' == $mobile_side) ? " ctc_m_cta_order_1 " : " ctc_m_cta_order_0 " ;
 }
 

@@ -11,10 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $s6_options = get_option( 'ht_ctc_s6' );
 $s6_options = apply_filters( 'ht_ctc_fh_s6_options', $s6_options );
 
-$s6_txt_color = esc_attr( $s6_options['s6_txt_color'] );
-$s6_txt_color_on_hover = esc_attr( $s6_options['s6_txt_color_on_hover'] );
-$s6_txt_decoration = esc_attr( $s6_options['s6_txt_decoration'] );
-$s6_txt_decoration_on_hover = esc_attr( $s6_options['s6_txt_decoration_on_hover'] );
+$s6_txt_color = isset( $s6_options['s6_txt_color']) ? esc_attr( $s6_options['s6_txt_color'] ) : '';
+$s6_txt_color_on_hover = isset( $s6_options['s6_txt_color_on_hover'] ) ? esc_attr( $s6_options['s6_txt_color_on_hover'] ) : '';
+$s6_txt_decoration = isset( $s6_options['s6_txt_decoration'] ) ? esc_attr( $s6_options['s6_txt_decoration'] ) : 'none';
+$s6_txt_decoration_on_hover = isset( $s6_options['s6_txt_decoration_on_hover'] ) ? esc_attr( $s6_options['s6_txt_decoration_on_hover'] ) : 'underline';
 ?>
 
 <a class="ctc-analytics ctc_s_6 ctc_cta" style="color: <?= $s6_txt_color ?>; text-decoration: <?= $s6_txt_decoration ?>;"

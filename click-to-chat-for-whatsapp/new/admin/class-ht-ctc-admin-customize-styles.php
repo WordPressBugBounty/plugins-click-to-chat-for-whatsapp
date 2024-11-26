@@ -1576,7 +1576,7 @@ class HT_CTC_Admin_Customize_Styles {
         ?>
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s99" data-collapsible="accordion" data-style='99'>
         <li>
-        <div class="collapsible-header"><?php _e( 'Add your own image / GIF (Style 99)', 'click-to-chat-for-whatsapp' ); ?>
+        <div class="collapsible-header"><?php _e( 'Add your own image / GIF (Style-99)', 'click-to-chat-for-whatsapp' ); ?>
             <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">

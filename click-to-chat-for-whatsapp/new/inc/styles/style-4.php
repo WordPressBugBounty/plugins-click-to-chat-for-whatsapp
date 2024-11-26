@@ -11,9 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $s4_options = get_option( 'ht_ctc_s4' );
 $s4_options = apply_filters( 'ht_ctc_fh_s4_options', $s4_options );
 
-$s4_text_color = esc_attr( $s4_options['s4_text_color'] );
-$s4_bg_color = esc_attr( $s4_options['s4_bg_color'] );
-$s4_img_url = esc_attr( $s4_options['s4_img_url'] );
+$s4_text_color = isset( $s4_options['s4_text_color'] ) ? esc_attr( $s4_options['s4_text_color'] ) : '#000000';
+
+$s4_bg_color = isset( $s4_options['s4_bg_color'] ) ? esc_attr( $s4_options['s4_bg_color'] ) : '#e4e4e4';
+$s4_img_url = isset( $s4_options['s4_img_url'] ) ? esc_attr( $s4_options['s4_img_url'] ) : '';
 $s4_img_position = ( isset( $s4_options['s4_img_position']) ) ? esc_attr( $s4_options['s4_img_position'] ) : 'left';
 $s4_img_size = ( isset( $s4_options['s4_img_size']) ) ? esc_attr( $s4_options['s4_img_size'] ) : '';
 if ( '' == $s4_img_size ) {

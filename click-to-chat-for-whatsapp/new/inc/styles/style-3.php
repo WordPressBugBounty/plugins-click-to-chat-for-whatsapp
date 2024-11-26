@@ -12,8 +12,8 @@ $s3_options = get_option( 'ht_ctc_s3' );
 $s3_options = apply_filters( 'ht_ctc_fh_s3_options', $s3_options );
 $s3_type = ( isset( $s3_options['s3_type']) ) ? esc_attr( $s3_options['s3_type'] ) : 'simple';
 
-$s3_img_size = esc_attr( $s3_options['s3_img_size'] );
-$img_size = esc_attr( $s3_options['s3_img_size'] );
+$s3_img_size = (isset( $s3_options['s3_img_size'])) ? esc_attr( $s3_options['s3_img_size'] ) : '';
+$img_size = $s3_img_size;
 if ( '' == $img_size ) {
     $img_size = "50px";
 }
@@ -27,7 +27,7 @@ if ( function_exists('is_rtl') && is_rtl() ) {
 }
 
 $s3_cta_order = "1";
-if ( isset($side_2) && 'right' == $side_2) {
+if ( isset( $side_2 ) && 'right' == $side_2) {
     // if side_2 is right then cta is left
     $s3_cta_order = "0";
 }
@@ -58,7 +58,7 @@ $ht_ctc_svg_css = "pointer-events:none; display:block; height:$img_size; width:$
 
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 
-if ( isset($is_same_side) && 'no' == $is_same_side && isset($mobile_side) ) {
+if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) {
     $s3_cta_class .= ( 'left' == $mobile_side) ? " ctc_m_cta_order_1 " : " ctc_m_cta_order_0 " ;
 }
 

@@ -189,6 +189,9 @@ class HT_CTC_WOO_Pages {
 
     /**
      * woo places - add styles..
+     * 
+     * woo-single-styles/woo-style- .php .. specific to the single product pages.
+     * 
      */
     function add_styles() {
         
@@ -287,6 +290,7 @@ class HT_CTC_WOO_Pages {
             $css .= "display: $woo_single_block_type;";
         }
 
+        // woo-single-styles/woo-style- .php .. specific to the single product pages.
         $path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/tools/woo/woo-single-styles/woo-style-' . $style. '.php';
 
         if ( is_file( $path ) ) {

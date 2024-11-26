@@ -646,24 +646,24 @@
                 });
 
 
-                // // s6:hover
-                // // for on hover and not.. added as ctc_no_demo class
-                // $('.ctc_s_6').hover(function () {
-                //     console.log('hover');
-                //     console.log($('#s6_txt_color_on_hover').val());
-                //     console.log($('#s6_txt_decoration_on_hover').val());
+                // s6:hover
+               
+                $('.ctc_s_6').hover(function () {
+                    console.log('hover');
+                    console.log($('#s6_txt_color_on_hover').val());
+                    console.log($('#s6_txt_decoration_on_hover').val());
 
-                //     $('.ctc_s_6').css({
-                //         'color': $('#s6_txt_color_on_hover').val(),
-                //         'text-decoration': $('#s6_txt_decoration_on_hover').find(":selected").val()
-                //     });
-                // }, function () {
-                //     console.log('hover out');
-                //     $('.ctc_s_6').css({
-                //         'color': $('#s6_txt_color').val(),
-                //         'text-decoration': $('#s6_txt_decoration').find(":selected").val()
-                //     });
-                // });
+                    $('.ctc_s_6').css({
+                        'color': $('#s6_txt_color_on_hover').val(),
+                        'text-decoration': $('#s6_txt_decoration_on_hover').find(":selected").val()
+                    });
+                }, function () {
+                    console.log('hover out');
+                    $('.ctc_s_6').css({
+                        'color': $('#s6_txt_color').val(),
+                        'text-decoration': $('#s6_txt_decoration').find(":selected").val()
+                    });
+                });
 
 
                 // s7:hover

@@ -26,27 +26,27 @@ $s7_1_options = apply_filters( 'ht_ctc_fh_s7_1_options', $s7_1_options );
 $is_ctc_admin = '';
 
 if ( is_admin() ) {
-  if (isset($_GET) && isset($_GET['page']) && ('click-to-chat' == $_GET['page'] || 'click-to-chat-other-settings' == $_GET['page'] || 'click-to-chat-customize-styles' == $_GET['page'] )) {
+  if ( isset( $_GET ) && isset( $_GET['page'] ) && ( 'click-to-chat' == $_GET['page'] || 'click-to-chat-other-settings' == $_GET['page'] || 'click-to-chat-customize-styles' == $_GET['page'] ) ) {
     $is_ctc_admin = 'yes';
   }
 }
 
-$s7_icon_size = esc_attr( $s7_1_options['s7_icon_size'] );
-$s7_icon_color = esc_attr( $s7_1_options['s7_icon_color'] );
-$s7_icon_color_hover = esc_attr( $s7_1_options['s7_icon_color_hover'] );
-$s7_bgcolor = esc_attr( $s7_1_options['s7_bgcolor'] );
-$s7_bgcolor_hover = esc_attr( $s7_1_options['s7_bgcolor_hover'] );
-$s7_border_size = esc_attr( $s7_1_options['s7_border_size'] );
+$s7_icon_size = isset( $s7_1_options['s7_icon_size'] ) ? esc_attr( $s7_1_options['s7_icon_size'] ) : '20px';
+$s7_icon_color = isset( $s7_1_options['s7_icon_color'] ) ? esc_attr( $s7_1_options['s7_icon_color'] ) : '#ffffff';
+$s7_icon_color_hover = isset( $s7_1_options['s7_icon_color_hover'] ) ? esc_attr( $s7_1_options['s7_icon_color_hover'] ) : '#f4f4f4';
+$s7_bgcolor = isset( $s7_1_options['s7_bgcolor'] ) ? esc_attr( $s7_1_options['s7_bgcolor'] ) : '#25D366';
+$s7_bgcolor_hover = isset( $s7_1_options['s7_bgcolor_hover'] ) ? esc_attr( $s7_1_options['s7_bgcolor_hover'] ) : '#00d34d';
+$s7_border_size = isset( $s7_1_options['s7_border_size'] ) ? esc_attr( $s7_1_options['s7_border_size'] ) : '12px';
 
-// Call to action 
-$s7_cta_type = (isset( $s7_1_options['cta_type'])) ? esc_attr( $s7_1_options['cta_type'] ) : 'hover';
+// Call to action
+$s7_cta_type = isset( $s7_1_options['cta_type'] ) ? esc_attr( $s7_1_options['cta_type'] ) : 'hover';
+$s7_1_cta_font_size = isset( $s7_1_options['cta_font_size'] ) ? esc_attr( $s7_1_options['cta_font_size'] ) : '';
+$s7_1_cta_font_size = ( '' !== $s7_1_cta_font_size ) ? "font-size: $s7_1_cta_font_size; " : ''; 
 
-$s7_1_cta_font_size = (isset( $s7_1_options['cta_font_size'])) ? esc_attr( $s7_1_options['cta_font_size'] ) : '';
-$s7_1_cta_font_size = ('' !== $s7_1_cta_font_size) ? "font-size: $s7_1_cta_font_size; " : "";
 
 // Call to action - Order
 $s7_cta_order = "1";
-$s7_hover_cta_padding_css = "padding-right: 21px;";
+$s7_hover_cta_padding_css = "padding: 0px 21px 0px 0px;";
 $s7_show_cta_padding_css = '';
 
 /**
@@ -61,10 +61,10 @@ if ( 'yes' !== $is_ctc_admin ) {
 }
 
 
-if ( isset($side_2) && 'right' == $side_2) {
+if ( isset( $side_2 ) && 'right' == $side_2 ) {
     // if side_2 is right then cta is left
     $s7_cta_order = "0";
-    $s7_hover_cta_padding_css = "padding-left: 21px;";
+    $s7_hover_cta_padding_css = "padding: 0px 0px 0px 21px;";
     if ( 'yes' !== $is_ctc_admin ) {
         $s7_show_cta_padding_css = "padding:5px 20px 5px 5px;";
     }
@@ -76,7 +76,7 @@ if ( function_exists('is_rtl') && is_rtl() ) {
 
     // add only if not admin page.
     if ( 'yes' !== $is_ctc_admin ) {
-        if ( isset($side_2) && 'right' == $side_2) {
+        if ( isset( $side_2 ) && 'right' == $side_2 ) {
             $s7_show_cta_padding_css = "padding:5px 5px 5px 20px;";
         } else {
             $s7_show_cta_padding_css = "padding:5px 20px 5px 5px;";

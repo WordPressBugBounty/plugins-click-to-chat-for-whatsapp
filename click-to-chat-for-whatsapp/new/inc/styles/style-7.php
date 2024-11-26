@@ -8,22 +8,23 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $s7_options = get_option( 'ht_ctc_s7' );
 $s7_options = apply_filters( 'ht_ctc_fh_s7_options', $s7_options );
 
-$s7_icon_size = esc_attr( $s7_options['s7_icon_size'] );
-$s7_icon_color = esc_attr( $s7_options['s7_icon_color'] );
-$s7_icon_color_hover = esc_attr( $s7_options['s7_icon_color_hover'] );
-$s7_border_size = esc_attr( $s7_options['s7_border_size'] );
-$s7_border_color = esc_attr( $s7_options['s7_border_color'] );
-$s7_border_color_hover = esc_attr( $s7_options['s7_border_color_hover'] );
-$s7_border_radius = esc_attr( $s7_options['s7_border_radius'] );
+$s7_icon_size = isset( $s7_options['s7_icon_size'] ) ? esc_attr( $s7_options['s7_icon_size'] ) : '20px';
+$s7_icon_color = isset( $s7_options['s7_icon_color'] ) ? esc_attr( $s7_options['s7_icon_color'] ) : '#ffffff';
+$s7_icon_color_hover = isset( $s7_options['s7_icon_color_hover'] ) ? esc_attr( $s7_options['s7_icon_color_hover'] ) : '#f4f4f4';
+$s7_border_size = isset( $s7_options['s7_border_size'] ) ? esc_attr( $s7_options['s7_border_size'] ) : '12px';
+$s7_border_color = isset( $s7_options['s7_border_color'] ) ? esc_attr( $s7_options['s7_border_color'] ) : '#25D366';
+$s7_border_color_hover = isset( $s7_options['s7_border_color_hover'] ) ? esc_attr( $s7_options['s7_border_color_hover'] ) : '#25d366';
+$s7_border_radius = isset( $s7_options['s7_border_radius'] ) ? esc_attr( $s7_options['s7_border_radius'] ) : '50%';
+
 
 // Call to action 
-$s7_cta_type = (isset( $s7_options['cta_type'])) ? esc_attr( $s7_options['cta_type'] ) : 'hover';
-$s7_cta_textcolor = (isset( $s7_options['cta_textcolor'])) ? esc_attr( $s7_options['cta_textcolor'] ) : '';
-$s7_cta_bgcolor = (isset( $s7_options['cta_bgcolor'])) ? esc_attr( $s7_options['cta_bgcolor'] ) : '#ffffff';
+$s7_cta_type = ( isset( $s7_options['cta_type']) ) ? esc_attr( $s7_options['cta_type'] ) : 'hover';
+$s7_cta_textcolor = ( isset( $s7_options['cta_textcolor'] ) ) ? esc_attr( $s7_options['cta_textcolor'] ) : '';
+$s7_cta_bgcolor = ( isset( $s7_options['cta_bgcolor'] ) ) ? esc_attr( $s7_options['cta_bgcolor'] ) : '#ffffff';
 
-$s7_cta_font_size = (isset( $s7_options['cta_font_size'])) ? esc_attr( $s7_options['cta_font_size'] ) : '';
+$s7_cta_font_size = ( isset( $s7_options['cta_font_size'] ) ) ? esc_attr( $s7_options['cta_font_size'] ) : '';
 
-$s7_cta_font_size = ('' !== $s7_cta_font_size) ? "font-size: $s7_cta_font_size;" : "";
+$s7_cta_font_size = ( '' !== $s7_cta_font_size ) ? "font-size: $s7_cta_font_size;" : "";
 
 $rtl_css = "";
 if ( function_exists('is_rtl') && is_rtl() ) {
@@ -35,7 +36,7 @@ $s7_icon_css = "font-size: $s7_icon_size; color: $s7_icon_color; padding: $s7_bo
 
 // Call to action - order
 $s7_cta_order = "1";
-if ( isset($side_2) && 'right' == $side_2) {
+if ( isset( $side_2 ) && 'right' == $side_2 ) {
     // if side_2 is right then cta is left
     $s7_cta_order = "0";
 }

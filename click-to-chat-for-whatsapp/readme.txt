@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
 Requires at least: 4.7
-Tested up to: 6.6.2
+Tested up to: 6.7.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.12
+Stable tag: 4.12.1
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -536,6 +536,10 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.12.1 =
+* Fix: Hover effects for Style-7 Extend
+* Fix: Dual lines issue for Style-8 with large call to action text
 
 = 4.12 =
 * Fix: Custom CSS Code block not allowing quotes at front end

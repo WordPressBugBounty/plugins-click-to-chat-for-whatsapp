@@ -9,21 +9,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $s5_options = get_option( 'ht_ctc_s5' );
 $s5_options = apply_filters( 'ht_ctc_fh_s5_options', $s5_options );
 
-$s5_line_1 = esc_attr( $s5_options['s5_line_1'] );
-$s5_line_2 = esc_attr( $s5_options['s5_line_2'] );
-$s5_line_1_color = esc_attr( $s5_options['s5_line_1_color'] );
-$s5_line_2_color = esc_attr( $s5_options['s5_line_2_color'] );
-$s5_background_color = esc_attr( $s5_options['s5_background_color'] );
-$s5_border_color = esc_attr( $s5_options['s5_border_color'] );
-$s5_img = esc_attr( $s5_options['s5_img'] );
-$s5_img_height = esc_attr( $s5_options['s5_img_height'] );
-$s5_img_width = esc_attr( $s5_options['s5_img_width'] );
-$s5_content_height = esc_attr( $s5_options['s5_content_height'] );
-$s5_content_width = esc_attr( $s5_options['s5_content_width'] );
-$s5_img_position = esc_attr( $s5_options['s5_img_position'] );
+$s5_line_1 = isset( $s5_options['s5_line_1'] ) ? esc_attr( $s5_options['s5_line_1'] ) : '';
+$s5_line_2 = isset( $s5_options['s5_line_2'] ) ? esc_attr( $s5_options['s5_line_2'] ) : '';
+$s5_line_1_color = isset( $s5_options['s5_line_1_color'] ) ? esc_attr( $s5_options['s5_line_1_color'] ) : '#000000';
+$s5_line_2_color = isset( $s5_options['s5_line_2_color'] ) ? esc_attr( $s5_options['s5_line_2_color'] ) : '#000000';
+$s5_background_color = isset( $s5_options['s5_background_color'] ) ? esc_attr( $s5_options['s5_background_color'] ) : '#ffffff';
+$s5_border_color = isset( $s5_options['s5_border_color'] ) ? esc_attr( $s5_options['s5_border_color'] ) : '#dddddd';
+$s5_img = isset( $s5_options['s5_img']) ? esc_attr( $s5_options['s5_img']) : '';
+$s5_img_height = isset( $s5_options['s5_img_height'] ) ? esc_attr( $s5_options['s5_img_height'] ) : '70px';
+$s5_img_width = isset( $s5_options['s5_img_width'] ) ? esc_attr( $s5_options['s5_img_width'] ) : '70px';
+$s5_content_height = isset( $s5_options['s5_content_height'] ) ? esc_attr( $s5_options['s5_content_height'] ) : '70px';
+$s5_content_width = isset( $s5_options['s5_content_width'] ) ? esc_attr( $s5_options['s5_content_width'] ) : '270px';
+$s5_img_position = isset( $s5_options['s5_img_position'] ) ? esc_attr( $s5_options['s5_img_position'] ) : 'right';
+
+// calling from parent page
+$call_to_action = isset ($call_to_action) ? $call_to_action : '';
+
 
 // if its came from woo page.. 
-if ( isset($calling_from) && 'woo_page' == $calling_from ) {
+if ( isset( $calling_from ) && 'woo_page' == $calling_from ) {
     $s5_img_position = 'left';
 }
 

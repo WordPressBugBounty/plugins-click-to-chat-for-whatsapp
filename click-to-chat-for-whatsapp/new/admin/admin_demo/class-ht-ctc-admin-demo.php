@@ -298,9 +298,15 @@ class HT_CTC_Admin_Demo {
          */
         ?>
         <div class="ctc_menu_at_demo" style="position:fixed; bottom:4px; right:4px; z-index:99999999;">
-            <p class="description ctc_ad_links ctc_init_display_none">
-                <a target="_blank" href="<?= $cs_link ?>" class="ctc_cs_link">Customize Styles</a> | <a target="_blank" href="<?= $os_link ?>">Animations, Notification badge</a>
+
+           <p class="description ctc_ad_links ctc_init_display_none">
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?= $cs_link ?>">Customize Styles</a> |</span>
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?= $os_link ?>">Animations, Notification badge</a> |</span>
+
+                <span class="ctc_ad_show_hide_demo ctc_ad_show_demo ctc_init_display_none"><a target="_blank"><?php _e( 'Show Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
+                <span class="ctc_ad_show_hide_demo ctc_ad_hide_demo"><a target="_blank"><?php _e( 'Hide Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
             </p>
+
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/#no-live-preview/" target="_blank" class="description ctc_no_demo_notice ctc_init_display_none">No live demo for this feature</a>
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/" target="_blank" class="description ctc_demo_messages ctc_init_display_none"></a>
         </div>

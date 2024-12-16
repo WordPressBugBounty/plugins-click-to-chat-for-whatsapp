@@ -300,7 +300,7 @@
                     hide_bottom_right_descriptions();
 
                     // when position is updated. remove menu links at demo. (to not over write the position))  
-                    $('.ctc_menu_at_demo .ctc_ad_links').remove();
+                    $('.ctc_menu_at_demo .ctc_ad_page_link').remove();
 
 
                 }
@@ -358,6 +358,10 @@
              */
             if ($('body').hasClass('click-to-chat_page_click-to-chat-other-settings')) {
                 // console.log('click-to-chat_page_click-to-chat-other-settings');
+
+                
+                $('.ctc_ad_page_link').remove();
+                $('.ctc_ad_links').css('margin', '0 50px').show();
 
                 // display style by default.
                 $('.ctc_demo_style').show();
@@ -565,6 +569,9 @@
             if ($('body').hasClass('click-to-chat_page_click-to-chat-customize-styles')) {
                 console.log('customize styles');
 
+                $('.ctc_ad_page_link').remove();
+                $('.ctc_ad_links').css('margin', '0 50px');
+
                 // display style based on editing area (work super. expect one issue - if directly clicked on color picker the style is not changing/displaying. fix: wp-picker-container click event added below)
                 $('.ht_ctc_customize_style').on('click', function () {
                     // console.log('customize_style clicked');
@@ -573,6 +580,7 @@
                     // console.log(style);
                     $('.ctc_demo_style_' + style + '').show();
                     $('.ctc_demo_style').not('.ctc_demo_style_' + style + '').hide();
+                    $('.ctc_ad_links').show();
                 });
 
                 // click on wp-picker-container - find closest ht_ctc_customize_style and display that style
@@ -877,6 +885,32 @@
             }, function () {
                 $('.ctc_demo_style .ht-ctc-cta-hover').hide(100);
             });
+
+            function showHideDemo() {
+                const showDemoButton = $('.ctc_ad_show_demo');
+                const hideDemoButton = $('.ctc_ad_hide_demo');
+                const demoLoadSection = $('.ctc_demo_load');
+                const pageLinks = $('.ctc_ad_page_link');
+
+                // Show Demo functionality
+                showDemoButton.on('click', function () {
+                    console.log('Show demo');
+                    demoLoadSection.show();
+                    showDemoButton.hide();
+                    hideDemoButton.show();
+                    pageLinks.show();
+                });
+
+                // Hide Demo functionality
+                hideDemoButton.on('click', function () {
+                    console.log('Hide demo');
+                    demoLoadSection.hide();
+                    hideDemoButton.hide();
+                    showDemoButton.show();
+                    pageLinks.hide();
+                });
+            }
+            showHideDemo();
 
 
         }

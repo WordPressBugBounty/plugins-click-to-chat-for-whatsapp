@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.13
+Stable tag: 4.14
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -212,7 +212,7 @@ Connect other applications using Integrate, Automation tools like Zapier, IFTTT,
 
 * Multi-Agent: Displays multiple WhatsApp chat accounts
     * Set multiple time ranges for each agent's availability
-    * Hide offline agents or display agent when offline with their next available time
+    * Hide offline agents or display agent when offline with next available time
 * Random Numbers: Navigates to a random WhatsApp number from the predefined list
 * Form: Get the necessary information from the website visitors, before initiating the chat
     * Get an email notification when the user fills out the form.
@@ -231,12 +231,12 @@ Connect other applications using Integrate, Automation tools like Zapier, IFTTT,
 * Get additional values at Google Analytics, Meta Pixel
     * Get values from url parameters. E.g. [gclid], [utm_source]
     * Get values from cookies. E.g. [[cookie_name]]
-* Greetings Actions: (Greetings-1, Greetings-2, Greetings Form, Multi-agent feature)
+* Greetings Actions: (for all greeting dialogs: Greetings-1, Greetings-2, Form, Multi-agent)
     * Display greetings dynamically based on user actions such as 
-        Time: Time spent on the page, 
-        Scroll: Page scroll percentage, 
-        Click: specific button clicks 
-        ViewPort: when an element becomes visible in the viewport.
+        * Time: Time spent on the page, 
+        * Scroll: Page scroll percentage, 
+        * Click: specific button clicks 
+        * ViewPort: when an element becomes visible in the viewport.
 * Position to place
     * Fixed: Fixed position on the screen (default position)
     * Absolute: Fixed position to the body content. (Moves when the user scrolls the page)
@@ -543,6 +543,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.14 =
+* Enhancement: Show or hide the admin demo.
 
 = 4.13 =
 * Fix: Alignment issues at admin setting pages

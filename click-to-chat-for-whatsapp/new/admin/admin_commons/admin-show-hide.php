@@ -79,9 +79,7 @@ $display_desktop = (isset( $options['display_desktop'])) ? esc_attr( $options['d
 $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['display_mobile'] ) : 'show';
 ?>
 
-
-
-<div class="row">
+<div class="row show_hide_device">
     <p class="col s3">
         <span class="dashicons dashicons-desktop"></span>
         <?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>
@@ -103,7 +101,7 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 </div>
 
 <!-- display mobile -->
-<div class="row">
+<div class="row show_hide_device">
     <p class="col s3">
         <span class="dashicons dashicons-smartphone"></span>
         <?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>
@@ -128,7 +126,7 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 <hr style="max-width: 500px;">
 <br>
 
-<div class="row">
+<div class="row show_hide_global ">
     <p class="col s3">
         <!-- <span class="dashicons dashicons-admin-site-alt3"></span> -->
         <strong><?php _e( 'Global', 'click-to-chat-for-whatsapp' ); ?></strong>
@@ -159,7 +157,7 @@ foreach ($show_hide_settings as $key => $value) {
     if ( '' == $value ) {
         // heading
         ?>
-        <strong><?= $key; ?>: </strong><br><br>
+       <p class="description" style="margin-bottom:16px;"><strong><?= $key; ?>: </strong></p>
         <?php
     } else {
         $is_checked_show_hide = (isset($display_settings[$key])) ? esc_html($display_settings[$key]) : 'g';
@@ -212,7 +210,7 @@ foreach ($show_hide_settings as $key => $value) {
 <p class="description"><strong><?php _e( 'Post Id\'s', 'click-to-chat-for-whatsapp' ); ?></strong></p>
 <!-- ID's list to hide styles  -->
 <div class="row hide_settings">
-    <div class="input-field col s7">
+    <div class="input-field col s12 m7">
         <input name="<?= $dbrow; ?>[display][list_hideon_pages]" value="<?= $list_hideon_pages ?>" id="ccw_list_id_tohide" type="text" class="input-margin">
         <label for="ccw_list_id_tohide"><?php _e( "Hide on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-hidden"></span></label>
         <p class="description"><?php _e( "Add post id's to hide. Add multiple post id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
@@ -231,7 +229,7 @@ foreach ($show_hide_settings as $key => $value) {
 <p class="description"><strong><?php _e( 'Category names', 'click-to-chat-for-whatsapp' ); ?></strong></p>
 <!-- Categorys list - to hide -->
 <div class="row hide_settings">
-    <div class="input-field col s7">
+    <div class="input-field col s12 m7">
         <input name="<?= $dbrow; ?>[display][list_hideon_cat]" value="<?= $list_hideon_cat ?>" id="list_hideon_cat" type="text" class="input-margin">
         <label for="list_hideon_cat"><?php _e( 'Hide on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-hidden"></span></label>
         <p class="description"><?php _e( 'Hides on this Category type pages, Add multiple Categories by separating with a comma ( , ) ', 'click-to-chat-for-whatsapp' ); ?></p>

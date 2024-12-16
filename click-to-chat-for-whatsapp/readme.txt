@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.12.1
+Stable tag: 4.13
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -210,33 +210,40 @@ Connect other applications using Integrate, Automation tools like Zapier, IFTTT,
 
 == ⭐ PRO ==
 
-* Random Numbers
 * Multi-Agent: Displays multiple WhatsApp chat accounts
-    * Set Multiple time ranges for each agent
-    * Hide or Display agent with the next available time
+    * Set multiple time ranges for each agent's availability
+    * Hide offline agents or display agent when offline with their next available time
+* Random Numbers: Navigates to a random WhatsApp number from the predefined list
+* Form: Get the necessary information from the website visitors, before initiating the chat
+    * Get an email notification when the user fills out the form.
+    * Use webhooks to send form data to external apps in real-time for seamless integration.
+    * Prefill WhatsApp messages with user-provided form data to streamline conversations
 * Business hours: Offline/Online Settings
-    * Change WhatsApp number When Offline
-    * Change call to Action When Offline
-    or 
-    * Hide When Offline
-    * Show/Hide on selected time range in a day
-    * Show/Hide on selected days in a week
+    * Set business hours for a specific time range within a day, specific days in a week.
+    * Hide the widget during offline hours or automatically change the WhatsApp numbers and call to action.
 * Display based on website visitor's country
 * Webhooks - Dynamic variables
-    * {url} - replace with current page URL
-    * {time} - time the user interacted with WhatsApp Button/Icon
-    * {number} - WhatsApp Number for that icon/button
-* Greetings
-    * Greetings From filling before initiating the chat
-    * Actions: Display/reappear based on Time, Page Scroll, Click, ViewPort(When an element is in/reached ViewPort)
+    * {url} - Current page URL.
+    * {time} - Time user interacted with the WhatsApp Button/Icon.
+    * {number} - WhatsApp Number associated with the icon/button.
+    * Get values from url parameters by adding name with in single square brackets E.g. [gclid], [utm_source]
+    * Get values from cookies by adding the name with in double square brackets. E.g. [[cookie_name]]
+* Get additional values at Google Analytics, Meta Pixel
+    * Get values from url parameters. E.g. [gclid], [utm_source]
+    * Get values from cookies. E.g. [[cookie_name]]
+* Greetings Actions: (Greetings-1, Greetings-2, Greetings Form, Multi-agent feature)
+    * Display greetings dynamically based on user actions such as 
+        Time: Time spent on the page, 
+        Scroll: Page scroll percentage, 
+        Click: specific button clicks 
+        ViewPort: when an element becomes visible in the viewport.
 * Position to place
     * Fixed: Fixed position on the screen (default position)
-    * Absolute: Fixed position to the body content. (Moves as the user scrolls the page)
-* Time Delay - Displays WhatsApp after some time delay
-* Scroll Action - Displays WhatsApp after user scrolls the page by a given percentage
+    * Absolute: Fixed position to the body content. (Moves when the user scrolls the page)
+* Time Delay & Scroll Delay: Display WhatsApp widget after a specified time delay or once the user scrolls a certain percentage of the page.
 * Display based on Website visitor's login status
-* Page-level settings - Change styles, time delay, scroll delay, Greetings Template, and Greetings Content
-* WooCommerce
+* Page-level settings: Fine-tune WhatsApp button behavior for individual pages. Change styles, time delays, scroll delay, Greetings Template, and Greetings Content
+* WooCommerce: Customize WhatsApp widget behavior specifically for WooCommerce pages
     * Overwrite greetings template, Content for Single product pages.
     * Overwrite settings for Shop, Checkout, and Account pages at page-level settings
 
@@ -536,6 +543,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.13 =
+* Fix: Alignment issues at admin setting pages
 
 = 4.12.1 =
 * Fix: Hover effects for Style-7 Extend

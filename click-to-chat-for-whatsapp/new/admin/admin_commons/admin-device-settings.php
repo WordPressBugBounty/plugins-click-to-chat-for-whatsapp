@@ -105,7 +105,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 <!-- Desktop position -->
 <!-- side - 1 -->
 <p class="description ht_ctc_admin_desktop ht_ctc_subtitle"><?php _e( 'Position to Place', 'click-to-chat-for-whatsapp' ); ?><span class="not_samesettings"><?php _e( ' (Desktop)', 'click-to-chat-for-whatsapp' ); ?></span>:</p>
-<div class="row ht_ctc_admin_desktop">
+<div class="row ht_ctc_admin_desktop" style="display:flex; margin-top:16px;">
     <br>
     <div class="input-field col s6">
         <select name="<?= $dbrow; ?>[side_1]" class="position_bottom_top ctc_demo_position">
@@ -121,7 +121,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 </div>
 
 <!-- side - 2 -->
-<div class="row ht_ctc_admin_desktop" style="margin-bottom:0;">
+<div class="row ht_ctc_admin_desktop" style="display:flex; margin-bottom:0;">
     <div class="input-field col s6">
         <select name="<?= $dbrow; ?>[side_2]" class="position_right_left ctc_demo_position">
             <option value="right" <?= $side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>
@@ -146,7 +146,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 // Same setting for Mobile Devices
 if ( isset( $options['same_settings'] ) ) {
     ?>
-    <p style="margin-bottom: 25px;">
+    <p class="description" style="margin-bottom: 25px;">
         <label>
             <input name="<?= $dbrow; ?>[same_settings]" type="checkbox" value="1" <?php checked( $options['same_settings'], 1 ); ?> class="same_settings ctc_no_demo" id="same_settings" />
             <span><?php _e( 'Mobile and Desktop same setttings', 'click-to-chat-for-whatsapp' ); ?></span>
@@ -155,7 +155,7 @@ if ( isset( $options['same_settings'] ) ) {
     <?php
 } else {
     ?>
-    <p style="margin-bottom: 25px;">
+    <p class="description" style="margin-bottom: 25px;">
         <label>
             <input name="<?= $dbrow; ?>[same_settings]" type="checkbox" value="1" class="same_settings ctc_no_demo" id="same_settings" />
             <span><?php _e( 'Mobile and Desktop same setttings', 'click-to-chat-for-whatsapp' ); ?></span>
@@ -220,7 +220,7 @@ if ( isset( $options['same_settings'] ) ) {
 <!-- Mobile position -->
 <!-- side - 1 -->
 <p class="description ht_ctc_admin_mobile ht_ctc_subtitle not_samesettings"><?php _e( 'Position to Place (Mobile)', 'click-to-chat-for-whatsapp' ); ?>:</p>
-<div class="row ht_ctc_admin_mobile not_samesettings">
+<div class="row ht_ctc_admin_mobile not_samesettings" style="display:flex; margin-top:16px;">
     <br>
     <div class="input-field col s6">
         <select name="<?= $dbrow; ?>[mobile_side_1]" class="select-2 ctc_no_demo">
@@ -236,7 +236,7 @@ if ( isset( $options['same_settings'] ) ) {
 </div>
 
 <!-- side - 2 -->
-<div class="row ht_ctc_admin_mobile not_samesettings" style="margin-bottom:0;">
+<div class="row ht_ctc_admin_mobile not_samesettings" style="display:flex; margin-bottom:0;">
     <div class="input-field col s6">
         <select name="<?= $dbrow; ?>[mobile_side_2]" class="select-2 ctc_no_demo">
             <option value="right" <?= $mobile_side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>

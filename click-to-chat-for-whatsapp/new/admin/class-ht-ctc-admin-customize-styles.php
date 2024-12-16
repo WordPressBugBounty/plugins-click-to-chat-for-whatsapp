@@ -589,8 +589,8 @@ class HT_CTC_Admin_Customize_Styles {
                 <p><?php _e( 'Image Size', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <input name="ht_ctc_s3_1[s3_img_size]" value="<?= $s3_img_size; ?>" id="s3_img_size" type="text" class="ctc_oninput" data-update-type='height' data-update-type-2='width' data-update-selector='.ctc_s_3_1 svg'>
-                <label for="s3_img_size"><?php _e( 'Image Size (Default: 40px )', 'click-to-chat-for-whatsapp' ); ?></label>
+                <input name="ht_ctc_s3_1[s3_img_size]" value="<?= $s3_img_size; ?>" id="s3_1_img_size" type="text" class="ctc_oninput" data-update-type='height' data-update-type-2='width' data-update-selector='.ctc_s_3_1 svg'>
+                <label for="s3_1_img_size"><?php _e( 'Image Size (Default: 40px )', 'click-to-chat-for-whatsapp' ); ?></label>
             </div>
         </div>
 

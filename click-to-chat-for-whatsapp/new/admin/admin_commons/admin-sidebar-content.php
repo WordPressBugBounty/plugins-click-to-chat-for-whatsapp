@@ -1,6 +1,6 @@
 <?php
 /**
- * sidebar content
+ * sidebar content - admin main page
  */
 
 

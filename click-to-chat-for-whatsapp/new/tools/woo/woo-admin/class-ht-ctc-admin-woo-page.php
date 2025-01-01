@@ -47,7 +47,7 @@ class HT_CTC_Admin_Woo_Page {
             <?php settings_errors(); ?>
 
             <!-- full row -->
-            <div class="row">
+            <div class="row" style="display:flex; flex-wrap:wrap;">
 
                 <div class="col s12 m12 l12 xl9 options">
                     <form action="options.php" method="post" class="">
@@ -58,7 +58,7 @@ class HT_CTC_Admin_Woo_Page {
                 </div>
 
                 <!-- sidebar content -->
-                <div class="col s12 m12 l7 xl4 ht-ctc-admin-sidebar ht-ctc-admin-woo-sidebar sticky-sidebar">
+                <div class="col s12 m12 l7 xl3 ht-ctc-admin-sidebar ht-ctc-admin-woo-sidebar sticky-sidebar">
                     <?php // include_once HT_CTC_PLUGIN_DIR .'new/admin/admin_commons/admin-sidebar-content.php'; ?>
                 </div>
                 
@@ -194,7 +194,7 @@ class HT_CTC_Admin_Woo_Page {
                     <br><br>
 
                     <!-- prefilled message -->
-                    <div class="row">
+                    <div class="row ctc_side_by_side">
                         <div class="input-field col s12 md_tab">
                             <textarea name="ht_ctc_woo_options[woo_pre_filled]" id="woo_pre_filled" class="materialize-textarea input-margin" style="min-height: 64px;" placeholder="<?= $pf_placeholder ?>"><?= $woo_pre_filled ?></textarea>
                             <label for="woo_pre_filled"><?php _e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
@@ -203,7 +203,7 @@ class HT_CTC_Admin_Woo_Page {
 
 
                     <!-- Call to Action -->
-                    <div class="row">
+                    <div class="row ctc_side_by_side">
                         <div class="input-field col s12 md_tab">
                             <input name="ht_ctc_woo_options[woo_call_to_action]" value="<?= $woo_call_to_action ?>" id="woo_call_to_action" type="text" class="input-margin" placeholder="<?= $ctc_placeholder ?>">
                             <label for="woo_call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
@@ -222,7 +222,11 @@ class HT_CTC_Admin_Woo_Page {
             <div id="overwrite_tab-2" class="col s12 md_tab">
                 <div class="ctc_md_tab">
                     <!-- Page Level settings - for WooCommerce pages -->
-                    <p class="description">At <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">Page Level Settings</a> can overwrite: Number, Call to Action, Prefilled Message, display settings. (<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO</a>: Greetings, Style, Time Delay, Scroll Delay)</p>
+                    <p class="description">
+                       <span>At <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">Page Level Settings</a> can overwrite: Number, Call to Action, Prefilled Message, display settings. 
+                        (<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO</a>: Greetings, Style, Time Delay, Scroll Delay)
+                       </span>
+                    </p>
                     <br>
                     <?php
                     $admin_url = admin_url();
@@ -272,7 +276,7 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- Add button/icon -->
                     <p class="description" style="margin-bottom:15px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/add-whatsapp-in-woocommerce-single-product-pages/"><?php _e( 'Add WhatsApp in WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
 
-                    <div class="row">
+                    <div class="row ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
                             <p><?php _e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
                         </div>
@@ -291,7 +295,7 @@ class HT_CTC_Admin_Woo_Page {
                     </div>
 
                     <!-- style -->
-                    <div class="row ctc_init_display_none woo_single_position_settings">
+                    <div class="row ctc_init_display_none woo_single_position_settings ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
                             <p><?php _e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
                         </div>
@@ -318,12 +322,12 @@ class HT_CTC_Admin_Woo_Page {
                     <p class="description ctc_init_display_none woo_single_position_settings">These styles and their position appears based on how the Theme is developed. </p>
                     <br>
 
-                    <details open class="description ctc_init_display_none woo_single_position_settings">
+                    <details open class="ctc_details ctc_init_display_none woo_single_position_settings">
                         <summary style="padding: 5px; background-color: #eeeeee; cursor: pointer; width: fit-content;">Adjust settings compatible with the theme design</summary>
 
                         <!-- style 1, 8 - add to cart layout -->
                         <div class="woo_single_position_settings_cart_layout" style="display: none;">
-                            <div class="row">
+                            <div class="row ctc_side_by_side">
                                 <div class="col s6" style="padding-top: 14px;">
                                     <p>Button layout <br><span style="font-size:0.8em;">WhatsApp button looks like 'Add to Cart' button</span></p>
                                 </div>
@@ -337,7 +341,7 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
 
                         <!-- display - center -->
-                        <div class="row woo_single_position_settings" style="display: none;">
+                        <div class="row ctc_side_by_side woo_single_position_settings" style="display: none;">
                             <div class="col s6" style="padding-top: 14px;">
                                 <p><?php _e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
@@ -350,7 +354,7 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
                         
                         <!-- display: block, inline-block ..  -->
-                        <div class="row ctc_init_display_none woo_single_position_settings">
+                        <div class="row ctc_side_by_side ctc_init_display_none woo_single_position_settings">
                             <div class="col s6" style="padding-top: 14px;">
                                 <p><?php _e( 'Display Block Type', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
@@ -365,17 +369,19 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
                         
                         <!-- margin -->
-                        <div class="row ctc_init_display_none woo_single_position_settings">
+                        <div class="row ctc_side_by_side ctc_init_display_none woo_single_position_settings">
                             <div class="col s6" style="padding-top: 14px;">
                                 <p><?php _e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
-                            <div class="input-field col s6" style="display: flex; margin-bottom: 1px;">
-                                <input name="ht_ctc_woo_options[woo_single_margin_top]" value="<?= $woo_single_margin_top ?>" id="woo_single_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_single_margin_bottom]" value="<?= $woo_single_margin_bottom ?>" id="woo_single_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_single_margin_left]" value="<?= $woo_single_margin_left ?>" id="woo_single_margin_left" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_single_margin_right]" value="<?= $woo_single_margin_right ?>" id="woo_single_margin_right" type="text" style="display:inline;" class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                            <div class="input-field col s6">
+                                <div  style="display: flex; margin-bottom: 1px;">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_top]" value="<?= $woo_single_margin_top ?>" id="woo_single_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_bottom]" value="<?= $woo_single_margin_bottom ?>" id="woo_single_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_left]" value="<?= $woo_single_margin_left ?>" id="woo_single_margin_left" type="text" style="display:inline; margin-right:4px; margin-left:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_right]" value="<?= $woo_single_margin_right ?>" id="woo_single_margin_right" type="text" style="display:inline; " class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                                </div>
+                                <span class="helper-text">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </span>
                             </div>
-                            <span class="helper-text" style="float:right;">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </span>
                         </div>
 
                     </details>
@@ -391,7 +397,7 @@ class HT_CTC_Admin_Woo_Page {
                     <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/"><?php _e( 'WooCommerce Shop page', 'click-to-chat-for-whatsapp' ); ?></a></p>
 
                     <!-- At WooCommerce shop pages, loop.. -->
-                    <div class="row">
+                    <div class="row ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
                             <p><?php _e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
                         </div>
@@ -404,7 +410,7 @@ class HT_CTC_Admin_Woo_Page {
                     </div>
                     
                     <!-- prefilled message -->
-                    <div class="row ctc_init_display_none woo_shop_add_whatsapp_settings">
+                    <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="input-field col s12">
                             <textarea name="ht_ctc_woo_options[woo_shop_pre_filled]" id="woo_shop_pre_filled" class="materialize-textarea input-margin" style="min-height: 84px;" placeholder="<?= $pf_placeholder ?>"><?= $woo_shop_pre_filled ?></textarea>
                             <label for="woo_shop_pre_filled"><?php _e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
@@ -414,7 +420,7 @@ class HT_CTC_Admin_Woo_Page {
 
 
                     <!-- Call to Action -->
-                    <div class="row ctc_init_display_none woo_shop_add_whatsapp_settings">
+                    <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="input-field col s12">
                             <input name="ht_ctc_woo_options[woo_shop_call_to_action]" value="<?= $woo_shop_call_to_action ?>" id="woo_shop_call_to_action" type="text" class="input-margin" placeholder="<?= $single_ctc_placeholder ?>">
                             <label for="woo_shop_call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
@@ -422,7 +428,7 @@ class HT_CTC_Admin_Woo_Page {
                     </div>
 
                     <!-- style -->
-                    <div class="row ctc_init_display_none woo_shop_add_whatsapp_settings">
+                    <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="col s6" style="padding-top: 14px;">
                             <p><?php _e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
                         </div>
@@ -444,12 +450,12 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
                     </div>
 
-                    <details open class="description ctc_init_display_none woo_shop_add_whatsapp_settings">
+                    <details open class="ctc_details ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <summary style="padding: 5px; background-color: #eeeeee; cursor: pointer; width: fit-content;">Adjust settings compatible with the theme design</summary>
 
                         <!-- style 1, 8 - shop - add to cart layout -->
-                        <div class="woo_shop_cart_layout" style="display: none;">
-                            <div class="row">
+                        <div class="woo_shop_cart_layout" style="display: ;">
+                            <div class="row ctc_side_by_side">
                                 <div class="col s6" style="padding-top: 14px;">
                                     <p>Button layout <br><span style="font-size:0.8em;">WhatsApp button looks like 'Add to Cart' button</span></p>
                                 </div>
@@ -463,7 +469,7 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
 
                         <!-- display - center -->
-                        <div class="row ctc_init_display_none woo_shop_add_whatsapp_settings">
+                        <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                             <div class="col s6" style="padding-top: 14px;">
                                 <p><?php _e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
@@ -476,17 +482,19 @@ class HT_CTC_Admin_Woo_Page {
                         </div>
 
                         <!-- margin -->
-                        <div class="row ctc_init_display_none woo_shop_add_whatsapp_settings">
+                        <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                             <div class="col s6" style="padding-top: 14px;">
                                 <p><?php _e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
-                            <div class="input-field col s6" style="display: flex; margin-bottom: 1px;">
-                                <input name="ht_ctc_woo_options[woo_shop_margin_top]" value="<?= $woo_shop_margin_top ?>" id="woo_shop_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_shop_margin_bottom]" value="<?= $woo_shop_margin_bottom ?>" id="woo_shop_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_shop_margin_left]" value="<?= $woo_shop_margin_left ?>" id="woo_shop_margin_left" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
-                                <input name="ht_ctc_woo_options[woo_shop_margin_right]" value="<?= $woo_shop_margin_right ?>" id="woo_shop_margin_right" type="text" style="display:inline;" class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                            <div class="input-field col s6">
+                                <div  style="display: flex; margin-bottom: 1px;">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_top]" value="<?= $woo_shop_margin_top ?>" id="woo_shop_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_bottom]" value="<?= $woo_shop_margin_bottom ?>" id="woo_shop_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_left]" value="<?= $woo_shop_margin_left ?>" id="woo_shop_margin_left" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_right]" value="<?= $woo_shop_margin_right ?>" id="woo_shop_margin_right" type="text" style="display:inline;" class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                                </div>
+                                <p class="helper-text">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </p>
                             </div>
-                            <span class="helper-text" style="float:right;">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </span>
                         </div>
                         <br>
 

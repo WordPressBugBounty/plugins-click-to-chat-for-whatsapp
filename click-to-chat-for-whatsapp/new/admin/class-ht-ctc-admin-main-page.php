@@ -105,46 +105,6 @@ class HT_CTC_Admin_Main_Page {
         
         <?php
         do_action('ht_ctc_ah_admin' );
-
-
-        if ( function_exists( 'is_rtl' ) && is_rtl() ) {
-            ?>
-            <style>
-                [dir="rtl"] .show_hide_types,
-                [dir="rtl"] .show_hide_device,
-                [dir="rtl"] .show_hide_global {
-                    display: flex;
-                    text-align: right;
-                }
-                [dir="rtl"] .description.ht_ctc_subtitle {
-                    border-right: 5px solid lightseagreen;
-                    padding-right: 0.9rem;
-                    padding-left: 0;
-                    border-left: unset;
-                }
-                [dir="rtl"] .hide_settings .input-field,
-                [dir="rtl"] .show_settings .input-field {
-                    float: none;
-                }
-                [dir="rtl"] .url_structure_row{
-                    display: flex;
-                    text-align: right;
-                }
-                [dir="rtl"] .sticky-sidebar .sidebar-content {
-                    margin-right: 80px;
-                    margin-left: unset;
-                }
-                [dir="rtl"] .ctc_select_style .collection-item {
-                    display: flex;
-                    flex-direction: row-reverse;
-                    justify-content: space-between;
-                }
-                [dir="rtl"] .ctc_select_style .badge {
-                    margin-left: 0px;
-                }
-            </style>
-            <?php
-        } 
     }
 
 
@@ -200,22 +160,6 @@ class HT_CTC_Admin_Main_Page {
             } else if ( '2' == $_GET['number-field'] ) {
                 $intl = '2';
             }
-        }
-
-        // styles added in rtl pages..
-        if ( function_exists('is_rtl') && is_rtl() ) {
-            ?>
-            <style id="ctc-rtl">
-            [dir="rtl"] .row_number,
-            [dir="rtl"] .description {
-                text-align: right;
-            }
-            [dir="rtl"] .iti__dropdown-content {
-                left: 0;
-                /* right: auto !important; */
-            }
-            </style>
-            <?php
         }
 
         ?>
@@ -429,7 +373,7 @@ class HT_CTC_Admin_Main_Page {
         <p class="description" style="margin: 0 0 20px 0;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/url-structure/"><?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
         <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>:</p>
-        <div class="row url_structure_row">
+        <div class="row url_structure_row ctc_side_by_side">
             <div class="col s6">
                 <p><?php _e( 'Open links in', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
@@ -443,7 +387,7 @@ class HT_CTC_Admin_Main_Page {
             </div>
         </div>
 
-        <div class="row url_structure_row">
+        <div class="row url_structure_row ctc_side_by_side">
             <div class="col s6">
                 <p><?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
@@ -475,7 +419,7 @@ class HT_CTC_Admin_Main_Page {
         <?php do_action('ht_ctc_ah_url_structure_desktop'); ?>
         
         <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>:</p>
-        <div class="row url_structure_row">
+        <div class="row url_structure_row ctc_side_by_side">
             <div class="col s6">
                 <p><?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>

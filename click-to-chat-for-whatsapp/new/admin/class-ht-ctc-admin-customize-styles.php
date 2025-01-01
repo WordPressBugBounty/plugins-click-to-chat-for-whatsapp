@@ -42,7 +42,7 @@ class HT_CTC_Admin_Customize_Styles {
 
             <?php settings_errors(); ?>
 
-            <div class="row">
+            <div class="row" style="display:flex; flex-wrap:wrap;">
                 <div class="col s12 m12 xl8 options">
                     <form action="options.php" method="post" class="">
                         <?php settings_fields( 'ht_ctc_cs_page_settings_fields' ); ?>
@@ -50,8 +50,8 @@ class HT_CTC_Admin_Customize_Styles {
                         <?php submit_button() ?>
                     </form>
                 </div>
-                <!-- <div class="col s12 m12 xl6 ht-ctc-admin-sidebar">
-                </div> -->
+                <div class="col s12 m12 xl4 ht-ctc-admin-sidebar">
+                </div>
             </div>
 
         </div>
@@ -217,7 +217,7 @@ class HT_CTC_Admin_Customize_Styles {
         <!-- display all styles -->
         <div class="display_all_styles_checkbox <?= $hide_checkbox ?>">
             <p>
-                <label>
+                <label class="ctc_checkbox_label">
                     <input name="<?= $dbrow; ?>[display_allstyles]" type="checkbox" value="1" <?php checked( $display_allstyles, 1 ); ?> id="display_allstyles" />
                     <span><?php _e( 'Display all Styles', 'click-to-chat-for-whatsapp' ); ?></span>
                 </label>
@@ -389,7 +389,7 @@ class HT_CTC_Admin_Customize_Styles {
 
         ?>
 
-        <h5 style="display: inline-block;">Call to Action </h5>
+        <h5 style="display: flex;">Call to Action </h5>
         <hr>
         <!-- call to action - hover / show / hide -->
         <div class="row">
@@ -495,7 +495,7 @@ class HT_CTC_Admin_Customize_Styles {
         </div>
 
 
-        <h5 style="display: inline-block;">Call to Action </h5>
+        <h5 style="display: flex;">Call to Action </h5>
         <!-- call to action - hover / show / hide -->
         <hr>
         <div class="row">
@@ -636,7 +636,7 @@ class HT_CTC_Admin_Customize_Styles {
         if ( isset( $options['s3_box_shadow'] ) ) {
         ?>
         <p>
-            <label>
+            <label class="ctc_checkbox_label">
                 <input name="ht_ctc_s3_1[s3_box_shadow]" type="checkbox" value="1" <?php checked( $options['s3_box_shadow'], 1 ); ?> id="s3_box_shadow" class=""/>
                 <span><?php _e( 'Shadow', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
@@ -692,7 +692,7 @@ class HT_CTC_Admin_Customize_Styles {
 
         ?>
 
-        <h5 style="display: inline-block;">Call to Action </h5>
+        <h5 style="display: flex;">Call to Action </h5>
         <hr>
         <!-- call to action - hover / show / hide -->
         <div class="row">
@@ -1201,7 +1201,7 @@ class HT_CTC_Admin_Customize_Styles {
 
         <br><br>
 
-        <h5 style="display: inline-block;">Call to Action </h5>
+        <h5 style="display: flex;">Call to Action </h5>
         <hr>
         <!-- call to action - hover / show / hide -->
         <div class="row">

@@ -9,5 +9,5 @@ $title = (isset($input['title'])) ? esc_attr($input['title']) : '';
 $description = (isset($input['description'])) ? $input['description'] : '';
 ?>
 
-<details class="description">
+<details class="ctc_details">
     <summary style="margin-bottom:8px;"><?= $title ?></summary>

@@ -16,7 +16,7 @@ $description = (isset($input['description'])) ? $input['description'] : '';
 <div class="row ctc_component_checkbox <?= $parent_class ?>">
     <div class="input-field col s12">
         <p>
-            <label>
+            <label class="ctc_checkbox_label">
                 <input name="<?= $dbrow ?>[<?= $db_key ?>]" type="checkbox" class="<?= $db_key ?>" value="1" <?php checked( $db_value, 1 ); ?> />
                 <span><?= $title ?></span>
             </label>

@@ -46,12 +46,6 @@ class HT_CTC_Chat_Greetings {
 
         $ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings_start', $ht_ctc_greetings );
 
-        // return if template not set..
-        if ( '' == $ht_ctc_greetings['greetings_template'] || 'no' == $ht_ctc_greetings['greetings_template'] ) {
-            return;
-        }
-
-
         $page_id = get_the_ID();
         // $page_id = get_queried_object_id();
 
@@ -164,6 +158,11 @@ class HT_CTC_Chat_Greetings {
 
         // filter hook to update values... 
         $ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings', $ht_ctc_greetings );
+
+        // return if template not set..
+        if ( '' == $ht_ctc_greetings['greetings_template'] || 'no' == $ht_ctc_greetings['greetings_template'] ) {
+            return;
+        }
 
         if ( '' !== $ht_ctc_greetings['header_content'] ) {
             $ht_ctc_greetings['header_content'] = html_entity_decode(wp_kses($ht_ctc_greetings['header_content'], $allowed_html) );

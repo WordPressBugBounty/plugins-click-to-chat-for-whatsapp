@@ -43,14 +43,14 @@ if ( '' == $g_header_image ) {
 
     <div class="row row_g_header_online_status" style="margin-bottom:0;">
         <div class="col s12">
-            <label>
+            <label class="ctc_checkbox_label">
                 <input class="g_header_online_status" name="<?php echo $dbrow ?>[g_header_online_status]" type="checkbox" value="1" <?php checked( $g_header_online_status, 1 ); ?> />
                 <span><?php _e( 'Add Online Status badge at header image', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
         </div>
     </div>
     <div class="row_g_header_online_status_color">
-        <div class="row" style="margin-bottom:2px;">
+        <div class="row ctc_side_by_side" style="margin-bottom:2px;">
             <div class="input-field col s6" style="margin-bottom:0;">
                 <p calss="description" style="margin-bottom: 5px;">Online Status Badge Color</p>
                 <input class="ht-ctc-color g_header_online_status_color" name="<?= $dbrow; ?>[g_header_online_status_color]" data-default-color="#06e376" value="<?= $g_header_online_status_color ?>" type="text">

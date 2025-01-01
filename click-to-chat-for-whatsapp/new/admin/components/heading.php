@@ -1,6 +1,6 @@
 <?php
 /**
- * number
+ * @deprecated 4.15 favor of new/admin/components/content.php - $title
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

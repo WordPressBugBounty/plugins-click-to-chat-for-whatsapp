@@ -431,7 +431,7 @@ class HT_CTC_Admin_Greetings {
             <?php settings_errors(); ?>
 
             <!-- full row -->
-            <div class="row">
+            <div class="row" style="display:flex; flex-wrap:wrap;">
 
                 <div class="col s12 m12 xl8 options">
                     <form action="options.php" method="post" class="">
@@ -538,25 +538,21 @@ class HT_CTC_Admin_Greetings {
         <h1 id="greetings_settings">Greetings Dialog</h1>
         <?php
         do_action('ht_ctc_ah_admin' );
-
     }
+
+
 
     public function ctc_g_content_cb() {
 
         ?>
         <div class="ctc_greetings_settings ctc_greetings_notes">
-            <p class="description">
-                <a href='https://holithemes.com/plugins/click-to-chat/greetings/' target='_blank'>Greetings</a>: <a href='https://holithemes.com/plugins/click-to-chat/greetings-1/' target='_blank'>Greetings-1</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-2/' target='_blank'>Greetings-2</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-form/' target='_blank'>Form Filling</a>, <a href='https://holithemes.com/plugins/click-to-chat/multi-agent/' target='_blank'>Multi Agent</a>
-            </p>
-            <p class="description">
-                <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">Greetings Actions</a>: Displays Greetings based on <br>
-                &emsp;<strong>Click</strong>: Clicked on any element with Class name: 'ctc_greetings' <br>
-                &emsp;<strong>Viewport</strong>: an element is in/reached viewport(25% margin) with Class name: 'ctc_greetings_now' [PRO]
-            </p>
-            
+
             <?php
             if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
                 ?>
+                <p class="description">
+                    <a href='https://holithemes.com/plugins/click-to-chat/greetings/' target='_blank'>Greetings</a>: <a href='https://holithemes.com/plugins/click-to-chat/greetings-1/' target='_blank'>Greetings-1</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-2/' target='_blank'>Greetings-2</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-form/' target='_blank'>Form Filling</a>, <a href='https://holithemes.com/plugins/click-to-chat/multi-agent/' target='_blank'>Multi Agent</a>
+                </p>
                 <br>
                 <p class="description"><strong>PRO</strong>:</p>
                 <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">Actions</a>: Time, Scroll, Click, Viewport</p>

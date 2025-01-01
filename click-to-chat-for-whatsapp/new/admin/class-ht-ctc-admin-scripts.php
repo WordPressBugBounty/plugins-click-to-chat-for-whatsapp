@@ -46,6 +46,7 @@ class HT_CTC_Admin_Scripts {
             $css = 'dev/admin.dev.css';
         }
         
+        $rtl_css = 'admin-rtl.css';
         $md_css = 'materialize.min.css';
         
         // hook .. 
@@ -80,6 +81,12 @@ class HT_CTC_Admin_Scripts {
             wp_enqueue_script( 'ctc_admin_js', plugins_url( "new/admin/admin_assets/js/$js", HT_CTC_PLUGIN_FILE ), $ctc_admin_js_dependencies, HT_CTC_VERSION, $load_js_bottom );
             
             wp_enqueue_script( 'ctc_admin_greetings_js', plugins_url( "new/admin/admin_assets/js/$greetings_js", HT_CTC_PLUGIN_FILE ), array( 'jquery', 'ctc_admin_js' ), HT_CTC_VERSION, $load_js_bottom );
+
+
+            // rtl pages
+            if ( function_exists( 'is_rtl' ) && is_rtl() ) {
+                wp_enqueue_style('ctc_admin_rtl_css', plugins_url( "new/admin/admin_assets/css/$rtl_css", HT_CTC_PLUGIN_FILE ) , '', HT_CTC_VERSION );
+            }
 
             do_action('ht_ctc_ah_admin_scripts_end');
             

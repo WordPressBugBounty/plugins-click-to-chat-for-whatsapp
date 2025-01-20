@@ -878,12 +878,13 @@
             //     });
             // }
 
-
-            // cta hover effects (todo:l only that style..)
+            // cta hover effects
             $(".ctc_demo_style").hover(function () {
-                $('.ctc_demo_style .ht-ctc-cta-hover').show(120);
+                // $('.ctc_demo_style .ht-ctc-cta-hover').show(120);
+                $(this).find('.ht-ctc-cta-hover').show(120);
             }, function () {
                 $('.ctc_demo_style .ht-ctc-cta-hover').hide(100);
+                // $(this).find('.ht-ctc-cta-hover').hide(100);
             });
 
             function showHideDemo() {

@@ -331,6 +331,11 @@ class HT_CTC_DB2 {
      * 
      * icon
      * @since 3.0 (in v2.11 s3 type extend created and since 3.0 created as a new style 3_1 i.e. s3 Extend)
+     * 
+     * @since 4.16
+     *  s3_img_size: 36px - before(40px)
+     *  s3_padding: 16px - before(14px)
+     * 
      */
     public function ht_ctc_s3_1() {
         
@@ -352,6 +357,8 @@ class HT_CTC_DB2 {
         if ( !isset ( $this->os['version'] ) ) {
             $style_3_1['cta_type'] = 'hover';
             $style_3_1['cta_font_size'] = '15px';
+            $style_3_1['s3_img_size'] = '36px';
+            $style_3_1['s3_padding'] = '16px';
         }
 
         $db_values = get_option( 'ht_ctc_s3_1', array() );

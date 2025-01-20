@@ -80,7 +80,7 @@ class HT_CTC_MetaBox {
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 				?>
 				<!-- <div class="row">
-					<p class="description"><a style="text-decoration: none" target="_blank" href="https://holithemes.com/plugins/click-to-chat/todo/">Custom Link</a> (PRO)</p>
+					<p class="description"><a style="text-decoration: none" target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-url/">Custom Link</a> (PRO)</p>
 				</div> -->
 				<?php
 			}

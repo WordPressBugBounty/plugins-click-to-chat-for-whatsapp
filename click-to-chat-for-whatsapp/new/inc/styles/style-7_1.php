@@ -122,6 +122,10 @@ $s7_svg_attrs = array(
 
 
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
+
+if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) {
+    $s7_cta_class .= ( 'left' == $mobile_side) ? " ctc_m_cta_order_1 " : " ctc_m_cta_order_0 " ;    
+}
 ?>
 <style id="ht-ctc-s7_1">
 <?= $s7_hover_styles ?>

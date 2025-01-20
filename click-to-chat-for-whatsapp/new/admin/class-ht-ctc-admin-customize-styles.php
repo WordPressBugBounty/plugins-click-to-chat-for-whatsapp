@@ -595,8 +595,7 @@ class HT_CTC_Admin_Customize_Styles {
         </div>
 
             
-        <!-- padding -->
-        <!-- todo:l pading size may need to update.. test at front end.. 1. i 32, p 16    2. i 36, p 16 or 15 -->
+      <!-- Padding -->
         <div class="row">
             <div class="col s6">
                 <p><?php _e( 'Padding', 'click-to-chat-for-whatsapp' ); ?></p>
@@ -1301,8 +1300,8 @@ class HT_CTC_Admin_Customize_Styles {
                 <p><?php _e( 'Icon Size', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <input name="<?= $dbrow; ?>[s7_icon_size]" value="<?= $s7_icon_size ?>" id="s7_icon_size" type="text" class="ctc_oninput" data-update-type='height' data-update-type-2='width' data-update-selector='.ctc_s_7_1 svg'>
-                <label for="s7_icon_size"><?php _e( 'Icon Size', 'click-to-chat-for-whatsapp' ); ?></label>
+                <input name="<?= $dbrow; ?>[s7_icon_size]" value="<?= $s7_icon_size ?>" id="s7_1_icon_size" type="text" class="ctc_oninput" data-update-type='height' data-update-type-2='width' data-update-selector='.ctc_s_7_1 svg'>
+                <label for="s7_1_icon_size"><?php _e( 'Icon Size', 'click-to-chat-for-whatsapp' ); ?></label>
                 <p class="description"><?php _e( 'E.g.', 'click-to-chat-for-whatsapp' ); ?> 20px</p>
             </div>
         </div>
@@ -1313,8 +1312,8 @@ class HT_CTC_Admin_Customize_Styles {
                 <p><?php _e( 'Icon Border Padding Size', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <input name="<?= $dbrow; ?>[s7_border_size]" value="<?= $s7_border_size ?>" id="s7_border_size" type="text" class="ctc_oninput" data-update-type='padding' data-update-selector='.ctc_s_7_1 .ctc_s_7_icon_padding'>
-                <label for="s7_border_size"><?php _e( 'Border Padding Size', 'click-to-chat-for-whatsapp' ); ?></label>
+                <input name="<?= $dbrow; ?>[s7_border_size]" value="<?= $s7_border_size ?>" id="s7_1_border_size" type="text" class="ctc_oninput" data-update-type='padding' data-update-selector='.ctc_s_7_1 .ctc_s_7_icon_padding'>
+                <label for="s7_1_border_size"><?php _e( 'Border Padding Size', 'click-to-chat-for-whatsapp' ); ?></label>
                 <p class="description"><?php _e( 'E.g. 12px', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
         </div>

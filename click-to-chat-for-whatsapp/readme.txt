@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.15
+Stable tag: 4.16
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -543,6 +543,10 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.16 =
+* Added 'Alt' attribute value for greetings header image
+* Fix: Style-7, Style-7 Extend hover effects not working.
 
 = 4.15 = 
 * Fix: Page-level settings not working properly.

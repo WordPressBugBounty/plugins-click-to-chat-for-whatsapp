@@ -102,8 +102,6 @@ class HT_CTC_Admin_Woo_Page {
         do_action('ht_ctc_ah_admin' );
     }
 
-     
-
     /**
      * single product pages
      * 

@@ -55,7 +55,8 @@ if ( function_exists('is_rtl') && is_rtl() ) {
     $rtl_css = "flex-direction:row-reverse;";
 }
 
-$s8_icon_css = ( 'right' == $s8_icon_position ) ? "order:1;margin-left: 15px;" : "order:0;margin-right: 15px;";
+
+$s8_icon_css = ( 'right' == $s8_icon_position ) ? "order:1;margin-left:15px;" : "order:0;margin-right:15px;";
 
 $s8_text_css = "height: 100%; color:$s8_txt_color; $s8_text_size_css ";
 

@@ -314,8 +314,6 @@
 
             $('.ctc_cta_stick').remove();
 
-
-            // todo:l enhance entry animations effects.. 
             if ('init' == message) {
                 $('.ht_ctc_chat_greetings_box').show(70);
             } else {
@@ -490,7 +488,7 @@
 
             if (ctc.analytics) {
 
-                // todo:l - maybe else need if user changed to all clicks. 
+                // The ctc.analytics variable value occurs only if it is a session.
                 if ('session' == ctc.analytics) {
 
                     if (sessionStorage.getItem('ht_ctc_analytics')) {

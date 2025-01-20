@@ -335,17 +335,18 @@ class HT_CTC_Admin_Other_Settings {
                 
             </div>
                     
-            <!-- todo:l we can add - click count, date, username, if woo... add product details, .... -->
             <p class="description" style="margin:0px 10px;">Variables: {title}, {url}, and {number} replace the page's title, url, and number that were assigned to the widget.</p>
 
             <details class="ctc_details" style="margin:7px 10px;">
                 <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
-                <p style="margin:8px 10px 0px 10px;">
-                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
-                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
-                    <br>
-                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
-                    <br> Example: <code>[[_ga]]</code> 
+                <p class="description" style="margin:8px 10px 0px 10px;">
+                    <span>
+                        <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                        Example: <code>[gclid]</code>, <code>[utm_source]</code> 
+                        <br>
+                        <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                        <br> Example: <code>[[_ga]]</code>
+                    </span>
                 </p> 
         </details>
             
@@ -590,12 +591,14 @@ class HT_CTC_Admin_Other_Settings {
 
             <details class="ctc_details" style="margin:7px 10px;">
                 <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
-                <p style="margin:8px 10px 0px 10px;">
-                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
-                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
-                    <br>
-                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
-                    <br> Example: <code>[[_ga]]</code> 
+                <p class="description" style="margin:8px 10px 0px 10px;">
+                    <span>
+                        <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                        Example: <code>[gclid]</code>, <code>[utm_source]</code> 
+                        <br>
+                        <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                        <br> Example: <code>[[_ga]]</code> 
+                    </span>
                 </p> 
         </details>
 
@@ -782,12 +785,14 @@ class HT_CTC_Admin_Other_Settings {
         <!-- <p class="description">{number}: Number that is assigned to the widget</p> -->
         <details class="ctc_details" style="margin:7px 0px;">
         <summary>PRO: Get Values from Cookies [[ ]] and URL Parameters [ ]</summary>
-                <p style="margin:8px 10px 0px 10px;">
-                    <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
-                    Example: <code>[gclid]</code>, <code>[utm_source]</code> 
-                    <br>
-                    <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
-                    <br> Example: <code>[[_ga]]</code> 
+                <p class="description" style="margin:8px 10px 0px 10px;">
+                  <span>
+                        <strong>Fetch URL Parameter Values:</strong> To retrieve values from URL parameters, enclose the parameter name in a single square bracket <code>[]</code>. If the parameter doesn't exist, return blank. <br>
+                        Example: <code>[gclid]</code>, <code>[utm_source]</code> 
+                        <br>
+                        <strong>Fetch Cookie Values:</strong> To retrieve values from cookies, enclose the cookie name in double square brackets <code>[[]]</code>. If the cookie doesn't exist, return blank.
+                        <br> Example: <code>[[_ga]]</code> 
+                  </span>
                 </p> 
         </details>
         <a class="description" target="_blank" href="https://holithemes.com/plugins/click-to-chat/webhooks/#pro">Webhooks</a>
@@ -1025,7 +1030,6 @@ class HT_CTC_Admin_Other_Settings {
         </div>
 
         <!-- notification_border_color -->
-        <!-- todo:l better to add border color by default.. (if enabled dispay with border color) -->
         <div class="row notification_settings notification_border_color ctc_side_by_side">
             <div class="col s6">
                 <p><?php _e( 'Add border Color', 'click-to-chat-for-whatsapp' ); ?></p>

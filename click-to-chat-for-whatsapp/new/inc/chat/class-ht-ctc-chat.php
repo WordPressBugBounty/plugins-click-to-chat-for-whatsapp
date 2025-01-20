@@ -89,6 +89,7 @@ class HT_CTC_Chat {
         $post_title = esc_html( get_the_title() );
 
         if ( is_home() || is_front_page() ) {
+            // note: in home page..  get_post_id is gettings based on https://example.com/wp-admin/customize.php? home page settings. but not the actual page id of the home page its a template page.
             // is home page
             $page_url = home_url('/');
             // if home page is a loop then return site name.. (instead of getting the last post title in that loop)
@@ -98,6 +99,11 @@ class HT_CTC_Chat {
             if ( is_page() ) {
                 $post_title = esc_html( get_the_title() );
             }
+
+            // home page. not singular. get_the_id might not be correct.. no page level settings
+            // $is_page_level_settings = 'no';
+
+
         } elseif ( is_singular() ) {
             // is singular
             $page_url = get_permalink();

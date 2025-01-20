@@ -68,6 +68,10 @@ $s7_svg_attrs = array(
 $s7_hover_icon_styles = ".ht-ctc .ctc_s_7:hover .ctc_s_7_icon_padding, .ht-ctc .ctc_s_7:hover .ctc_cta_stick{background-color:$s7_border_color_hover !important;}.ht-ctc .ctc_s_7:hover svg g path{fill:$s7_icon_color_hover !important;}";
 
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
+
+if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) {
+    $s7_cta_class .= ( 'left' == $mobile_side) ? " ctc_m_cta_order_1 " : " ctc_m_cta_order_0 " ;    
+}
 ?>
 <style id="ht-ctc-s7">
 <?= $s7_hover_icon_styles ?>

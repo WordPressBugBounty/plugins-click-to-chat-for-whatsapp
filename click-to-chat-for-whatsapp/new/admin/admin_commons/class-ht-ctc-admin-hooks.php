@@ -177,6 +177,7 @@ class HT_CTC_Admin_Others {
         }
 
 
+        // to-do: comment this lines..
         // add_action('admin_notices', array( $this, 'pro_notice') );
         // add_action('admin_footer', array( $this, 'admin_pro_notice_scripts') );
 
@@ -342,7 +343,6 @@ class HT_CTC_Admin_Others {
         // db_key santized. but to avoid unwanted values to save in db.
         $db_key_values = [
             'pro_banner',
-            'pro_banner_country'
         ];
 
         // add data ..

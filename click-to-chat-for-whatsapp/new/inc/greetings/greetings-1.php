@@ -11,6 +11,7 @@ $g1_options = apply_filters( 'ht_ctc_fh_g1_options', $g1_options );
 $greetings = get_option('ht_ctc_greetings_options');
 $greetings_settings = get_option('ht_ctc_greetings_settings');
 
+$filename_without_extension = 'header-image';
 
 // $ht_ctc_greetings['main_content'] = apply_filters( 'the_content', $ht_ctc_greetings['main_content'] );
 $ht_ctc_greetings['main_content'] = do_shortcode( $ht_ctc_greetings['main_content'] );
@@ -151,14 +152,21 @@ if ('yes' == $rtl_page) {
 <?php
 
 if ( '' !== $ht_ctc_greetings['header_content'] ) {
-    if ('' !== $g_header_image) {
+    if (!empty($g_header_image)) {
         // if header image is added
         ?>
         <div class="ctc_g_heading" style="<?= $header_css ?>">
             <div style="display: flex; align-items: center;">
 
                 <div class="greetings_header_image" style="<?= $g_header_image_css ?>">
-                    <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?= $g_header_image ?>" alt="">
+                    <?php
+                    try {
+                        $filename_without_extension = pathinfo($g_header_image, PATHINFO_FILENAME);
+                    } catch (Exception $e) {
+                        $filename_without_extension = 'header-image'; // Fallback value
+                    }
+                    ?>
+                    <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?= $g_header_image ?>" alt="<?= $filename_without_extension ?>">
                     <?php
                     if ( isset($greetings['g_header_online_status']) ) {
                         $g_header_online_status_color = ( isset($greetings['g_header_online_status_color']) ) ? esc_attr( $greetings['g_header_online_status_color'] ) : '';

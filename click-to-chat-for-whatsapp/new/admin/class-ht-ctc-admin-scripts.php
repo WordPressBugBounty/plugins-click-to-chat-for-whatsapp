@@ -38,7 +38,7 @@ class HT_CTC_Admin_Scripts {
         $greetings_js = 'greetings.js';
 
         $css = 'admin.css';
-        
+
         if ( defined('HT_CTC_DEBUG_MODE') ) {
             $js = 'dev/admin.dev.js';
             $greetings_js = 'dev/greetings.dev.js';

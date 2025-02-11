@@ -1,143 +1,157 @@
 /**
- * Click to Chat - woo
+ * Click to Chat - WooCommerce Integration
  * 
- * currenlty only loads  - if cart layout option is checked and only in woo single product pages only.
+ * It applies styles of the cart buttons to chat widget(s1,s8) on single product and shop pages.
  * 
+ * @package Click to Chat
  * @since 3.8
- * 
- * cart layout
+ * currenlty only loads  - if display like cart layout option is checked at woo single product pages or shop page.
  */
 (function ($) {
+    $(function () {
+        console.log('WooCommerce Dev JS Loaded');
 
-// ready
-$(function () {
-    
-    console.log('woo dev js');
-    
-    // cart layout
-    try {
-        if (document.querySelector('.single_add_to_cart_button') || document.querySelector('.add_to_cart_button')) {
-            cart_layout();
-        } else if (document.querySelector('.ctc_woo_place')) {
-            //  && !document.querySelector('.ctc_woo_schedule')
-            // in shop page - cart button might not exists, display (might be added display none)
-            console.log('woo ctc_woo_place show');
-            display_ctc_woo_place();
-        }
-    } catch (e) {
-        console.log('error: cart_layout');
-    }
-
-    function display_ctc_woo_place() {
-        if (!document.querySelector('.ctc_woo_schedule')) {
-            $('.ctc_woo_place').css({
-                "display": $('.ctc_woo_place').attr('data-dt')
-            });
-            $('.ctc_woo_place').show();
-        }
-    }
-
-    function cart_layout() {
-
-        console.log('inside cart layout');
-
-        let single_cart = document.querySelector('.single_add_to_cart_button');
-        let shop_cart = document.querySelector('.add_to_cart_button');
-        
-
-        // s1 - single product
-        if (document.querySelector('.ctc_woo_single_cart_layout .s1_btn')) {
-
-            console.log('single product - s1 btn exits. ');
-
-            let single_s1 = document.querySelector('.ctc_woo_single_cart_layout .s1_btn');
-
-            var s1_color = $(single_s1).css('color');
-            var s1_bg_color = $(single_s1).css('background-color');
-
-            if (single_cart) {
-                copyNodeStyle(single_cart, single_s1);
-
-                $(single_s1).css({
-                    "display": 'inline-flex',
-                    "width": 'fit-content',
-                    "align-items": 'center',
-                    "color": s1_color,
-                    "background-color": s1_bg_color,
-                });
+        try {
+            /**
+             * Check if cart button exists, if yes then apply styles to chat widget.
+             *  single_add_to_cart_button: Single Product Page cart button
+             *  add_to_cart_button: Shop/Archive Page cart button
+             */
+            if (document.querySelector('.single_add_to_cart_button') || document.querySelector('.add_to_cart_button')) {
+                initializeCartLayout();
+            } else if (document.querySelector('.ctc_woo_place')) {
+                //  && !document.querySelector('.ctc_woo_schedule')
+                // in shop page - cart button might not exists, display (might be added display none)
+                console.log('Displaying .ctc_woo_place');
+                displayCtcWooPlace();
             }
-            
-            display_ctc_woo_place();
-
+        } catch (e) {
+            console.error('Error initializing cart layout:', e);
         }
 
-        // s1 - shop, archive products
-        if (document.querySelector('.ctc_woo_shop_cart_layout .s1_btn')) {
+        /**
+         * Displays the .ctc_woo_place element if .ctc_woo_schedule is not present.
+         */
+        function displayCtcWooPlace() {
+            if (!document.querySelector('.ctc_woo_schedule')) {
+                $('.ctc_woo_place').css({
+                    "display": $('.ctc_woo_place').attr('data-dt')
+                });
+                $('.ctc_woo_place').show();
+            }
+        }
 
-            console.log('shop page - s1 btn exits. ');
+        /**
+         * Initializes the cart layout for WooCommerce single and archive pages.
+         * 
+         * .ctc_woo_single_cart_layout: Click to Chat Widget adds at WooCommerce Single Product Page based on position added at settings.
+         * .ctc_woo_shop_cart_layout: Click to Chat Widget adds at WooCommerce Shop/Archive Page or related products list at single product page.
+         */
+        function initializeCartLayout() {
+            console.log('Initializing cart layout');
+
+            let singleCartButton = document.querySelector('.single_add_to_cart_button');
+
+            // Single Product Page cart button adding by if-else condition as it might be different for different themes.
+            let shopCartButton = document.querySelector('.add_to_cart_button') || document.querySelector('.button.add_to_cart_button');
+
+            console.log('Single Cart Button:', singleCartButton);
+            console.log('Shop/archive list Cart Button:', shopCartButton);
+
+            // Single Product Page - s1 Button Styling
+            applyS1Styling('.ctc_woo_single_cart_layout .s1_btn', singleCartButton);
             
-            let shop_s1 = document.querySelectorAll('.ctc_woo_shop_cart_layout .s1_btn');
+            // Shop/Archive Page - s1 Button Styling. (issue: shopCartButton i.e. add_to_cart_button capturing another 'bag' icon with the same class)
+            applyS1Styling('.ctc_woo_shop_cart_layout .s1_btn', shopCartButton, true);
 
-            if (shop_cart && shop_s1.length) {
+            // Apply s8 Styling for Shop/Archive Pages
+            // applyS8Styling('.ctc_woo_shop_cart_layout .s_8', singleCartButton);
+            applyS8Styling('.ctc_woo_shop_cart_layout .s_8', shopCartButton);
+            // applyS8Styling('.ctc_woo_shop_cart_layout .s_8', shopCartButton, true);
+            
+            // Apply s8 Styling for Single Product Pages
+            applyS8Styling('.ctc_woo_single_cart_layout .s_8', singleCartButton);
+        }
 
-                console.log('cart available');
+        /**
+         * Applies styles to the cart buttons based on existing WooCommerce button styles.
+         * 
+         * @param {string} selector - The selector for the target buttons.
+         * @param {HTMLElement} sourceButton - The button whose styles should be copied.
+         * @param {boolean} multiple - Whether to apply styles to multiple elements.
+         */
+        function applyS1Styling(selector, sourceButton, multiple = false) {
+            let targetButtons = multiple ? document.querySelectorAll(selector) : [document.querySelector(selector)];
 
-                var s1_color = $(shop_s1).css('color');
-                var s1_bg_color = $(shop_s1).css('background-color');
+            console.log(`Applying cart styling to: ${selector}`);
+            console.log($(selector));
+            
+            console.log('Source Button:', sourceButton);
+            console.log('Target Buttons:', targetButtons);
 
-                shop_s1.forEach(e => {
-                    copyNodeStyle(shop_cart, e);
-                });
+            if (!sourceButton || !targetButtons.length || !targetButtons[0]) return;
 
-                $(shop_s1).css({
-                    "display": 'inline-flex',
-                    "width": 'fit-content',
-                    "align-items": 'center',
-                    "color": s1_color,
-                    "background-color": s1_bg_color,
-                });
+            console.log('Applying styles to:', targetButtons);
+
+            targetButtons.forEach(targetButton => {
+                copyNodeStyle(sourceButton, targetButton);
+                let textColor = $(targetButton).css('color');
+                let bgColor = $(targetButton).css('background-color');
                 
-            }
-            display_ctc_woo_place();
-        }
-
-        // s8 - shop, archive products
-        if (document.querySelector('.ctc_woo_shop_cart_layout .s_8')) {
-            let single_s8 = document.querySelector('.ctc_woo_shop_cart_layout .s_8');
-            s8(single_s8);
-        }
-
-        // s8 - single product
-        if (document.querySelector('.ctc_woo_single_cart_layout .s_8')) {
-            let single_s8 = document.querySelector('.ctc_woo_single_cart_layout .s_8');
-            s8(single_s8);
-        }
-
-        function s8(style) {
-
-            $(style).css({
-                // "display": 'inline-flex',
-                "min-height": $(single_cart).css('min-height'),
-                "font-size": $(single_cart).css('font-size'),
-                "font-weight": $(single_cart).css('font-weight'),
-                "letter-spacing": $(single_cart).css('letter-spacing'),
-                "border-radius": $(single_cart).css('border-radius'),
-                "width": 'fit-content',
+                $(targetButton).css({
+                    "display": 'inline-flex',
+                    "width": 'fit-content',
+                    "align-items": 'center',
+                    "color": textColor,
+                    "background-color": bgColor
+                });
             });
-            display_ctc_woo_place();
-
+            
+            displayCtcWooPlace();
         }
 
+        /**
+         * Applies specific styling for .s8 elements based on the main cart button.
+         * 
+         * @param {string} selector - The selector for the s8 elements.
+         * @param {HTMLElement} referenceButton - The button to use as a style reference.
+         */
+        function applyS8Styling(selector, referenceButton) {
+
+            console.log(`Applying s8 styling to: ${selector}`);
+            console.log('Reference Button:', referenceButton);
+
+            let targetElements = document.querySelectorAll(selector); // Select all elements, not just one
+        
+            if (!targetElements.length || !referenceButton) return;
+
+            console.log('Applying styles to:', targetElements);
+
+            targetElements.forEach(targetElement => {
+                $(targetElement).css({
+                    "min-height": $(referenceButton).css('min-height'),
+                    "font-size": $(referenceButton).css('font-size'),
+                    "font-weight": $(referenceButton).css('font-weight'),
+                    "letter-spacing": $(referenceButton).css('letter-spacing'),
+                    "border-radius": $(referenceButton).css('border-radius'),
+                    "width": 'fit-content'
+                });
+            });
+
+            displayCtcWooPlace();
+        }
+
+        /**
+         * Copies computed styles from one element to another.
+         * 
+         * @param {HTMLElement} sourceNode - The source element.
+         * @param {HTMLElement} targetNode - The target element.
+         */
         function copyNodeStyle(sourceNode, targetNode) {
             const computedStyle = window.getComputedStyle(sourceNode);
-            Array.from(computedStyle).forEach(key => targetNode.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key)))
+            Array.from(computedStyle).forEach(property => {
+                targetNode.style.setProperty(property, computedStyle.getPropertyValue(property), computedStyle.getPropertyPriority(property));
+            });
         }
-
-    }
-
-    
-
-
-});
-
-}) (jQuery);
+    });
+})(jQuery);

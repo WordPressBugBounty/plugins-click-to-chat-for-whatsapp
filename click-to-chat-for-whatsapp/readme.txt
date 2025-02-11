@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.16
+Stable tag: 4.17
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -543,6 +543,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.17 =
+* Fix: Display Widget as an Add to Cart like button is not working on the WooCommerce single product page, Archive list.
 
 = 4.16 =
 * Added 'Alt' attribute value for greetings header image

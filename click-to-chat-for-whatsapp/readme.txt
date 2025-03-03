@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
 Requires at least: 4.7
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.17
+Stable tag: 4.18
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -57,13 +57,10 @@ The custom design element will navigate to WhatsApp based on plugin settings (Wh
 
 == 🎉 Greetings Dialog ==
 
-Encourage user participation by displaying the right message at the right time.
+Add customizable greeting dialogs for boosting user attention and increasing interaction. Seamlessly integrate these greetings into your website for better engagement.
 
-Add the greeting dialog text, Image/GIf, emojis with the rich text editor.
-Font can well decorate with font size, font family, links, text color, text background color, bold, italic, list, alignment, and more.
-
-* [Greetings-1](https://holithemes.com/plugins/click-to-chat/greetings-1/): Customizable Design
-* [Greetings-2](https://holithemes.com/plugins/click-to-chat/greetings-2/): Content Specific Design
+* [Greetings-1](https://holithemes.com/plugins/click-to-chat/greetings-1/) - Customizable Design: Personalize the design to match your branding with full control over fonts, colors, images, and more.
+* [Greetings-2](https://holithemes.com/plugins/click-to-chat/greetings-2/) - Content Specific: Deliver focused messages that resonate effectively with your users.
 
 = 📝 Form Filling =
 
@@ -89,9 +86,11 @@ PRO: [Multi-Agent](https://holithemes.com/plugins/click-to-chat/multi-agent)
 
 = ⌛ Greetings Actions =
 
-* **Click**: Displays Greetings when clicked on any element with the Class name: 'ctc_greetings'
-* **ViewPort**: Displays Greetings When an element is in/reached viewport(25% margin) with the Class name: 'ctc_greetings_now' [PRO]
-* **Time, Scroll** Display Greetings based on time, scroll [PRO]
+* **Click Action**: Displays greeting dialog when a user clicks on any element with the class name: ‘ctc_greetings’.
+* **ViewPort Action**: Displays Greetings When an element is in/reached viewport(25% margin) with the Class name: 'ctc_greetings_now' [PRO]
+* **Time, Scroll Actions**: Display Greetings based on time, scroll [PRO]
+
+These actions enhance user interaction by triggering greetings at the right moments, improving engagement and support efficiency.
 
 [Actions](https://holithemes.com/plugins/click-to-chat/greetings-actions/)
 
@@ -273,7 +272,7 @@ We highly concentrate on speed and performance.
 
 == 👓 Display Settings == 
 
-Show/Hide styles based on 
+Customize the visibility of the widget by showing or hiding styles based on specific settings, such as:
 
 * Post type
 * Post Id
@@ -543,6 +542,11 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.18 =
+* Fix: Resolved an issue where the Style-5 profile image was displaying above the greetings dialog on mobile devices.
+* Fix: Corrected the border alignment in Style-5.
+* Enhancement: Admin Demo for better usability
 
 = 4.17 =
 * Fix: Display Widget as an Add to Cart like button is not working on the WooCommerce single product page, Archive list.

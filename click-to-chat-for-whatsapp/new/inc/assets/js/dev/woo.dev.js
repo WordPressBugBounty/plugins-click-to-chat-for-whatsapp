@@ -52,8 +52,11 @@
 
             let singleCartButton = document.querySelector('.single_add_to_cart_button');
 
-            // Single Product Page cart button adding by if-else condition as it might be different for different themes.
-            let shopCartButton = document.querySelector('.add_to_cart_button') || document.querySelector('.button.add_to_cart_button');
+            /**
+             * Single Product Page cart button adding by if-else condition as it might be different for different themes.
+             *'.button.add_to_cart_button' is shooted from astra theme.
+             */
+            let shopCartButton = document.querySelector('.button.add_to_cart_button') || document.querySelector('.add_to_cart_button');
 
             console.log('Single Cart Button:', singleCartButton);
             console.log('Shop/archive list Cart Button:', shopCartButton);

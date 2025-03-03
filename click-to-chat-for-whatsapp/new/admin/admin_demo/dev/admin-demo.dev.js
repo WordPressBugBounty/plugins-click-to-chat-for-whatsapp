@@ -302,6 +302,13 @@
                     // when position is updated. remove menu links at demo. (to not over write the position))  
                     $('.ctc_menu_at_demo .ctc_ad_page_link').remove();
 
+                    /**
+                     * this is for show and hide demo links at bottom right. when position is updated this not working properly.
+                     */
+                    // $('.ctc_ad_links').show();
+                    // $('.ctc_ad_hide_demo').show();
+                    // showHideDemo();
+
 
                 }
 
@@ -451,6 +458,7 @@
 
                     // entry effect demo button
                     if ('no-show-effects' == val) {
+                        $('.ctc_demo_style').show();
                         $('.ctc_ee_demo_btn').hide();
                     } else {
                         $('.ctc_ee_demo_btn').show();
@@ -541,7 +549,7 @@
                 // on change color picker: handle by color picker on change
 
                 // notification count
-                $('.field_notification_count').on('change', function () {
+                $('.field_notification_count').on('input', function () {
                     var count = $(this).val();
                     $('.ctc_ad_badge').text(count);
                 });

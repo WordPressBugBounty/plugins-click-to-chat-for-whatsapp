@@ -228,8 +228,7 @@ class HT_CTC_Chat_Greetings {
                 <?php
             }
             ?>
-            
-            <div style="position: relative; bottom: 18px; cursor: auto;" class="ht_ctc_greetings <?= $ctc_m_full_width ?>">
+            <div style="position: relative; bottom: 18px; cursor: auto; z-index:9;" class="ht_ctc_greetings <?= $ctc_m_full_width ?>">
 
                 <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?>" style="display: none; position: absolute; bottom: 0px; <?= $g_position_r_l ?>: 0px; min-width: <?= $min_width ?>; max-width: 420px; ">
 

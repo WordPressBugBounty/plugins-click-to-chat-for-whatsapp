@@ -554,11 +554,11 @@ class HT_CTC_Admin_Greetings {
                     <a href='https://holithemes.com/plugins/click-to-chat/greetings/' target='_blank'>Greetings</a>: <a href='https://holithemes.com/plugins/click-to-chat/greetings-1/' target='_blank'>Greetings-1</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-2/' target='_blank'>Greetings-2</a>, <a href='https://holithemes.com/plugins/click-to-chat/greetings-form/' target='_blank'>Form Filling</a>, <a href='https://holithemes.com/plugins/click-to-chat/multi-agent/' target='_blank'>Multi Agent</a>
                 </p>
                 <br>
-                <p class="description"><strong>PRO</strong>:</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">Actions</a>: Time, Scroll, Click, Viewport</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-form/">Greetings Form</a>: Form filling before initiating the chat</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">Multi Agent</a>: Display Multiple agent with different time ranges</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-page-level-settings/">Greetings Page level settings</a>: Change Greetings content for any post</p>
+                <p class="description"><strong>✨PRO</strong>:</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-form/">📝 Greetings Form</a>: Collect website visitor data with a quick form before initiating the chat.</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">👥 Multi-Agent</a>: Display multiple agents with custom availability time slots for seamless support.</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">⚡Actions</a>: Time, Scroll, Click, Viewport</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-page-level-settings/">⚙️ Greetings Page Level Settings</a>: Change Greetings content for any post</p>
                 <br>
                 <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO Version</a></p>
                 <?php

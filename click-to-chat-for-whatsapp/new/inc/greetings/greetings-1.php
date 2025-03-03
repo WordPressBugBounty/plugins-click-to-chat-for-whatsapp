@@ -73,7 +73,7 @@ if ('yes' == $rtl_page) {
 }
 
 if ('' !== $message_box_bg_color) {
-    $message_box_css .= "padding:6px 8px 8px 9px;background-color:$message_box_bg_color;";
+    $message_box_css .= "padding:6px 8px 8px 9px;background-color:$message_box_bg_color;overflow-wrap:break-word;";
 }
 
 // call to action - style

@@ -49,13 +49,13 @@ $s5_cta_style = "display: -ms-flexbox;display: -webkit-flex; display: flex;$rtl_
 
 
 $s5_img_style = '';
-$s5_img_style .= 'height: '.$s5_img_height.'; width: '.$s5_img_width.'; z-index: 999999;  ';
+$s5_img_style .= 'height: '.$s5_img_height.'; width: '.$s5_img_width.'; z-index: 1; ';
 if ( 'right' == $s5_img_position ) {
     $s5_img_style .= 'order: 1;';
 }
 
 $s5_content_style = '';
-$s5_content_style .= 'flex-direction: column; justify-content: center; align-items: center;    ';
+$s5_content_style .= 'flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box;';
 $s5_content_style .= ' background-color: '.$s5_background_color.'; border: 1px solid '.$s5_border_color.'; height: '.$s5_content_height.'; width: '.$s5_content_width.';  ';
 if ( 'right' == $s5_img_position ) {
     $s5_content_style .= 'margin-right: -4px;';
@@ -67,6 +67,7 @@ $s5_css_code = '
 .ht-ctc-style-5 .s5_img{box-shadow:2px 5px 10px rgba(0,0,0,.5)}.ht-ctc-style-5 .s5_content{box-shadow:2px 5px 10px rgba(0,0,0,.5);border-radius:5px}.ht-ctc-style-5 .s5_content span{padding:5px;overflow:hidden}.ht-ctc-style-5 .s5_content .heading{font-size:20px}.ht-ctc-style-5 .s5_content .description{font-size:12px}.ht-ctc-style-5 .s5_content.right{animation:1s s5_translate_right}.ht-ctc-style-5 .s5_content.left{animation:1s s5_translate_left}@keyframes s5_translate_right{0%{transform:translateX(55px)}100%{transform:translateX(0)}}@keyframes s5_translate_left{0%{transform:translateX(-55px)}100%{transform:translateX(0)}}
 ';
 
+// Output CSS
 $o = '';
 $o .= '<style>';
 $o .= '.ht-ctc-style-5 .s5_content{display:none}.ht-ctc-style-5 .s5_cta:hover .s5_content{display:flex}';
@@ -77,7 +78,7 @@ echo $o;
 
 ?>
 
-<div class="ht-ctc-style-5 ctc-analytics ctc_s_5" style="cursor: pointer; z-index: 99999999;" >
+<div class="ht-ctc-style-5 ctc-analytics ctc_s_5" style="cursor: pointer;" >
 
     <div class="s5_cta" style="<?= $s5_cta_style ?>"   >
         <img class="s5_img ctc-analytics" src="<?= $s5_img ?>" style="<?= $s5_img_style ?>" alt="<?= $call_to_action ?>">

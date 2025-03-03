@@ -977,23 +977,36 @@
             });
         }
 
-        // custom element
+        /**
+         * Initializes custom link click handlers for the Click to Chat plugin.
+         * 
+         * This function sets up event listeners for elements with the classes or IDs
+         * `.ctc_chat`, `#ctc_chat`, and `[href="#ctc_chat"]`. When these elements are clicked,
+         * the `ht_ctc_link` function is called to handle the chat link functionality.
+         * 
+         * If the clicked element has the class `ctc_woo_place`, the default action is prevented.
+         */
         function custom_link() {
-
+            // Event listener for elements with class `.ctc_chat` or ID `#ctc_chat`
             $(document).on('click', '.ctc_chat, #ctc_chat', function (e) {
                 console.log('class/Id: ctc_chat');
                 ht_ctc_link(this);
 
+                // Prevent default action if the element has the class `ctc_woo_place`. its a ctc widget added at woocommerce product page, shop page..
                 if ($(this).hasClass('ctc_woo_place')) {
-                    // its woo link..
                     e.preventDefault();
                 }
             });
 
+            // Event listener for elements with href attribute `#ctc_chat`
             $(document).on('click', '[href="#ctc_chat"]', function (e) {
-                console.log('#ctc_chat');
+                console.log('href="#ctc_chat" clicked');
+                //e.stopPropagation(); // Stop event bubbling (if other scripts are interfering)
+                //e.stopImmediatePropagation(); // Stop immediate event execution (prevents other handlers)
+            
                 e.preventDefault();
                 ht_ctc_link(this);
+                // return false; // Ensure no default action occurs
             });
         }
 

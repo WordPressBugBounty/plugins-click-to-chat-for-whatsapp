@@ -21,7 +21,6 @@
     overflow-y: auto;
 }
 
-
 .greetings_header_image img {
     object-fit: cover;
 }
@@ -47,7 +46,6 @@
 /* Desktop like: above 420 */
 @media only screen and (min-width: 420px) {}
 
-
 /* for mobile */
 @media only screen and (max-width: 420px) {
 
@@ -71,7 +69,6 @@
         float: right !important;
     }
 
-
     /* call to action */
     .ctc_side_positions .ctc_m_cta_order_0 {
         order: 0 !important;
@@ -81,7 +78,6 @@
         order: 1 !important;
     }
 
-    
     .ht_ctc_greetings.ctc_m_full_width {
         position: fixed !important;
         bottom: 0px !important;
@@ -99,11 +95,10 @@
         max-width: 85% !important;
     }
 
-    /* fix: animation and greetings in mobile devices not working properly.  clear animation-fill-mode for ..ht_ctc_animation only if child have .ht_ctc_greetings */
+    /* fix: animation and greetings in mobile devices not working properly.  clear animation-fill-mode for .ht_ctc_animation only if child have .ht_ctc_greetings */
     .ht_ctc_animation:has(.ht_ctc_greetings) {
         animation-fill-mode: none !important;
     }
-    
 }
 
 /* above 900 */
@@ -116,5 +111,4 @@
     .ctc_g_content::-webkit-scrollbar-thumb {
         background: #a5a5a5;
     }
-
 }

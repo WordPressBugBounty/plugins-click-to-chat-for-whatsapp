@@ -19,11 +19,13 @@
 .collapsible-header .right_icon.dashicons {
     margin-left: auto;
 }
+
 /* rtl: left side */
 .rtl .collapsible-header .right_icon.dashicons {
     margin-right: auto;
     margin-left: unset;
 }
+
 /* rtl: right side */
 .rtl .collapsible-header .left_icon.dashicons {
     /* margin-left: auto; */
@@ -124,13 +126,11 @@
     background-color: #c5c5c5 !important;
 }
 
-
 summary {
     cursor: pointer;
 }
 
-
-/* Editior */
+/* Editor */
 .click-to-chat_page_click-to-chat-greetings .link-target #wp-link-target {
     opacity: 1 !important;
 }
@@ -215,7 +215,6 @@ summary {
     scroll-margin-top: 100px;
 }
 
-
 /* desktop - large screens - greater than 1200 */
 @media only screen and (min-width: 1201px) {
     .sticky-sidebar {
@@ -228,7 +227,6 @@ summary {
         margin-top: 12px;
         margin-left: 80px;
     }
-
 
     .ctc_scrollbar {
         height: 86vh;
@@ -257,5 +255,4 @@ summary {
     .ht-ctc-admin-sidebar::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
-
 }

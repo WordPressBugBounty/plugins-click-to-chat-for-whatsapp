@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.2
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.18
+Stable tag: 4.19
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,6 +24,8 @@ Add 'WhatsApp' or 'WhatsApp Business' Number and let your website visitors conta
 
 **💻 Desktop:** Direct visitors to the WhatsApp Desktop App or Web WhatsApp page (web.whatsapp.com)
 
+
+https://youtu.be/O_BF9rhazvI
 
 == 💎 Styles ==
 
@@ -542,6 +544,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.19 =
+* Fix: PHP Error. Thanks, Malae, for reporting it!
 
 = 4.18 =
 * Fix: Resolved an issue where the Style-5 profile image was displaying above the greetings dialog on mobile devices.

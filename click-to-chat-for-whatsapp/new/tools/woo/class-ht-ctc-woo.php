@@ -318,6 +318,7 @@ class HT_CTC_WOO_Pages {
                 $price = '';
                 $regular_price = '';
                 $sku = '';
+                $price_formatted = '';
                 
                 $product = wc_get_product();
 
@@ -327,6 +328,14 @@ class HT_CTC_WOO_Pages {
                     $price = $product->get_price();
                     $regular_price = $product->get_regular_price();
                     $sku = $product->get_sku();
+
+                    // $price_formatted - get thousand separator, decimal separator, currency symbol
+                    if ( function_exists( 'wc_price' ) ) {
+                        // $price_formatted = strip_tags( wc_price( $price ) );
+                        $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ));
+                    } else {
+                        $price_formatted = $price;
+                    }
                 }
 
                 $page_id = get_the_ID();
@@ -345,7 +354,7 @@ class HT_CTC_WOO_Pages {
                 }
 
                 // variables works in default pre_filled also for woo pages.
-                $ht_ctc_chat['pre_filled'] = str_replace( array('{product}', '{price}', '{regular_price}', '{sku}' ),  array( $name, $price, $regular_price, $sku ), $ht_ctc_chat['pre_filled'] );
+                $ht_ctc_chat['pre_filled'] = str_replace( array('{product}', '{{price}}', '{price}', '{regular_price}', '{sku}' ),  array( $name, $price_formatted, $price, $regular_price, $sku ), $ht_ctc_chat['pre_filled'] );
 
                 // call to action
                 if ( isset( $woo_options['woo_call_to_action'] ) && '' !== $woo_options['woo_call_to_action'] ) {
@@ -358,7 +367,7 @@ class HT_CTC_WOO_Pages {
                     $ht_ctc_chat['call_to_action'] = esc_attr($ht_ctc_pagelevel['call_to_action']);
                 }
 
-                $ht_ctc_chat['call_to_action'] = str_replace( array('{product}', '{price}', '{regular_price}', '{sku}' ),  array( $name, $price, $regular_price, $sku ), $ht_ctc_chat['call_to_action'] );
+                $ht_ctc_chat['call_to_action'] = str_replace( array('{product}', '{{price}}', '{price}', '{regular_price}', '{sku}' ),  array( $name, $price_formatted, $price, $regular_price, $sku ), $ht_ctc_chat['call_to_action'] );
 
             }
         }

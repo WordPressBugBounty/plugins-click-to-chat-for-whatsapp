@@ -557,8 +557,8 @@ class HT_CTC_Admin_Greetings {
                 <p class="description"><strong>✨PRO</strong>:</p>
                 <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-form/">📝 Greetings Form</a>: Collect website visitor data with a quick form before initiating the chat.</p>
                 <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">👥 Multi-Agent</a>: Display multiple agents with custom availability time slots for seamless support.</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">⚡Actions</a>: Time, Scroll, Click, Viewport</p>
-                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-page-level-settings/">⚙️ Greetings Page Level Settings</a>: Change Greetings content for any post</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-actions/">⚡Actions</a>: Time, Scroll, Click, Viewport.</p>
+                <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/greetings-page-level-settings/">⚙️ Greetings Page Level Settings</a>: Change Greetings content for any post.</p>
                 <br>
                 <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/">PRO Version</a></p>
                 <?php

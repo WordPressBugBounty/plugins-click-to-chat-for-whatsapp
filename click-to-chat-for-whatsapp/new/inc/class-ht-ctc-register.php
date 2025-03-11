@@ -60,6 +60,8 @@ class HT_CTC_Register {
             delete_option( 'ht_ccw_fb' );
             delete_option( 'ht_ctc_admin_pages' );
             delete_option( 'ht_ctc_cs_options' );
+            delete_option( 'ht_ctc_code_blocks' );
+            delete_option( 'ht_ctc_woo_options' );
 
             // deletes custom styles, ht_ctc_share, ht_ctc_switch
             $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'ht\_ctc\_s%';" );

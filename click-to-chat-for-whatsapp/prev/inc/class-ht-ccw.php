@@ -27,6 +27,11 @@ class HT_CCW {
     private static $instance = null;
 
     /**
+     * declare instance of HT_CCW_Chat
+     */
+    public $floating_style;
+
+    /**
      * wp_is_mobile - if true then 1, else 2
      *
      * @var int if mobile, tab .. then 1, else 2

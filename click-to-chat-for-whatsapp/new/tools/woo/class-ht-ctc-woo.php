@@ -329,12 +329,14 @@ class HT_CTC_WOO_Pages {
                     $regular_price = $product->get_regular_price();
                     $sku = $product->get_sku();
 
-                    // $price_formatted - get thousand separator, decimal separator, currency symbol
-                    if ( function_exists( 'wc_price' ) ) {
-                        // $price_formatted = strip_tags( wc_price( $price ) );
-                        $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ));
+                    if ($price !== '' && $price !== null) { 
+                        if (function_exists('wc_price')) {
+                            $price_formatted = html_entity_decode(strip_tags(wc_price($price)));
+                        } else {
+                            $price_formatted = $price; 
+                        }
                     } else {
-                        $price_formatted = $price;
+                        $price_formatted = ''; // Keep output blank if price is not set
                     }
                 }
 

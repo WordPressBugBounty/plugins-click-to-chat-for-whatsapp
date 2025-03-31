@@ -188,6 +188,7 @@ class HT_CTC_Admin_Woo_Page {
                 <div class="ctc_md_tab">
                     <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/woocommerce-single-product-pages/"><?php _e( 'WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
                     <p class="description">Variables: {product}, {price}, {regular_price}, {sku}, {site}, {url}, {title} </p>
+                    <p class="description">{{price}}: Formatted price with currency sign (e.g., $1,480,000.00).</p>
                     <p class="description">Leave blank to get value from main settings</p>
                     <br><br>
 

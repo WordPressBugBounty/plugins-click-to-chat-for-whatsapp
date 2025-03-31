@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.7.2
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.19
+Stable tag: 4.20
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -544,6 +544,10 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.20 =
+* New: Added {{price}} variable for WooCommerce product pages to display price with currency symbol, thousand separator, and decimal separator.
+* Fix: Resolved conflict with some themes caused by animation class name.
 
 = 4.19 =
 * Fix: PHP Error. Thanks, Malae, for reporting it!

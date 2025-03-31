@@ -157,7 +157,8 @@ class HT_CTC_Hooks {
         } 
 
         // Animations
-        $ht_ctc_os['an_type'] = "no-animations";
+        $ht_ctc_os['an_type'] = "no-animation";
+        // no-animation/bounce/flash/fade/flip/slide/zoom.. 
         $an_type = ( isset( $othersettings['an_type']) ) ? esc_attr( $othersettings['an_type'] ) : 'no-animation';
 
         if ( 'no-animation' !== $an_type ) {

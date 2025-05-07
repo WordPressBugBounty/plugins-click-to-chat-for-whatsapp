@@ -26,10 +26,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * - `{price} → Product Price (unformatted).
  * - `{sku}` → Product SKU (Stock Keeping Unit)
  * 
- * @uses 
+ * @uses
  * 
  * @since 3.4
  * @param string $value		input value to convert variables on product page
+ *
  */
 if ( ! function_exists('ht_ctc_woo_single_product_page_variables') ) {
 

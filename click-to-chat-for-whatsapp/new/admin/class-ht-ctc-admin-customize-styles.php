@@ -242,6 +242,11 @@ class HT_CTC_Admin_Customize_Styles {
         $s1_m_fullwidth_checkbox = ( isset( $options['s1_m_fullwidth']) ) ? esc_attr( $options['s1_m_fullwidth'] ) : '';
         $s1_add_icon_checkbox = ( isset( $options['s1_add_icon']) ) ? esc_attr( $options['s1_add_icon'] ) : '';
 
+        $s1_m_fullwidth_css = "";
+        if ("1" !== $s1_m_fullwidth_checkbox) {
+            $s1_m_fullwidth_css = "display:none;";
+        }
+
         ?>
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s1" data-collapsible="accordion" data-style='1'>
         <li>
@@ -314,35 +319,20 @@ class HT_CTC_Admin_Customize_Styles {
             <div class="col s6">
                 <p><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
-            <div class="input-field col s6">
-                <?php
-                if ( isset( $options['s1_m_fullwidth'] ) ) {
-                    ?>
-                    <p>
-                        <label>
-                            <input name="<?= $dbrow; ?>[s1_m_fullwidth]" type="checkbox" class="ctc_no_demo" value="1" <?php checked( $options['s1_m_fullwidth'], 1 ); ?> id="s1_m_fullwidth" />
-                            <span><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></span>
-                        </label>
-                    </p>
-                    <?php
-                } else {
-                ?>
+            <div class="input-field col s6 cs_m_fullwidth">
                 <p>
                     <label>
-                        <input name="<?= $dbrow; ?>[s1_m_fullwidth]" type="checkbox" class="ctc_no_demo" value="1" id="s1_m_fullwidth" />
+                        <input name="<?= $dbrow; ?>[s1_m_fullwidth]" type="checkbox" value="1" <?php checked( $s1_m_fullwidth_checkbox, 1 ); ?> class="ctc_no_demo" id="s1_m_fullwidth" />
                         <span><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></span>
                     </label>
                 </p>
-                <?php
-                }
-                ?>
+
+                <p class="m_fullwidth_description description" style="<?= $s1_m_fullwidth_css ?>">
+                    Set position at <a href="<?= admin_url( 'admin.php?page=click-to-chat#position_to_place' ); ?>" target="_blank"> Click to Chat → Position to Place (Mobile)</a>
+                </p>
             </div>
-        </div>
 
-
-        <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/style-1/"><?php _e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></a></p>
-        
-        </div>
+            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/style-1/"><?php _e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></a></p>
         </div>
         </li>
         </ul>
@@ -1397,6 +1387,13 @@ class HT_CTC_Admin_Customize_Styles {
         $s8_text_size = ( isset( $options['s8_text_size']) ) ? esc_attr( $options['s8_text_size'] ) : '';
         $s8_icon_size = ( isset( $options['s8_icon_size']) ) ? esc_attr( $options['s8_icon_size'] ) : '';
         $s8_btn_size = ( isset( $options['s8_btn_size']) ) ? esc_attr( $options['s8_btn_size'] ) : '';
+        $s8_m_fullwidth_checkbox = ( isset( $options['s8_m_fullwidth']) ) ? esc_attr( $options['s8_m_fullwidth'] ) : '';
+        
+        $s8_m_fullwidth_css = "";
+        if ("1" !== $s8_m_fullwidth_checkbox) {
+            $s8_m_fullwidth_css = "display:none;";
+        }
+
         ?>
         <ul class="collapsible ht_ctc_customize_style ht_ctc_s8" data-collapsible="accordion" data-style='8'>
         <li>
@@ -1525,35 +1522,20 @@ class HT_CTC_Admin_Customize_Styles {
             <div class="col s6">
                 <p><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
-            <div class="input-field col s6">
-                <?php
-                if ( isset( $options['s8_m_fullwidth'] ) ) {
-                    ?>
-                    <p>
-                        <label>
-                            <input name="<?= $dbrow; ?>[s8_m_fullwidth]" type="checkbox" value="1" <?php checked( $options['s8_m_fullwidth'], 1 ); ?> id="s8_m_fullwidth" class="ctc_no_demo"/>
-                            <span><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></span>
-                        </label>
-                    </p>
-                    <?php
-                } else {
-                ?>
+            <div class="input-field col s6 cs_m_fullwidth">
                 <p>
                     <label>
-                        <input name="<?= $dbrow; ?>[s8_m_fullwidth]" type="checkbox" value="1" id="s8_m_fullwidth" class="ctc_no_demo"/>
+                        <input name="<?= $dbrow; ?>[s8_m_fullwidth]" type="checkbox" value="1" <?php checked( $s8_m_fullwidth_checkbox, 1 ); ?> class="ctc_no_demo" id="s8_m_fullwidth" />
                         <span><?php _e( 'Full Width on Mobile', 'click-to-chat-for-whatsapp' ); ?></span>
                     </label>
                 </p>
-                <?php
-                }
-                ?>
+
+                <p class="m_fullwidth_description description" style="<?= $s8_m_fullwidth_css ?>">
+                    Set position at <a href="<?= admin_url( 'admin.php?page=click-to-chat#position_to_place' ); ?>" target="_blank"> Click to Chat → Position to Place (Mobile)</a>
+                </p>
             </div>
-        </div>
 
-        <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/style-8/"><?php _e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></a></p>
-        
-
-        </div>
+            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/style-8/"><?php _e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></a></p>
         </div>
         </li>
         </ul>

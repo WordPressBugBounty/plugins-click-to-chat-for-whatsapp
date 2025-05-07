@@ -35,7 +35,7 @@ if ( '' == $g_header_image ) {
     <div class="row row_g_header_image">
         <div class="col s12" style="display:flex; gap:8px; align-items:center;">
             <input type="hidden" name="<?= $dbrow ?>[g_header_image]" class="g_header_image" value="<?= $g_header_image ?>" />
-            <img class="g_header_image_preview" style="width:48px; height:48px; border-radius:50%; <?= $hide_img ?>" src="<?= $g_header_image ?>" style="max-width: 100%;" />
+            <img class="g_header_image_preview" style="width:50px; height:50px; border-radius:50%; <?= $hide_img ?>" src="<?= $g_header_image ?>" style="max-width: 100%;" />
             <input type="button" class="button-primary ctc_add_image_wp" value="Add Header Image" data-agent=""/>
             <input type="button" class="button-secondary ctc_remove_image_wp" style="margin: 0 1px; <?= $hide_remove_img_button ?>" value="Remove Image" data-agent=""/>
         </div>
@@ -53,7 +53,7 @@ if ( '' == $g_header_image ) {
         <div class="row ctc_side_by_side" style="margin-bottom:2px;">
             <div class="input-field col s6" style="margin-bottom:0;">
                 <p calss="description" style="margin-bottom: 5px;">Online Status Badge Color</p>
-                <input class="ht-ctc-color g_header_online_status_color" name="<?= $dbrow; ?>[g_header_online_status_color]" data-default-color="#06e376" value="<?= $g_header_online_status_color ?>" type="text">
+                <input class="ht-ctc-color g_header_online_status_color" name="<?= $dbrow; ?>[g_header_online_status_color]" data-default-color="#06e376" data-update-type="background-color" data-update-selector=".for_greetings_header_image_badge" id="g_header_online_status_color" value="<?= $g_header_online_status_color ?>" type="text">
             </div>
             <?php
             do_action('ht_ctc_ah_admin_header_status_badge' );

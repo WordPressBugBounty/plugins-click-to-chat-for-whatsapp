@@ -108,12 +108,18 @@
         function greetings_header_image() {
 
             var mediaUploader;
+        
+            // Event listener for adding an image
             $('.ctc_add_image_wp').on('click', function (e) {
                 e.preventDefault();
+        
+                // If mediaUploader already exists, open it
                 if (mediaUploader) {
                     mediaUploader.open();
                     return;
                 }
+        
+                // Create a new media uploader instance
                 mediaUploader = wp.media.frames.file_frame = wp.media({
                     title: 'Select Header Image',
                     button: {
@@ -121,6 +127,8 @@
                     },
                     multiple: false
                 });
+        
+                // When an image is selected
                 mediaUploader.on('select', function () {
 
                     attachment = mediaUploader.state().get('selection').first().toJSON();
@@ -129,16 +137,27 @@
                     // if closed with out selecting image
                     if (typeof attachment == 'undefined') return true;
 
+                    // Set the image URL and update the preview
                     image_url = attachment.url;
                     $('.g_header_image').val(image_url);
                     $('.g_header_image_preview').attr('src', image_url);
                     $('.g_header_image_preview').show();
                     $('.ctc_remove_image_wp').show();
                     header_image_badge();
+
+                    console.log('image_url: ' + image_url);
+                    // Custom event: ht_ctc_event_greetings_header_image
+                    document.dispatchEvent(
+                        new CustomEvent("ht_ctc_event_greetings_header_image", { detail: image_url })
+                    );
+
                 });
+        
+                // Open the media uploader
                 mediaUploader.open();
             });
 
+            // Event listener for removing an image
             $('.ctc_remove_image_wp').on('click', function (e) {
                 e.preventDefault();
                 $('.g_header_image').val('');
@@ -148,17 +167,21 @@
                 return;
             });
 
+            // Function to show/hide elements based on the presence of a header image
             function header_image_badge() {
-
                 // pr_g_header_online_badge display only if header image is set
                 console.log($('.g_header_image').val());
+
+                // If no header image is set, hide related elements
                 if ($('.g_header_image').val() == '') {
                     $('.row_g_header_online_status').hide();
                     $('.row_g_header_online_status_color').hide();
                     console.log('hide');
                 } else {
+                    // If a header image is set, show related elements
                     $('.row_g_header_online_status').show();
-                    // if g_header_online_status is checked.
+
+                    // Show/hide online status color based on checkbox state
                     if ($('.g_header_online_status').is(':checked')) {
                         $('.row_g_header_online_status_color').show();
                     } else {
@@ -167,11 +190,15 @@
                     console.log('show');
                 }
             }
+
+            // Initial call to set the correct visibility of elements
             header_image_badge();
 
-            // on change g_header_online_status
+            // Event listener for changes to the online status checkbox
             $('.g_header_online_status').on('change', function () {
                 console.log('on change g_header_online_status');
+
+                // Show/hide online status color based on checkbox state
                 if ($('.g_header_online_status').is(':checked')) {
                     console.log('g_header_online_status checked');
                     $('.row_g_header_online_status_color').show();
@@ -180,8 +207,6 @@
                     $('.row_g_header_online_status_color').hide();
                 }
             });
-
-
         }
         greetings_header_image();
 
@@ -214,11 +239,24 @@
             tiny_bg();
 
             function tiny_bg_color() {
-                var i = document.querySelectorAll(".ctc_wp_editor iframe");
-                i.forEach(e => {
-                    var elmnt = e.contentWindow.document.getElementsByTagName("body")[0];
-                    elmnt.style.backgroundColor = "#26a69a";
-                });
+                console.log('tiny_bg_color');
+                
+                try {
+                    // this works for single editor. 
+                    // tinyMCE.activeEditor.dom.setStyle(tinyMCE.activeEditor.getBody(), 'backgroundColor', '#26a69a');
+
+                    // for multiple editors
+                    for (var i = 0; i < tinyMCE.editors.length; i++) {
+                        var editor = tinyMCE.editors[i];
+                        editor.dom.setStyle(editor.getBody(), 'backgroundColor', '#26a69a');
+                    }
+                } catch (e) {}
+
+                // var i = document.querySelectorAll(".ctc_wp_editor iframe");
+                // i.forEach(e => {
+                //     var elmnt = e.contentWindow.document.getElementsByTagName("body")[0];
+                //     elmnt.style.backgroundColor = "#26a69a";
+                // });
             }
         }
 

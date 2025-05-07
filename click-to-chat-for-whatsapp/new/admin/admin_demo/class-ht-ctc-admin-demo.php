@@ -93,18 +93,20 @@ class HT_CTC_Admin_Demo {
                 }
             }
 
-        }
+
+            // return if load_demo is no
+            if ( 'no' == $this->load_demo ) {
+                return;
+            }
 
 
-        // return if load_demo is no
-        if ( 'no' == $this->load_demo ) {
-            return;
-        }
 
-        // below this only run if admin demo is active.. (i.e. user activated demo from user side and only in click to chat admin pages..)
+            // #### below this only run if admin demo is active.. (i.e. user activated demo from user side and only in click to chat admin pages..)
 
 
-        if ( 'click-to-chat' == $this->get_page || 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-customize-styles' == $this->get_page ) {
+            // ht_ctc_ah_admin_demo action hook. 
+            do_action('ht_ctc_ah_admin_demo');
+
             
             // load styles (widgets)
             add_action('admin_footer', [$this, 'load_styles']);
@@ -233,7 +235,7 @@ class HT_CTC_Admin_Demo {
         );
 
         // ctc, ctc customize styles - load all styles. And in ctc other settings load only desktop selected style.
-        if ( 'click-to-chat-other-settings' == $this->get_page ) {
+        if ( 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-greetings' == $this->get_page) {
             $style_desktop = ( isset( $options['style_desktop']) ) ? esc_attr( $options['style_desktop'] ) : '4';
             $styles = array(
                 $style_desktop
@@ -256,7 +258,7 @@ class HT_CTC_Admin_Demo {
          *      styles.. 
          */
         ?>
-        <div class="ctc_demo_load" style="position:fixed; bottom:50px; right:50px; z-index:99999999;">
+        <div class="ctc_demo_load" style="position:fixed; bottom:50px; right:50px; z-index:9999;">
         <?php
         // // greetings (to load all greetings)
         // include_once HT_CTC_PLUGIN_DIR .'new/tools/demo/demo-greetings.php';
@@ -271,18 +273,27 @@ class HT_CTC_Admin_Demo {
             ?>
             <div class="<?= $class ?>" style="display: none; cursor: pointer;">
             <?php
-            if ( 'click-to-chat-other-settings' == $this->get_page ) {
-                ?>
-                <span class="ctc_ad_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
-                    <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?= $notification_count ?></span>
-                </span>
-                <?php
+            // no duplicate as in greetings, other settings page as only one style is loaded
+            if ( 'click-to-chat-greetings' == $this->get_page ) {
+                // greetings dialog
+                // $this->add_greetings();
             }
-            // no need to santize_file_name. its not user input
-            $style = sanitize_file_name( $style );
-            $path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/styles/style-' . $style. '.php';
-            include $path;
             ?>
+            <div class="ht_ctc_style ht_ctc_chat_style">
+                <?php
+                if ( 'click-to-chat-other-settings' == $this->get_page ) {
+                    ?>
+                    <span class="ctc_ad_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
+                        <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?= $notification_count ?></span>
+                    </span>
+                    <?php
+                }
+                // no need to santize_file_name. its not user input
+                $style = sanitize_file_name( $style );
+                $path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/styles/style-' . $style. '.php';
+                include $path;
+                ?>
+            </div>
             </div>
             <?php
         }
@@ -293,6 +304,7 @@ class HT_CTC_Admin_Demo {
         /**
          * ctc_menu_at_demo
          *  .ctc_ad_links - displays customize styles and other settings links
+         *  .ctc_ad_page_link - other settings pages links
          *  .ctc_no_demo_notice - displays no demo notice for some features - e..g. customize styles . s1 add icon, ...
          *  .ctc_demo_messages - displays demo messages - e.g. for no demo for click, same tab., ..
          */
@@ -306,7 +318,6 @@ class HT_CTC_Admin_Demo {
                 <span class="ctc_ad_show_hide_demo ctc_ad_show_demo ctc_init_display_none"><a target="_blank"><?php _e( 'Show Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
                 <span class="ctc_ad_show_hide_demo ctc_ad_hide_demo"><a target="_blank"><?php _e( 'Hide Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
             </p>
-
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/#no-live-preview/" target="_blank" class="description ctc_no_demo_notice ctc_init_display_none">No live demo for this feature</a>
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/" target="_blank" class="description ctc_demo_messages ctc_init_display_none"></a>
         </div>
@@ -315,6 +326,134 @@ class HT_CTC_Admin_Demo {
     }
 
 
+    // add greetings
+    public function add_greetings() {
+
+
+        include_once HT_CTC_PLUGIN_DIR . 'new/admin/db/defaults/class-ht-ctc-defaults-greetings.php';
+
+        $greetings_fallback_values = [];
+        $g1_fallback_values = [];
+        $g2_fallback_values = [];
+        $g_settings_fallback_values = [];
+
+        // check if class exists
+        if ( class_exists( 'HT_CTC_Defaults_Greetings' ) ) {
+
+            $default_greetings = new HT_CTC_Defaults_Greetings();
+
+            // if greetings function exist in class
+            // if ( method_exists( $default_greetings, 'greetings' ) ) {
+            //     $greetings_fallback_values = $default_greetings->greetings();
+            // }
+
+            $greetings_fallback_values = $default_greetings->greetings;
+            $g1_fallback_values = $default_greetings->g_1;
+            $g2_fallback_values = $default_greetings->g_2;
+            $g_settings_fallback_values = $default_greetings->g_settings;
+            
+        }
+        
+        $greetings = get_option('ht_ctc_greetings_options', $greetings_fallback_values );
+        $greetings_settings = get_option('ht_ctc_greetings_settings', $g_settings_fallback_values);
+
+
+
+        $ht_ctc_greetings = array();
+        $demo_page = 'yes';
+        $ht_ctc_greetings['header_content'] = ( isset( $greetings['header_content']) ) ? esc_attr($greetings['header_content']) : '';
+        $ht_ctc_greetings['main_content'] = ( isset( $greetings['main_content']) ) ? esc_attr($greetings['main_content']) : '';
+        $ht_ctc_greetings['bottom_content'] = ( isset( $greetings['bottom_content']) ) ? esc_attr($greetings['bottom_content']) : '';
+        $ht_ctc_greetings['call_to_action'] = ( isset( $greetings['call_to_action']) ) ? esc_attr( $greetings['call_to_action'] ) : '';
+
+        $ht_ctc_greetings['is_opt_in'] = ( isset( $greetings_settings['is_opt_in']) ) ? esc_attr( $greetings_settings['is_opt_in'] ) : '';
+        $ht_ctc_greetings['opt_in'] = ( isset( $greetings_settings['opt_in']) ) ? esc_attr( $greetings_settings['opt_in'] ) : '';
+
+        if ('' == $ht_ctc_greetings['call_to_action']) {
+            $ht_ctc_greetings['call_to_action'] = 'WhatsApp';
+        }
+
+        $g_templates = [
+            'greetings-1' => plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greetings-1.php',
+            'greetings-2' => plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greetings-2.php',
+        ];
+
+        // add hook to add more greetings templates
+        $g_templates = apply_filters( 'ht_ctc_fh_admin_demo_greetings_templates', $g_templates );
+
+        
+        $g_size = ( isset($greetings_settings['g_size']) ) ? esc_attr( $greetings_settings['g_size'] ) : 's';
+
+        $min_width = '300px';
+        $ctc_m_full_width = '';
+        
+        if ('s' == $g_size) {
+        } else if ( 'm' == $g_size ) {
+            $min_width = '330px';
+            $ctc_m_full_width = 'ctc_m_full_width';
+        } else if ( 'l' == $g_size ) {
+            $min_width = '360px';
+            $ctc_m_full_width = 'ctc_m_full_width';
+        }
+
+        // is rtl page
+        $rtl_page = "";
+        if ( function_exists('is_rtl') && is_rtl() ) {
+            $rtl_page = "yes";
+        }
+        
+        $box_layout_bg_color = '';
+        // // todo: 
+        // if ( 'greetings-1' == $ht_ctc_greetings['greetings_template'] || 'greetings-2' == $ht_ctc_greetings['greetings_template'] ) {
+        // } else {
+        //     $box_layout_bg_color = 'background-color: #ffffff;';
+        // }
+
+        $g_box_classes = '';
+        $g_box_class_template = '';
+
+        // change positon at greetings page is not available.
+        $g_position_r_l = 'right';
+
+        $box_shadow = '0px 1px 9px 0px rgba(0,0,0,.14)';
+        // // todo
+        // if ( 'greetings-2' == $ht_ctc_greetings['greetings_template'] ) {
+        //     $box_shadow = '0px 0px 5px 1px rgba(0,0,0,.14)';
+        // }
+
+        $g_close_button_position = ('yes' == $rtl_page) ? 'left' : 'right';
+        $g_close_button_styles = "position:absolute; top:0; $g_close_button_position:0; cursor:pointer; padding:5px; margin:4px; border-radius:50%; background-color: unset !important; z-index: 9999; line-height: 1;";
+        
+
+        foreach ($g_templates as $template => $path) {
+            if ( is_file( $path ) ) {
+
+                $g_box_class_template = " template-$template";
+
+                ?>
+                <div class="ctc_demo_greetings <?= "ctc_demo_greetings_" . $template ?> <?= $ctc_m_full_width ?>" style="position: relative; bottom: 18px; cursor: auto;" >
+
+                    <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?> <?= $g_box_class_template ?>" style="position: absolute; bottom: 0px; <?= $g_position_r_l ?>: 0px; min-width: <?= $min_width ?>; max-width: 420px; ">
+
+                        <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?= $box_layout_bg_color ?> box-shadow: <?= $box_shadow ?>; border-radius:8px;clear:both;">
+
+                            <span style="<?= $g_close_button_styles ?>" class="ctc_greetings_close_btn">
+                                <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </span>
+
+                            <div class="ctc_greetings_template">
+                                <?php include $path; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+        }
+        
+    }
 
 
 }

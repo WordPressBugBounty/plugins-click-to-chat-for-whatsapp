@@ -13,6 +13,7 @@ $title = (isset($input['title'])) ? $input['title'] : '';
 $description = (isset($input['description'])) ? $input['description'] : '';
 $parent_class = (isset($input['parent_class'])) ? $input['parent_class'] : '';
 $parent_id = (isset($input['parent_id'])) ? $input['parent_id'] : '';
+$select_class = (isset($input['select_class'])) ? $input['select_class'] : '';
 
 // list
 $list = [];
@@ -42,7 +43,7 @@ if (isset($input['list'])) {
     ?>
     <div class="row">
         <div class="input-field col s12">
-            <select name="<?= $dbrow ?>[<?= $db_key ?>]" class="">
+            <select name="<?= $dbrow ?>[<?= $db_key ?>]" class="<?= $select_class ?>">
                 <?php
                 foreach ($list as $k => $v) {
                     ?>

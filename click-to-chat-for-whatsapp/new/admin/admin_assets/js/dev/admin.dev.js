@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // ready
     $(function () {
 
+        // var all_intl_instances = [];
+
         var admin_ctc = {};
         try {
             document.dispatchEvent(
@@ -177,6 +179,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (update_type && update_class) {
                         console.log('update');
                         $(update_class).css(update_type, color);
+
+                        // If updating message box, also change ::before element via CSS variable
+                        if (update_class === '.template-greetings-1 .ctc_g_message_box') {
+                            document.documentElement.style.setProperty('--ctc_g_message_box_bg_color', color);
+                        }
 
                         // if data-update-2-type and data-update-2-selector exists
                         if ($(element).attr('data-update-2-type') && $(element).attr('data-update-2-selector')) {
@@ -366,7 +373,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     $(".s1_icon_settings").hide(200);
                 }
             });
-            
+
+            // if m fullwidth is checked then show m_fullwidth_description else hide
+            $(".cs_m_fullwidth input").on("change", function (e) {
+                var descripton = $(this).closest('.cs_m_fullwidth').find(".m_fullwidth_description");
+                if ($(this).is(':checked')) {
+                    $(descripton).show(200);
+                } else {
+                    $(descripton).hide(200);
+                }
+            });
+
 
         }
 
@@ -796,6 +813,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('intlTelInput not loaded..');
                     throw new Error('intlTelInput not loaded..');
                 }
+
+                // // all intl inputs
+                // console.log('all_intl_instances');
+                // console.log(all_intl_instances);
+                
+                
                 
             }
 
@@ -805,6 +828,10 @@ document.addEventListener('DOMContentLoaded', function () {
         function intl_init(v) {
 
             console.log('intl_init()');
+            console.log(v);
+            
+            var attr_value = $(v).attr("value");
+            console.log('attr_value: ' + attr_value);
 
             var hidden_input = $(v).attr("data-name") ? $(v).attr("data-name") : 'ht_ctc_chat_options[number]';
             console.log(hidden_input);
@@ -855,7 +882,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     utilsScript: ht_ctc_admin_var.utils
                 };
 
-                intl = intlTelInput(v, values );
+                intl = intlTelInput(v, values);
+
+                // all_intl_instances.push(intl);
+
+                // Fix: Input display issue – auto-parsing fails for certain numbers (value is saved and retrieved correctly from DB)
+                if (attr_value && attr_value.length > 8) {
+                    console.log('set number: ' + attr_value);
+                    intl.setNumber(attr_value);
+                }
             }
 
             return intl;
@@ -893,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (changed.isValidNumber()) {
                     // to display in format
-                    console.log('valid number');
+                    console.log('valid number: ' + changed.getNumber());
 
                     // issue here.. setNumber ~ uses for for formating..
                     // console.log(changed.getNumber());
@@ -907,6 +942,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         new CustomEvent("ht_ctc_admin_event_valid_number", { detail: { d } })
                     );
 
+                } else {
+                    console.log('invalid number: ' + changed.getNumber());
                 }
             });
 

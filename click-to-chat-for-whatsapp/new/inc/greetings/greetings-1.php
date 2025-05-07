@@ -6,18 +6,25 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-$g1_options = get_option( 'ht_ctc_greetings_1' );
-$g1_options = apply_filters( 'ht_ctc_fh_g1_options', $g1_options );
-$greetings = get_option('ht_ctc_greetings_options');
-$greetings_settings = get_option('ht_ctc_greetings_settings');
+// $greetings_fallback_values, .. is set at class-ht-ctc-admin-greetings-page.php -> settings_values. if loading from other pages, where not set then this will be []
+$g1_fallback_values = isset ( $g1_fallback_values ) ? $g1_fallback_values : [];
+$greetings_fallback_values = isset ( $greetings_fallback_values ) ? $greetings_fallback_values : [];
+$g_settings_fallback_values = isset ( $g_settings_fallback_values ) ? $g_settings_fallback_values : [];
 
-$filename_without_extension = 'header-image';
+// Get options with fallback values
+$g1_options = get_option( 'ht_ctc_greetings_1', $g1_fallback_values );
+$g1_options = apply_filters( 'ht_ctc_fh_g1_options', $g1_options );
+$greetings = get_option( 'ht_ctc_greetings_options', $greetings_fallback_values );
+$greetings_settings = get_option( 'ht_ctc_greetings_settings', $g_settings_fallback_values );
+
+$g_header_image_filename = 'header-image';
+$is_demo_page = 'no';
 
 // $ht_ctc_greetings['main_content'] = apply_filters( 'the_content', $ht_ctc_greetings['main_content'] );
 $ht_ctc_greetings['main_content'] = do_shortcode( $ht_ctc_greetings['main_content'] );
 
 // css
-$header_css = 'padding: 12px 25px 12px 25px;';
+$header_css = 'display: flex; align-items: center; padding: 12px 25px 12px 25px;';
 
 $main_css = '';
 
@@ -42,6 +49,11 @@ $main_css .= "background-color:$main_bg_color;";
 $rtl_page = "";
 if ( function_exists('is_rtl') && is_rtl() ) {
     $rtl_page = "yes";
+}
+
+// if $is_demo_page is available this page is loading from demo.php.
+if ( isset($demo_page) && 'yes' == $demo_page ) {
+    $is_demo_page = 'yes';
 }
 
 /**
@@ -73,7 +85,14 @@ if ('yes' == $rtl_page) {
 }
 
 if ('' !== $message_box_bg_color) {
-    $message_box_css .= "padding:6px 8px 8px 9px;background-color:$message_box_bg_color;overflow-wrap:break-word;";
+    $message_box_css .= "padding:6px 8px 8px 9px;";
+    
+    // can remove this later.. as added in below style tag. using css variables. as now kept to avoid cache issues.
+    if ( !is_admin() ) {
+        // load only if not admin. to make things work for admin demo. (at admin demo on change color update using css variables)
+        $message_box_css .= "background-color:$message_box_bg_color;";
+    }
+
 }
 
 // call to action - style
@@ -87,6 +106,11 @@ if ('' !== $g_header_image) {
     $header_css .= "line-height:1.1;";
 } else {
     $header_css .= "line-height:1.3;";
+}
+
+// $is_demo_page - hide the greetings image.. add add based on the demo page.
+if ( 'yes' == $is_demo_page && empty($g_header_image) ) {
+    $g_header_image_css .= "display:none;";
 }
 
 ?>
@@ -107,20 +131,27 @@ $bg_path = plugins_url( './new/inc/assets/img/wa_bg.png', HT_CTC_PLUGIN_FILE );
 }
 <?php
 }
+// handle complete message box bg color.. with clip-path at a side.
 if ('' !== $message_box_bg_color) {
 ?>
-.ctc_g_message_box {
-    position: relative;
-    box-shadow: 0 1px 0.5px 0 rgba(0,0,0,.14);
-    max-width: calc(100% - <?= $message_box_minus_width ?>);
+:root {
+    --ctc_g_message_box_bg_color: <?= $message_box_bg_color ?>;
 }
-.ctc_g_message_box:before {
+.template-greetings-1 .ctc_g_message_box {
+    position: relative;
+    max-width: calc(100% - <?= $message_box_minus_width ?>);
+    background-color: var(--ctc_g_message_box_bg_color);
+}
+.template-greetings-1 .ctc_g_message_box {
+    box-shadow: 0 1px 0.5px 0 rgba(0,0,0,.14);
+}
+.template-greetings-1 .ctc_g_message_box:before {
   content: "";
   position: absolute;
   top: 0px;
   height: 18px;
   width: 9px;
-  background-color: <?= $message_box_bg_color ?>;
+  background-color: var(--ctc_g_message_box_bg_color);
 }
 <?php
 if ('yes' == $rtl_page) {
@@ -152,47 +183,41 @@ if ('yes' == $rtl_page) {
 <?php
 
 if ( '' !== $ht_ctc_greetings['header_content'] ) {
-    if (!empty($g_header_image)) {
-        // if header image is added
-        ?>
-        <div class="ctc_g_heading" style="<?= $header_css ?>">
-            <div style="display: flex; align-items: center;">
-
-                <div class="greetings_header_image" style="<?= $g_header_image_css ?>">
-                    <?php
-                    try {
-                        $filename_without_extension = pathinfo($g_header_image, PATHINFO_FILENAME);
-                    } catch (Exception $e) {
-                        $filename_without_extension = 'header-image'; // Fallback value
-                    }
-                    ?>
-                    <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?= $g_header_image ?>" alt="<?= $filename_without_extension ?>">
-                    <?php
-                    if ( isset($greetings['g_header_online_status']) ) {
-                        $g_header_online_status_color = ( isset($greetings['g_header_online_status_color']) ) ? esc_attr( $greetings['g_header_online_status_color'] ) : '';
-                        if ('' == $g_header_online_status_color) {
-                            $g_header_online_status_color = '#06e376';
-                        }
-                        ?>
-                        <span class="for_greetings_header_image_badge" style="display:none; border: 2px solid <?= $header_bg_color ?>; background-color: <?= $g_header_online_status_color ?>;"></span>
-                        <?php
-                    }
-                    ?>
-                </div>
-                <div>
-                    <?= wpautop($ht_ctc_greetings['header_content']) ?>
-                </div>
-            </div>
-        </div>
+    ?>
+    <div class="ctc_g_heading" style="<?= $header_css ?>">
         <?php
-    } else {
-        // if header image is not added
+        if (!empty($g_header_image) || 'yes' == $is_demo_page ) {
+            ?>
+            <div class="greetings_header_image" style="<?= $g_header_image_css ?>">
+                <?php
+                try {
+                    $g_header_image_filename = pathinfo($g_header_image, PATHINFO_FILENAME);
+                } catch (Exception $e) {
+                    $g_header_image_filename = 'header-image';
+                }
+                ?>
+                <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?= $g_header_image ?>" alt="<?= $g_header_image_filename ?>">
+                <?php
+                if ( isset($greetings['g_header_online_status']) || 'yes' == $is_demo_page ) {
+                    $g_header_online_status_color = ( isset($greetings['g_header_online_status_color']) ) ? esc_attr( $greetings['g_header_online_status_color'] ) : '';
+                    if ('' == $g_header_online_status_color) {
+                        $g_header_online_status_color = '#06e376';
+                    }
+                    // adds 'g_header_badge_online' class to the badge from js. to make it work with css.
+                    ?>
+                    <span class="for_greetings_header_image_badge" style="display:none; border: 2px solid <?= $header_bg_color ?>; background-color: <?= $g_header_online_status_color ?>;"></span>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+        }
         ?>
-        <div class="ctc_g_heading" style="<?= $header_css ?>">
+        <div class="ctc_g_header_content">
             <?= wpautop($ht_ctc_greetings['header_content']) ?>
         </div>
-        <?php
-    }
+    </div>
+    <?php
 }
 ?>
 

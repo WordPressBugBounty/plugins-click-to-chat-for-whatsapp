@@ -101,7 +101,7 @@ class HT_CTC_Admin_Main_Page {
 
     public function chat_settings_section_cb() {
         ?>
-        <h1 id="chat_settings">Click to Chat - Chat Settings </h1>
+        <h1 id="chat_settings">Click to Chat - Settings </h1>
         
         <?php
         do_action('ht_ctc_ah_admin' );

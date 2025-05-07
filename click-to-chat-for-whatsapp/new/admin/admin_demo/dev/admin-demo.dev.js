@@ -9,6 +9,8 @@
     // ready
     $(function () {
 
+        console.log('ctc admin demo');
+
         var url = window.location.href;
         var post_title = (typeof document.title !== "undefined") ? document.title : '';
         // is_mobile yes/no,  desktop > 1024 
@@ -18,6 +20,59 @@
         console.log(demo_var);
 
         var demo_style = '2';
+
+        
+        var admin_demo = {};
+
+        try {
+            document.dispatchEvent(
+                new CustomEvent("ht_ctc_demo_messages", { detail: { admin_demo, ctc_demo_messages } })
+            );
+        } catch (e) {
+            console.log('ht_ctc_demo_messages error' + e);
+        }
+
+
+        /**
+         * ctc_demo_messages
+         * @param {*} m 
+         * @used at number blank, url target _self, etc..
+         */
+        function ctc_demo_messages(m = '') {
+                
+            var demo_notice_timeoutId;
+
+            console.log('ctc_demo_messages: ' + m);
+            console.log(m);
+
+            clearTimeout(demo_notice_timeoutId);
+
+            $('.ctc_ad_links').hide();
+            $('.ctc_demo_messages').html(m);
+
+            // ctc_demo_messages
+            $('.ctc_demo_messages').hide().fadeIn(500);
+
+            demo_notice_timeoutId = setTimeout(() => {
+                $('.ctc_demo_messages').hide(120);
+                    $('.ctc_ad_links').show(120);
+            }, 9000);
+        }
+
+        /**
+         * Initializes and manages the display of various styles and settings for the Click to Chat plugin.
+         * 
+         * This function handles the following:
+         * - Click events for demo styles.
+         * - Navigation and URL structure for WhatsApp links.
+         * - Main page updates including call to action and position updates.
+         * - Animation and notification badge settings.
+         * - Customization of styles.
+         * - Greetings page settings and interactions.
+         * - Display and hiding of demo sections.
+         * 
+         * @function display_styles
+         */
 
         function display_styles() {
 
@@ -29,8 +84,19 @@
              * 
              * click event..
              */
-            $('.ctc_demo_style').on('click', function () {
+            $('.ctc_demo_style').on('click', function() {
                 console.log('click: navigation part..');
+
+                if (!$('.ht_ctc_chat_greetings_box').length) {
+                    console.log('no greetings dialog');
+                    // link
+                    ht_ctc_link();
+                }
+            });
+
+            // on click
+            function ht_ctc_link() {
+                console.log('ht_ctc_link()');
 
                 // number
                 // maybe need to update as like HT_CTC_Formatting: wa_number. (currently updating from intl_onchange)
@@ -120,8 +186,7 @@
                     window.open(base_url, url_target, specs);
                 }
 
-
-            });
+            }
 
             /**
              * page: main
@@ -570,6 +635,7 @@
                 });
 
             }
+            // #end other settings
 
             /**
              * page: customize styles
@@ -760,7 +826,7 @@
                     var update_value = $(this).val(); // the value to update
                     console.log(update_value);
 
-                    var update_class = $(this).attr('data-update-selector'); // the field to update
+                    var update_class = $(this).attr('data-update-selector'); // the element to update
                     console.log(update_class);
 
                     if (update_type && update_class) {
@@ -814,30 +880,426 @@
 
                 });
 
+            }
+            // #end customize styles
+
+
+
+            /**
+             * Gretings page
+             */
+            if ($('body').hasClass('click-to-chat_page_click-to-chat-greetings')) {
+
+                console.log('click-to-chat_page_click-to-chat-greetings');
+
+                // display style by default.
+                $('.ctc_demo_style').show();
+
+                // if tinyMCE is not defined then return.
+                if (typeof tinyMCE === 'undefined') {
+                    console.log('tinyMCE is not defined');
+                    return;
+                }
+
+                // get selected greeting dialog
+                var greetings_template = $('.pr_greetings_template select').find(":selected").val();
+                console.log('greetings_template: ' + greetings_template);
+
+                // if not 'no' then display that greetings
+                if ('no' == greetings_template) {
+                    $('.ctc_demo_greetings').hide();
+                } else {
+                    display_greetings();
+                }
+
+
+
+                // initial update.. to avoid displaying code blocks at greetings content.
+                update_greetings_content();
+
+                // setintervie .. to call_update_greetings_content() every 200ms if tinyMCE.get('header_content').getContent()
+                var intervalId_limit = 0;
+                var intervalId = setInterval(() => {
+                    console.log('intervalId_limit: ' + intervalId_limit);
+                    if (tinyMCE.get('header_content').getContent() || intervalId_limit > 20 ) {
+                        update_greetings_content();
+                        clearInterval(intervalId);
+                    }
+                    intervalId_limit++;
+                }, 200);
+
+
+                console.log('-------------------------------------------');
+                console.log(tinyMCE);
+                console.log(tinyMCE.activeEditor);
+                console.log(tinyMCE.get('main_content').getContent());
+                console.log(tinyMCE.get('opt_in').getContent());
+                console.log(tinyMCE.activeEditor.getContent());
+                console.log(tinyMCE.activeEditor.getContent());
+
+                // // if any of tinyMCE editor is changed then update the content.
+                // tinyMCE.activeEditor.on('change', function (e) {
+                //     console.log('change');
+                //     console.log(e);
+                //     console.log(tinyMCE.activeEditor.getContent());
+                // });
+
+                try {
+                    for (var i = 0; i < tinyMCE.editors.length; i++) {
+                        var editor = tinyMCE.editors[i];
+                        console.log(editor.id);
+
+                        // on change
+                        editor.on('change paste keyup', function (e) {
+                            console.log('tinyMCE editor on change');
+                            update_greetings_content();
+                        });
+                    }
+                } catch (e) {
+                    console.log('cache: mightbe no tinyMCE editor');
+                }
+
+               /**
+                 * Update content in the greetings demo 
+                 *
+                 * HEADER SECTION:
+                 * - Parent: .ctc_g_heading
+                 * - Content: .ctc_g_header_content
+                 * - Image: .ctc_g_header_content_image
+                 *
+                 * MAIN CONTENT SECTION:
+                 * - Parent: .ctc_g_content
+                 * - Message Box: .ctc_g_message_box
+                 *
+                 * BOTTOM CONTENT SECTION:
+                 * - Parent: .ctc_g_bottom
+                 *
+                 * OPT-IN SECTION:
+                 * - Parent: .ctc_opt_in
+                 * - Label: .ctc_opt_in label
+                 */
+                function update_greetings_content() {
+
+                    console.log('update_greetings_content');
+
+                    try {
+                        var header_content = tinyMCE.get('header_content').getContent();
+                        console.log('header_content: ' + header_content);
+                        var header_content_image = $('.greetings_header_image img').attr('src');
+                        console.log('header_content_image: ' + header_content_image);
+                        var main_content = tinyMCE.get('main_content').getContent();
+                        console.log('main_content: ' + main_content);
+                        var bottom_content = tinyMCE.get('bottom_content').getContent();
+                        console.log('bottom_content: ' + bottom_content);
+                        // var opt_in = tinyMCE.get('opt_in').getContent();
+                        // console.log('opt_in: ' + opt_in);
+
+                        // g1
+                        // $('.ctc_g_header_content').html(header_content);
+                        // $('.ctc_g_message_box').html(main_content);
+                        // $('.ctc_g_bottom').html(bottom_content);
+                        // $('.ctc_opt_in label').html(opt_in);
+
+
+                        // Show/hide header section
+                        if (header_content || header_content_image) {
+                            console.log('header_content or header_content_image is set');
+                            console.log('header_content: ' + header_content);
+                            console.log('header_content_image: ' + header_content_image);
+
+                            $('.ctc_g_heading').show();
+
+                            if (header_content_image) {
+                                console.log('header_content_image is set');
+                                $('.ctc_g_header_content_image').attr('src', header_content_image).show();
+                            } else {
+                                console.log('header_content_image is not set');
+                                $('.ctc_g_header_content_image').hide();
+                            }
+
+                            if (header_content) {
+                                console.log('header_content is set');
+                                $('.ctc_g_header_content').html(header_content).show();
+                            } else {
+                                console.log('header_content is not set');
+                                $('.ctc_g_header_content').hide();
+                            }
+                            // $('.ctc_g_heading').show().find('.ctc_g_header_content').html(header_content);
+                        } else {
+                            console.log('no header_content, no header_content_image');
+                            $('.ctc_g_heading').hide();
+                        }
+
+                        // $('.ctc_g_message_box').html(main_content);
+                        if (main_content) {
+                            $('.ctc_g_content').show();
+                            $('.ctc_g_message_box').html(main_content).show();
+                        } else {
+                            $('.ctc_g_message_box').hide();
+                            $('.ctc_g_content').hide();
+                        }
+                        // $('.ctc_g_bottom').html(bottom_content);
+                        if (bottom_content) {
+                            $('.ctc_g_bottom').html(bottom_content).show();
+                        } else {
+                            $('.ctc_g_bottom').hide();
+                        }
+                        // $('.ctc_opt_in label').html(opt_in);
+                        // if (opt_in) {
+                        //     $('.ctc_opt_in').show();
+                        //     $('.ctc_opt_in label').html(opt_in);
+                        // } else {
+                        //     $('.ctc_opt_in').hide();
+                        // }
+                        
+                    } catch (e) {
+                        console.log('cache: no tinyMCE editor');
+                    }
+                }
+
+                // greetings header image
+                function greetings_header_image() {
+
+                    console.log('greetings_header_image');
+
+                    $('.ctc_remove_image_wp').on('click', function () {
+                        console.log('remove image');
+                        const headerImageContainer = $('.greetings_header_image');
+                        if (headerImageContainer.is(':visible')) {
+                            // Hide the container without removing its content
+                            headerImageContainer.css('display', 'none');
+                            console.log('Header image container hidden');
+                            //  .greetings_header_image img src to blank
+                            $('.greetings_header_image img').attr('src', '');
+                            update_greetings_content();
+                        } else {
+                            console.log('Header image container is already hidden');
+                        }
+                        console.log('headerImageContainer: ', headerImageContainer);
+                    });
+
+                    // custom event listner 'ht_ctc_event_greetings_header_image' .. call header_image_badge
+                    document.addEventListener("ht_ctc_event_greetings_header_image", function (e) {
+                        console.log('ht_ctc_event_greetings_header_image');
+                        console.log(e.detail);
+                        console.log(e);
+                        header_image_badge(e.detail);
+                    });
+
+
+                    // Optional: Function to handle additional actions like adding a badge
+                    function header_image_badge(imageUrl) {
+                        console.log('header_image_badge(): ' + imageUrl);
+                        
+                        const headerImageContainer = $('.greetings_header_image');
+                        console.log(headerImageContainer);
+                        
+                        // Add the image to a container as a badge or decorative element
+                        // headerImageContainer.html(`<img src="${imageUrl}" alt="Header Image" style="max-width: 100%; height: 100%; border-radius:50%;">`).show();
+
+                        // add src to the image tag inside the container
+                        $('.greetings_header_image img').attr('src', imageUrl);
+                        update_greetings_content();
+                        // Show the container
+                        headerImageContainer.show();
+
+
+                        console.log('Image added to header container:', imageUrl);
+                    }
+
+                    // Greetings call to action update
+                    $('input[name="ht_ctc_greetings_options[call_to_action]"]').on('input', function() {
+                        console.log('input change');
+                        console.log($(this).val());
+                        // Get the updated value from the input field
+                        var cta = $(this).val();    
+                        // Update the button text inside '.ctc_demo_style .ctc_cta'
+                        $('.ctc_demo_style .ctc_g_sentbutton .ctc_cta').text(cta);
+                    });
+
+                }
+                greetings_header_image();
+
+                /**
+                * display greetings based on size selection by onchage function
+                * display_greetings_size dinamically by the selected s, m, l
+                * 
+                */
+                function changeGreetingsSize() {
+                    console.log('changeGreetingsSize');
+                    var gSize = $('.pr_g_size select').val();
+                    console.log('gSize: ', gSize);
+                    let minWidth = '330px'; // Ensure a default value
+
+                    if (gSize == 's') {
+                        minWidth = '300px';
+                    } else if (gSize == 'm') {
+                        minWidth = '330px';
+                    } else if (gSize == 'l') {
+                        minWidth = '360px';
+                    }
+
+                    $('.ht_ctc_chat_greetings_box').css({ 'min-width': minWidth }).show();
+                    console.log('greetings size changed:', gSize);
+                    console.log('min-width:', minWidth);
+                }
+
+                // on change - greetings size
+                $('.pr_g_size select').on('change', changeGreetingsSize);
+                
+
+                function display_greetings() {
+                    console.log('display_greetings');
+                    
+                    greetings_template = $('.pr_greetings_template select').find(":selected").val();
+                    console.log(greetings_template);
+
+                    // hide all greetings
+                    $('.ctc_demo_greetings').hide();
+
+                    var g_class = 'ctc_demo_greetings_' + greetings_template;
+                    console.log('g_class: ' + g_class);
+                    $('.ctc_cta_stick').remove();
+
+                    // if g_class exists then display that greetings
+                    if ($('.' + g_class).length) {
+                    // display that greetings
+                        $('.' + g_class).show();
+                    }
+                }
+
+                // on change - greetings template
+                $('.pr_greetings_template select').on('change', function () {
+                    console.log('greetings dialog on change');
+                    // greetings_template = $(this).val();
+                    // console.log(greetings_template);
+                    display_greetings();
+                });
+
+
+                $('.ctc_ad_page_link').remove();
+                $('.ctc_ad_links').css('margin', '0 50px').show();
+
+
+                function greetings_close() {
+                    console.log('Greetings closed:');
+                    $('.ht_ctc_chat_greetings_box').hide('slow');
+                }
+    
+                function greetings_close_500() {
+                    setTimeout(() => {
+                        greetings_close('chat_clicked');
+                    }, 500);
+                }
+                
+                function greetings_open() {
+                    console.log('Greetings opened:');
+                    $('.ht_ctc_chat_greetings_box').show('slow'); 
+                }
+                
+                // Check if the greetings box exists
+                if ($('.ht_ctc_chat_greetings_box').length) {
+                
+                    // Toggle the greetings dialog
+                    $(document).on('click', '.ht_ctc_chat_style ', function () {
+                        const greetingsBox = $('.ht_ctc_chat_greetings_box');
+                        if (greetingsBox.is(':visible')) {
+                            greetings_close();
+                        } else {
+                            greetings_open();
+                        }
+                    });   
+
+                    // Close button - greetings dialog
+                    $(document).on('click', '.ctc_greetings_close_btn', function () {
+                        greetings_close(); 
+                    });
+                }
+
+                function demo_online_badge() {
+                    if ($('.g_header_online_status').is(':checked')) {
+                        console.log('g_header_online_status checked');
+                        $('.for_greetings_header_image_badge').addClass('g_header_badge_online').show();
+                    } else {
+                        console.log('g_header_online_status unchecked');
+                        $('.for_greetings_header_image_badge').removeClass('g_header_badge_online').hide();
+                    }
+                }
+                demo_online_badge();
+
+                // Bind the function to the checkbox change event
+                $(document).on('change', '.g_header_online_status', function () {
+                    demo_online_badge();
+                });
+
+                $(document).on('click', '.ht_ctc_chat_greetings_box_link', function (e) {
+                    console.log('ht_ctc_chat_greetings_box_link');
+                    e.preventDefault();
+
+                    ht_ctc_link();
+                    greetings_close_500();
+                    /*
+                     / workout that if user clicks optin once it want to save in db(local storage) and dont show again and again.. 
+                     / once optin settings are changed the optin details in local storage need to reset..
+                    */
+
+                    //  if (document.querySelector('#ctc_opt')) {
+    
+                    //     if ($('#ctc_opt').is(':checked')) {
+                    //         console.log('optin - checkbox checked');
+                    //         ht_ctc_link();
+                    //         // close greetings dialog
+                    //         greetings_open();
+                    //     } else {
+                    //         console.log('animate option checkbox');
+                    //         $('.ctc_opt_in').show().fadeOut('1').fadeIn('1');
+                    //     }
+                    // } else {
+                    //     ht_ctc_link();
+                    //     greetings_close_500();
+                    // }
+                    // document.dispatchEvent(
+                    //     new CustomEvent("ht_ctc_event_greetings")
+                    // );
+
+                });
 
                 
-            }
+                // Automatically handle opt-in when checkbox is clicked
+    
+                $(document).on('change', '#ctc_opt', function () {
+    
+                    if ($(this).is(':checked')) {
+    
+                        console.log('Checkbox checked - automatic opt-in');
+    
+                        ht_ctc_link();
+    
+                        greetings_close();
+    
+                    }
+    
+                });
+    
 
+            }
+            // #end greetings page
 
             /**
              * no live demo
              */
             var no_demo_timeoutId;
-            $(".ctc_no_demo").on("change paste keyup", function (e) {
+            $(".ctc_no_demo").on("change paste keyup", function() {
                 console.log('no live demo for this...');
-
                 hide_bottom_right_descriptions();
-
                 clearTimeout(no_demo_timeoutId);
 
-                // ctc_no_demo_notice
+                // Show notice and auto-hide after 5 seconds
                 $('.ctc_no_demo_notice').hide().fadeIn(500);
-
-                // auto hide after 5 sec
                 no_demo_timeoutId = setTimeout(() => {
                     $('.ctc_no_demo_notice').hide(120);
+                    $('.ctc_ad_links').show(120);
                 }, 5000);
-
             });
 
 

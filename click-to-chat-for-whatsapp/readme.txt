@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
 Requires at least: 4.7
-Tested up to: 6.7.2
+Tested up to: 6.8.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.20
+Stable tag: 4.21
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -544,6 +544,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.21 =
+* Fix: Resolved issue where phone numbers with +1888 prefix were not being saved in settings.
 
 = 4.20 =
 * New: Added {{price}} variable for WooCommerce product pages to display price with currency symbol, thousand separator, and decimal separator.

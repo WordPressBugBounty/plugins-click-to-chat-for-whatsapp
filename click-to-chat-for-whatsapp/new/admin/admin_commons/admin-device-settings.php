@@ -104,7 +104,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 
 <!-- Desktop position -->
 <!-- side - 1 -->
-<p class="description ht_ctc_admin_desktop ht_ctc_subtitle"><?php _e( 'Position to Place', 'click-to-chat-for-whatsapp' ); ?><span class="not_samesettings"><?php _e( ' (Desktop)', 'click-to-chat-for-whatsapp' ); ?></span>:</p>
+<p class="description ht_ctc_admin_desktop ht_ctc_subtitle" id="position_to_place"><?php _e( 'Position to Place', 'click-to-chat-for-whatsapp' ); ?><span class="not_samesettings"><?php _e( ' (Desktop)', 'click-to-chat-for-whatsapp' ); ?></span>:</p>
 <div class="row ht_ctc_admin_desktop" style="display:flex; margin-top:16px;">
     <br>
     <div class="input-field col s6">

@@ -152,7 +152,7 @@ class HT_CTC_Chat_Greetings {
             $g_box_classes .= ('left' == $g_m_position_r_l) ? ' ctc_m_p_left ' : ' ctc_m_p_right ';
         }
 
-
+        //  path to greetings template
         $ht_ctc_greetings['path'] = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/' . $ht_ctc_greetings['greetings_template']. '.php';
 
         // filter hook to update values... 
@@ -214,7 +214,8 @@ class HT_CTC_Chat_Greetings {
 
         /**
          * 
-         * for inside close button - to the close button, ctc_greetings_close_btn added background-color: unset !important; border-radius:50%; for backword compatibility i.e. user changed by adding css.. 
+         * for inside close button - to the close button, ctc_greetings_close_btn added background-color: unset !important; border-radius:50%; for backword compatibility i.e. user changed by adding css..
+         * z-index: 9 added to fix style-5 icon mobile layer with greetings dialog 
          */
         if ( is_file( $ht_ctc_greetings['path'] ) ) {
 

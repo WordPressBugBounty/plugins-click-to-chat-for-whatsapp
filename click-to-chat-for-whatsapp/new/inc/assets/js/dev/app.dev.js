@@ -813,8 +813,8 @@
                 pre_filled = encodeURIComponent(decodeURI(pre_filled));
             } catch (e) { }
 
-            if ('' == number) {
-                console.log('no number');
+            if ('' == number && (!ctc.custom_url_m || ctc.custom_url_m === '') && (!ctc.custom_url_d || ctc.custom_url_d === '')) {
+                console.log('No number and no custom URL available');
                 $(".ht-ctc-chat").html(no_num);
                 return;
             }

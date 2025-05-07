@@ -1135,7 +1135,7 @@ class HT_CTC_Admin_Other_Settings {
             'json' => 'JSON'
         );
 
-        $webhook_format = ( isset( $options['webhook_format']) ) ? esc_attr( $options['webhook_format'] ) : 'string';
+        $webhook_format = ( isset( $options['webhook_format']) ) ? esc_attr( $options['webhook_format'] ) : 'json';
         ?>
 
         <div class="row ctc_side_by_side">

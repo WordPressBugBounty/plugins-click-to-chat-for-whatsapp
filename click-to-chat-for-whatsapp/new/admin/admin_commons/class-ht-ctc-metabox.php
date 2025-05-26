@@ -10,6 +10,36 @@ if ( ! class_exists( 'HT_CTC_MetaBox' ) ) :
 
 class HT_CTC_MetaBox {
 
+	/**
+	 * constructor
+	 */
+	public function __construct() {
+		// call hooks
+		$this->hooks();
+	}
+
+	public function hooks() {
+
+		/**
+		 * Initialize plugin hooks:
+		 * - If 'disable_page_level_settings' is not set in 'ht_ctc_othersettings' option,
+		 *   then:
+		 *   - Add a meta box to all posts and pages.
+		 *   - Save meta box data when the post is saved.
+		 */
+
+		$othersettings = get_option('ht_ctc_othersettings');
+		
+		// add meta box
+		add_action( 'add_meta_boxes', array($this, 'meta_box') );
+		
+		if ( ! isset($othersettings['disable_page_level_settings']) ) {
+			// save meta box
+			add_action( 'save_post', array($this, 'save_meta_box') );
+        }
+
+	}
+
 
 	/**
 	 * add meta box
@@ -42,6 +72,15 @@ class HT_CTC_MetaBox {
 		wp_nonce_field( 'ht_ctc_page_meta_box', 'ht_ctc_page_meta_box_nonce' );
 		$os = get_option( 'ht_ctc_othersettings' );
 		$ht_ctc_pagelevel = get_post_meta( $current_post->ID, 'ht_ctc_pagelevel', true );
+		$othersettings = get_option('ht_ctc_othersettings');
+
+		if ( isset($othersettings['disable_page_level_settings']) ) {
+
+			?>
+				<p class="description">Enable page-level settings on the Click to Chat -> Other Settings page.</p>
+			<?php
+			return;
+        }
 
 		?>
 		<p class="description">Change values at <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">Page level</a></p>
@@ -220,9 +259,6 @@ class HT_CTC_MetaBox {
 
 }
 
-$ht_ctc_metabox = new HT_CTC_MetaBox();
-
-add_action( 'add_meta_boxes', array($ht_ctc_metabox, 'meta_box') );
-add_action( 'save_post', array($ht_ctc_metabox, 'save_meta_box') );
+new HT_CTC_MetaBox();
 
 endif; // END class_exists check

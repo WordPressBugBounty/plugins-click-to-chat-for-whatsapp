@@ -1108,7 +1108,7 @@ class HT_CTC_Admin_Other_Settings {
             <div class="input-field col s6">
                 <input name="<?= $dbrow; ?>[zindex]" value="<?= $zindex ?>" min="0" id="zindex" type="number">
                 <label for="zindex"><?php _e( 'z-index', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( 'Position of the element along with z-index. stacking the elements', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p class="description"><?php _e( 'z-index value for the chat widget to ensure proper stacking and visibility', 'click-to-chat-for-whatsapp' ); ?><a href="https://holithemes.com/plugins/click-to-chat/z-index/" target="_blank"> - more info</a></p>
             </div>
         </div>        
 
@@ -1153,7 +1153,7 @@ class HT_CTC_Admin_Other_Settings {
                     ?>
                 </select>
                 <label>Webhook data format</label>
-                <p class="description">Stringify JSON works. If any application need to change - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/webhook-data-format/">more info</a></p>
+                <p class="description">JSON works. If any application need to change - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/webhook-data-format/">more info</a></p>
             </div>
         </div>
 
@@ -1330,6 +1330,24 @@ class HT_CTC_Admin_Other_Settings {
                         <p class="description">If the chat widget is not working with the wp_footer hook, change to get_footer or wp_head - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/chat-load-hook/">more info</a></p>
                     </div>
                 </div>
+            </div>
+        </details>
+
+        <?php
+        // disable page level settings
+        $disable_page_level_settings_checkbox = ( isset( $options['disable_page_level_settings']) ) ? esc_attr( $options['disable_page_level_settings'] ) : '';
+        ?>
+
+        <details class="ctc_details">
+            <summary style="cursor:pointer;">Disable Page level settings</summary>
+            <div class="m_side_15">
+                <p class="description">If you want to disable page level settings, check this option</p>
+                <p style="margin-bottom:12px;">
+                    <label>
+                        <input name="ht_ctc_othersettings[disable_page_level_settings]" type="checkbox" value="1" <?php checked( $disable_page_level_settings_checkbox, 1 ); ?> id="disable_page_level_settings" />
+                        <span>Disable Page level settings</span>
+                    </label>
+                </p>
             </div>
         </details>
 

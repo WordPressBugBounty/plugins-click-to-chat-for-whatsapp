@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.8.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.21
+Stable tag: 4.22
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -544,6 +544,10 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.22 =
+* The Custom Image widget now automatically uses the image file name as the alt attribute
+* Settings to disable page-level settings.
 
 = 4.21 =
 * Fix: Resolved issue where phone numbers with +1888 prefix were not being saved in settings.

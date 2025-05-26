@@ -66,6 +66,9 @@ if ( ! function_exists('ht_ctc_wp_sanitize_text_editor') ) {
 
 		if ( !empty( $value) && '' !== $value ) {
 
+			// Decode first to neutralize any previous encoding
+            $value = html_entity_decode($value);
+
 			if ( function_exists('ht_ctc_wp_encode_emoji') ) {
 				$value = ht_ctc_wp_encode_emoji( $value );
 			}
@@ -89,9 +92,12 @@ if ( ! function_exists('ht_ctc_wp_sanitize_text_editor') ) {
 
 			$new_value = wp_kses($value, $allowed_html);
 			// htmlentities this $new_value (double security ..)
+
 			$new_value = htmlentities( $new_value );
+			// or
+            // $new_value = htmlentities($new_value, ENT_QUOTES | ENT_HTML5, 'UTF-8');			
 			
-			// (may not needed - but extra security)
+			// (may not needed - but extra security - encoding and sanitizing)
 			if ( function_exists('sanitize_textarea_field') ) {
 				$new_value = sanitize_textarea_field( $new_value );
 			} else {

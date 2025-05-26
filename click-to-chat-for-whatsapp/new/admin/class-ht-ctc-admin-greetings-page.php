@@ -46,28 +46,7 @@ class HT_CTC_Admin_Greetings {
 
         if ( true == $options_page || true == $get_url ) {
             
-
-            /**
-             * 
-             * fallback_values: 
-             *  created this because 
-             *   options_sanitize runs mulitiple times if settings field not exist
-             *   https://core.trac.wordpress.org/ticket/21989
-             *   due to this htmlentities calling twice at options_sanitize and changes values..  
-             *   but untill user save the first settings, fallback values have to display at settings field.. for easy to understand
-             *   so here we added option with key fallback_values - as need to load fallback values to display in input fileds as user not saved any values..
-             */
-            $ht_ctc_greetings_options = get_option('ht_ctc_greetings_options');
-            if ( isset($ht_ctc_greetings_options['greetings_template']) || isset($ht_ctc_greetings_options['fallback_values']) ) {
-            } else {
-                $values = array(
-                    'fallback_values' => 'yes',
-                );
-                add_option('ht_ctc_greetings_options', $values);
-            }
-
-
-
+            // load settings page if option page or greetings settings page
             add_action('admin_init', [$this, 'settings'] );
         }
 
@@ -605,6 +584,7 @@ class HT_CTC_Admin_Greetings {
             'woo_pre_filled'
         ];
 
+        // tinyMCE editor values.
         $editor = [
             'header_content',
             'main_content',

@@ -14,6 +14,8 @@ $s_99_desktop_img_width = isset( $s_99_options['s99_desktop_img_width'] ) ? esc_
 $s_99_mobile_img_height = isset( $s_99_options['s99_mobile_img_height'] ) ? esc_attr( $s_99_options['s99_mobile_img_height'] ) : '40px';
 $s_99_mobile_img_width = isset( $s_99_options['s99_mobile_img_width'] ) ? esc_attr( $s_99_options['s99_mobile_img_width'] ) : '40px';
 
+$filename = $call_to_action;
+
 // img - url, width, height based on device
 $s_99_img_css = "";
 
@@ -38,6 +40,13 @@ if ( '' == $s_99_own_image ) {
     $s_99_own_image = plugins_url( './new/inc/assets/img/whatsapp-logo.svg', HT_CTC_PLUGIN_FILE );
 }
 
+
+try {
+    $filename = pathinfo($s_99_own_image, PATHINFO_FILENAME);
+} catch (Exception $e) {
+    $filename = $call_to_action;
+}
+
 ?>
 
-<img class="own-img ctc-analytics ctc_s_99 ctc_cta" title="<?= $call_to_action ?>" id="style-99" src="<?= $s_99_own_image ?>" style="<?= $s_99_img_css ?>" alt="<?= $call_to_action ?>">
+<img class="own-img ctc-analytics ctc_s_99 ctc_cta" title="<?= $call_to_action ?>" id="style-99" src="<?= $s_99_own_image ?>" style="<?= $s_99_img_css ?>" alt="<?= $filename ?>">

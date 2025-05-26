@@ -353,11 +353,9 @@ class HT_CTC_Admin_Demo {
             $g_settings_fallback_values = $default_greetings->g_settings;
             
         }
-        
-        $greetings = get_option('ht_ctc_greetings_options', $greetings_fallback_values );
-        $greetings_settings = get_option('ht_ctc_greetings_settings', $g_settings_fallback_values);
 
-
+        $greetings = get_option( 'ht_ctc_greetings_options', $greetings_fallback_values );
+        $greetings_settings = get_option( 'ht_ctc_greetings_settings', $g_settings_fallback_values );
 
         $ht_ctc_greetings = array();
         $demo_page = 'yes';

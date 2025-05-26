@@ -149,7 +149,6 @@
                         console.log('custom link');
                         base_url = demo_var.custom_url_m;
                     }
-
                 } else {
                     // desktop
                     console.log('-- desktop --');
@@ -1356,6 +1355,7 @@
                 $('.ctc_demo_style .ht-ctc-cta-hover').hide(100);
                 // $(this).find('.ht-ctc-cta-hover').hide(100);
             });
+
 
             function showHideDemo() {
                 const showDemoButton = $('.ctc_ad_show_demo');

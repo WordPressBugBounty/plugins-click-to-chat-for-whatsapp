@@ -74,7 +74,6 @@ $othersettings = get_option('ht_ctc_othersettings');
                             <p class="description">🌐 Dynamic variables for Webhooks</p>
                             <p class="description">🔗 Custom URL</p>
                             <p class="description">📍 Fixed/Absolute Position Types</p>
-                            <p class="description">🛒 Add WhatsApp to WooCommerce Product Pages</p>
                             <p class="description">👋 Greetings Actions:</p>
                             <p class="description">&emsp;⏰ Time-based</p>
                             <p class="description">&emsp;🖱️ Scroll-based</p>

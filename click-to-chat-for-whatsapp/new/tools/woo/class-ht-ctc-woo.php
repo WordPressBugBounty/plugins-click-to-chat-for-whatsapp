@@ -198,7 +198,18 @@ class HT_CTC_WOO_Pages {
         $woo_options = get_option('ht_ctc_woo_options');
         $chat = get_option('ht_ctc_chat_options');
         $page_id = get_the_ID();
-        $ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );
+        $othersettings = get_option('ht_ctc_othersettings');
+
+
+        // page level
+        $ht_ctc_pagelevel = [];
+
+        // is set page_level_settings disabled
+        if ( ! isset($othersettings['disable_page_level_settings']) ) {
+            // get post meta with ht_ctc_pagelevel key
+            $ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );
+        }
+
 
         $type = 'chat';
         $calling_from = 'woo_page';
@@ -341,8 +352,14 @@ class HT_CTC_WOO_Pages {
                 }
 
                 $page_id = get_the_ID();
-                $ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );
 
+                // page level
+                $ht_ctc_pagelevel = [];
+
+                // is set page_level_settings disabled
+                if ( ! isset($othersettings['disable_page_level_settings']) ) {
+                    $ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );
+                }
 
                 // pre-filled
                 if ( isset( $woo_options['woo_pre_filled'] ) && '' !== $woo_options['woo_pre_filled'] ) {

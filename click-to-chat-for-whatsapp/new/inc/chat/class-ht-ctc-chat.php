@@ -145,6 +145,11 @@ class HT_CTC_Chat {
         // page level
         $ht_ctc_pagelevel = [];
 
+        // if page level settings are disabled from other settings
+        if ( isset($othersettings['disable_page_level_settings']) ) {
+            // page level settings disabled
+            $is_page_level_settings = 'no';
+        }
 
         if ( 'no' !== $is_page_level_settings ) {
             $ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );

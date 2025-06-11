@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.8.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.22
+Stable tag: 4.23
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -544,6 +544,13 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.23 =
+🚨 Important Update
+* ✨ New Feature: Greetings Dialog can now appear as a modal for better visibility and UX.
+* 🛠️ Fix: Resolved an issue where the Greetings Dialog was not displaying correctly when the base widget was positioned at the top.
+* 🛠️ Fix: On iPhone Chrome, the Share feature now opens WhatsApp correctly without opening a new tab.
+* 🔧 Improvement: When a WhatsApp number is not set, the admin notice is now displayed using a more reliable and secure method — instead of using JS .html().
 
 = 4.22 =
 * The Custom Image widget now automatically uses the image file name as the alt attribute

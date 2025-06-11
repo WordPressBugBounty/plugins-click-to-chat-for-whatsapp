@@ -316,6 +316,17 @@ class HT_CTC_Admin_Greetings {
                         'parent_class' => 'pr_g_device ctc_no_demo',
                     ],
                     [
+                        'title' => 'Greetings dialog Position',
+                        'db' => 'g_position',
+                        'template' => 'select',
+                        'list' => [
+                            'next' => 'Next to the Chat Button',
+                            'modal' => 'Modal Dialog (Centered)',
+                        ],
+                        'parent_class' => 'pr_g_position ctc_no_demo',
+                        'description' => "<strong>Next to the Chat Button</strong>: Default - positions the greetings near the chat icon<br><strong>Modal Dialog</strong>: Displays at the center of the screen with a dimmed background.<br><em>Note:</em> Modal option is in beta. <a target='_blank' href='https://holithemes.com/plugins/click-to-chat/greetings-position'>Learn more</a>",
+                    ],
+                    [
                         'title' => __( 'Greetings dialog Size', 'click-to-chat-for-whatsapp'),
                         'db' => 'g_size',
                         'template' => 'select',

@@ -1341,7 +1341,7 @@ class HT_CTC_Admin_Other_Settings {
         <details class="ctc_details">
             <summary style="cursor:pointer;">Disable Page level settings</summary>
             <div class="m_side_15">
-                <p class="description">If you want to disable page level settings, check this option</p>
+                <p class="description">If checked, this will disable the ability to configure chat settings for individual pages.</p>
                 <p style="margin-bottom:12px;">
                     <label>
                         <input name="ht_ctc_othersettings[disable_page_level_settings]" type="checkbox" value="1" <?php checked( $disable_page_level_settings_checkbox, 1 ); ?> id="disable_page_level_settings" />

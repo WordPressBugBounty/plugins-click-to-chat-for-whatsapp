@@ -231,18 +231,6 @@ class HT_CTC_Chat {
         $ht_ctc_chat['display_mobile'] = (isset($options['display_mobile'])) ? esc_attr($options['display_mobile']) : 'show';
         $ht_ctc_chat['display_desktop'] = (isset($options['display_desktop'])) ? esc_attr($options['display_desktop']) : 'show';
 
-        // number not added and is administrator
-        $no_number = '';
-        
-        if ( '' == $ht_ctc_chat['number'] ) {
-            $no_number = "<p style='background-color:#ffffff; margin:0; border:1px solid #fbfbfb; padding:7px; border-radius:4px; box-shadow:5px 10px 8px #888888;'>No WhatsApp Number Found!</p>";
-            if ( current_user_can('administrator') ) {
-                $admin_url = admin_url( 'admin.php?page=click-to-chat' );
-                $admin_link = "<a href='$admin_url'>WhatsApp number</a>";
-                $no_number = "<p style='background-color:#ffffff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888888;'>No WhatsApp Number Found!<br><small style='color:red;'>Admin Notice:<br></small><small>Add $admin_link at pluign Settings<br>If already added, <strong>clear the Cache</strong> and try.<br>If still an issue, please contact plugin developers</small></p>";
-            }
-        }
-
         // notification badge
         $ht_ctc_chat['notification_badge'] = (isset($othersettings['notification_badge'])) ? 'show' : 'hide';
         $ht_ctc_chat['notification_count'] = (isset($othersettings['notification_count'])) ? esc_attr($othersettings['notification_count']) : '1';
@@ -262,8 +250,10 @@ class HT_CTC_Chat {
         // schedule
         $ht_ctc_chat['schedule'] = 'no';
 
-        $zindex = (isset($othersettings['zindex'])) ? esc_attr($othersettings['zindex']) : '';
-        $zindex = ('' == $zindex) ? '99999999' : $zindex;
+        // z-index. have to be numeric value.
+        $zindex_raw = isset($othersettings['zindex']) ? $othersettings['zindex'] : '';
+        $zindex = (is_scalar($zindex_raw) && is_numeric(trim($zindex_raw))) ? trim($zindex_raw) : '99999999';
+        $zindex = esc_attr($zindex);
 
         $analytics = (isset($othersettings['analytics'])) ? esc_attr($othersettings['analytics']) : 'all';
 
@@ -337,7 +327,7 @@ class HT_CTC_Chat {
         // @uses at styles.
         $is_same_side = 'yes';
 
-        // if desktop and mobile not same settings and not same position side
+        // if desktop and mobile not same settings and not same position side right/left
         if ( !isset( $options['same_settings']) && $side !== $mobile_side ) {
             $is_same_side = 'no';
             $ht_ctc_chat['class_names'] .= " ctc_side_positions ";
@@ -517,6 +507,11 @@ class HT_CTC_Chat {
         }
         $ctc['pixel_event_name'] = $pixel_event_name;
 
+        // if no number content is added. i.e. if no number is set in the plugin settings.
+        if ( '' == $ht_ctc_chat['number'] ) {
+            $ctc['no_number'] = 'No WhatsApp Number Found!';
+        }
+
         $ctc = apply_filters( 'ht_ctc_fh_ctc', $ctc );
 
         // data-attribute - data-settings 
@@ -658,6 +653,33 @@ class HT_CTC_Chat {
         }
 
 
+        // if no number is set then only load the message.
+        if ( '' == $ht_ctc_chat['number'] ) {
+            ?>
+            <div class="ctc-no-number-message" style="display:none; <?= $position ?> z-index: <?= $zindex + 5 ?>; max-width:410px; background-color:#fff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888;">
+                <span onclick="this.closest('.ctc-no-number-message').style.display='none';" style="position:absolute; top:5px; right:5px; background:transparent; border:none; font-size:18px; line-height:1; cursor:pointer;">&times;</span>
+                <p style="margin:0;">No WhatsApp Number Found!</p>
+                <?php
+                // if admin user then load admin notice to add number.
+                if ( current_user_can('administrator') ) {
+                    $admin_url  = esc_url( admin_url( 'admin.php?page=click-to-chat' ) );
+                    ?>
+                    <p style="margin:0;">
+                        <small style="color:red;">Admin Notice:</small><br>
+                        <small>
+                            Add <a href="<?= esc_url( $admin_url ) ?>">WhatsApp number</a> at plugin settings.<br>
+                            If already added, <strong>clear the cache</strong> and try again.<br>
+                            If still an issue, please contact plugin developers.
+                        </small>
+                    </p>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+        }
+
+
         // load style
         if ( is_file( $path ) ) {
             do_action('ht_ctc_ah_before_fixed_position');
@@ -695,10 +717,8 @@ class HT_CTC_Chat {
             
 
             // if js var not available, dont depend on this element ht_ctc_chat_data
-            // no_number may be needed.
             ?>
             <span class="ht_ctc_chat_data" 
-                data-no_number="<?= $no_number ?>"
                 data-settings="<?= $ht_ctc_settings ?>" 
             ></span>
             <?php

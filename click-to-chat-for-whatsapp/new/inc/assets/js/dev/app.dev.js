@@ -64,7 +64,6 @@
         //     new CustomEvent("ht_ctc_fn_all", { detail: { ht_ctc_storage, ctc_setItem, ctc_getItem } })
         // );
         
-        chat_data();
         start();
 
         /**
@@ -117,18 +116,6 @@
             console.log(ctc_values);
         }
 
-        function chat_data() {
-
-            // if no num
-            var chat_data = document.querySelector('.ht_ctc_chat_data');
-
-            if (chat_data) {
-                no_num = $(".ht_ctc_chat_data").attr('data-no_number');
-                // remove the element
-                chat_data.remove();
-            }
-
-        }
 
         // start
         function start() {
@@ -326,9 +313,15 @@
             if ('user_opened' == message) {
                 ctc_setItem('g_user_action', message);
             }
+
+            createModalBackdrop();
+
         }
 
         function greetings_close_500() {
+
+            closeModalBackdrop();
+
             setTimeout(() => {
                 greetings_close('chat_clicked');
             }, 500);
@@ -337,6 +330,8 @@
         function greetings_close(message = 'close') {
             console.log('Greetings close: ' + message);
             
+            closeModalBackdrop();
+
             if ('element' == message) {
                 $('.ht_ctc_chat_greetings_box').hide(70);
             } else {
@@ -348,6 +343,51 @@
             if ('user_closed' == message) {
                 ctc_setItem('g_user_action', message);
             }
+        }
+
+        
+        /**
+         * create modal backdrop
+         * 
+         * ht_ctc_modal_open - for scroll lock by adding class to body with css overflow: hidden;
+         */
+        function createModalBackdrop() {
+
+
+            // if modal is enabled. if class exist .ctc_greetings_modal
+            if (document.querySelector('.ctc_greetings_modal')) {
+
+                console.log('ctc_greetings_modal exists: createModalBackdrop');
+
+                // Create backdrop if not exists
+                if (!document.querySelector('.ht_ctc_modal_backdrop')) {
+                    console.log('ht_ctc_modal_backdrop not exists creating element .ht_ctc_modal_backdrop');
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'ht_ctc_modal_backdrop';
+                    document.body.appendChild(backdrop);
+
+                    // backdrop.addEventListener('click', greetings_close);
+                    backdrop.addEventListener('click', function () {
+                        console.log('backdrop clicked');
+                        greetings_close('user_closed');
+                    });
+                }
+                // document.body.classList.add('ht_ctc_modal_open');
+            }
+
+        }
+
+        /**
+         * close modal backdrop
+         */
+        function closeModalBackdrop() {
+            // Remove backdrop if exists
+            const modalBackdrop = document.querySelector('.ht_ctc_modal_backdrop');
+            if (modalBackdrop) {
+                console.log('ht_ctc_modal_backdrop exists: closeModalBackdrop');
+                modalBackdrop.remove();
+            }
+            // document.body.classList.remove('ht_ctc_modal_open');
         }
 
         // display settings - Fixed position style
@@ -815,7 +855,12 @@
 
             if ('' == number && (!ctc.custom_url_m || ctc.custom_url_m === '') && (!ctc.custom_url_d || ctc.custom_url_d === '')) {
                 console.log('No number and no custom URL available');
-                $(".ht-ctc-chat").html(no_num);
+                if (ctc.no_number) {
+                    const noNumberEl = document.querySelector('.ctc-no-number-message');
+                    if (noNumberEl) {
+                        noNumberEl.style.display = 'block';
+                    }
+                }
                 return;
             }
 

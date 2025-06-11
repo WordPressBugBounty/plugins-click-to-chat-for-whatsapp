@@ -50,6 +50,12 @@ class HT_CTC_Chat_Greetings {
         $ht_ctc_greetings['call_to_action'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_greetings['call_to_action'], 'Click to Chat for WhatsApp', 'greetings_call_to_action' );
         $ht_ctc_greetings['opt_in'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_greetings['opt_in'], 'Click to Chat for WhatsApp', 'greetings_opt_in' );
 
+        // greetings dialog window type - next (default behaviour) or modal. next: next to button to open dialog, modal: open dialog in modal style
+        $g_position = ( isset($greetings_settings['g_position']) ) ? esc_attr( $greetings_settings['g_position'] ) : 'next';
+
+        // greetings dialog size. s: small, m: mid, l: large
+        $g_size = ( isset($greetings_settings['g_size']) ) ? esc_attr( $greetings_settings['g_size'] ) : 's';
+
         $ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings_start', $ht_ctc_greetings );
 
         $page_id = get_the_ID();
@@ -132,8 +138,11 @@ class HT_CTC_Chat_Greetings {
 
         // greetings dialog position based on chat icon/button position
         $g_position_r_l = ( isset( $chat['side_2']) ) ? esc_attr( $chat['side_2'] ) : 'right';
-
         $g_m_position_r_l = ( isset( $chat['mobile_side_2']) ) ? esc_attr( $chat['mobile_side_2'] ) : 'right';
+
+        $g_position_t_b = ( isset( $chat['side_1']) ) ? esc_attr( $chat['side_1'] ) : 'bottom';
+        // $g_m_position_t_b = ( isset( $chat['mobile_side_1']) ) ? esc_attr( $chat['mobile_side_1'] ) : 'bottom';
+
 
         // is rtl page
         $rtl_page = "";
@@ -146,8 +155,14 @@ class HT_CTC_Chat_Greetings {
 
         $g_close_button_styles = "position:absolute; top:0; $g_close_button_position:0; cursor:pointer; padding:5px; margin:4px; border-radius:50%; background-color: unset !important; z-index: 9999; line-height: 1;";
 
-        // if desktop and mobile not same settings and not same position side
-        if ( !isset( $chat['same_settings']) && $g_position_r_l !== $g_m_position_r_l ) {
+        /**
+         * If desktop and mobile have different settings and different position (left/right)
+         * If greetings dialog is set to 'next' position and if greetings dialog size is 'small' (for 'mid' and 'large' sizes, position adjustments are not required)
+         * Then add a class to adjust the greetings position specifically for mobile devices.
+         * By default, greetings are positioned for desktop; this additional class fine-tunes it for mobile.
+         * && 's' == $g_size
+         */
+        if ( !isset( $chat['same_settings']) && $g_position_r_l !== $g_m_position_r_l && 'modal' !== $g_position ) {
             // $g_box_classes .= ('left' == $g_position_r_l) ? ' ctc_d_p_left ' : ' ctc_d_p_right ';
             $g_box_classes .= ('left' == $g_m_position_r_l) ? ' ctc_m_p_left ' : ' ctc_m_p_right ';
         }
@@ -185,12 +200,7 @@ class HT_CTC_Chat_Greetings {
             $box_shadow = '0px 0px 5px 1px rgba(0,0,0,.14)';
         }
 
-        /**
-         * greetings dialog size
-         * ctc_m_full_width: class to make mobile full width for medium and large
-         */
-        $g_size = ( isset($greetings_settings['g_size']) ) ? esc_attr( $greetings_settings['g_size'] ) : 's';
-
+        // ctc_m_full_width: class to make mobile full width for medium and large
         $min_width = '300px';
         $ctc_m_full_width = '';
         
@@ -203,13 +213,41 @@ class HT_CTC_Chat_Greetings {
             $ctc_m_full_width = 'ctc_m_full_width';
         }
         
-
-
         $box_layout_bg_color = '';
         if ( 'greetings-1' == $ht_ctc_greetings['greetings_template'] || 'greetings-2' == $ht_ctc_greetings['greetings_template'] ) {
         } else {
             $box_layout_bg_color = 'background-color: #ffffff;';
         }
+
+        
+        // if modal then add class ctc_g_modal, if next then add ctc_g_next to greetings dialog
+        $ctc_g_position = '';
+        $greetings_box_styles = '';
+        $greetings_box_layout_styles = '';
+
+        if ( 'modal' === $g_position ) {
+            $ctc_g_position = 'ctc_greetings_modal';
+            // different styles for modal dialog. unset things.
+            $ctc_m_full_width = '';
+            $greetings_box_styles = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); max-height: 90vh;";
+            $greetings_box_layout_styles = "overflow-y:auto; $box_layout_bg_color ";
+            $box_shadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+        } else {
+            // next: as now else is consider as next only. instead of adding elseif ( 'next' === $g_position )
+            $ctc_g_position = 'ctc_greetings_next';
+            $greetings_box_styles = "position: absolute; $g_position_r_l: 0px;";
+            $greetings_box_layout_styles = "max-height: 84vh; overflow-y:auto; $box_layout_bg_color ";
+            
+            // if base widget from top position display greeting below to the base widget. desktop is enough, in mobile it is full width and no need to set. 
+            // (if g_size is small still greeting dialog above the base widget - if desktop base widget is at bottom and mobile base widget is at top)
+            if ( 'top' == $g_position_t_b ) {
+                // margin-top: 60px; to display below the button. 18px + chat base icon approx + some space
+                $greetings_box_styles .= "top: 100%; bottom: auto; margin-top: 65px;";
+            } else {
+                $greetings_box_styles .= "bottom: 0px;";
+            }
+        }
+
 
 
         /**
@@ -231,9 +269,9 @@ class HT_CTC_Chat_Greetings {
             ?>
             <div style="position: relative; bottom: 18px; cursor: auto; z-index:9;" class="ht_ctc_greetings <?= $ctc_m_full_width ?>">
 
-                <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?>" style="display: none; position: absolute; bottom: 0px; <?= $g_position_r_l ?>: 0px; min-width: <?= $min_width ?>; max-width: 420px; ">
+                <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?>  <?= $ctc_g_position ?>" style="display: none; <?= $greetings_box_styles ?> min-width: <?= $min_width ?>; max-width: 420px; ">
 
-                    <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?= $box_layout_bg_color ?> box-shadow: <?= $box_shadow ?>; border-radius:8px;clear:both;">
+                    <div class="ht_ctc_chat_greetings_box_layout" style="<?= $greetings_box_layout_styles ?>  box-shadow: <?= $box_shadow ?>; border-radius:8px; clear:both;">
 
                         <span style="<?= $g_close_button_styles ?>" class="ctc_greetings_close_btn">
                             <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">

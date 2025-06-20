@@ -72,7 +72,7 @@ class HT_CTC_Admin_Demo {
          *  -> if _GET have &demo=active 
          *  set ht_ctc_admin_demo_active to no
          */
-        if ( 'click-to-chat' == $this->get_page  || 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-customize-styles' == $this->get_page) {
+        if ( 'click-to-chat' == $this->get_page  || 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-customize-styles' == $this->get_page ) {
             
             // check if admin demo is active.. (added inside to run only in ctc admin pages..)
             $demo_active = get_option( 'ht_ctc_admin_demo_active');
@@ -354,7 +354,9 @@ class HT_CTC_Admin_Demo {
             
         }
 
+        // ht_ctc_greetings_options
         $greetings = get_option( 'ht_ctc_greetings_options', $greetings_fallback_values );
+        // ht_ctc_greetings_settings
         $greetings_settings = get_option( 'ht_ctc_greetings_settings', $g_settings_fallback_values );
 
         $ht_ctc_greetings = array();

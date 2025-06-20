@@ -20,6 +20,9 @@ class HT_CTC_DB2 {
 
     public $os = '';
 
+    // ot - ht_ctc_one_time
+    public $ot = '';
+
     public function __construct() {
         $this->db();
     }
@@ -32,10 +35,17 @@ class HT_CTC_DB2 {
     public function db() {
 
         $this->os = array();
+        $this->ot = array();
+
         $ht_ctc_plugin_details = get_option('ht_ctc_plugin_details');
+        $ht_ctc_one_time = get_option('ht_ctc_one_time');
 
         if ( is_array($ht_ctc_plugin_details) ) {
             $this->os = $ht_ctc_plugin_details;
+        }
+
+        if ( is_array($ht_ctc_one_time) ) {
+            $this->ot = $ht_ctc_one_time;
         }
 
 
@@ -107,7 +117,7 @@ class HT_CTC_DB2 {
         }
 
         // new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $values['same_settings'] = '1';
             $values['display_desktop'] = 'show';
             $values['display_mobile'] = 'show';
@@ -165,7 +175,7 @@ class HT_CTC_DB2 {
         }
 
         // new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $values['same_settings'] = '1';
             $values['display_desktop'] = 'show';
             $values['display_mobile'] = 'show';
@@ -224,7 +234,7 @@ class HT_CTC_DB2 {
         );
 
         // new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $style_1['s1_add_icon'] = '1';
         }
 
@@ -260,7 +270,7 @@ class HT_CTC_DB2 {
     //     );
 
     //     // new install
-    //     if ( !isset ( $this->os['version'] ) ) {
+    //     if ( !isset ( $this->ot['version'] ) ) {
     //         $style_2['cta_type'] = 'hover';
     //         $style_2['cta_font_size'] = '15px';
     //     } else {
@@ -293,8 +303,7 @@ class HT_CTC_DB2 {
             
         );
 
-        // @since 3.0 cta
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $style_3['cta_type'] = 'hover';
             $style_3['cta_font_size'] = '13px';
         } else {
@@ -354,7 +363,7 @@ class HT_CTC_DB2 {
         );
 
         // new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $style_3_1['cta_type'] = 'hover';
             $style_3_1['cta_font_size'] = '15px';
             $style_3_1['s3_img_size'] = '36px';
@@ -493,7 +502,7 @@ class HT_CTC_DB2 {
         );
 
         // if new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $style_7['cta_type'] = 'hover';
         }
 
@@ -568,7 +577,7 @@ class HT_CTC_DB2 {
         );
 
         // if new install
-        if ( !isset ( $this->os['version'] ) ) {
+        if ( !isset ( $this->ot['version'] ) ) {
             $style_8['s8_text_size'] = '16px';
             $style_8['s8_icon_size'] = '16px';
         }

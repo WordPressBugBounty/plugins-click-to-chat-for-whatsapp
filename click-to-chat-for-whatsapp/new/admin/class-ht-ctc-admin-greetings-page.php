@@ -341,7 +341,7 @@ class HT_CTC_Admin_Greetings {
                         'title' => __( 'Initial stage', 'click-to-chat-for-whatsapp'),
                         'db' => 'g_init',
                         'template' => 'select',
-                        'description' => "Preset: automatically opens on desktops and stays closed on mobile devices.. <br> Open: Initially visible. If the user closes the dialog, it stays closed until the user reopens it or triggers greeting actions <br> Close: hidden until the user initiates chat or triggers greeting actions - <a target='_blank' href='https://holithemes.com/plugins/click-to-chat/greetings-initial-stage'>more info</a>",
+                        'description' => "Preset: On first visit, opens automatically on desktop and stays closed on mobile — further behavior is based on user interaction. <br>Open: Initially visible. If the user closes the dialog, it stays closed until the user reopens it or triggers greeting actions <br> Close: hidden until the user initiates chat or triggers greeting actions - <a target='_blank' href='https://holithemes.com/plugins/click-to-chat/greetings-initial-stage'>more info</a>",
                         'list' => [
                             'default' => 'Preset',
                             'open' => 'Open',

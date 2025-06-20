@@ -138,6 +138,10 @@ class HT_CTC_Chat {
 
         // is shop page
         if ( class_exists( 'WooCommerce' ) && function_exists( 'is_shop') && function_exists( 'wc_get_page_id') && is_shop() ) {
+
+            // mightbe an archive page, but shop page have page level settings
+            $is_page_level_settings = 'yes';
+
             $page_id = wc_get_page_id( 'shop' );
             $post_title = esc_html( get_the_title( $page_id ) );
         }
@@ -182,6 +186,8 @@ class HT_CTC_Chat {
         // default position overwrite at js, but useful in amp pages
         $default_position = '';
         include HT_CTC_PLUGIN_DIR .'new/inc/commons/position-to-place.php';
+
+        // position: e.g. position: fixed; bottom: 15px; right: 15px;
         $ht_ctc_chat['position'] = $position;
         $ht_ctc_chat['position_mobile'] = $position_mobile;
         

@@ -42,11 +42,11 @@ if ( ! function_exists('ht_ctc_woo_single_product_page_variables') ) {
 
                 $product = wc_get_product();
 
-                $name = $product->get_name();
+                $name = esc_attr( $product->get_name() );
                 // $title = $product->get_title();
-                $price = $product->get_price();
-                $regular_price = $product->get_regular_price();
-                $sku = $product->get_sku();
+                $price = esc_attr( $product->get_price() );
+                $regular_price = esc_attr( $product->get_regular_price() );
+                $sku = esc_attr( $product->get_sku() );
                 $price_formatted = '';
                 
                  // Ensure price is not empty or null to prevent displaying "0.00". If wc_price() is used, it may return a default "0.00" when no price is set.
@@ -59,8 +59,9 @@ if ( ! function_exists('ht_ctc_woo_single_product_page_variables') ) {
                          * Use strip_tags() to remove HTML and html_entity_decode() to display currency symbols correctly.
                          */
                         $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ) );
+                        $price_formatted = esc_attr( $price_formatted );
                     } else {
-                        $price_formatted = $price; // Use raw price if wc_price() is unavailable.
+                        $price_formatted = esc_attr( $price ); // Use raw price if wc_price() is unavailable.
                     }
                 } else {
                     $price_formatted = ''; // Keep output blank if no price is set.

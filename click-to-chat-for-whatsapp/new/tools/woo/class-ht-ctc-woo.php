@@ -322,29 +322,30 @@ class HT_CTC_WOO_Pages {
         // $chat = get_option('ht_ctc_chat_options');
 
         // if woocommerce single product page
-        if ( function_exists( 'is_product' ) && function_exists( 'wc_get_product' )) {
+        if ( function_exists( 'is_product' ) && function_exists( 'wc_get_product' ) ) {
             if ( is_product() ) {
-                
+
                 $name = '';
                 $price = '';
                 $regular_price = '';
                 $sku = '';
                 $price_formatted = '';
-                
+
                 $product = wc_get_product();
 
-                if ( is_object($product) && method_exists($product, 'get_name') ) {
-                    $name = $product->get_name();
+                if ( is_object( $product ) && method_exists( $product, 'get_name' ) ) {
+                    $name = esc_attr( $product->get_name() );
                     // $title = $product->get_title();
-                    $price = $product->get_price();
-                    $regular_price = $product->get_regular_price();
-                    $sku = $product->get_sku();
+                    $price = esc_attr( $product->get_price() );
+                    $regular_price = esc_attr( $product->get_regular_price() );
+                    $sku = esc_attr( $product->get_sku() );
 
-                    if ($price !== '' && $price !== null) { 
-                        if (function_exists('wc_price')) {
-                            $price_formatted = html_entity_decode(strip_tags(wc_price($price)));
+                    if ( $price !== '' && $price !== null ) {
+                        if ( function_exists( 'wc_price' ) ) {
+                            $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ) );
+                            $price_formatted = esc_attr( $price_formatted );
                         } else {
-                            $price_formatted = $price; 
+                            $price_formatted = esc_attr( $price );
                         }
                     } else {
                         $price_formatted = ''; // Keep output blank if price is not set
@@ -368,8 +369,8 @@ class HT_CTC_WOO_Pages {
                 }
 
                 // page level settings - woo 
-                if ( isset($ht_ctc_pagelevel['pre_filled']) ) {
-                    $ht_ctc_chat['pre_filled'] = esc_attr($ht_ctc_pagelevel['pre_filled']);
+                if ( isset( $ht_ctc_pagelevel['pre_filled'] ) ) {
+                    $ht_ctc_chat['pre_filled'] = esc_attr( $ht_ctc_pagelevel['pre_filled'] );
                 }
 
                 // variables works in default pre_filled also for woo pages.
@@ -380,14 +381,13 @@ class HT_CTC_WOO_Pages {
                     $ht_ctc_chat['call_to_action'] = esc_attr( $woo_options['woo_call_to_action'] );
                     $ht_ctc_chat['call_to_action'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['call_to_action'], 'Click to Chat for WhatsApp', 'woo_call_to_action' );
                 }
-                
+
                 // page level settings - woo 
-                if ( isset($ht_ctc_pagelevel['call_to_action']) ) {
-                    $ht_ctc_chat['call_to_action'] = esc_attr($ht_ctc_pagelevel['call_to_action']);
+                if ( isset( $ht_ctc_pagelevel['call_to_action'] ) ) {
+                    $ht_ctc_chat['call_to_action'] = esc_attr( $ht_ctc_pagelevel['call_to_action'] );
                 }
 
-                $ht_ctc_chat['call_to_action'] = str_replace( array('{product}', '{{price}}', '{price}', '{regular_price}', '{sku}' ),  array( $name, $price_formatted, $price, $regular_price, $sku ), $ht_ctc_chat['call_to_action'] );
-
+                $ht_ctc_chat['call_to_action'] = str_replace( array('{product}', '{{price}}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price_formatted, $price, $regular_price, $sku ), $ht_ctc_chat['call_to_action'] );
             }
         }
 

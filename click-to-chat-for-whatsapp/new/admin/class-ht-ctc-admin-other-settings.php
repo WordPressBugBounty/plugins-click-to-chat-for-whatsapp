@@ -603,7 +603,10 @@ class HT_CTC_Admin_Other_Settings {
         </details>
 
         </div>
-
+        
+        <?php
+            do_action('ht_ctc_ah_admin_after_fb_pixel');
+        ?>
 
         <br>
 
@@ -611,9 +614,6 @@ class HT_CTC_Admin_Other_Settings {
         </li>
         </ul>
 
-        <?php
-            do_action('ht_ctc_ah_admin_after_fb_pixel');
-        ?>
 
         <ul class="collapsible col_g_ads coll_active" data-coll_active="col_g_ads" id="col_g_ads">
         <li class="">

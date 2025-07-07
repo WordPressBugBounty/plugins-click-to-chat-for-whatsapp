@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // If Styles for desktop, mobile not selected as expected
-            if ($('#select_styles_issue').is(':checked') && !$('.same_settings').is(':checked') ) {
+            if ($('#select_styles_issue').is(':checked') && !$('.same_settings').is(':checked')) {
                 $(".select_styles_issue_checkbox").show();
             }
             $('.select_styles_issue_description').on('click', function (e) {
@@ -353,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // customize styles page: 
-            
             // dispaly all style - ask to save changes on change
             $("#display_allstyles").on("change", function (e) {
                 $(".display_allstyles_description").show(200);
@@ -683,7 +682,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var text = $('#ctc_save_changes_hover_text').text();
             $("#submit").attr('title', text);
 
-            
             // s3e - shadow on hover
             if (!$('#s3_box_shadow').is(':checked')) {
                 $(".s3_box_shadow_hover").show();
@@ -800,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(className + ' class name exists');
 
                 if (typeof intlTelInput !== 'undefined') {
-                    
+
                     $('.' + className).each(function () {
                         console.log('each: calling intl_init()..' + this);
                         var i = intl_init(this);
@@ -829,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.log('intl_init()');
             console.log(v);
-            
+
             var attr_value = $(v).attr("value");
             console.log('attr_value: ' + attr_value);
 
@@ -846,7 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('getting country code..');
                 // fall back..
                 country_code = 'us';
-                
+
                 $.get("https://ipinfo.io", function () { }, "jsonp").always(function (resp) {
                     country_code = (resp && resp.country) ? resp.country : "us";
                     ctc_setItem('country_code', country_code);
@@ -878,6 +876,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     countryOrder: pre_countries,
                     separateDialCode: true,
                     containerClass: 'intl_tel_input_container',
+                    // countrySearch: false,
 
                     utilsScript: ht_ctc_admin_var.utils
                 };
@@ -895,7 +894,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return intl;
         }
-        
+
 
         // intl: on change
         function intl_onchange() {
@@ -977,7 +976,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!pre_countries.includes(country_code)) {
                 console.log(country_code + ' not included. so pushing country code to pre countries');
-                
+
                 // push to index 0..
                 pre_countries.unshift(country_code);
                 // pre_countries.push(country_code);
@@ -1063,9 +1062,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 $('.g_an_param_order').val(g_an_param_order);
             });
 
-            
-
-
 
             // fb pixel
 
@@ -1138,8 +1134,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
 
-
-
             // Remove params
             $('.ctc_an_params').on('click', '.an_param_remove', function (e) {
                 console.log('on click: an_param_remove');
@@ -1162,12 +1156,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         }
-
-
-
-
-
-
 
 
 

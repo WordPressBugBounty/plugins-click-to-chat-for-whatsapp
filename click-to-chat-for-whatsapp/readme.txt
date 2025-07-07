@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.8.1
 Requires PHP: 5.6
 Contributors: holithemes
-Stable tag: 4.24
+Stable tag: 4.25
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -544,6 +544,9 @@ or
 After Activating the plugin, add a WhatsApp Number in the plugin settings.
 
 == Changelog ==
+
+= 4.25 =
+* Fix: Greeting dialog modal not displaying correctly due to z-index issues when certain background elements were present.
 
 = 4.24 =
 * Fixed: Page-level settings now work correctly on the WooCommerce Shop page.

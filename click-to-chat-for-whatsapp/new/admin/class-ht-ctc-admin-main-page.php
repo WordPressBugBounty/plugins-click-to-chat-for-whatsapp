@@ -47,7 +47,7 @@ class HT_CTC_Admin_Main_Page {
             <div class="row" style="display:flex; flex-wrap:wrap;" >
 
                 <div class="col s12 m12 xl8 options">
-                    <form action="options.php" method="post" class="">
+                    <form action="options.php" method="post" class="ht-ctc-admin-main-page-form">
                         <?php settings_fields( 'ht_ctc_main_page_settings_fields' ); ?>
                         <?php do_settings_sections( 'ht_ctc_main_page_settings_sections_do' ) ?>
                         <?php submit_button() ?>
@@ -143,10 +143,6 @@ class HT_CTC_Admin_Main_Page {
             $intl = '2';
         }
 
-        // if number is not set, then it might be an issue with initl. load 1.
-        if ( ! isset($options['number']) ) {
-            $intl = '1';
-        }
 
         // if no-intl is enabled then load 1
         if ( isset($os['no-intl']) ) {
@@ -204,9 +200,10 @@ class HT_CTC_Admin_Main_Page {
                     $ht_ctc_admin_pages = get_option('ht_ctc_admin_pages');
                     $save_count = ( isset( $ht_ctc_admin_pages['count'] ) ) ? $ht_ctc_admin_pages['count'] : 0;
 
-                    // if number is not set/null and save count is more than 5 then display the link.
-                    if ( '' == $number ) {
-                        if ( $save_count > 5 ) {
+                    // if number is empty OR the 'number' option is not set
+                    if ( '' == $number || !isset($options['number']) ) {
+                        // if save_count is greater than 5 OR again the 'number' option is missing
+                        if ( $save_count > 5 || ! isset($options['number'])  ) {
                             ?>
                             <p class="description">If WhatsApp number is not saving? load plain <a href="<?= admin_url( 'admin.php?page=click-to-chat&number-field=1' ); ?>">input field</a></p>
                             <?php
@@ -269,7 +266,6 @@ class HT_CTC_Admin_Main_Page {
 
             <?php
         }
-
 
         do_action('ht_ctc_ah_admin_chat_number');
 
@@ -353,7 +349,7 @@ class HT_CTC_Admin_Main_Page {
             'default' => '(' . __( 'Default', 'click-to-chat-for-whatsapp') .') wa.me',
             'web' => 'Web WhatsApp'
         );
-        
+  
         $url_structure_m_list = array(
             'default' => '(' . __( 'Default', 'click-to-chat-for-whatsapp') .') wa.me',
             'wa_colon' => 'WhatsApp://'
@@ -446,7 +442,6 @@ class HT_CTC_Admin_Main_Page {
         
         <p class="description" style="">PRO: <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-url/"><?php _e( 'Custom URL', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
-
         </div>
         </li>
         </ul>
@@ -495,10 +490,18 @@ class HT_CTC_Admin_Main_Page {
         <p class="description">Support:</p>
         <p class="description">📚 <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/faq">Frequently Asked Questions (FAQ)</a></p>
         <p class="description">🤝 <a target="_blank" href="https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0">WordPress Forum</a></p>
-        <p class="description">📧 <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/support/">Contact Us</a></p>
 
         <?php
-
+        if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+            ?>
+            <!-- <p class="description">📧 <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/support/">Contact Us</a></p> -->
+            <?php
+        } else {
+            ?>
+            <p class="description">📧 <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/support/">Contact Us</a></p>
+            <?php
+        }
+        
         // clear cache hover text
         $clear_cache_text = 'ctc_no_hover_text';
 

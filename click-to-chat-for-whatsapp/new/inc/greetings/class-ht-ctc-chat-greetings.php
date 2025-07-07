@@ -242,7 +242,7 @@ class HT_CTC_Chat_Greetings {
             // (if g_size is small still greeting dialog above the base widget - if desktop base widget is at bottom and mobile base widget is at top)
             if ( 'top' == $g_position_t_b ) {
                 // margin-top: 60px; to display below the button. 18px + chat base icon approx + some space
-                $greetings_box_styles .= "top: 100%; bottom: auto; margin-top: 65px;";
+                $greetings_box_styles .= "top: 100%; bottom: auto; margin-top: 70px;";
             } else {
                 $greetings_box_styles .= "bottom: 0px;";
             }
@@ -271,7 +271,7 @@ class HT_CTC_Chat_Greetings {
 
                 <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?>  <?= $ctc_g_position ?>" style="display: none; <?= $greetings_box_styles ?> min-width: <?= $min_width ?>; max-width: 420px; ">
 
-                    <div class="ht_ctc_chat_greetings_box_layout" style="<?= $greetings_box_layout_styles ?>  box-shadow: <?= $box_shadow ?>; border-radius:8px; clear:both;">
+                    <div class="ht_ctc_chat_greetings_box_layout" style="<?= $greetings_box_layout_styles ?>  box-shadow: <?= $box_shadow ?>; border-radius:8px;">
 
                         <span style="<?= $g_close_button_styles ?>" class="ctc_greetings_close_btn">
                             <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">

@@ -30,6 +30,13 @@ class HT_CTC_Chat {
     }
 
 
+    public function is_valid_http_url( $url ) {
+        return is_string( $url ) &&
+            filter_var( $url, FILTER_VALIDATE_URL ) &&
+            in_array( parse_url( $url, PHP_URL_SCHEME ), [ 'http', 'https' ], true );
+    }
+
+
     /**
      * Chat
      * 
@@ -43,15 +50,15 @@ class HT_CTC_Chat {
         
         do_action('ht_ctc_ah_start_the_chat');
 
-        $options = get_option('ht_ctc_chat_options');
-        $othersettings = get_option('ht_ctc_othersettings');
-        $greetings = get_option('ht_ctc_greetings_options');
-        $greetings_settings = get_option('ht_ctc_greetings_settings');
+        $options = get_option('ht_ctc_chat_options', []);
+        $othersettings = get_option('ht_ctc_othersettings', []);
+        $greetings = get_option('ht_ctc_greetings_options', []);
+        $greetings_settings = get_option('ht_ctc_greetings_settings', []);
         $type = "chat";
         $is_editor = '';
 
         // If db values are not correct
-		if ( !is_array($options)  || !isset($options['number']) ) {
+		if ( !is_array($options) ) {
             return;
         }
 		
@@ -63,6 +70,7 @@ class HT_CTC_Chat {
         // includes..
         include_once HT_CTC_PLUGIN_DIR .'new/inc/commons/class-ht-ctc-formatting.php';
 
+        // if its an editor page then dont load chat.
         if ( class_exists( 'HT_CTC_Formatting' ) && method_exists( 'HT_CTC_Formatting', 'is_page_builder_editor' ) ) {
             $is_editor = HT_CTC_Formatting::is_page_builder_editor();
             if ( 'y' == $is_editor ) {
@@ -109,7 +117,6 @@ class HT_CTC_Chat {
             $page_url = get_permalink();
             $post_title = esc_html( get_the_title() );
         } elseif ( is_archive() ) {
-
             //no page level settings for archive pages
             $is_page_level_settings = 'no';
 
@@ -141,7 +148,7 @@ class HT_CTC_Chat {
 
             // mightbe an archive page, but shop page have page level settings
             $is_page_level_settings = 'yes';
-
+            
             $page_id = wc_get_page_id( 'shop' );
             $post_title = esc_html( get_the_title( $page_id ) );
         }
@@ -205,21 +212,37 @@ class HT_CTC_Chat {
             }
         }
 
-        $ht_ctc_chat['number'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['number'], 'Click to Chat for WhatsApp', 'number' );
+        $ht_ctc_chat['custom_url_d'] = ( isset( $options['custom_url_d'] ) ) ? esc_attr($options['custom_url_d']) : '';
+        $ht_ctc_chat['custom_url_m'] = ( isset( $options['custom_url_m'] ) ) ? esc_attr($options['custom_url_m']) : '';
 
+        // multilinugal - wpml, polylang
+        // if ( function_exists( 'wpml_translate_single_string' ) ) {
+            // number
+            $ht_ctc_chat['number'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['number'], 'Click to Chat for WhatsApp', 'number' );
+            // call to action
+            $ht_ctc_chat['call_to_action'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['call_to_action'], 'Click to Chat for WhatsApp', 'call_to_action' );
+            // prefilled text
+            $ht_ctc_chat['pre_filled'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['pre_filled'], 'Click to Chat for WhatsApp', 'pre_filled' );
+        // }
+        
+        // page level settings (have to be after the multilingual)
         if ( isset($ht_ctc_pagelevel['number']) ) {
-            $ht_ctc_chat['number'] = esc_attr($ht_ctc_pagelevel['number']);
-        }
+            $page_number = esc_attr($ht_ctc_pagelevel['number']);
+            if ( '' !== $page_number ) {
+                $ht_ctc_chat['number'] = $page_number;
 
-        // call to action
-        $ht_ctc_chat['call_to_action'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['call_to_action'], 'Click to Chat for WhatsApp', 'call_to_action' );
+                // if page level number is added - it have higher priority then global number and global custom urls. so make custom urls empty.
+                $ht_ctc_chat['custom_url_d'] = '';
+                $ht_ctc_chat['custom_url_m'] = '';
+
+                // if page level custom url added then overwrite the global custom urls and the above blank values to page level custom urls.
+                // page level custom url have higher priority then page level number, global custom urls, global number.
+            }
+        }
 
         if ( isset($ht_ctc_pagelevel['call_to_action']) ) {
             $ht_ctc_chat['call_to_action'] = esc_attr($ht_ctc_pagelevel['call_to_action']);
         }
-
-        // prefilled text
-        $ht_ctc_chat['pre_filled'] = apply_filters( 'wpml_translate_single_string', $ht_ctc_chat['pre_filled'], 'Click to Chat for WhatsApp', 'pre_filled' );
 
         if ( isset($ht_ctc_pagelevel['pre_filled']) ) {
             $ht_ctc_chat['pre_filled'] = esc_attr($ht_ctc_pagelevel['pre_filled']);
@@ -339,57 +362,6 @@ class HT_CTC_Chat {
             $ht_ctc_chat['class_names'] .= " ctc_side_positions ";
         }
 
-
-
-        // AMP
-        $is_amp = false;
-        $on = "";
-
-        /**
-         * AMP
-         * ampforwp_is_amp_endpoint  / is_amp_endpoint / amp_is_request
-         * 
-         * scripts handles at class-ht-ctc-scripts.php
-         */
-        if ( isset($othersettings['amp']) ) {
-            if ( function_exists( 'amp_is_request' ) && amp_is_request() ) {
-            
-                $is_amp = true;
-
-                if ( 'yes' == $is_mobile ) {
-                    if ( 'show' == $ht_ctc_chat['display_mobile'] ) {
-                        $display_css = "";
-                    }
-                } else {
-                    if ( 'show' == $ht_ctc_chat['display_desktop'] ) {
-                        $display_css = "";
-                    }
-                }
-                $display_css .= "cursor:pointer;";
-
-                $pre = rawurlencode($ht_ctc_chat['pre_filled']);
-                // 'single quote', 'double quote', '&', '<', '>'
-                $pre = str_replace( array('%26%23039%3B', '%26quot%3B', '%26amp%3B', '%26lt%3B', '%26gt%3B'), array('', '', '', '<', '>'), $pre);
-                $ext = $ht_ctc_chat['number'] . '?text=' . $pre;
-                $wame_link = "https://wa.me/$ext";
-                $on = "on=\"tap:AMP.navigateTo(url='$wame_link', target='_blank', opener='')\"";
-
-                // no need to deregister here. since 3.20 handles while adding scripts.
-                wp_deregister_script( 'ht_ctc_app_js' );
-                wp_deregister_script( 'ht_ctc_woo_js' );
-            }
-        }
-        
-
-        /**
-         * greetings
-         * 
-         *  dont load if its an AMP page or if no greetings dialog selected
-         */
-        if ( false == $is_amp ) {
-            include HT_CTC_PLUGIN_DIR .'new/inc/greetings/class-ht-ctc-chat-greetings.php';
-        }
-
         // webhook
         $hook_url = isset($othersettings['hook_url']) ? esc_attr( $othersettings['hook_url'] ) : '';
         $webhook_format = isset($othersettings['webhook_format']) ? esc_attr( $othersettings['webhook_format'] ) : 'string';
@@ -423,6 +395,19 @@ class HT_CTC_Chat {
 
         // url_target_d
         $ctc['url_target_d'] = $ht_ctc_chat['url_target_d'];
+
+        // custom url - desktop
+        if ( 'custom_url' === $ht_ctc_chat['url_structure_d'] && $this->is_valid_http_url( $ht_ctc_chat['custom_url_d'] ) ) {
+            $ctc['custom_url_d'] = esc_url( $ht_ctc_chat['custom_url_d'] );
+            $ht_ctc_chat['url_structure_d'] = 'custom_url';
+        }
+
+        // custom url - mobile
+        if ( 'custom_url' === $ht_ctc_chat['url_structure_m'] && $this->is_valid_http_url( $ht_ctc_chat['custom_url_m'] ) ) {
+            $ctc['custom_url_m'] = esc_url( $ht_ctc_chat['custom_url_m'] );
+            $ht_ctc_chat['url_structure_m'] = 'custom_url';
+
+        }
 
         // anlalytics count type
         if ( 'session' == $analytics ) {
@@ -658,11 +643,58 @@ class HT_CTC_Chat {
             return;
         }
 
+        // AMP
+        $is_amp = false;
+        $on = "";
+
+        /**
+         * AMP
+         * ampforwp_is_amp_endpoint  / is_amp_endpoint / amp_is_request
+         * 
+         * scripts handles at class-ht-ctc-scripts.php
+         */
+        if ( isset($othersettings['amp']) ) {
+            if ( function_exists( 'amp_is_request' ) && amp_is_request() ) {
+            
+                $is_amp = true;
+
+                if ( 'yes' == $is_mobile ) {
+                    if ( 'show' == $ht_ctc_chat['display_mobile'] ) {
+                        $display_css = "";
+                    }
+                } else {
+                    if ( 'show' == $ht_ctc_chat['display_desktop'] ) {
+                        $display_css = "";
+                    }
+                }
+                $display_css .= "cursor:pointer;";
+
+                $pre = rawurlencode($ht_ctc_chat['pre_filled']);
+                // 'single quote', 'double quote', '&', '<', '>'
+                $pre = str_replace( array('%26%23039%3B', '%26quot%3B', '%26amp%3B', '%26lt%3B', '%26gt%3B'), array('', '', '', '<', '>'), $pre);
+                $ext = $ht_ctc_chat['number'] . '?text=' . $pre;
+                $wame_link = "https://wa.me/$ext";
+                $on = "on=\"tap:AMP.navigateTo(url='$wame_link', target='_blank', opener='')\"";
+
+                // no need to deregister here. since 3.20 handles while adding scripts.
+                wp_deregister_script( 'ht_ctc_app_js' );
+                wp_deregister_script( 'ht_ctc_woo_js' );
+            }
+        }
+        
+
+        /**
+         * greetings hook ht_ctc_ah_in_fixed_position.
+         *  dont load if its an AMP page
+         */
+        if ( false == $is_amp ) {
+            include HT_CTC_PLUGIN_DIR .'new/inc/greetings/class-ht-ctc-chat-greetings.php';
+        }
 
         // if no number is set then only load the message.
         if ( '' == $ht_ctc_chat['number'] ) {
             ?>
-            <div class="ctc-no-number-message" style="display:none; <?= $position ?> z-index: <?= $zindex + 5 ?>; max-width:410px; background-color:#fff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888;">
+            <div class="ctc-no-number-message" style="display:none; <?php echo $default_position ?> z-index: <?php echo $zindex + 5 ?>; max-width:410px; background-color:#fff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888;">
                 <span onclick="this.closest('.ctc-no-number-message').style.display='none';" style="position:absolute; top:5px; right:5px; background:transparent; border:none; font-size:18px; line-height:1; cursor:pointer;">&times;</span>
                 <p style="margin:0;">No WhatsApp Number Found!</p>
                 <?php
@@ -673,7 +705,7 @@ class HT_CTC_Chat {
                     <p style="margin:0;">
                         <small style="color:red;">Admin Notice:</small><br>
                         <small>
-                            Add <a href="<?= esc_url( $admin_url ) ?>">WhatsApp number</a> at plugin settings.<br>
+                            Add <a href="<?php echo esc_url( $admin_url ) ?>">WhatsApp number</a> at plugin settings.<br>
                             If already added, <strong>clear the cache</strong> and try again.<br>
                             If still an issue, please contact plugin developers.
                         </small>
@@ -690,8 +722,8 @@ class HT_CTC_Chat {
         if ( is_file( $path ) ) {
             do_action('ht_ctc_ah_before_fixed_position');
             ?>  
-            <div class="<?= $ht_ctc_chat['class_names'] ?>" id="<?= $ht_ctc_chat['id'] ?>"  
-                style="<?= $display_css ?> <?= $default_position ?>" <?= $ht_ctc_os['attributes'] ?> <?= $on ?> >
+            <div class="<?php echo $ht_ctc_chat['class_names'] ?>" id="<?php echo $ht_ctc_chat['id'] ?>"  
+                style="<?php echo $display_css ?> <?php echo $default_position ?>" <?php echo $ht_ctc_os['attributes'] ?> <?php echo $on ?> >
                 <?php
                 // add greetings dialog
                 do_action('ht_ctc_ah_in_fixed_position');
@@ -702,7 +734,7 @@ class HT_CTC_Chat {
                 if ( 'show' == $ht_ctc_chat['notification_badge'] ) {
                     ?>
                     <span class="ht_ctc_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
-                        <span class="ht_ctc_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%; <?= $notification_border ?> background:<?= $notification_bg_color ?>; color:<?= $notification_text_color ?>; display:flex; justify-content:center; align-items:center;"><?= $ht_ctc_chat['notification_count'] ?></span>
+                        <span class="ht_ctc_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%; <?php echo $notification_border ?> background:<?php echo $notification_bg_color ?>; color:<?php echo $notification_text_color ?>; display:flex; justify-content:center; align-items:center;"><?php echo $ht_ctc_chat['notification_count'] ?></span>
                     </span>
                     <?php
                 }
@@ -720,13 +752,10 @@ class HT_CTC_Chat {
             </div>
             <?php
             do_action('ht_ctc_ah_after_fixed_position');
-            
 
-            // if js var not available, dont depend on this element ht_ctc_chat_data
+            $nonce = wp_create_nonce( 'wp_rest' );
             ?>
-            <span class="ht_ctc_chat_data" 
-                data-settings="<?= $ht_ctc_settings ?>" 
-            ></span>
+            <span class="ht_ctc_chat_data" data-settings="<?= $ht_ctc_settings ?>" data-rest="<?php echo esc_attr( $nonce ) ?>"></span>
             <?php
 
         }
@@ -737,12 +766,5 @@ class HT_CTC_Chat {
 }
 
 new HT_CTC_Chat();
-
-// $ht_ctc_chat = new HT_CTC_Chat();
-
-// // wp_footer / wp_head / get_footer
-// $ht_ctc_chat_load_position = apply_filters( 'ht_ctc_chat_load_position', 'wp_footer' );
-
-// add_action( "$ht_ctc_chat_load_position", array( $ht_ctc_chat, 'chat' ) );
 
 endif; // END class_exists check

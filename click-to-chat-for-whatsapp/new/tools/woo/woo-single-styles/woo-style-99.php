@@ -39,4 +39,4 @@ if ( '' == $s_99_own_image ) {
 
 ?>
 
-<img class="own-img ctc-analytics ctc_cta" title="<?= $call_to_action ?>" id="style-99" src="<?= $s_99_own_image ?>" style="<?= $s_99_img_css ?>" alt="<?= $call_to_action ?>">
+<img class="own-img ctc-analytics ctc_cta" title="<?php echo $call_to_action ?>" id="style-99" src="<?php echo $s_99_own_image ?>" style="<?php echo $s_99_img_css ?>" alt="<?php echo $call_to_action ?>">

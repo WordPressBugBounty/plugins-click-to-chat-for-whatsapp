@@ -51,11 +51,11 @@ $s7_hover_icon_styles = ".ht-ctc .ctc_s_7:hover .ctc_s_7_icon_padding, .ht-ctc .
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 ?>
 <style id="ht-ctc-s7">
-<?= $s7_hover_icon_styles ?>
+<?php echo $s7_hover_icon_styles ?>
 </style>
 
-<div title="<?= $call_to_action ?>" class="ctc_s_7 ctc-analytics" style="<?= $s7_n1_styles; ?>">
-    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?= $s7_icon_css ?>">
-        <?= ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+<div title="<?php echo $call_to_action ?>" class="ctc_s_7 ctc-analytics" style="<?php echo $s7_n1_styles; ?>">
+    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo $s7_icon_css ?>">
+        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
     </div>
 </div>

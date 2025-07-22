@@ -217,7 +217,7 @@ class HT_CTC_Admin_Others {
     function ifnumberblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?= admin_url('admin.php?page=click-to-chat'); ?>"><?php _e( 'Add WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'and let visitors chat', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat'); ?>"><?php _e( 'Add WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'and let visitors chat', 'click-to-chat-for-whatsapp' ); ?>.</p>
             <!-- <p>Click to Chat is almost ready. <a href="<?php // echo admin_url('admin.php?page=click-to-chat');?>">Add WhatsApp Number</a> to display the chat options and let visitors chat.</p> -->
         </div>
         <?php
@@ -226,7 +226,7 @@ class HT_CTC_Admin_Others {
     function ifgroupblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?= admin_url('admin.php?page=click-to-chat-group-feature'); ?>"><?php _e( 'Add WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let visitors join in your WhatsApp Group', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat-group-feature'); ?>"><?php _e( 'Add WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let visitors join in your WhatsApp Group', 'click-to-chat-for-whatsapp' ); ?>.</p>
         </div>
         <?php
     }
@@ -234,7 +234,7 @@ class HT_CTC_Admin_Others {
     function ifshareblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?= admin_url('admin.php?page=click-to-chat-share-feature'); ?>"><?php _e( 'Add Share Text', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let vistiors Share your Webpages', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat-share-feature'); ?>"><?php _e( 'Add Share Text', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let vistiors Share your Webpages', 'click-to-chat-for-whatsapp' ); ?>.</p>
         </div>
         <?php
     }
@@ -455,81 +455,108 @@ class HT_CTC_Admin_Others {
     // clear cache after save settings.
     function clear_cache() {
 
+        // $cleared = []; // To log which cache systems were cleared
+
         // WP Super Cache
         if ( function_exists( 'wp_cache_clear_cache' ) ) {
             wp_cache_clear_cache();
+            // $cleared[] = 'WP Super Cache';
         }
+
         // W3 Total Cache
         if ( function_exists( 'w3tc_pgcache_flush' ) ) {
             w3tc_pgcache_flush();
             // w3tc_flush_all();
         }
+
         // WP Fastest Cache
-        if( function_exists('wpfc_clear_all_cache') ) {
+        if ( function_exists( 'wpfc_clear_all_cache' ) ) {
             wpfc_clear_all_cache();
             // wpfc_clear_all_cache(true);
         }
+
         // Autoptimize
-        if( class_exists('autoptimizeCache') && method_exists( 'autoptimizeCache', 'clearall') ) {
+        if ( class_exists( 'autoptimizeCache' ) && method_exists( 'autoptimizeCache', 'clearall' ) ) {
             autoptimizeCache::clearall();
         }
+
         // WP Rocket
         if ( function_exists( 'rocket_clean_domain' ) ) {
             rocket_clean_domain();
             // rocket_clean_minify();
         }
+
         // WPEngine
-        if ( class_exists( 'WpeCommon' ) && method_exists( 'WpeCommon', 'purge_memcached' ) ) {
-        WpeCommon::purge_memcached();
-        WpeCommon::purge_varnish_cache();
+        if ( class_exists( 'WpeCommon' ) ) {
+            if ( method_exists( 'WpeCommon', 'purge_memcached' ) ) {
+                WpeCommon::purge_memcached();
+            }
+            if ( method_exists( 'WpeCommon', 'purge_varnish_cache' ) ) {
+                WpeCommon::purge_varnish_cache();
+            }
         }
-        // SG Optimizer by Siteground
+
+        // SG Optimizer by SiteGround
         if ( function_exists( 'sg_cachepress_purge_cache' ) ) {
             sg_cachepress_purge_cache();
-            // SG_CachePress_Supercacher::purge_cache(true);
         }
-        // LiteSpeed
-        if( class_exists('LiteSpeed_Cache_API') && method_exists('LiteSpeed_Cache_API', 'purge_all') ) {
-        LiteSpeed_Cache_API::purge_all();
+
+        // LiteSpeed Cache
+        if ( class_exists( 'LiteSpeed_Cache_API' ) && method_exists( 'LiteSpeed_Cache_API', 'purge_all' ) ) {
+            LiteSpeed_Cache_API::purge_all();
         }
+
         // Cache Enabler
-        if( class_exists('Cache_Enabler') && method_exists('Cache_Enabler', 'clear_total_cache') ) {
+        if ( class_exists( 'Cache_Enabler' ) && method_exists( 'Cache_Enabler', 'clear_total_cache' ) ) {
             Cache_Enabler::clear_total_cache();
-            // ce_clear_cache();
         }
-        
+
         // // Pagely
         // if ( class_exists('PagelyCachePurge') && method_exists('PagelyCachePurge','purgeAll') ) {
         // https://wordpress.org/support/topic/the-plugin-is-attempting-to-do-a-cache-purge/
         //     PagelyCachePurge::purgeAll();
         // }
-        
-        // Comet cache
-        if( class_exists('comet_cache') && method_exists('comet_cache', 'clear') ) {
-        comet_cache::clear();
+
+        // Comet Cache
+        if ( class_exists( 'comet_cache' ) && method_exists( 'comet_cache', 'clear' ) ) {
+            comet_cache::clear();
         }
-        // Hummingbird Cache
-        if( class_exists('\Hummingbird\WP_Hummingbird') && method_exists('\Hummingbird\WP_Hummingbird', 'flush_cache') ) {
+
+        // Hummingbird
+        if ( class_exists( '\Hummingbird\WP_Hummingbird' ) && method_exists( '\Hummingbird\WP_Hummingbird', 'flush_cache' ) ) {
             \Hummingbird\WP_Hummingbird::flush_cache();
         }
+
         // WP-Optimize
         if ( function_exists( 'wpo_cache_flush' ) ) {
             wpo_cache_flush();
         }
 
-        // cachify_flush_cache
-        // pantheon_wp_clear_edge_all
-        // zencache
-        // Breeze_PurgeCache
-        // Swift_Performance_Cache
-
-
 
         // clear cache
-        if ( function_exists('wp_cache_flush') ) {
+        if ( function_exists( 'wp_cache_flush' ) ) {
             wp_cache_flush();
         }
 
+        // // Show admin notice after clearing
+        // set_transient( 'ht_ctc_cache_cleared_notice', 1, 30 );
+    }
+
+
+    /**
+     * cache clear notice
+     * stub. not called.
+     * similar we can adming notice if mulitlingual plugin is active then add notice like clear/update string translations.
+     */
+    function cache_clear_notice() {
+        if ( get_transient( 'ht_ctc_cache_cleared_notice' ) ) {
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php _e( 'If updates are not reflected, please clear your site, server and CDN cache.', 'click-to-chat-for-whatsapp' ); ?></p>
+            </div>
+            <?php
+            delete_transient( 'ht_ctc_cache_cleared_notice' );
+        }
     }
 
 

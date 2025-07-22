@@ -33,7 +33,7 @@ if (isset($input['list'])) {
 }
 
 ?>
-<div class="row ctc_component_select <?= $parent_class ?>" id="<?= $parent_id ?>" style="margin:0;">
+<div class="row ctc_component_select <?php echo $parent_class ?>" id="<?php echo $parent_id ?>" style="margin:0;">
     <?php
     if ( '' !== $title ) {
     ?>
@@ -43,16 +43,16 @@ if (isset($input['list'])) {
     ?>
     <div class="row">
         <div class="input-field col s12">
-            <select name="<?= $dbrow ?>[<?= $db_key ?>]" class="<?= $select_class ?>">
+            <select name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" class="<?php echo $select_class ?>">
                 <?php
                 foreach ($list as $k => $v) {
                     ?>
-                    <option value="<?= $k ?>" <?= $db_value == $k ? 'SELECTED' : ''; ?> ><?= $v ?></option>
+                    <option value="<?php echo $k ?>" <?php echo $db_value == $k ? 'SELECTED' : ''; ?> ><?php echo $v ?></option>
                     <?php
                 }
                 ?>
             </select>
-            <p class="description"><?= $description ?></p>
+            <p class="description"><?php echo $description ?></p>
         </div>
     </div>
 </div>

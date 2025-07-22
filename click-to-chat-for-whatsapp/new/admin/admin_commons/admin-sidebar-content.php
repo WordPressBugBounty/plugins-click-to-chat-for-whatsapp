@@ -20,6 +20,9 @@ $othersettings = get_option('ht_ctc_othersettings');
                         <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
                     </div>	
                     <div class="collapsible-body">
+                        <p class="description" style="font-size:14px;line-height:1.4;margin:10px 0;">
+                            Got a question? 😊 We’d love to hear from you!
+                        </p>
                         <?php
                         if ( defined( 'HT_CTC_PRO_VERSION' ) ) {
                             ?>
@@ -27,7 +30,9 @@ $othersettings = get_option('ht_ctc_othersettings');
                             <?php
                         } else {
                             ?>
-                            <p class="description"><a target="_blank" href="https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0"> Click to Chat</a></p>
+                            
+                            <!-- Click to Chat — Forum -->
+                            <p class="description"><a target="_blank" href="https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0">Contact Us</a></p>
                             <?php
                         }
                         do_action('ht_ctc_ah_admin_sidebar_contact_details' );

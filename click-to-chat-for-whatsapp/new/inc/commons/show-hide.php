@@ -9,7 +9,13 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-$this_page_id = get_the_ID();
+// $this_page_id = get_the_ID();
+$this_page_id = 0;
+if ( isset( $page_id ) && is_scalar( $page_id ) ) {
+    $this_page_id = intval( $page_id );
+} elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
+    $this_page_id = get_the_ID();
+}
 
 // yes to display style and no to hide styles
 // @uses at 'class-ht-ctc-{chat/group/share}.php'

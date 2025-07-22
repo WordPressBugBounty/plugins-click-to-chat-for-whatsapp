@@ -97,6 +97,10 @@ class HT_CTC_Register {
 		$new_links = array(
 			'settings' => '<a href="' . admin_url( 'admin.php?page=click-to-chat' ) . '">' . __( 'Settings' , 'click-to-chat-for-whatsapp' ) . '</a>',
 		);
+        
+        // wordpress forum link
+        // $links['support'] = '<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/support/">' . __( 'Support' , 'click-to-chat-for-whatsapp' ) . '</a>';
+        $links['support'] = '<a target="_blank" href="https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0">' . __( 'Support' , 'click-to-chat-for-whatsapp' ) . '</a>';
 
         if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
             $links['pro'] = '<a target="_blank" rel="noreferrer noopener" href="https://holithemes.com/plugins/click-to-chat/pricing/"><strong style="display: inline; color:#11a485;">' . __( 'PRO Version' , 'click-to-chat-for-whatsapp' ) . '</strong></a>';

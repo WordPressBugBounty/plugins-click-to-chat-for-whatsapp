@@ -10,7 +10,7 @@ $description = (isset($input['description'])) ? $input['description'] : '';
 
 if ('' !== $description) {
     ?>
-    <p class="description"><?= $description ?></p>
+    <p class="description"><?php echo $description ?></p>
     <?php
 }
 ?>

@@ -7,4 +7,4 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 $db_value = '1';
 ?>
-<input name="<?= $dbrow ?>[<?= $db_key ?>]" type="text" hidden style="display:none;" value="<?= $db_value ?>"/>
+<input name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" type="text" hidden style="display:none;" value="<?php echo $db_value ?>"/>

@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 (function ($) {
-
+    
+    console.log('ht_ctc_admin.js loaded');
     // ready
     $(function () {
 
@@ -344,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // If Styles for desktop, mobile not selected as expected
-            if ($('#select_styles_issue').is(':checked') && !$('.same_settings').is(':checked')) {
+            if ($('#select_styles_issue').is(':checked') && !$('.same_settings').is(':checked') ) {
                 $(".select_styles_issue_checkbox").show();
             }
             $('.select_styles_issue_description').on('click', function (e) {
@@ -353,6 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // customize styles page: 
+            
             // dispaly all style - ask to save changes on change
             $("#display_allstyles").on("change", function (e) {
                 $(".display_allstyles_description").show(200);
@@ -385,6 +387,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         }
+
+        // url structure - custom url..
+        function url_structure() {
+            console.log('url_structure()');
+
+            function handleUrlStructureToggle(selector, wrapSelector) {
+                const $select = $(selector);
+                const $wrap = $(wrapSelector);
+
+                function toggleWrap() {
+                    const selectedVal = $select.find(':selected').val();
+                    if (selectedVal === 'custom_url') {
+                        $wrap.show(500);
+                    } else {
+                        $wrap.hide(500);
+                    }
+                }
+
+                // Initial check
+                toggleWrap();
+
+                // On change
+                $select.on('change', toggleWrap);
+            }
+
+            handleUrlStructureToggle('.url_structure_d', '.custom_url_desktop');
+            handleUrlStructureToggle('.url_structure_m', '.custom_url_mobile');
+        }
+        url_structure();
 
 
         // call to actions
@@ -682,6 +713,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var text = $('#ctc_save_changes_hover_text').text();
             $("#submit").attr('title', text);
 
+            
             // s3e - shadow on hover
             if (!$('#s3_box_shadow').is(':checked')) {
                 $(".s3_box_shadow_hover").show();
@@ -798,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(className + ' class name exists');
 
                 if (typeof intlTelInput !== 'undefined') {
-
+                    
                     $('.' + className).each(function () {
                         console.log('each: calling intl_init()..' + this);
                         var i = intl_init(this);
@@ -815,9 +847,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // // all intl inputs
                 // console.log('all_intl_instances');
                 // console.log(all_intl_instances);
-                
-                
-                
+
             }
 
         }
@@ -827,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.log('intl_init()');
             console.log(v);
-
+            
             var attr_value = $(v).attr("value");
             console.log('attr_value: ' + attr_value);
 
@@ -844,7 +874,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('getting country code..');
                 // fall back..
                 country_code = 'us';
-
+                
                 $.get("https://ipinfo.io", function () { }, "jsonp").always(function (resp) {
                     country_code = (resp && resp.country) ? resp.country : "us";
                     ctc_setItem('country_code', country_code);
@@ -894,7 +924,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return intl;
         }
-
+        
 
         // intl: on change
         function intl_onchange() {
@@ -965,6 +995,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+
         function add_prefer_countrys(country_code) {
 
             console.log('add_prefer_countrys(): ' + country_code);
@@ -976,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!pre_countries.includes(country_code)) {
                 console.log(country_code + ' not included. so pushing country code to pre countries');
-
+                
                 // push to index 0..
                 pre_countries.unshift(country_code);
                 // pre_countries.push(country_code);
@@ -1159,7 +1190,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
+        
 
 
     });

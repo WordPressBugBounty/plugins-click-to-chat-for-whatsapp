@@ -53,10 +53,10 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 <!-- style -->
 <p class="description ht_ctc_admin_desktop ht_ctc_subtitle"><?php _e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?><span class="not_samesettings"><?php _e( ' (Desktop)', 'click-to-chat-for-whatsapp' ); ?></span>:</p>
 <div class="row ht_ctc_admin_desktop" id="row_styles">
-    <input name="<?= $dbrow; ?>[style_desktop]" value="<?= $style_desktop ?>" type="text" style="display:none;" class="chat_select_style select_style_desktop ctc_ad_main_page_on_change_style">
+    <input name="<?php echo $dbrow; ?>[style_desktop]" value="<?php echo $style_desktop ?>" type="text" style="display:none;" class="chat_select_style select_style_desktop ctc_ad_main_page_on_change_style">
 
     <div class="row ht_ctc_admin_desktop ctc_select_style ctc_style_desktop">
-        <div class="collection select_style_container" data-style="<?= $style_desktop ?>">
+        <div class="collection select_style_container" data-style="<?php echo $style_desktop ?>">
             <span class="collection-item select_style_item"  data-style="1"><span class="badge">Theme Button</span>Style-1</span>
             <span class="collection-item select_style_item"  data-style="2"><span class="badge">Green Square Icon</span>Style-2</span>
             <span class="collection-item select_style_item"  data-style="3"><span class="badge">Icon</span>Style-3</span>
@@ -72,8 +72,8 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
     </div>
 
     <p class="description"><a style="" target="_blank" href="https://holithemes.com/plugins/click-to-chat/list-of-styles/"><?php _e( 'List of Styles', 'click-to-chat-for-whatsapp' ); ?></a> | 
-        <span title="colors, size, hover effects, .." class="customize_styles_link"><?php _e( 'Customize the styles', 'click-to-chat-for-whatsapp' ); ?>  <a target="_blank" class="customize_styles_href" href="<?= admin_url( 'admin.php?page=click-to-chat-customize-styles' ); ?>">( Click to Chat -> Customize )</a></span> | 
-        <span title="add message window"><?php _e( 'Add Greetings Dialog', 'click-to-chat-for-whatsapp' ); ?>  <a target="_blank" class="greetings_page_link" href="<?= admin_url( 'admin.php?page=click-to-chat-greetings' ); ?>">( Click to Chat -> Greetings )</a></span>
+        <span title="colors, size, hover effects, .." class="customize_styles_link"><?php _e( 'Customize the styles', 'click-to-chat-for-whatsapp' ); ?>  <a target="_blank" class="customize_styles_href" href="<?php echo admin_url( 'admin.php?page=click-to-chat-customize-styles' ); ?>">( Click to Chat -> Customize )</a></span> | 
+        <span title="add message window"><?php _e( 'Add Greetings Dialog', 'click-to-chat-for-whatsapp' ); ?>  <a target="_blank" class="greetings_page_link" href="<?php echo admin_url( 'admin.php?page=click-to-chat-greetings' ); ?>">( Click to Chat -> Greetings )</a></span>
     </p>
 
 </div>
@@ -87,7 +87,7 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
             <?php
             foreach ($position_type_values as $key => $value) {
                 ?>
-                <option value="<?= $key ?>" <?php echo $position_type == $key ? 'SELECTED' : ''; ?> ><?php _e( $value, 'click-to-chat-for-whatsapp' ); ?></option>
+                <option value="<?php echo $key ?>" <?php echo $position_type == $key ? 'SELECTED' : ''; ?> ><?php _e( $value, 'click-to-chat-for-whatsapp' ); ?></option>
                 <?php
             }
             ?>
@@ -108,14 +108,14 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 <div class="row ht_ctc_admin_desktop" style="display:flex; margin-top:16px;">
     <br>
     <div class="input-field col s6">
-        <select name="<?= $dbrow; ?>[side_1]" class="position_bottom_top ctc_demo_position">
-            <option value="bottom" <?= $side_1 == 'bottom' ? 'SELECTED' : ''; ?> ><?php _e( 'bottom', 'click-to-chat-for-whatsapp' ); ?></option>
-            <option value="top" <?= $side_1 == 'top' ? 'SELECTED' : ''; ?> ><?php _e( 'top', 'click-to-chat-for-whatsapp' ); ?></option>
+        <select name="<?php echo $dbrow; ?>[side_1]" class="position_bottom_top ctc_demo_position">
+            <option value="bottom" <?php echo $side_1 == 'bottom' ? 'SELECTED' : ''; ?> ><?php _e( 'bottom', 'click-to-chat-for-whatsapp' ); ?></option>
+            <option value="top" <?php echo $side_1 == 'top' ? 'SELECTED' : ''; ?> ><?php _e( 'top', 'click-to-chat-for-whatsapp' ); ?></option>
         </select>
         <label>top / bottom </label>
     </div>
     <div class="input-field col s6">
-        <input name="<?= $dbrow; ?>[side_1_value]" value="<?= $side_1_value ?>" id="side_1_value" type="text" class="input-margin position_bottom_top_value ctc_demo_position">
+        <input name="<?php echo $dbrow; ?>[side_1_value]" value="<?php echo $side_1_value ?>" id="side_1_value" type="text" class="input-margin position_bottom_top_value ctc_demo_position">
         <label for="side_1_value"><?php _e( 'E.g. 10px', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 </div>
@@ -123,15 +123,15 @@ $position_type_values = apply_filters( 'ht_ctc_fh_position_type_values', $positi
 <!-- side - 2 -->
 <div class="row ht_ctc_admin_desktop" style="display:flex; margin-bottom:0;">
     <div class="input-field col s6">
-        <select name="<?= $dbrow; ?>[side_2]" class="position_right_left ctc_demo_position">
-            <option value="right" <?= $side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>
-            <option value="left" <?= $side_2 == 'left' ? 'SELECTED' : ''; ?> ><?php _e( 'left', 'click-to-chat-for-whatsapp' ); ?></option>
+        <select name="<?php echo $dbrow; ?>[side_2]" class="position_right_left ctc_demo_position">
+            <option value="right" <?php echo $side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>
+            <option value="left" <?php echo $side_2 == 'left' ? 'SELECTED' : ''; ?> ><?php _e( 'left', 'click-to-chat-for-whatsapp' ); ?></option>
         </select>
         <label><?php _e( 'right / left', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 
     <div class="input-field col s6">
-        <input name="<?= $dbrow; ?>[side_2_value]" value="<?= $side_2_value ?>" id="side_2_value" type="text" class="input-margin position_right_left_value ctc_demo_position">
+        <input name="<?php echo $dbrow; ?>[side_2_value]" value="<?php echo $side_2_value ?>" id="side_2_value" type="text" class="input-margin position_right_left_value ctc_demo_position">
         <label for="side_2_value"><?php _e( 'E.g. 50%', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 </div>
@@ -148,7 +148,7 @@ if ( isset( $options['same_settings'] ) ) {
     ?>
     <p class="description" style="margin-bottom: 25px;">
         <label>
-            <input name="<?= $dbrow; ?>[same_settings]" type="checkbox" value="1" <?php checked( $options['same_settings'], 1 ); ?> class="same_settings ctc_no_demo" id="same_settings" />
+            <input name="<?php echo $dbrow; ?>[same_settings]" type="checkbox" value="1" <?php checked( $options['same_settings'], 1 ); ?> class="same_settings ctc_no_demo" id="same_settings" />
             <span><?php _e( 'Mobile and Desktop same setttings', 'click-to-chat-for-whatsapp' ); ?></span>
         </label>
     </p>
@@ -157,7 +157,7 @@ if ( isset( $options['same_settings'] ) ) {
     ?>
     <p class="description" style="margin-bottom: 25px;">
         <label>
-            <input name="<?= $dbrow; ?>[same_settings]" type="checkbox" value="1" class="same_settings ctc_no_demo" id="same_settings" />
+            <input name="<?php echo $dbrow; ?>[same_settings]" type="checkbox" value="1" class="same_settings ctc_no_demo" id="same_settings" />
             <span><?php _e( 'Mobile and Desktop same setttings', 'click-to-chat-for-whatsapp' ); ?></span>
         </label>
     </p>
@@ -171,10 +171,10 @@ if ( isset( $options['same_settings'] ) ) {
 <!-- mobile style -->
 <p class="description ht_ctc_admin_mobile ht_ctc_subtitle not_samesettings"><?php _e( 'Select Style (Mobile)', 'click-to-chat-for-whatsapp' ); ?>:</p>
 <div class="row ht_ctc_admin_mobile not_samesettings">
-    <input name="<?= $dbrow; ?>[style_mobile]" value="<?= $style_mobile ?>" type="text" style="display:none;" class="chat_select_style select_style_mobile ctc_ad_main_page_on_change_style">
+    <input name="<?php echo $dbrow; ?>[style_mobile]" value="<?php echo $style_mobile ?>" type="text" style="display:none;" class="chat_select_style select_style_mobile ctc_ad_main_page_on_change_style">
 
     <div class="row ht_ctc_admin_mobile ctc_select_style ctc_style_mobile">
-        <div class="collection m_select_style_container" data-style="<?= $style_mobile ?>">
+        <div class="collection m_select_style_container" data-style="<?php echo $style_mobile ?>">
             <span class="collection-item m_select_style_item"  data-style="1"><span class="badge">Theme Button</span>Style-1</span>
             <span class="collection-item m_select_style_item"  data-style="2"><span class="badge">Green Square Icon</span>Style-2</span>
             <span class="collection-item m_select_style_item"  data-style="3"><span class="badge">Icon</span>Style-3</span>
@@ -202,7 +202,7 @@ if ( isset( $options['same_settings'] ) ) {
             <?php
             foreach ($position_type_values as $key => $value) {
                 ?>
-                <option value="<?= $key ?>" <?php echo $position_type_mobile == $key ? 'SELECTED' : ''; ?> ><?php _e( $value, 'click-to-chat-for-whatsapp' ); ?></option>
+                <option value="<?php echo $key ?>" <?php echo $position_type_mobile == $key ? 'SELECTED' : ''; ?> ><?php _e( $value, 'click-to-chat-for-whatsapp' ); ?></option>
                 <?php
             }
             ?>
@@ -223,14 +223,14 @@ if ( isset( $options['same_settings'] ) ) {
 <div class="row ht_ctc_admin_mobile not_samesettings" style="display:flex; margin-top:16px;">
     <br>
     <div class="input-field col s6">
-        <select name="<?= $dbrow; ?>[mobile_side_1]" class="select-2 ctc_no_demo">
-            <option value="bottom" <?= $mobile_side_1 == 'bottom' ? 'SELECTED' : ''; ?> ><?php _e( 'bottom', 'click-to-chat-for-whatsapp' ); ?></option>
-            <option value="top" <?= $mobile_side_1 == 'top' ? 'SELECTED' : ''; ?> ><?php _e( 'top', 'click-to-chat-for-whatsapp' ); ?></option>
+        <select name="<?php echo $dbrow; ?>[mobile_side_1]" class="select-2 ctc_no_demo">
+            <option value="bottom" <?php echo $mobile_side_1 == 'bottom' ? 'SELECTED' : ''; ?> ><?php _e( 'bottom', 'click-to-chat-for-whatsapp' ); ?></option>
+            <option value="top" <?php echo $mobile_side_1 == 'top' ? 'SELECTED' : ''; ?> ><?php _e( 'top', 'click-to-chat-for-whatsapp' ); ?></option>
         </select>
         <label>top / bottom </label>
     </div>
     <div class="input-field col s6">
-        <input name="<?= $dbrow; ?>[mobile_side_1_value]" value="<?= $mobile_side_1_value ?>" id="mobile_side_1_value" type="text" class="input-margin ctc_no_demo">
+        <input name="<?php echo $dbrow; ?>[mobile_side_1_value]" value="<?php echo $mobile_side_1_value ?>" id="mobile_side_1_value" type="text" class="input-margin ctc_no_demo">
         <label for="mobile_side_1_value"><?php _e( 'E.g. 10px', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 </div>
@@ -238,15 +238,15 @@ if ( isset( $options['same_settings'] ) ) {
 <!-- side - 2 -->
 <div class="row ht_ctc_admin_mobile not_samesettings" style="display:flex; margin-bottom:0;">
     <div class="input-field col s6">
-        <select name="<?= $dbrow; ?>[mobile_side_2]" class="select-2 ctc_no_demo">
-            <option value="right" <?= $mobile_side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>
-            <option value="left" <?= $mobile_side_2 == 'left' ? 'SELECTED' : ''; ?> ><?php _e( 'left', 'click-to-chat-for-whatsapp' ); ?></option>
+        <select name="<?php echo $dbrow; ?>[mobile_side_2]" class="select-2 ctc_no_demo">
+            <option value="right" <?php echo $mobile_side_2 == 'right' ? 'SELECTED' : ''; ?> ><?php _e( 'right', 'click-to-chat-for-whatsapp' ); ?></option>
+            <option value="left" <?php echo $mobile_side_2 == 'left' ? 'SELECTED' : ''; ?> ><?php _e( 'left', 'click-to-chat-for-whatsapp' ); ?></option>
         </select>
         <label><?php _e( 'right / left', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 
     <div class="input-field col s6">
-        <input name="<?= $dbrow; ?>[mobile_side_2_value]" value="<?= $mobile_side_2_value ?>" id="mobile_side_2_value" type="text" class="input-margin ctc_no_demo">
+        <input name="<?php echo $dbrow; ?>[mobile_side_2_value]" value="<?php echo $mobile_side_2_value ?>" id="mobile_side_2_value" type="text" class="input-margin ctc_no_demo">
         <label for="mobile_side_2_value"><?php _e( 'E.g. 50%', 'click-to-chat-for-whatsapp' ); ?></label>
     </div>
 </div>
@@ -267,7 +267,7 @@ if ( isset( $options['same_settings'] ) ) {
         ?>
         <p id="styles_issue">
             <label>
-                <input name="<?= $dbrow; ?>[select_styles_issue]" type="checkbox" value="1" <?php checked( $options['select_styles_issue'], 1 ); ?> id="select_styles_issue" />
+                <input name="<?php echo $dbrow; ?>[select_styles_issue]" type="checkbox" value="1" <?php checked( $options['select_styles_issue'], 1 ); ?> id="select_styles_issue" />
                 <!-- <span>Style for device is not as expected(due to cache)</span> -->
                 <span><?php _e( 'Check this only, If styles for mobile, desktop not selected as expected(due to cache)', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
@@ -277,7 +277,7 @@ if ( isset( $options['same_settings'] ) ) {
         ?>
         <p id="styles_issue">
             <label>
-                <input name="<?= $dbrow; ?>[select_styles_issue]" type="checkbox" value="1" id="select_styles_issue" />
+                <input name="<?php echo $dbrow; ?>[select_styles_issue]" type="checkbox" value="1" id="select_styles_issue" />
                 <span><?php _e( 'Check this, If styles for mobile, desktop not selected as expected(due to cache)', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
         </p>

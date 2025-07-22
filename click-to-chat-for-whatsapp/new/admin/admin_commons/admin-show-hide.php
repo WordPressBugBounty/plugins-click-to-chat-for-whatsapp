@@ -86,14 +86,14 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display_desktop]" value="show" type="radio" <?php checked( 'show' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
+        <input name="<?php echo $dbrow; ?>[display_desktop]" value="show" type="radio" <?php checked( 'show' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
         <span><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display_desktop]" value="hide" type="radio" <?php checked( 'hide' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
+        <input name="<?php echo $dbrow; ?>[display_desktop]" value="hide" type="radio" <?php checked( 'hide' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
         <span><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
@@ -108,14 +108,14 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display_mobile]" value="show" type="radio" <?php checked( 'show' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
+        <input name="<?php echo $dbrow; ?>[display_mobile]" value="show" type="radio" <?php checked( 'show' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
         <span><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display_mobile]" value="hide" type="radio" <?php checked( 'hide' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
+        <input name="<?php echo $dbrow; ?>[display_mobile]" value="hide" type="radio" <?php checked( 'hide' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
         <span><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
@@ -133,14 +133,14 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display][global_display]" value="show" type="radio" <?php checked( 'show' == $check_global_display ); ?> class="with-gap global_display"/>
+        <input name="<?php echo $dbrow; ?>[display][global_display]" value="show" type="radio" <?php checked( 'show' == $check_global_display ); ?> class="with-gap global_display"/>
         <span><?php _e( 'Show on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?= $dbrow; ?>[display][global_display]" value="hide" type="radio" <?php checked( 'hide' == $check_global_display ); ?> class="with-gap global_display"/>
+        <input name="<?php echo $dbrow; ?>[display][global_display]" value="hide" type="radio" <?php checked( 'hide' == $check_global_display ); ?> class="with-gap global_display"/>
         <span><?php _e( 'Hide on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
@@ -157,7 +157,7 @@ foreach ($show_hide_settings as $key => $value) {
     if ( '' == $value ) {
         // heading
         ?>
-       <p class="description" style="margin-bottom:16px;"><strong><?= $key; ?>: </strong></p>
+       <p class="description" style="margin-bottom:16px;"><strong><?php echo $key; ?>: </strong></p>
         <?php
     } else {
         $is_checked_show_hide = (isset($display_settings[$key])) ? esc_html($display_settings[$key]) : 'g';
@@ -171,25 +171,25 @@ foreach ($show_hide_settings as $key => $value) {
         ?>
         <div class="row show_hide_types">
             <p class="col s3">
-                <?= $value; ?>:
+                <?php echo $value; ?>:
             </p>
             <p class="col s3 m3 l2 show_box">
                 <label>
-                <input name="<?= $dbrow; ?>[display][<?= $key; ?>]" value="show" type="radio" <?php checked( 'show' == $is_checked_show_hide ); ?> class="with-gap show_btn <?= $key; ?>"/>
+                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="show" type="radio" <?php checked( 'show' == $is_checked_show_hide ); ?> class="with-gap show_btn <?php echo $key; ?>"/>
                 <span class="ctc_radio_text"><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
                 <span class="dashicons dashicons-visibility"></span>
                 </label>
             </p>
             <p class="col s3 m3 l2 hide_box">
                 <label>
-                <input name="<?= $dbrow; ?>[display][<?= $key; ?>]" value="hide" type="radio" <?php checked( 'hide' == $is_checked_show_hide ); ?> class="with-gap hide_btn <?= $key; ?>"/>
+                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="hide" type="radio" <?php checked( 'hide' == $is_checked_show_hide ); ?> class="with-gap hide_btn <?php echo $key; ?>"/>
                 <span class="ctc_radio_text"><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
                 <span class="dashicons dashicons-hidden"></span>
                 </label>
             </p>
             <p class="col s3 m3 l2 global_box">
                 <label>
-                <input name="<?= $dbrow; ?>[display][<?= $key; ?>]" value="g" type="radio" <?php checked( '' == $is_checked_show_hide || 'g' == $is_checked_show_hide ); ?> class="with-gap global_btn <?= $key; ?>"/>
+                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="g" type="radio" <?php checked( '' == $is_checked_show_hide || 'g' == $is_checked_show_hide ); ?> class="with-gap global_btn <?php echo $key; ?>"/>
                 <span class="ctc_radio_text"><?php _e( 'Global', 'click-to-chat-for-whatsapp' ); ?> 
                     <span class="global_show_or_hide_label"></span>
                     <span class="global_show_or_hide_icon"></span>
@@ -211,7 +211,7 @@ foreach ($show_hide_settings as $key => $value) {
 <!-- ID's list to hide styles  -->
 <div class="row hide_settings">
     <div class="input-field col s12 m7">
-        <input name="<?= $dbrow; ?>[display][list_hideon_pages]" value="<?= $list_hideon_pages ?>" id="ccw_list_id_tohide" type="text" class="input-margin">
+        <input name="<?php echo $dbrow; ?>[display][list_hideon_pages]" value="<?php echo $list_hideon_pages ?>" id="ccw_list_id_tohide" type="text" class="input-margin">
         <label for="ccw_list_id_tohide"><?php _e( "Hide on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-hidden"></span></label>
         <p class="description"><?php _e( "Add post id's to hide. Add multiple post id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
@@ -220,7 +220,7 @@ foreach ($show_hide_settings as $key => $value) {
 <!-- ID's list to show styles -->   
 <div class="row show_settings">
     <div class="input-field col s7">
-        <input name="<?= $dbrow; ?>[display][list_showon_pages]" value="<?= $list_showon_pages ?>" id="ccw_list_id_toshow" type="text" class="input-margin">
+        <input name="<?php echo $dbrow; ?>[display][list_showon_pages]" value="<?php echo $list_showon_pages ?>" id="ccw_list_id_toshow" type="text" class="input-margin">
         <label for="ccw_list_id_toshow"><?php _e( "Show on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-visibility"></span></label>
         <p class="description"><?php _e( "Add Post, Page, Media - ID's to show styles, Add multiple id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
@@ -230,7 +230,7 @@ foreach ($show_hide_settings as $key => $value) {
 <!-- Categorys list - to hide -->
 <div class="row hide_settings">
     <div class="input-field col s12 m7">
-        <input name="<?= $dbrow; ?>[display][list_hideon_cat]" value="<?= $list_hideon_cat ?>" id="list_hideon_cat" type="text" class="input-margin">
+        <input name="<?php echo $dbrow; ?>[display][list_hideon_cat]" value="<?php echo $list_hideon_cat ?>" id="list_hideon_cat" type="text" class="input-margin">
         <label for="list_hideon_cat"><?php _e( 'Hide on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-hidden"></span></label>
         <p class="description"><?php _e( 'Hides on this Category type pages, Add multiple Categories by separating with a comma ( , ) ', 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
@@ -239,7 +239,7 @@ foreach ($show_hide_settings as $key => $value) {
 <!-- Categorys list - to show -->
 <div class="row show_settings">
     <div class="input-field col s7">
-        <input name="<?= $dbrow; ?>[display][list_showon_cat]" value="<?= $list_showon_cat ?>" id="ccw_list_cat_toshow" type="text" class="input-margin">
+        <input name="<?php echo $dbrow; ?>[display][list_showon_cat]" value="<?php echo $list_showon_cat ?>" id="ccw_list_cat_toshow" type="text" class="input-margin">
         <label for="ccw_list_cat_toshow"><?php _e( 'Show on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-visibility"></span></label>
         <p class="description"><?php _e( 'Show on this Category type pages, Add multiple Categories by separating with a comma ( , )', 'click-to-chat-for-whatsapp' ); ?> </p>
     </div>

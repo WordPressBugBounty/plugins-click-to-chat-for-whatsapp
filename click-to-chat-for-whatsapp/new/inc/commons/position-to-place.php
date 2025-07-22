@@ -2,7 +2,18 @@
 /**
  * position to place
  * @included from - class-ht-ctc-chat/group/share.php
+ * 
+ * $options can be from chat/group/share.php - if called from different places. then let it be with chat options.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
+
+// If $options not already set (from parent), load default fallback — in this case, chat options
+if ( ! isset( $options ) ) {
+    $options = get_option( 'ht_ctc_chat_options', [] );
+}
 
 // position hooks
 $position_type = apply_filters( 'ht_ctc_fh_position_type', 'fixed', $options );

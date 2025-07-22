@@ -20,10 +20,10 @@ if ('' !== $min) {
 }
 
 ?>
-<div class="row ctc_component_number <?= $parent_class ?>">
+<div class="row ctc_component_number <?php echo $parent_class ?>">
     <div class="input-field col s12">
-        <input name="<?= $dbrow ?>[<?= $db_key ?>]" type="number" <?= $attr ?> value="<?= $db_value ?>" placeholder="<?= $placeholder ?>"/>
-        <label for="pre_filled"><?= $label ?></label>
-        <p class="description"><?= $description ?></p>
+        <input name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" type="number" <?php echo $attr ?> value="<?php echo $db_value ?>" placeholder="<?php echo $placeholder ?>"/>
+        <label for="pre_filled"><?php echo $label ?></label>
+        <p class="description"><?php echo $description ?></p>
     </div>
 </div>

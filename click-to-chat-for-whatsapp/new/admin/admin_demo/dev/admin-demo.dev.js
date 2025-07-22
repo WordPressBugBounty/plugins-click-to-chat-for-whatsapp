@@ -133,6 +133,10 @@
                 var url_target = (demo_var.url_target_d) ? demo_var.url_target_d : '_blank';
                 var url_structure_d = (demo_var.url_structure_d) ? demo_var.url_structure_d : '';
                 var url_structure_m = (demo_var.url_structure_m) ? demo_var.url_structure_m : '';
+                var custom_url_d = (demo_var.custom_url_d) ? demo_var.custom_url_d : '';
+                var custom_url_m = (demo_var.custom_url_m) ? demo_var.custom_url_m : '';
+
+                var url_type = 'number';
 
                 if (is_mobile == 'yes') {
                     console.log('-- mobile --');
@@ -144,10 +148,11 @@
                         // for whatsapp://.. url open target is _self.
                         url_target = '_self';
                     }
-                    // mobile: own url
-                    if (demo_var.custom_url_m && '' !== demo_var.custom_url_m) {
-                        console.log('custom link');
-                        base_url = demo_var.custom_url_m;
+                    // mobile: custom url
+                    if ('custom_url' == url_structure_m && '' !== custom_url_m) {
+                        console.log('custom url mobile');
+                        base_url = custom_url_m;
+                        url_type = 'custom_url';
                     }
                 } else {
                     // desktop
@@ -158,10 +163,11 @@
                         base_url = 'https://web.whatsapp.com/send' + '?phone=' + number + '&text=' + pre_filled;
                     }
 
-                    // desktop: own url
-                    if (demo_var.custom_url_d && '' !== demo_var.custom_url_d) {
-                        console.log('custom link');
-                        base_url = demo_var.custom_url_d;
+                    // desktop: custom url
+                    if ('custom_url' == url_structure_d && '' !== custom_url_d) {
+                        console.log('custom url desktop');
+                        base_url = custom_url_d;
+                        url_type = 'custom_url';
                     }
                 }
 
@@ -171,7 +177,8 @@
                 console.log('-- specs: ' + specs + ' --');
 
                 // navigation or display message
-                if ('' == number) {
+                // if custom url blank. it navigate to number. (as like it works in frontend)
+                if (url_type == 'number' && '' == number) {
                     // no demo: if number is empty
                     console.log(demo_var.m1);
                     ctc_demo_messages(demo_var.m1);
@@ -196,8 +203,6 @@
                 // console.log('toplevel_page_click-to-chat');
 
                 var collapse = '';
-
-
                 
                 // on change - style..
                 $('.select_style_item').on('click', function () {

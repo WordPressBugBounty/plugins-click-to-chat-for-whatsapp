@@ -16,6 +16,6 @@ if ('line' == $type) {
     $margin_bottom = (isset($input['margin_bottom'])) ? "margin-bottom: " . esc_attr($input['margin_bottom']) . ";" : '';
 
     ?>
-    <span style="display:block; <?= $margin_bottom ?>"></span>
+    <span style="display:block; <?php echo $margin_bottom ?>"></span>
     <?php
 }

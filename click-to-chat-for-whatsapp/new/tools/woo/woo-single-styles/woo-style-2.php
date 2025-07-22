@@ -34,6 +34,6 @@ $ht_ctc_svg_css = "pointer-events:none; display:block; height:$img_size; width:$
 
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 ?>
-<div title="<?= $call_to_action ?>" style="<?= $s2_css; ?>" class="ctc-analytics">
-    <?= ht_ctc_style_2_svg( $img_size, $type, $ht_ctc_svg_css ); ?>
+<div title="<?php echo $call_to_action ?>" style="<?php echo $s2_css; ?>" class="ctc-analytics">
+    <?php echo ht_ctc_style_2_svg( $img_size, $type, $ht_ctc_svg_css ); ?>
 </div>

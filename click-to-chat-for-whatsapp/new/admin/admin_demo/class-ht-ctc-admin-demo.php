@@ -72,6 +72,8 @@ class HT_CTC_Admin_Demo {
          *  -> if _GET have &demo=active 
          *  set ht_ctc_admin_demo_active to no
          */
+
+         // 'click-to-chat-greetings' == $this->get_page  add this when admin demo is added to greetings page
         if ( 'click-to-chat' == $this->get_page  || 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-customize-styles' == $this->get_page ) {
             
             // check if admin demo is active.. (added inside to run only in ctc admin pages..)
@@ -196,6 +198,9 @@ class HT_CTC_Admin_Demo {
 
         $url_structure_m = isset($options['url_structure_m']) ? esc_attr($options['url_structure_m']) : '';
         $url_structure_d = isset($options['url_structure_d']) ? esc_attr($options['url_structure_d']) : '';
+
+        $custom_url_d = isset($options['custom_url_d']) ? esc_attr($options['custom_url_d']) : '';
+        $custom_url_m = isset($options['custom_url_m']) ? esc_attr($options['custom_url_m']) : '';
         
         $site = HT_CTC_BLOG_NAME;
 
@@ -209,6 +214,8 @@ class HT_CTC_Admin_Demo {
             'url_target_d' => $url_target_d,
             'url_structure_m' => $url_structure_m,
             'url_structure_d' => $url_structure_d,
+            'custom_url_d' => $custom_url_d,
+            'custom_url_m' => $custom_url_m,
             'site' => $site,
             'm1' => $m1,
             'm2' => $m2,
@@ -271,7 +278,7 @@ class HT_CTC_Admin_Demo {
         foreach ($styles as $style) {
             $class = "ctc_demo_style ctc_demo_style_$style ht_ctc_animation ht_ctc_entry_animation";
             ?>
-            <div class="<?= $class ?>" style="display: none; cursor: pointer;">
+            <div class="<?php echo $class ?>" style="display: none; cursor: pointer;">
             <?php
             // no duplicate as in greetings, other settings page as only one style is loaded
             if ( 'click-to-chat-greetings' == $this->get_page ) {
@@ -284,7 +291,7 @@ class HT_CTC_Admin_Demo {
                 if ( 'click-to-chat-other-settings' == $this->get_page ) {
                     ?>
                     <span class="ctc_ad_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
-                        <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?= $notification_count ?></span>
+                        <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?php echo $notification_count ?></span>
                     </span>
                     <?php
                 }
@@ -312,8 +319,8 @@ class HT_CTC_Admin_Demo {
         <div class="ctc_menu_at_demo" style="position:fixed; bottom:4px; right:4px; z-index:99999999;">
 
            <p class="description ctc_ad_links ctc_init_display_none">
-                <span class="ctc_ad_page_link"><a target="_blank" href="<?= $cs_link ?>">Customize Styles</a> |</span>
-                <span class="ctc_ad_page_link"><a target="_blank" href="<?= $os_link ?>">Animations, Notification badge</a> |</span>
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo $cs_link ?>">Customize Styles</a> |</span>
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo $os_link ?>">Animations, Notification badge</a> |</span>
 
                 <span class="ctc_ad_show_hide_demo ctc_ad_show_demo ctc_init_display_none"><a target="_blank"><?php _e( 'Show Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
                 <span class="ctc_ad_show_hide_demo ctc_ad_hide_demo"><a target="_blank"><?php _e( 'Hide Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
@@ -431,13 +438,13 @@ class HT_CTC_Admin_Demo {
                 $g_box_class_template = " template-$template";
 
                 ?>
-                <div class="ctc_demo_greetings <?= "ctc_demo_greetings_" . $template ?> <?= $ctc_m_full_width ?>" style="position: relative; bottom: 18px; cursor: auto;" >
+                <div class="ctc_demo_greetings <?php echo "ctc_demo_greetings_" . $template ?> <?php echo $ctc_m_full_width ?>" style="position: relative; bottom: 18px; cursor: auto;" >
 
-                    <div class="ht_ctc_chat_greetings_box <?= $g_box_classes ?> <?= $g_box_class_template ?>" style="position: absolute; bottom: 0px; <?= $g_position_r_l ?>: 0px; min-width: <?= $min_width ?>; max-width: 420px; ">
+                    <div class="ht_ctc_chat_greetings_box <?php echo $g_box_classes ?> <?php echo $g_box_class_template ?>" style="position: absolute; bottom: 0px; <?php echo $g_position_r_l ?>: 0px; min-width: <?php echo $min_width ?>; max-width: 420px; ">
 
-                        <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?= $box_layout_bg_color ?> box-shadow: <?= $box_shadow ?>; border-radius:8px;clear:both;">
+                        <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?php echo $box_layout_bg_color ?> box-shadow: <?php echo $box_shadow ?>; border-radius:8px;clear:both;">
 
-                            <span style="<?= $g_close_button_styles ?>" class="ctc_greetings_close_btn">
+                            <span style="<?php echo $g_close_button_styles ?>" class="ctc_greetings_close_btn">
                                 <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                 </svg>

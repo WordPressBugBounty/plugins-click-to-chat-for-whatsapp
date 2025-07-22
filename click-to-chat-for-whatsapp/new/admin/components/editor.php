@@ -83,7 +83,7 @@ if ( '' !== $db_value ) {
 }
 
 ?>
-<div class="row ctc_component_editor <?= $parent_class ?>" style="<?= $parent_style ?>">
+<div class="row ctc_component_editor <?php echo $parent_class ?>" style="<?php echo $parent_style ?>">
 <p class="description ht_ctc_subtitle" style="margin-top: 2px;"><?php _e( $title, 'click-to-chat-for-whatsapp' ); ?> </p>
 <?php
 
@@ -104,5 +104,5 @@ $args = [
 
 wp_editor( $content, $editor_id, $args );
 ?>
-<p class="description" style="padding-left: 0.9rem;"><?= $description ?></p>
+<p class="description" style="padding-left: 0.9rem;"><?php echo $description ?></p>
 </div>

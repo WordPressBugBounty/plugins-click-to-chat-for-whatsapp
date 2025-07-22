@@ -128,12 +128,12 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 }
 ?>
 <style id="ht-ctc-s7_1">
-<?= $s7_hover_styles ?>
+<?php echo $s7_hover_styles ?>
 </style>
 
-<div class="ctc_s_7_1 ctc-analytics ctc_nb" style="<?= $s7_n1_styles; ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
-    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?= $s7_cta_class ?>" style="<?= $s7_cta_css ?>"><?= $call_to_action; ?></p>
-    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?= $s7_icon_padding_css ?>">
-        <?= ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+<div class="ctc_s_7_1 ctc-analytics ctc_nb" style="<?php echo $s7_n1_styles; ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
+    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo $s7_cta_class ?>" style="<?php echo $s7_cta_css ?>"><?php echo $call_to_action; ?></p>
+    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo $s7_icon_padding_css ?>">
+        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
     </div>
 </div>

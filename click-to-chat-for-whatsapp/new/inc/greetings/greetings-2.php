@@ -37,11 +37,11 @@ $g_optin_path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greet
 
 ?>
 
-<div class="ctc_g_content" style="<?= $main_css ?>">
-    <div class="ctc_g_message_box" style=""><?= wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
+<div class="ctc_g_content" style="<?php echo $main_css ?>">
+    <div class="ctc_g_message_box" style=""><?php echo wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
 </div>
 
-<div class="ctc_g_sentbutton" style="<?= $send_css ?>">
+<div class="ctc_g_sentbutton" style="<?php echo $send_css ?>">
     <?php
     if ( isset($ht_ctc_greetings['is_opt_in']) && '' !== $ht_ctc_greetings['is_opt_in'] && is_file( $g_optin_path ) ) {
         include $g_optin_path;
@@ -59,8 +59,8 @@ $g_optin_path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greet
 <?php
 if ( '' !== $ht_ctc_greetings['bottom_content'] ) {
 ?>
-<div class="ctc_g_bottom" style="<?= $bottom_css ?>">
-    <?= wpautop( $ht_ctc_greetings['bottom_content'] ) ?>
+<div class="ctc_g_bottom" style="<?php echo $bottom_css ?>">
+    <?php echo wpautop( $ht_ctc_greetings['bottom_content'] ) ?>
 </div>
 <?php
 }

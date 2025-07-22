@@ -27,13 +27,17 @@ class HT_CTC_Defaults_Greetings {
     }
 
 
+    /**
+     * greetings - default values for greetings
+     * online symobol green dot: &#128994; 
+     */
     function greetings() {
 
         $values = array(
             'greetings_template' => 'no',
             'header_content' => '<p><span style="color: #ffffff;font-size: 17px;font-weight:500;">{site}</span></p><p><span style="color: #ffffff;font-size: 12px;">Typically replies within minutes</span></p>',
             'main_content' => '<span style="font-size:14px;">Any questions related to {title}?</span>',
-            'bottom_content' => '<p style="text-align: center;"><span style="font-size: 12px;">&#128994; Online | Privacy policy</span></p>',
+            'bottom_content' => '<p style="text-align: center;"><span style="font-size: 12px;">Online | Privacy policy</span></p>',
             'call_to_action' => 'WhatsApp Us',
             'g_header_online_status_color' => '#06e376',
             'g_header_online_status' => '1',

@@ -28,7 +28,7 @@ if ('' == $s1_icon_color) {
 
 $s1_style = ('' !== $s1_css) ? "style='$s1_css'": "";
 ?>
-<button <?= $s1_style; ?> class="ctc-analytics g_s1_cta_btn ctc_cta">
+<button <?php echo $s1_style; ?> class="ctc-analytics g_s1_cta_btn ctc_cta">
 <?php
 if ('' !== $s1_add_icon) {
   
@@ -44,5 +44,5 @@ if ('' !== $s1_add_icon) {
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>
-<?= $ht_ctc_greetings['call_to_action'] ?>
+<?php echo $ht_ctc_greetings['call_to_action'] ?>
 </button>

@@ -131,8 +131,9 @@ class HT_CTC {
         $this->values = new HT_CTC_Values();
         $this->device_type = new HT_CTC_IsMobile();
 
+
         // hooks
-        include_once HT_CTC_PLUGIN_DIR .'new/inc/commons/class-ht-ctc-hooks.php';      
+        include_once HT_CTC_PLUGIN_DIR .'new/inc/commons/class-ht-ctc-hooks.php';
          // woo init
         include_once HT_CTC_PLUGIN_DIR . 'new/tools/woo/ht-ctc-woo.php';
 

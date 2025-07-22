@@ -186,6 +186,7 @@ class HT_CTC_Hooks {
                 $entry = 'corner';
             }
 
+            $ht_ctc_os['class_names'] = ( isset($ht_ctc_os['class_names']) ) ? esc_attr($ht_ctc_os['class_names']) : '';
             $ht_ctc_os['class_names'] .= " ht_ctc_entry_animation ht_ctc_an_entry_$entry";
         }
 

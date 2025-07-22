@@ -167,7 +167,7 @@ class HT_CTC_WOO_Pages {
 
         if ( is_file( $path ) ) {
             ?>
-            <div class="<?= $class_names ?>" style="<?= $css ?>" data-pre_filled="<?= $pre_filled ?>" data-dt="<?= $woo_shop_block_type ?>">
+            <div class="<?php echo $class_names ?>" style="<?php echo $css ?>" data-pre_filled="<?php echo $pre_filled ?>" data-dt="<?php echo $woo_shop_block_type ?>">
                 <?php include $path; ?>
             </div>
             <?php
@@ -306,7 +306,7 @@ class HT_CTC_WOO_Pages {
 
         if ( is_file( $path ) ) {
             ?>
-            <div class="<?= $class_names ?>" style="<?= $css ?>" data-dt="<?= $woo_single_block_type ?>">
+            <div class="<?php echo $class_names ?>" style="<?php echo $css ?>" data-dt="<?php echo $woo_single_block_type ?>">
                 <?php include $path; ?>
             </div>
             <?php

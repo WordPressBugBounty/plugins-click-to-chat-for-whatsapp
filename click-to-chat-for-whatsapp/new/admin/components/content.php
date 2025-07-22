@@ -11,7 +11,7 @@ $description = (isset($input['description'])) ? $input['description'] : '';
 
 ?>
 
-<div class="row ctc_component_content <?= $parent_class ?>">
+<div class="row ctc_component_content <?php echo $parent_class ?>">
     <?php
 
     // title

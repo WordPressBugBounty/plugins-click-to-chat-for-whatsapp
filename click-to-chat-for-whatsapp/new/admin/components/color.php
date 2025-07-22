@@ -46,22 +46,22 @@ if ('' !== $data_update_2_selector) {
 }
 
 ?>
-<div class="row ctc_component_color <?= $parent_class ?>">
+<div class="row ctc_component_color <?php echo $parent_class ?>">
     <?php
     if ('' !== $title) {
         ?>
         <div class="col s6">
-            <p><?= $title ?></p>
+            <p><?php echo $title ?></p>
         </div>
         <?php
     }
     ?>
     <div class="input-field col s6">
-        <input class="ht-ctc-color" name="<?= $dbrow ?>[<?= $db_key ?>]" data-default-color="<?= $default_color ?>" <?= $add_data_update_type ?> <?= $add_data_update_selector ?> <?= $add_data_update_2_type ?> <?= $add_data_update_2_selector ?> id="<?= $db_key ?>" value="<?= $db_value ?>" type="text">
+        <input class="ht-ctc-color" name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" data-default-color="<?php echo $default_color ?>" <?php echo $add_data_update_type ?> <?php echo $add_data_update_selector ?> <?php echo $add_data_update_2_type ?> <?php echo $add_data_update_2_selector ?> id="<?php echo $db_key ?>" value="<?php echo $db_value ?>" type="text">
         <?php
         if ('' !== $description) {
             ?>
-            <p class="description"><?= $description ?></p>
+            <p class="description"><?php echo $description ?></p>
             <?php
         }
         ?>

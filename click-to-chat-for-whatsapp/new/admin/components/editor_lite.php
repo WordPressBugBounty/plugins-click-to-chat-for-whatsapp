@@ -35,7 +35,7 @@ if ( '' !== $db_value ) {
 }
 
 ?>
-<div class="row ctc_component_editor <?= $parent_class ?>" style="<?= $parent_style ?>">
+<div class="row ctc_component_editor <?php echo $parent_class ?>" style="<?php echo $parent_style ?>">
 <?php
 if ( '' !== $title ) {
     ?>
@@ -63,5 +63,5 @@ $args = [
 
 wp_editor( $content, $editor_id, $args );
 ?>
-<p class="description"><?= $description ?></p>
+<p class="description"><?php echo $description ?></p>
 </div>

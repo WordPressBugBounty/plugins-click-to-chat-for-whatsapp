@@ -64,5 +64,5 @@ if ('' !== $s1_add_icon) {
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>
-<?php echo $call_to_action ?>
+<?php echo esc_html($call_to_action) ?>
 </button>

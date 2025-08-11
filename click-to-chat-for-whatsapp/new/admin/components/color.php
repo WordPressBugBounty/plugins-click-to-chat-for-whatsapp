@@ -46,18 +46,18 @@ if ('' !== $data_update_2_selector) {
 }
 
 ?>
-<div class="row ctc_component_color <?php echo $parent_class ?>">
+<div class="row ctc_component_color <?php echo esc_attr($parent_class) ?>">
     <?php
     if ('' !== $title) {
         ?>
         <div class="col s6">
-            <p><?php echo $title ?></p>
+            <p><?php echo esc_html($title) ?></p>
         </div>
         <?php
     }
     ?>
     <div class="input-field col s6">
-        <input class="ht-ctc-color" name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" data-default-color="<?php echo $default_color ?>" <?php echo $add_data_update_type ?> <?php echo $add_data_update_selector ?> <?php echo $add_data_update_2_type ?> <?php echo $add_data_update_2_selector ?> id="<?php echo $db_key ?>" value="<?php echo $db_value ?>" type="text">
+        <input class="ht-ctc-color" name="<?php echo esc_attr($dbrow) ?>[<?php echo esc_attr($db_key) ?>]" data-default-color="<?php echo esc_attr($default_color) ?>" <?php echo esc_attr($add_data_update_type) ?> <?php echo esc_attr($add_data_update_selector) ?> <?php echo esc_attr($add_data_update_2_type) ?> <?php echo esc_attr($add_data_update_2_selector) ?> id="<?php echo esc_attr($db_key) ?>" value="<?php echo esc_attr($db_value) ?>" type="text">
         <?php
         if ('' !== $description) {
             ?>

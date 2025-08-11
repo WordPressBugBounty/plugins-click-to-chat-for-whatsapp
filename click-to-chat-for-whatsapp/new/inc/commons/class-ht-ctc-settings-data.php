@@ -2,9 +2,15 @@
 <?php
 /**
  * 
+ * 
+ * 
  *  security
  *  sanitize
  *  validation
+ *  error handling
+ *  logging
+ *  caching
+ *  have to test with pro version
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -70,7 +76,7 @@ class HT_CTC_Settings_Data {
             }
         }
 
-        $ht_ctc_chat['pre_filled'] = (isset($options['pre_filled'])) ? __(esc_attr($options['pre_filled']) , 'click-to-chat-for-whatsapp' ) : '';
+        $ht_ctc_chat['pre_filled'] = isset($options['pre_filled']) ? esc_attr($options['pre_filled']) : '';
 
 
         $ht_ctc_chat['url_target_d'] = ( isset( $options['url_target_d'] ) ) ? esc_attr($options['url_target_d']) : '_blank';
@@ -195,7 +201,7 @@ class HT_CTC_Settings_Data {
 
         // if no number content is added. i.e. if no number is set in the plugin settings.
         if ( '' == $ht_ctc_chat['number'] ) {
-            $ctc['no_number'] = 'No WhatsApp Number Found!';
+            $ctc['no_number'] = __( 'No WhatsApp Number Found!', 'click-to-chat-for-whatsapp' );
         }
 
         // anlalytics count type

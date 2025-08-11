@@ -94,8 +94,9 @@ $style = sanitize_file_name( $style );
 $path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'prev/inc/commons/styles-list/style-' . $style. '.php';
 
 $version = HT_CTC_VERSION;
-$comment = "<!-- Click to Chat - prev - https://holithemes.com/plugins/click-to-chat/  v$version -->";
-echo $comment;
+?>
+<!-- Click to Chat - prev - https://holithemes.com/plugins/click-to-chat/ v<?php echo esc_attr($version); ?> -->
+<?php
 
 if ( is_file( $path ) ) {
     include_once $path;

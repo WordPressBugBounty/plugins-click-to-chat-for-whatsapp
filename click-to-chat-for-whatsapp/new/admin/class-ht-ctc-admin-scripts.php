@@ -19,8 +19,6 @@ class HT_CTC_Admin_Scripts {
     
     public function hooks() {
         add_action('admin_enqueue_scripts', [$this, 'register_scripts_admin'] );
-        
-        // add_filter('script_loader_tag', [$this, 'script_tags'], 10, 3);
     }
 
     // Register css styles, javascript files only on 'click-to-chat' page
@@ -110,17 +108,6 @@ class HT_CTC_Admin_Scripts {
         ];
 
         wp_localize_script( 'ctc_admin_js', 'ht_ctc_admin_var', $ctc );
-    }
-
-    // async, defer - intl scripts
-    function script_tags($tag, $handle, $src) {
-
-        if ($handle === 'ctc_admin_intl_js') {
-            $tag = str_replace(' src', ' async="async" src', $tag);
-            $tag = str_replace('<script ', '<script defer ', $tag);
-        }
-
-        return $tag;
     }
 
 

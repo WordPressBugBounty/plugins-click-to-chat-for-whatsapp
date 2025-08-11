@@ -151,9 +151,10 @@ class HT_CTC_Admin_Main_Page {
 
         // if _get have number-field 1 then load 1 else if 2 then load 2 ( &number-field=1 )
         if ( isset($_GET) && isset( $_GET['number-field'] ) ) {
-            if ( '1' == $_GET['number-field'] ) {
+            $number_field = sanitize_text_field(wp_unslash($_GET['number-field']));
+            if ( '1' === $number_field ) {
                 $intl = '1';
-            } else if ( '2' == $_GET['number-field'] ) {
+            } else if ( '2' === $number_field ) {
                 $intl = '2';
             }
         }
@@ -191,9 +192,9 @@ class HT_CTC_Admin_Main_Page {
             ?>
             <div class="row row_number" id="row_number">
                 <div class="col s12">
-                    <input type="text" name="ht_ctc_chat_options[number]" data-name="ht_ctc_chat_options[number]" class="intl_number browser-default main_wa_number" value="<?php echo $number ?>">
+                    <input type="text" name="ht_ctc_chat_options[number]" data-name="ht_ctc_chat_options[number]" class="intl_number browser-default main_wa_number" value="<?php echo esc_attr($number) ?>">
                     <input name="ht_ctc_chat_options[intl]" style="display: none;" value="1" type="hidden">
-                    <p class="description"><?php _e( "WhatsApp or WhatsApp business number", 'click-to-chat-for-whatsapp' ); ?></p>
+                    <p class="description"><?php esc_html_e( "WhatsApp or WhatsApp business number", 'click-to-chat-for-whatsapp' ); ?></p>
                     <?php
                     // display plain input number filed link.. if number filed is null/blank.
                     //  - ..
@@ -205,7 +206,7 @@ class HT_CTC_Admin_Main_Page {
                         // if save_count is greater than 5 OR again the 'number' option is missing
                         if ( $save_count > 5 || ! isset($options['number'])  ) {
                             ?>
-                            <p class="description">If WhatsApp number is not saving? load plain <a href="<?php echo admin_url( 'admin.php?page=click-to-chat&number-field=1' ); ?>">input field</a></p>
+                            <p class="description">If WhatsApp number is not saving? load plain <a href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat&number-field=1' )); ?>">input field</a></p>
                             <?php
                         }
                     }
@@ -216,7 +217,7 @@ class HT_CTC_Admin_Main_Page {
 
 
             <div class="intl_error" style="display:none;">
-                <p class="description ht_ctc_error_message">If the WhatsApp number field is not working, <a href="<?php echo admin_url( 'admin.php?page=click-to-chat&number-field=1' ); ?>">click here</a> to load the plain input field instead of the INTL library.</p>
+                <p class="description ht_ctc_error_message">If the WhatsApp number field is not working, <a href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat&number-field=1' )); ?>">click here</a> to load the plain input field instead of the INTL library.</p>
             </div>
             <?php
         } else {
@@ -231,7 +232,7 @@ class HT_CTC_Admin_Main_Page {
             <!-- Full WhatsApp Number Card -->
             <div class="row" id="row_number">
                 <div class="col s12 m8">
-                    <p class="description card-panel grey lighten-3" style="padding: 5px 24px; display: inline-block;"><?php _e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>: <span class="ht_ctc_wn"><?php echo $number ?></span> </p>
+                    <p class="description card-panel grey lighten-3" style="padding: 5px 24px; display: inline-block;"><?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>: <span class="ht_ctc_wn"><?php echo esc_html($number) ?></span> </p>
                 </div>
             </div>
 
@@ -240,26 +241,26 @@ class HT_CTC_Admin_Main_Page {
 
                     <!-- country code -->
                     <div class="input-field col s3 m3 ctc_num_field">
-                        <input name="ht_ctc_chat_options[cc]" value="<?php echo $cc ?>" id="whatsapp_cc" type="text" placeholder="+1 " class="input-margin tooltipped ctc_no_demo" data-position="left" data-tooltip="Country Code">
-                        <label for="whatsapp_cc"><?php _e( 'Country Code', 'click-to-chat-for-whatsapp' ); ?></label>
+                        <input name="ht_ctc_chat_options[cc]" value="<?php echo esc_attr($cc) ?>" id="whatsapp_cc" type="text" placeholder="+1 " class="input-margin tooltipped ctc_no_demo" data-position="left" data-tooltip="Country Code">
+                        <label for="whatsapp_cc"><?php esc_html_e( 'Country Code', 'click-to-chat-for-whatsapp' ); ?></label>
                     </div>
 
                     <!-- number -->
                     <div class="input-field col s9 m7 ctc_num_field">
-                        <input name="ht_ctc_chat_options[num]" value="<?php echo $num ?>" id="whatsapp_number" placeholder="23456789" type="text" class="input-margin tooltipped ctc_no_demo" data-position="right" data-tooltip="Number">
-                        <label for="whatsapp_number"><?php _e( 'Number', 'click-to-chat-for-whatsapp' ); ?></label>
+                        <input name="ht_ctc_chat_options[num]" value="<?php echo esc_attr($num) ?>" id="whatsapp_number" placeholder="23456789" type="text" class="input-margin tooltipped ctc_no_demo" data-position="right" data-tooltip="Number">
+                        <label for="whatsapp_number"><?php esc_html_e( 'Number', 'click-to-chat-for-whatsapp' ); ?></label>
                         <span class="helper-text ctc_wn_initial_zero" style="display: none;">zero may not needed to add before the number</span>
                     </div>
 
                     <!-- full number - hidden field -->
-                    <input name="ht_ctc_chat_options[number]" style="display: none;" hidden value="<?php echo $number ?>" id="ctc_whatsapp_number" type="text">
+                    <input name="ht_ctc_chat_options[number]" style="display: none;" hidden value="<?php echo esc_attr($number) ?>" id="ctc_whatsapp_number" type="text">
 
                 </div>
 
-                <p class="description"><?php _e( "WhatsApp or WhatsApp business number with ", 'click-to-chat-for-whatsapp' ); ?> <a target="_blank" href="https://holithemes.com/blog/country-codes/"><?php _e( 'country code', 'click-to-chat-for-whatsapp' ); ?></a> </p>
-                <p class="description"><?php _e( '( E.g. 916123456789 - herein e.g. 91 is country code, 6123456789 is the mobile number )', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-number/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <p class="description"><?php esc_html_e( "WhatsApp or WhatsApp business number with ", 'click-to-chat-for-whatsapp' ); ?> <a target="_blank" href="https://holithemes.com/blog/country-codes/"><?php esc_html_e( 'country code', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <p class="description"><?php esc_html_e( '( E.g. 916123456789 - herein e.g. 91 is country code, 6123456789 is the mobile number )', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-number/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
-                <p class="description">Display WhatsApp number input field using: <a href="<?php echo admin_url( 'admin.php?page=click-to-chat&number-field=2' ); ?>">Intl input library</a></p>
+                <p class="description">Display WhatsApp number input field using: <a href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat&number-field=2' )); ?>">Intl input library</a></p>
                 
 
             </div>
@@ -271,7 +272,7 @@ class HT_CTC_Admin_Main_Page {
 
         if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
             ?>
-            <p class="description greetings_links">Greetings dialog(message window) at <a href="<?php echo admin_url( 'admin.php?page=click-to-chat-greetings' ); ?>" target="_blank">Greetings</a> page</p>
+            <p class="description greetings_links">Greetings dialog(message window) at <a href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-greetings' )); ?>" target="_blank">Greetings</a> page</p>
             <p class="description greetings_links">PRO: <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">Multi Agent</a> | <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/random-number/">Random Number</a></p>
             <?php
         }
@@ -287,9 +288,9 @@ class HT_CTC_Admin_Main_Page {
         ?>
         <div class="row">
             <div class="input-field col s12">
-                <textarea style="min-height: 64px;" placeholder="<?php echo $placeholder ?>" name="ht_ctc_chat_options[pre_filled]" id="pre_filled" data-var="pre_filled" class="materialize-textarea input-margin ctc_ad_main_page_on_change_input_update_var"><?php echo $value ?></textarea>
-                <label for="pre_filled"><?php _e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( "Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters", 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pre-filled-message/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <textarea style="min-height: 64px;" placeholder="<?php echo esc_attr($placeholder) ?>" name="ht_ctc_chat_options[pre_filled]" id="pre_filled" data-var="pre_filled" class="materialize-textarea input-margin ctc_ad_main_page_on_change_input_update_var"><?php echo esc_textarea($value) ?></textarea>
+                <label for="pre_filled"><?php esc_html_e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
+                <p class="description"><?php esc_html_e( "Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters", 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pre-filled-message/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
             </div>
         </div>
         <?php
@@ -302,14 +303,14 @@ class HT_CTC_Admin_Main_Page {
         ?>
         <div class="row" id="row_call_to_action">
             <div class="input-field col s12">
-                <input name="ht_ctc_chat_options[call_to_action]" value="<?php echo $value ?>" id="call_to_action" type="text" class="input-margin call_to_action ctc_ad_main_page_on_change_input">
-                <label for="call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/">more info</a> </p>
+                <input name="ht_ctc_chat_options[call_to_action]" value="<?php echo esc_attr($value) ?>" id="call_to_action" type="text" class="input-margin call_to_action ctc_ad_main_page_on_change_input">
+                <label for="call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+                <p class="description"><?php esc_html_e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/">more info</a> </p>
             <?php
             if ( class_exists( 'WooCommerce' ) ) {
                 $woo_link = admin_url( 'admin.php?page=click-to-chat-woocommerce' );
                 ?>
-                <p class= "description">To Change Pre-filled Message, Call to action for WooCommerce Single Product Pages <a target="_blank" href="<?php echo $woo_link ?>">( Click to Chat -> WooCommerce )</a></p>
+                <p class= "description">To Change Pre-filled Message, Call to action for WooCommerce Single Product Pages <a target="_blank" href="<?php echo esc_url($woo_link) ?>">( Click to Chat -> WooCommerce )</a></p>
                 <?php
             }
             ?>
@@ -365,44 +366,44 @@ class HT_CTC_Admin_Main_Page {
 
         <ul class="collapsible url_structure" id="url_structure">
         <li class="">
-        <div class="collapsible-header"><?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?>
+        <div class="collapsible-header"><?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?>
             <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
         </div>
         <div class="collapsible-body">
 
-        <p class="description" style="margin: 0 0 20px 0;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/url-structure/"><?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+        <p class="description" style="margin: 0 0 20px 0;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/url-structure/"><?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
-        <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>:</p>
+        <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php esc_html_e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>:</p>
         <div class="row url_structure_row ctc_side_by_side">
             <div class="col s6">
-                <p><?php _e( 'Open links in', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p><?php esc_html_e( 'Open links in', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <select name="<?php echo $dbrow; ?>[url_target_d]" data-var="url_target_d" class="url_target_d ctc_ad_main_page_on_change_input_update_var">
-                    <option value="_blank" <?php echo $url_target_d == '_blank' ? 'SELECTED' : ''; ?> ><?php _e( 'New Tab', 'click-to-chat-for-whatsapp' ); ?></option>
-                    <option value="popup" <?php echo $url_target_d == 'popup' ? 'SELECTED' : ''; ?> ><?php _e( 'Pop-up', 'click-to-chat-for-whatsapp' ); ?></option>
-                    <option value="_self" <?php echo $url_target_d == '_self' ? 'SELECTED' : ''; ?> ><?php _e( 'Same Tab', 'click-to-chat-for-whatsapp' ); ?></option>
+                <select name="<?php echo esc_attr($dbrow); ?>[url_target_d]" data-var="url_target_d" class="url_target_d ctc_ad_main_page_on_change_input_update_var">
+                    <option value="_blank" <?php echo $url_target_d == '_blank' ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'New Tab', 'click-to-chat-for-whatsapp' ); ?></option>
+                    <option value="popup" <?php echo $url_target_d == 'popup' ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Pop-up', 'click-to-chat-for-whatsapp' ); ?></option>
+                    <option value="_self" <?php echo $url_target_d == '_self' ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Same Tab', 'click-to-chat-for-whatsapp' ); ?></option>
                 </select>
-                <label><?php _e( 'Open links in', 'click-to-chat-for-whatsapp' ); ?></label>
+                <label><?php esc_html_e( 'Open links in', 'click-to-chat-for-whatsapp' ); ?></label>
             </div>
         </div>
 
         <div class="row url_structure_row ctc_side_by_side">
             <div class="col s6">
-                <p><?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p><?php esc_html_e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>: <?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <select name="<?php echo $dbrow; ?>[url_structure_d]" data-var="url_structure_d" class="url_structure_d ctc_ad_main_page_on_change_input_update_var">
+                <select name="<?php echo esc_attr($dbrow); ?>[url_structure_d]" data-var="url_structure_d" class="url_structure_d ctc_ad_main_page_on_change_input_update_var">
                     <?php 
                     foreach ( $url_structure_d_list as $key => $value ) {
                     ?>
-                    <option value="<?php echo $key ?>" <?php echo $url_structure_d == $key ? 'SELECTED' : ''; ?> ><?php echo $value ?></option>
+                    <option value="<?php echo esc_attr($key) ?>" <?php echo $url_structure_d == $key ? 'SELECTED' : ''; ?> ><?php echo esc_html($value) ?></option>
                     <?php
                     }
                     ?>
                     
                 </select>
-                <label><?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></label>
+                <label><?php esc_html_e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>: <?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></label>
                 <p class="description" style="font-size: 11px;">
                     <span style="font-weight: 500;">Wa.me</span>: To open WhatsApp Desktop app <br>
                     <span style="font-weight: 500;">Web WhatsApp</span>: Opens web.whatsapp.com<br>
@@ -410,41 +411,41 @@ class HT_CTC_Admin_Main_Page {
                     <span style="font-weight: 500;">Custom URL</span>: Add any URL (e.g., WhatsApp channel URL).
                 </p>
                 <div class="custom_url_desktop ctc_init_display_none" style="margin-top:10px;">
-                    <input type="text" name="<?php echo $dbrow; ?>[custom_url_d]" value="<?php echo $custom_url_d ?>" placeholder="https://www.whatsapp.com/channel" data-var="custom_url_d" class="input-margin ctc_ad_main_page_on_change_input_update_var" style="width:100%;">
+                    <input type="text" name="<?php echo esc_attr($dbrow); ?>[custom_url_d]" value="<?php echo esc_attr($custom_url_d) ?>" placeholder="https://www.whatsapp.com/channel" data-var="custom_url_d" class="input-margin ctc_ad_main_page_on_change_input_update_var" style="width:100%;">
                     <label style="font-size:11px; color:#888;">Custom URL (Desktop)</label>
                 </div>
             </div>
         </div>
 
-        <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>:</p>
+        <p class="description ht_ctc_subtitle" style="margin-bottom: 11px;"><?php esc_html_e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>:</p>
         <div class="url_structure_row ctc_side_by_side">
             <div class="col s6">
-                <p><?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p><?php esc_html_e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>: <?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <div class="input-field col s6">
-                <select name="<?php echo $dbrow; ?>[url_structure_m]" data-var="url_structure_m" class="url_structure_m ctc_ad_main_page_on_change_input_update_var">
+                <select name="<?php echo esc_attr($dbrow); ?>[url_structure_m]" data-var="url_structure_m" class="url_structure_m ctc_ad_main_page_on_change_input_update_var">
                     <?php 
                     foreach ( $url_structure_m_list as $key => $value ) {
                     ?>
-                    <option value="<?php echo $key ?>" <?php echo $url_structure_m == $key ? 'SELECTED' : ''; ?> ><?php echo $value ?></option>
+                    <option value="<?php echo esc_attr($key) ?>" <?php echo $url_structure_m == $key ? 'SELECTED' : ''; ?> ><?php echo esc_html($value) ?></option>
                     <?php
                     }
                     ?>
                 </select>
-                <label><?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>: <?php _e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></label>
+                <label><?php esc_html_e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>: <?php esc_html_e( 'URL Structure', 'click-to-chat-for-whatsapp' ); ?></label>
                 <p class="description" style="font-size: 11px;">
                     <span style="font-weight: 500;">Wa.me</span>: Opens WhatsApp Mobile app <br>
                     <span style="font-weight: 500;">WhatsApp://</span>: Opens WhatsApp Mobile app directly<br>
                     <span style="font-weight: 500;">Custom URL</span>: Add any URL (e.g., WhatsApp channel URL).
                 </p>
                 <div class="custom_url_mobile ctc_init_display_none" style="margin-top:10px;">
-                    <input type="text" name="<?php echo $dbrow; ?>[custom_url_m]" value="<?php echo $custom_url_m ?>" placeholder="https://www.whatsapp.com/channel" data-var="custom_url_m" class="input-margin ctc_ad_main_page_on_change_input_update_var" style="width:100%;">
+                    <input type="text" name="<?php echo esc_attr($dbrow); ?>[custom_url_m]" value="<?php echo esc_attr($custom_url_m) ?>" placeholder="https://www.whatsapp.com/channel" data-var="custom_url_m" class="input-margin ctc_ad_main_page_on_change_input_update_var" style="width:100%;">
                     <label style="font-size:11px; color:#888;">Custom URL (Mobile)</label>
                 </div>
             </div>
         </div>
 
-        <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-url/"><?php _e( 'Custom URL', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+        <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-url/"><?php esc_html_e( 'Custom URL', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
 
         </div>
@@ -483,10 +484,10 @@ class HT_CTC_Admin_Main_Page {
 
         ?>
         <p class="description">Menu:</p>
-        <p class="description">👋 <a target="_blank" class="em_1_1" href="<?php echo admin_url( 'admin.php?page=click-to-chat-greetings' ); ?>">Greetings</a>: Greetings-1, Greetings-2, Form filling(PRO), Multi Agent(PRO)</p>
-        <p class="description">🎨 <a target="_blank" class="em_1_1" href="<?php echo admin_url( 'admin.php?page=click-to-chat-customize-styles' ); ?>">Customize Styles</a>: (Customize style to match your website design - color, size, call to action hover effects, ...)</p>
-        <p class="description">⚙️ <a target="_blank" class="em_1_1" href="<?php echo admin_url( 'admin.php?page=click-to-chat-other-settings' ); ?>">Other Settings</a>: (Analytics, Animations, Notification Badge, Webhooks, ...)</p>
-        <p class="description">🛒 <a target="_blank" class="em_1_1" href="<?php echo $woo_link ?>">WooCommerce</a>: <?php echo $woo_text ?></p>
+        <p class="description">👋 <a target="_blank" class="em_1_1" href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-greetings' )); ?>">Greetings</a>: Greetings-1, Greetings-2, Form filling(PRO), Multi Agent(PRO)</p>
+        <p class="description">🎨 <a target="_blank" class="em_1_1" href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-customize-styles' )); ?>">Customize Styles</a>: (Customize style to match your website design - color, size, call to action hover effects, ...)</p>
+        <p class="description">⚙️ <a target="_blank" class="em_1_1" href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-other-settings' )); ?>">Other Settings</a>: (Analytics, Animations, Notification Badge, Webhooks, ...)</p>
+        <p class="description">🛒 <a target="_blank" class="em_1_1" href="<?php echo esc_url($woo_link) ?>">WooCommerce</a>: <?php echo esc_html($woo_text) ?></p>
         <br>
         <p class="description">Features:</p>
         <p class="description">🧩 <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-element">Custom Element: </a>Class name: ctc_chat  |  Href/Link: #ctc_chat</p>
@@ -532,7 +533,7 @@ class HT_CTC_Admin_Main_Page {
 
         ?>
         <!-- hover content for submit button -->
-        <span style="display: none;" id="<?php echo $clear_cache_text ?>"><?php _e( 'Please clear the cache after save changes', 'click-to-chat-for-whatsapp' ); ?></span>
+        <span style="display: none;" id="<?php echo esc_attr($clear_cache_text) ?>"><?php esc_html_e( 'Please clear the cache after save changes', 'click-to-chat-for-whatsapp' ); ?></span>
         <?php
         
         // if multilingual plugin is active then display a message to 'After saving the settings, clear/update the translation'

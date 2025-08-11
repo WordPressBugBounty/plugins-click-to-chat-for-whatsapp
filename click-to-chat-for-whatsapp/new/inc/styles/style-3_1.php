@@ -86,12 +86,12 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 
 ?>
 <style id="ht-ctc-s3">
-.ht-ctc .ctc_s_3_1:hover svg stop{stop-color:<?php echo $s3_1_bg_color_hover ?>;}.ht-ctc .ctc_s_3_1:hover .ht_ctc_padding,.ht-ctc .ctc_s_3_1:hover .ctc_cta_stick{<?php echo $s3_1_hover_css ?>}
+.ht-ctc .ctc_s_3_1:hover svg stop{stop-color:<?php echo esc_attr($s3_1_bg_color_hover) ?>;}.ht-ctc .ctc_s_3_1:hover .ht_ctc_padding,.ht-ctc .ctc_s_3_1:hover .ctc_cta_stick{<?php echo esc_attr($s3_1_hover_css) ?>}
 </style>
 
-<div <?php echo $title ?> style="<?php echo $s3_1_css ?>" class="ctc_s_3_1 ctc_s3_1 ctc_nb" data-nb_top="-4px" data-nb_right="-4px">
-    <p class="ctc-analytics ctc_cta ctc_cta_stick <?php echo $s3_1_cta_class ?>" style="<?php echo $s3_1_cta_css ?>"><?php echo $call_to_action ?></p>
-    <div class="ctc-analytics ht_ctc_padding" style="<?php echo $s3_1_extend_css ?>">
+<div <?php echo esc_attr($title) ?> style="<?php echo esc_attr($s3_1_css) ?>" class="ctc_s_3_1 ctc_s3_1 ctc_nb" data-nb_top="-4px" data-nb_right="-4px">
+    <p class="ctc-analytics ctc_cta ctc_cta_stick <?php echo esc_attr($s3_1_cta_class) ?>" style="<?php echo esc_attr($s3_1_cta_css) ?>"><?php echo esc_html($call_to_action) ?></p>
+    <div class="ctc-analytics ht_ctc_padding" style="<?php echo esc_attr($s3_1_extend_css) ?>">
         <?php echo ht_ctc_style_3_1_svg( $img_size, $type, $ht_ctc_svg_css, $others ); ?>
     </div>
 </div>

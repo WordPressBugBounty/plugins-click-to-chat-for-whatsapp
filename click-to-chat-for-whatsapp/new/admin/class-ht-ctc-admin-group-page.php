@@ -92,9 +92,9 @@ class HT_CTC_Admin_Group_Page {
         ?>
         <div class="row">
             <div class="input-field col s12">
-                <input name="ht_ctc_group[group_id]" value="<?php echo $value ?>" id="whatsapp_group_id" type="text" class="input-margin">
-                <label for="whatsapp_group_id"><?php _e( 'WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?>.</label>
-                <p class="description"><?php _e( 'Enter WhatsApp Group ID. E.g. 9EHLsEsOeJk6AVtE8AvXiA', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/find-whatsapp-group-id/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <input name="ht_ctc_group[group_id]" value="<?php echo esc_attr($value); ?>" id="whatsapp_group_id" type="text" class="input-margin">
+                <label for="whatsapp_group_id"><?php esc_html_e( 'WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?>.</label>
+                <p class="description"><?php esc_html_e( 'Enter WhatsApp Group ID. E.g. 9EHLsEsOeJk6AVtE8AvXiA', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/find-whatsapp-group-id/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
             </div>
         </div>
         <?php
@@ -107,9 +107,9 @@ class HT_CTC_Admin_Group_Page {
         ?>
         <div class="row">
             <div class="input-field col s12">
-                <input name="ht_ctc_group[call_to_action]" value="<?php echo $value ?>" id="call_to_action" type="text" class="input-margin">
-                <label for="call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"> <?php _e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <input name="ht_ctc_group[call_to_action]" value="<?php echo esc_attr($value); ?>" id="call_to_action" type="text" class="input-margin">
+                <label for="call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+                <p class="description"> <?php esc_html_e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
             </div>
         </div>
         <?php
@@ -138,7 +138,7 @@ class HT_CTC_Admin_Group_Page {
 
     function group_shortcode_cb() {
         ?>
-        <p class="description"><?php _e( 'Shortcodes for Group Chat', 'click-to-chat-for-whatsapp' ); ?>: [ht-ctc-group] - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/shortcodes-group/">more info</a></p>
+        <p class="description"><?php esc_html_e( 'Shortcodes for Group Chat', 'click-to-chat-for-whatsapp' ); ?>: [ht-ctc-group] - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/shortcodes-group/">more info</a></p>
         <?php
     }
 

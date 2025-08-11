@@ -167,7 +167,7 @@ class HT_CTC_WOO_Pages {
 
         if ( is_file( $path ) ) {
             ?>
-            <div class="<?php echo $class_names ?>" style="<?php echo $css ?>" data-pre_filled="<?php echo $pre_filled ?>" data-dt="<?php echo $woo_shop_block_type ?>">
+            <div class="<?php echo esc_attr($class_names) ?>" style="<?php echo esc_attr($css) ?>" data-pre_filled="<?php echo esc_attr($pre_filled) ?>" data-dt="<?php echo esc_attr($woo_shop_block_type) ?>">
                 <?php include $path; ?>
             </div>
             <?php
@@ -306,7 +306,7 @@ class HT_CTC_WOO_Pages {
 
         if ( is_file( $path ) ) {
             ?>
-            <div class="<?php echo $class_names ?>" style="<?php echo $css ?>" data-dt="<?php echo $woo_single_block_type ?>">
+            <div class="<?php echo esc_attr($class_names) ?>" style="<?php echo esc_attr($css) ?>" data-dt="<?php echo esc_attr($woo_single_block_type) ?>">
                 <?php include $path; ?>
             </div>
             <?php
@@ -342,7 +342,7 @@ class HT_CTC_WOO_Pages {
 
                     if ( $price !== '' && $price !== null ) {
                         if ( function_exists( 'wc_price' ) ) {
-                            $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ) );
+                            $price_formatted = html_entity_decode( wp_strip_all_tags( wc_price( $price ) ) );
                             $price_formatted = esc_attr( $price_formatted );
                         } else {
                             $price_formatted = esc_attr( $price );

@@ -69,11 +69,11 @@ $s8_main_span_css = "display: flex; $rtl_css padding: 0 2rem;letter-spacing: .5p
 ?>
 
 <style id="ht-ctc-s8">
-.ht-ctc-style-8 .s_8 .s_8_icon{<?php echo $s8_icon_css ?>;}.ht-ctc .ht-ctc-style-8:hover .s_8 svg g path{fill:<?php echo $s8_icon_color_on_hover ?> !important;}.ht-ctc .ht-ctc-style-8:hover .s_8 .ht-ctc-s8-text{color:<?php echo $s8_txt_color_on_hover ?> !important;}.ht-ctc .ht-ctc-style-8:hover .s_8{box-shadow: 0 3px 3px 0 rgba(7,6,6,.14), 0 1px 7px 0 rgba(0,0,0,.12), 0 3px 1px -1px rgba(0,0,0,.2) !important; transition: .2s ease-out !important; background-color:<?php echo $s8_bg_color_on_hover ?> !important; }<?php echo $s8_fullwidth_css ?>
+.ht-ctc-style-8 .s_8 .s_8_icon{<?php echo esc_attr($s8_icon_css) ?>;}.ht-ctc .ht-ctc-style-8:hover .s_8 svg g path{fill:<?php echo esc_attr($s8_icon_color_on_hover) ?> !important;}.ht-ctc .ht-ctc-style-8:hover .s_8 .ht-ctc-s8-text{color:<?php echo esc_attr($s8_txt_color_on_hover) ?> !important;}.ht-ctc .ht-ctc-style-8:hover .s_8{box-shadow: 0 3px 3px 0 rgba(7,6,6,.14), 0 1px 7px 0 rgba(0,0,0,.12), 0 3px 1px -1px rgba(0,0,0,.2) !important; transition: .2s ease-out !important; background-color:<?php echo esc_attr($s8_bg_color_on_hover) ?> !important; }<?php echo esc_html($s8_fullwidth_css) ?>
 </style>
 
 <div class = "ht-ctc-style-8 ctc_s_8 ctc-analytics" >
-  <span class="s_8 ctc-analytics" style="<?php echo $s8_main_span_css ?>">
+  <span class="s_8 ctc-analytics" style="<?php echo esc_attr($s8_main_span_css) ?>">
     <span class="s_8_icon">
       <?php 
       if ('hide' !== $s8_icon_position) {
@@ -82,8 +82,8 @@ $s8_main_span_css = "display: flex; $rtl_css padding: 0 2rem;letter-spacing: .5p
       }
       ?>
     </span>
-    <span class="ht-ctc-s8-text s8_span ctc-analytics ctc_cta" style="<?php echo $s8_text_css; ?>">
-      <?php echo $call_to_action ?>
+    <span class="ht-ctc-s8-text s8_span ctc-analytics ctc_cta" style="<?php echo esc_attr($s8_text_css); ?>">
+      <?php echo esc_html($call_to_action) ?>
     </span>
   </span>
 </div>

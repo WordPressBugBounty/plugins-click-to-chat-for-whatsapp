@@ -49,6 +49,7 @@ $s5_cta_style = "display: -ms-flexbox;display: -webkit-flex; display: flex;$rtl_
 
 
 $s5_img_style = '';
+// padding:0;
 $s5_img_style .= 'height: '.$s5_img_height.'; width: '.$s5_img_width.'; z-index: 1; ';
 if ( 'right' == $s5_img_position ) {
     $s5_img_style .= 'order: 1;';
@@ -80,11 +81,11 @@ echo $o;
 
 <div class="ht-ctc-style-5 ctc-analytics ctc_s_5" style="cursor: pointer;" >
 
-    <div class="s5_cta" style="<?php echo $s5_cta_style ?>"   >
-        <img class="s5_img ctc-analytics" src="<?php echo $s5_img ?>" style="<?php echo $s5_img_style ?>" alt="<?php echo $call_to_action ?>">
-        <div class="s5_content ctc-analytics ctc_cta_stick <?php echo $s5_img_position ?>" style="<?php echo $s5_content_style ?>" >
-            <span class="heading ctc-analytics ctc_cta" style="color: <?php echo $s5_line_1_color ?>"><?php echo $s5_line_1 ?></span>
-            <span class="description ctc-analytics" style="color: <?php echo $s5_line_2_color ?>"><?php echo $s5_line_2 ?></span>
+    <div class="s5_cta" style="<?php echo esc_attr($s5_cta_style) ?>"   >
+        <img class="s5_img ctc-analytics" src="<?php echo esc_url($s5_img) ?>" style="<?php echo esc_attr($s5_img_style) ?>" alt="<?php echo esc_attr($call_to_action) ?>">
+        <div class="s5_content ctc-analytics ctc_cta_stick <?php echo esc_attr($s5_img_position) ?>" style="<?php echo esc_attr($s5_content_style) ?>" >
+            <span class="heading ctc-analytics ctc_cta" style="color: <?php echo esc_attr($s5_line_1_color) ?>"><?php echo esc_html($s5_line_1) ?></span>
+            <span class="description ctc-analytics" style="color: <?php echo esc_attr($s5_line_2_color) ?>"><?php echo esc_html($s5_line_2) ?></span>
         </div>
     </div>
 

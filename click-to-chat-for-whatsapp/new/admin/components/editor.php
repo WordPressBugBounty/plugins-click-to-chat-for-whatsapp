@@ -83,8 +83,8 @@ if ( '' !== $db_value ) {
 }
 
 ?>
-<div class="row ctc_component_editor <?php echo $parent_class ?>" style="<?php echo $parent_style ?>">
-<p class="description ht_ctc_subtitle" style="margin-top: 2px;"><?php _e( $title, 'click-to-chat-for-whatsapp' ); ?> </p>
+<div class="row ctc_component_editor <?php echo esc_attr($parent_class) ?>" style="<?php echo esc_attr($parent_style) ?>">
+<p class="description ht_ctc_subtitle" style="margin-top: 2px;"><?php echo esc_html($title); ?> </p>
 <?php
 
 $content   = $db_value;

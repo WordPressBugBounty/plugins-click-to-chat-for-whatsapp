@@ -58,7 +58,7 @@ if ( ! function_exists('ht_ctc_woo_single_product_page_variables') ) {
                          * wc_price() returns the formatted price with HTML tags.
                          * Use strip_tags() to remove HTML and html_entity_decode() to display currency symbols correctly.
                          */
-                        $price_formatted = html_entity_decode( strip_tags( wc_price( $price ) ) );
+                        $price_formatted = html_entity_decode( wp_strip_all_tags( wc_price( $price ) ) );
                         $price_formatted = esc_attr( $price_formatted );
                     } else {
                         $price_formatted = esc_attr( $price ); // Use raw price if wc_price() is unavailable.

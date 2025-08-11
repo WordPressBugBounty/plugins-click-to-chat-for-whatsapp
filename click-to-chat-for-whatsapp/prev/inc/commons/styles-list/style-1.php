@@ -7,8 +7,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 ?>
-<div class="ccw_plugin chatbot" style="<?php echo $p1 ?>; <?php echo $p2 ?>;">
-    <div class="style1 animated <?php echo $an_on_load .' '. $an_on_hover ?> ">
-        <button onclick="<?php echo $redirect ?>"><?php echo $val ?></button>    
+<div class="ccw_plugin chatbot" style="<?php echo esc_attr($p1) ?>; <?php echo esc_attr($p2) ?>;">
+    <div class="style1 animated <?php echo esc_attr($an_on_load) .' '. esc_attr($an_on_hover) ?> ">
+        <button onclick="<?php echo esc_js($redirect) ?>"><?php echo esc_html($val) ?></button>    
     </div>
 </div>

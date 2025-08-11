@@ -1,7 +1,6 @@
 // Click to Chat - Share
 
 /**
- * todo: remove gettings values from data attributes and using for most cases. 
  * will create variable.. ht_ctc_share_var like.. ht_ctc_share_var .. 
  */
 (function ($) {

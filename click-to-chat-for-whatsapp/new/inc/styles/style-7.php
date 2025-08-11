@@ -74,12 +74,12 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 }
 ?>
 <style id="ht-ctc-s7">
-<?php echo $s7_hover_icon_styles ?>
+<?php echo esc_html($s7_hover_icon_styles) ?>
 </style>
 
-<div <?php echo $title ?> class="ctc_s_7 ctc-analytics ctc_nb" style="<?php echo $s7_n1_styles; ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
-    <p class="ctc_s_7_cta ctc_cta ctc_cta_stick ctc-analytics <?php echo $s7_cta_class ?>" style="<?php echo $s7_cta_css ?>"><?php echo $call_to_action; ?></p>
-    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo $s7_icon_css ?>">
+<div <?php echo esc_attr($title) ?> class="ctc_s_7 ctc-analytics ctc_nb" style="<?php echo esc_attr($s7_n1_styles); ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
+    <p class="ctc_s_7_cta ctc_cta ctc_cta_stick ctc-analytics <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
+    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_css) ?>">
         <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
     </div>
 </div>

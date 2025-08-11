@@ -26,10 +26,7 @@ class HT_CTC_Group_Shortcode {
         $ht_ctc_os = array();
 
         $group_id = esc_attr( $options['group_id'] );
-        $call_to_action_db = esc_attr( $options['call_to_action'] );
-
-        $group_id = __( $group_id , 'click-to-chat-for-whatsapp' );
-        $call_to_action = __( $call_to_action_db , 'click-to-chat-for-whatsapp' );
+        $call_to_action = esc_attr( $options['call_to_action'] );
 
         $style_desktop = (isset($options['style_desktop'])) ? esc_attr($options['style_desktop']) : '2';
         if (isset($options['same_settings'])) {

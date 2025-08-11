@@ -120,9 +120,9 @@ class HT_CTC_Chat {
             //no page level settings for archive pages
             $is_page_level_settings = 'no';
 
-            if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['REQUEST_URI'] ) {
-                $protocol = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ) ? 'https' : 'http';
-                $page_url = $protocol . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            if ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) {
+                $protocol = ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) ? 'https' : 'http';
+                $page_url = esc_url_raw( $protocol . '://' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
             }
 
             if ( is_category() ) {
@@ -194,14 +194,18 @@ class HT_CTC_Chat {
         $default_position = '';
         include HT_CTC_PLUGIN_DIR .'new/inc/commons/position-to-place.php';
 
-        // position: e.g. position: fixed; bottom: 15px; right: 15px;
-        $ht_ctc_chat['position'] = $position;
-        $ht_ctc_chat['position_mobile'] = $position_mobile;
+        // position:
+        $ht_ctc_chat['position'] = ( isset($position) ) ? esc_attr($position) : 'position: fixed; bottom: 15px; right: 15px;';
+        $ht_ctc_chat['position_mobile'] = ( isset($position_mobile) ) ? esc_attr($position_mobile) : 'position: fixed; bottom: 15px; right: 15px;';
+        
+        // side_d, side_m
+        $ht_ctc_chat['side_d'] = ( isset($side_d) ) ? esc_attr($side_d) : 'right';
+        $ht_ctc_chat['side_m'] = ( isset($side_m) ) ? esc_attr($side_m) : 'right';
         
         // number
-        $ht_ctc_chat['number'] = (isset($options['number'])) ? esc_attr($options['number']) : '';
-        $ht_ctc_chat['call_to_action'] = (isset($options['call_to_action'])) ? __(esc_attr($options['call_to_action']) , 'click-to-chat-for-whatsapp' ) : '';
-        $ht_ctc_chat['pre_filled'] = (isset($options['pre_filled'])) ? __(esc_attr($options['pre_filled']) , 'click-to-chat-for-whatsapp' ) : '';
+        $ht_ctc_chat['number'] = isset($options['number']) ? esc_attr($options['number']) : '';
+        $ht_ctc_chat['call_to_action'] = isset($options['call_to_action']) ? esc_attr($options['call_to_action']) : '';
+        $ht_ctc_chat['pre_filled'] = isset($options['pre_filled']) ? esc_attr($options['pre_filled']) : '';
 
         // safe side action .. if number not saved in new method
         if ( '' == $ht_ctc_chat['number'] ) {
@@ -364,7 +368,7 @@ class HT_CTC_Chat {
 
         // webhook
         $hook_url = isset($othersettings['hook_url']) ? esc_attr( $othersettings['hook_url'] ) : '';
-        $webhook_format = isset($othersettings['webhook_format']) ? esc_attr( $othersettings['webhook_format'] ) : 'string';
+        $webhook_format = isset($othersettings['webhook_format']) ? esc_attr( $othersettings['webhook_format'] ) : 'json';
         
         /**
          * ctc
@@ -378,6 +382,8 @@ class HT_CTC_Chat {
             'css' => $ht_ctc_chat['css'],
             'pos_d' => $ht_ctc_chat['position'],
             'pos_m' => $ht_ctc_chat['position_mobile'],
+            'side_d' => $ht_ctc_chat['side_d'],
+            'side_m' => $ht_ctc_chat['side_m'],
             'schedule' => $ht_ctc_chat['schedule'],
             'se' => $ht_ctc_os['show_effect'],
             'ani' => $ht_ctc_os['an_type'],
@@ -500,7 +506,7 @@ class HT_CTC_Chat {
 
         // if no number content is added. i.e. if no number is set in the plugin settings.
         if ( '' == $ht_ctc_chat['number'] ) {
-            $ctc['no_number'] = 'No WhatsApp Number Found!';
+            $ctc['no_number'] = __( 'No WhatsApp Number Found!', 'click-to-chat-for-whatsapp' );
         }
 
         $ctc = apply_filters( 'ht_ctc_fh_ctc', $ctc );
@@ -694,20 +700,20 @@ class HT_CTC_Chat {
         // if no number is set then only load the message.
         if ( '' == $ht_ctc_chat['number'] ) {
             ?>
-            <div class="ctc-no-number-message" style="display:none; <?php echo $default_position ?> z-index: <?php echo $zindex + 5 ?>; max-width:410px; background-color:#fff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888;">
+            <div class="ctc-no-number-message" style="display:none; <?php echo esc_attr($default_position) ?> z-index: <?php echo esc_attr($zindex) + 5 ?>; max-width:410px; background-color:#fff; margin:0; border:1px solid #fbfbfb; padding:11px; border-radius:4px; box-shadow:5px 10px 8px #888;">
                 <span onclick="this.closest('.ctc-no-number-message').style.display='none';" style="position:absolute; top:5px; right:5px; background:transparent; border:none; font-size:18px; line-height:1; cursor:pointer;">&times;</span>
-                <p style="margin:0;">No WhatsApp Number Found!</p>
+                <p style="margin:0;"><?php esc_html_e( 'No WhatsApp Number Found!', 'click-to-chat-for-whatsapp' ); ?></p>
                 <?php
                 // if admin user then load admin notice to add number.
                 if ( current_user_can('administrator') ) {
                     $admin_url  = esc_url( admin_url( 'admin.php?page=click-to-chat' ) );
                     ?>
                     <p style="margin:0;">
-                        <small style="color:red;">Admin Notice:</small><br>
+                        <small style="color:red;"><?php esc_html_e( 'Admin Notice:', 'click-to-chat-for-whatsapp' ); ?></small><br>
                         <small>
-                            Add <a href="<?php echo esc_url( $admin_url ) ?>">WhatsApp number</a> at plugin settings.<br>
-                            If already added, <strong>clear the cache</strong> and try again.<br>
-                            If still an issue, please contact plugin developers.
+                            <?php esc_html_e( 'Add', 'click-to-chat-for-whatsapp' ); ?> <a href="<?php echo esc_url( $admin_url ); ?>"><?php esc_html_e( 'WhatsApp number', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'at plugin settings.', 'click-to-chat-for-whatsapp' ); ?><br>
+                            <?php esc_html_e( 'If already added,', 'click-to-chat-for-whatsapp' ); ?> <strong><?php esc_html_e( 'clear the cache', 'click-to-chat-for-whatsapp' ); ?></strong> <?php esc_html_e( 'and try again.', 'click-to-chat-for-whatsapp' ); ?><br>
+                            <?php esc_html_e( 'If still an issue, please contact plugin developers.', 'click-to-chat-for-whatsapp' ); ?>
                         </small>
                     </p>
                     <?php
@@ -722,8 +728,8 @@ class HT_CTC_Chat {
         if ( is_file( $path ) ) {
             do_action('ht_ctc_ah_before_fixed_position');
             ?>  
-            <div class="<?php echo $ht_ctc_chat['class_names'] ?>" id="<?php echo $ht_ctc_chat['id'] ?>"  
-                style="<?php echo $display_css ?> <?php echo $default_position ?>" <?php echo $ht_ctc_os['attributes'] ?> <?php echo $on ?> >
+            <div class="<?php echo esc_attr($ht_ctc_chat['class_names']) ?>" id="<?php echo esc_attr($ht_ctc_chat['id']) ?>"  
+                style="<?php echo esc_attr($display_css) ?> <?php echo esc_attr($default_position) ?>" <?php echo esc_attr($ht_ctc_os['attributes']) ?> <?php echo esc_attr($on) ?> >
                 <?php
                 // add greetings dialog
                 do_action('ht_ctc_ah_in_fixed_position');
@@ -734,7 +740,7 @@ class HT_CTC_Chat {
                 if ( 'show' == $ht_ctc_chat['notification_badge'] ) {
                     ?>
                     <span class="ht_ctc_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
-                        <span class="ht_ctc_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%; <?php echo $notification_border ?> background:<?php echo $notification_bg_color ?>; color:<?php echo $notification_text_color ?>; display:flex; justify-content:center; align-items:center;"><?php echo $ht_ctc_chat['notification_count'] ?></span>
+                        <span class="ht_ctc_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%; <?php echo esc_attr($notification_border) ?> background:<?php echo esc_attr($notification_bg_color) ?>; color:<?php echo esc_attr($notification_text_color) ?>; display:flex; justify-content:center; align-items:center;"><?php echo esc_html($ht_ctc_chat['notification_count']) ?></span>
                     </span>
                     <?php
                 }
@@ -755,7 +761,7 @@ class HT_CTC_Chat {
 
             $nonce = wp_create_nonce( 'wp_rest' );
             ?>
-            <span class="ht_ctc_chat_data" data-settings="<?= $ht_ctc_settings ?>" data-rest="<?php echo esc_attr( $nonce ) ?>"></span>
+            <span class="ht_ctc_chat_data" data-settings="<?php echo esc_attr($ht_ctc_settings) ?>" data-rest="<?php echo esc_attr( $nonce ) ?>"></span>
             <?php
 
         }

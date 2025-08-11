@@ -80,7 +80,7 @@ class HT_CTC_Admin_Share_Page {
 
     public function main_settings_section_cb() {
         ?>
-        <h1><?php _e( 'Share', 'click-to-chat-for-whatsapp' ); ?></h1>
+        <h1><?php esc_html_e( 'Share', 'click-to-chat-for-whatsapp' ); ?></h1>
         <?php
         do_action('ht_ctc_ah_admin' );
     }
@@ -93,9 +93,9 @@ class HT_CTC_Admin_Share_Page {
         ?>
         <div class="row">
             <div class="input-field col s12">
-                <input name="ht_ctc_share[share_text]" value="<?php echo $value ?>" id="whatsapp_share_text" type="text" class="input-margin">
-                <label for="whatsapp_share_text"><?php _e( 'Share Text', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( "Placeholder {{url}} returns current webpage URL", 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/share-text/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> ) </p>
+                <input name="ht_ctc_share[share_text]" value="<?php echo esc_attr( $value ); ?>" id="whatsapp_share_text" type="text" class="input-margin">
+                <label for="whatsapp_share_text"><?php esc_html_e( 'Share Text', 'click-to-chat-for-whatsapp' ); ?></label>
+                <p class="description"><?php esc_html_e( "Placeholder {{url}} returns current webpage URL", 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/share-text/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> ) </p>
             </div>
         </div>
         <?php
@@ -108,9 +108,9 @@ class HT_CTC_Admin_Share_Page {
         ?>
         <div class="row">
             <div class="input-field col s12">
-                <input name="ht_ctc_share[call_to_action]" value="<?php echo $value ?>" id="call_to_action" type="text" class="input-margin">
-                <label for="call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
-                <p class="description"><?php _e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+                <input name="ht_ctc_share[call_to_action]" value="<?php echo esc_attr( $value ); ?>" id="call_to_action" type="text" class="input-margin">
+                <label for="call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+                <p class="description"><?php esc_html_e( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/call-to-action/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
             </div>
         </div>
         <?php
@@ -126,7 +126,7 @@ class HT_CTC_Admin_Share_Page {
             <p>
                 <label>
                     <input name="ht_ctc_share[webandapi]" type="checkbox" value="1" <?php checked( $options['webandapi'], 1 ); ?> id="webandapi"   />
-                    <span><?php _e( 'Web WhatsApp on Desktop', 'click-to-chat-for-whatsapp' ); ?></span>
+                    <span><?php esc_html_e( 'Web WhatsApp on Desktop', 'click-to-chat-for-whatsapp' ); ?></span>
                 </label>
             </p>
             <?php
@@ -135,13 +135,13 @@ class HT_CTC_Admin_Share_Page {
             <p>
                 <label>
                     <input name="ht_ctc_share[webandapi]" type="checkbox" value="1" id="webandapi"   />
-                    <span><?php _e( 'Web WhatsApp on Desktop', 'click-to-chat-for-whatsapp' ); ?></span>
+                    <span><?php esc_html_e( 'Web WhatsApp on Desktop', 'click-to-chat-for-whatsapp' ); ?></span>
                 </label>
             </p>
             <?php
         }
         ?>
-        <p class="description"><?php _e( 'If checked opens Web.WhatsApp directly on Desktop and in mobile WhatsApp App', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/web-whatsapp/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+        <p class="description"><?php esc_html_e( 'If checked opens Web.WhatsApp directly on Desktop and in mobile WhatsApp App', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/web-whatsapp/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
         <br>
 
         <?php
@@ -170,7 +170,7 @@ class HT_CTC_Admin_Share_Page {
 
     function share_shortcode_cb() {
         ?>
-        <p class="description"><?php _e( 'Shortcodes for Share', 'click-to-chat-for-whatsapp' ); ?>: [ht-ctc-share] - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/shortcodes-share/"><?php _e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a></p>
+        <p class="description"><?php esc_html_e( 'Shortcodes for Share', 'click-to-chat-for-whatsapp' ); ?>: [ht-ctc-share] - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/shortcodes-share/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a></p>
         <?php
     }
 

@@ -20,9 +20,9 @@ $ul_class = (isset($input['ul_class'])) ? $input['ul_class'] : '';
 
 ?>
 
-<ul class="collapsible <?php echo $ul_class ?>">
-<li class="<?php echo $active ?>">
-<div class="collapsible-header" id="showhide_settings"><?php echo $title ?>
+<ul class="collapsible <?php echo esc_attr($ul_class) ?>">
+<li class="<?php echo esc_attr($active) ?>">
+<div class="collapsible-header" id="showhide_settings"><?php echo esc_html($title) ?>
     <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
 </div>
 <div class="collapsible-body">

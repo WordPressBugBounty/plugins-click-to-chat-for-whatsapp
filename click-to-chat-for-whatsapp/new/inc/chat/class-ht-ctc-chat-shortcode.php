@@ -24,15 +24,11 @@ class HT_CTC_Chat_Shortcode {
         $options = get_option( 'ht_ctc_chat_options' );
         $ht_ctc_os = array();
 
-        $call_to_action_db = esc_attr( $options['call_to_action'] );
-        $pre_filled_db = esc_attr( $options['pre_filled'] );
+        $call_to_action = esc_attr( $options['call_to_action'] );
+        $pre_filled = esc_attr( $options['pre_filled'] );
         
         // @since 4.3 if shortcode number attribute is not added, global number will be used at js.
-        // $number_db = (isset($options['number'])) ? esc_attr($options['number']) : '';
-        // $number = __( $number_db , 'click-to-chat-for-whatsapp' );
-
-        $call_to_action = __( $call_to_action_db , 'click-to-chat-for-whatsapp' );
-        $pre_filled = __( $pre_filled_db , 'click-to-chat-for-whatsapp' );
+        // $number = (isset($options['number'])) ? esc_attr($options['number']) : '';
 
         $style_desktop = (isset($options['style_desktop'])) ? esc_attr($options['style_desktop']) : '2';
         if (isset($options['same_settings'])) {

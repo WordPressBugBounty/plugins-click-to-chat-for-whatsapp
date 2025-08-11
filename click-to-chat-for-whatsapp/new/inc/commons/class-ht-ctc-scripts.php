@@ -44,8 +44,18 @@ class HT_CTC_Scripts {
             }
         }
 
-        // true/false
-        $load_app_js_bottom = apply_filters( 'ht_ctc_fh_load_app_js_bottom', true );
+        // load_app_js_bottom
+        $load_app_js_bottom = true;
+        $wp_ver = function_exists( 'get_bloginfo' ) ? get_bloginfo( 'version' ) : '1.0';
+        
+        if ( version_compare( $wp_ver, '6.3', '>=' ) ) {
+            $load_app_js_bottom = array(
+                'in_footer' => true,
+                'strategy'  => 'defer',
+            );
+        }
+        $load_app_js_bottom = apply_filters( 'ht_ctc_fh_load_app_js_bottom', $load_app_js_bottom );
+
 
         // js
         $css = 'main.css';

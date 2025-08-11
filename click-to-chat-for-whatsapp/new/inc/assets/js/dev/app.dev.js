@@ -31,9 +31,9 @@
 			// This covers most common mobile platforms.
 			is_mobile =
 				typeof navigator.userAgent !== 'undefined' &&
-				navigator.userAgent.match(
-					/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-				)
+					navigator.userAgent.match(
+						/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+					)
 					? 'yes'
 					: 'no';
 
@@ -119,7 +119,7 @@
 		// Step 2: If not available globally, fallback to fetching via REST API
 		// This ensures the plugin works even when globals are not rendered inline
 		if (Object.keys(ctc).length === 0 || Object.keys(ctc_values).length === 0) {
-			
+
 			// Use modern async/fetch approach to get values from server
 			// Once fetched, the start() function will be called internally
 			// getValuesUsingRestApi();
@@ -135,7 +135,7 @@
 		 * Fallback method to load settings
 		 */
 		function getValues() {
-			
+
 			console.log('fallback getValues');
 
 			if (Object.keys(ctc).length === 0 && document.querySelector('.ht_ctc_chat_data')) {
@@ -143,9 +143,9 @@
 					let settings = document.querySelector('.ht_ctc_chat_data')?.getAttribute('data-settings') || '';
 					ctc = JSON.parse(settings);
 					window.ht_ctc_chat_var = ctc;
-				} catch (e) {}
+				} catch (e) { }
 			}
-			
+
 
 			// if ctc_values is not set, then set default values
 			if (Object.keys(ctc_values).length === 0) {
@@ -964,7 +964,7 @@
 					v = v.replace('{number}', number);
 					v = v.replace('{title}', post_title);
 					v = v.replace('{url}', url);
-				} catch (e) {}
+				} catch (e) { }
 
 				console.log(v);
 				return v;
@@ -1112,7 +1112,7 @@
 								call_gtag(tag_id);
 							}
 						});
-					} catch (e) {}
+					} catch (e) { }
 				}
 
 				// Fallback: if no gtag events were sent and gtag exists, send the default event
@@ -1254,7 +1254,7 @@
 
 				// pre_filled = encodeURIComponent(pre_filled);
 				pre_filled = encodeURIComponent(decodeURI(pre_filled));
-			} catch (e) {}
+			} catch (e) { }
 
 			// if number is not defined or empty, display no number message.
 			if (

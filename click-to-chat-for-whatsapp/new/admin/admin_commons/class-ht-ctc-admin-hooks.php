@@ -45,12 +45,21 @@ class HT_CTC_Admin_Others {
         // ht_ctc_ah_admin
         add_action( 'ht_ctc_ah_admin_after_sanitize', array( $this, 'after_sanitize') );
 
+
+        /**
+         * todo..
+         * check all pages, cache plugins are covered.. 
+         * https://chatgpt.com/share/67ad8eff-8668-800c-acfe-f762c128becd
+         */
         // clear cache
         add_action( 'update_option_ht_ctc_admin_pages', array( $this, 'clear_cache') );
         // clear cache - customize styles
         add_action( 'update_option_ht_ctc_cs_options', array( $this, 'clear_cache') );
         // clear cache - greetings settings page
         add_action( 'update_option_ht_ctc_greetings_settings', array( $this, 'clear_cache') );
+
+
+        // add_action( 'admin_notices', array( $this, 'cache_clear_notice') );
 
     }
 
@@ -187,7 +196,6 @@ class HT_CTC_Admin_Others {
          * 
          * useful is there is an important release
          */
-        // _site_transient_update_plugins
         // $update_plugins = get_site_transient( 'update_plugins' );
         // if ( isset($update_plugins->response) ) {
         //     if ( isset($update_plugins->response['click-to-chat/click-to-chat.php']) ) {
@@ -217,7 +225,7 @@ class HT_CTC_Admin_Others {
     function ifnumberblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat'); ?>"><?php _e( 'Add WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'and let visitors chat', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url(admin_url('admin.php?page=click-to-chat')); ?>"><?php esc_html_e( 'Add WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'and let visitors chat', 'click-to-chat-for-whatsapp' ); ?>.</p>
             <!-- <p>Click to Chat is almost ready. <a href="<?php // echo admin_url('admin.php?page=click-to-chat');?>">Add WhatsApp Number</a> to display the chat options and let visitors chat.</p> -->
         </div>
         <?php
@@ -226,7 +234,7 @@ class HT_CTC_Admin_Others {
     function ifgroupblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat-group-feature'); ?>"><?php _e( 'Add WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let visitors join in your WhatsApp Group', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url(admin_url('admin.php?page=click-to-chat-group-feature')); ?>"><?php esc_html_e( 'Add WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'to let visitors join in your WhatsApp Group', 'click-to-chat-for-whatsapp' ); ?>.</p>
         </div>
         <?php
     }
@@ -234,7 +242,7 @@ class HT_CTC_Admin_Others {
     function ifshareblank() {
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo admin_url('admin.php?page=click-to-chat-share-feature'); ?>"><?php _e( 'Add Share Text', 'click-to-chat-for-whatsapp' ); ?></a> <?php _e( 'to let vistiors Share your Webpages', 'click-to-chat-for-whatsapp' ); ?>.</p>
+            <p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url(admin_url('admin.php?page=click-to-chat-share-feature')); ?>"><?php esc_html_e( 'Add Share Text', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'to let vistiors Share your Webpages', 'click-to-chat-for-whatsapp' ); ?>.</p>
         </div>
         <?php
     }
@@ -532,6 +540,40 @@ class HT_CTC_Admin_Others {
             wpo_cache_flush();
         }
 
+        // Cachify
+        // if ( function_exists( 'cachify_flush_cache' ) ) {
+        //     cachify_flush_cache();
+        // }
+
+        // Breeze
+        // if ( class_exists( 'Breeze_PurgeCache' ) && method_exists( 'Breeze_PurgeCache', 'breeze_clear_cache' ) ) {
+        //     Breeze_PurgeCache::breeze_clear_cache();
+        // }
+
+        // Swift Performance
+        // if ( class_exists( 'Swift_Performance_Cache' ) && method_exists( 'Swift_Performance_Cache', 'clear_cache' ) ) {
+        //     Swift_Performance_Cache::clear_cache();
+        // }
+
+        // Cloudflare (via WP Cloudflare Super Page Cache plugin)
+        // if ( function_exists( 'wp_cloudflare_purge_cache' ) ) {
+        //     wp_cloudflare_purge_cache();
+        // }
+
+        // Pantheon Edge Cache
+        // if ( function_exists( 'pantheon_wp_clear_edge_all' ) ) {
+        //     pantheon_wp_clear_edge_all();
+        // }
+
+        // Optional: ZenCache (old Comet Cache name)
+        // if ( class_exists( 'zencache' ) && method_exists( 'zencache', 'clear' ) ) {
+        //     zencache::clear();
+        // }
+
+        // Redis Object Cache (optional)
+        // if ( class_exists( 'RedisObjectCache' ) && method_exists( 'RedisObjectCache', 'flush_all' ) ) {
+        //     RedisObjectCache::flush_all();
+        // }
 
         // clear cache
         if ( function_exists( 'wp_cache_flush' ) ) {
@@ -552,7 +594,7 @@ class HT_CTC_Admin_Others {
         if ( get_transient( 'ht_ctc_cache_cleared_notice' ) ) {
             ?>
             <div class="notice notice-success is-dismissible">
-                <p><?php _e( 'If updates are not reflected, please clear your site, server and CDN cache.', 'click-to-chat-for-whatsapp' ); ?></p>
+                <p><?php esc_html_e( 'If updates are not reflected, please clear your site, server and CDN cache.', 'click-to-chat-for-whatsapp' ); ?></p>
             </div>
             <?php
             delete_transient( 'ht_ctc_cache_cleared_notice' );

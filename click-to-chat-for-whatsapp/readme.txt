@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.8.2
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.26
+Stable tag: 4.27
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -24,8 +24,6 @@ Add 'WhatsApp' or 'WhatsApp Business' Number and let your website visitors conta
 
 **💻 Desktop:** Direct visitors to the WhatsApp Desktop App or Web WhatsApp page (web.whatsapp.com)
 
-New in 4.26: Custom URL: WhatsApp Channel URL
-* Now we can add a WhatsApp Channel URL in the plugin settings, allowing visitors to join your WhatsApp Channel directly.
 
 https://youtu.be/O_BF9rhazvI
 
@@ -543,6 +541,9 @@ Thank you so much in advance from "Click to Chat" Team
 * Or enable Auto-updates to update automatically
 
 == Changelog ==
+
+= 4.27 =
+* app.js file now loads asynchronously and deferred to improve page load performance.
 
 = 4.26 =
 * Custom URL feature is now available in this main plugin. We can add WhatsApp Chanel URL in the plugin settings to open WhatsApp Channel. 

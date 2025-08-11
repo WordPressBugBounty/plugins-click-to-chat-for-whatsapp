@@ -52,7 +52,8 @@ class HT_CTC_Hooks {
         // Entry effects
         // check: - entry effect - 'from center', 'from corner' - have to make work as similar to other effects
         $entry = ( isset( $othersettings['show_effect']) ) ? esc_attr( $othersettings['show_effect'] ) : '';
-        
+
+        // todo: v4.28 remove:      && 'From Corner' !== $entry   - i.e. now corner animation works using jquery
         if ( '' !== $entry && 'no-show-effects' !== $entry && 'From Corner' !== $entry ) {
 
             if ('From Center' == $entry) {
@@ -60,9 +61,9 @@ class HT_CTC_Hooks {
             }
 
             // From Corner animation handle from js
-            // if ('From Corner' == $entry) {
-            //     $entry = 'corner';
-            // }
+            if ('From Corner' == $entry) {
+                $entry = 'corner';
+            }
 
             $an_duration = '1s';
             $an_delay = "0s";
@@ -70,6 +71,7 @@ class HT_CTC_Hooks {
 
             include_once HT_CTC_PLUGIN_DIR .'new/inc/commons/class-ht-ctc-animations.php';
             $animations = new HT_CTC_Animations();
+            // $entry is a callback function name
             $animations->entry( $entry, $an_duration, $an_delay, $an_itr );
         }
         
@@ -91,9 +93,11 @@ class HT_CTC_Hooks {
     }
     
     // comment before floting styles
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     function comment() {
-        $comment = "<!-- Click to Chat - https://holithemes.com/plugins/click-to-chat/  v$this->version -->";
-        echo $comment;
+        ?>
+        <!-- Click to Chat - https://holithemes.com/plugins/click-to-chat/  v<?php echo esc_attr($this->version); ?> -->
+        <?php 
     }
 
 
@@ -173,10 +177,10 @@ class HT_CTC_Hooks {
         $entry = ( isset( $othersettings['show_effect']) ) ? esc_attr( $othersettings['show_effect'] ) : 'no-show-effects';
 
         /**
-         * entry effect - add class name only
+         * entry effect - add class name only 
          * reqular animation type added from js.
          */
-        if ( 'no-show-effects'  !== $entry && 'From Corner'  !== $entry ) {
+        if ( '' !== $entry && 'no-show-effects' !== $entry ) {
 
             if ('From Center' == $entry) {
                 $entry = 'center';
@@ -186,8 +190,13 @@ class HT_CTC_Hooks {
                 $entry = 'corner';
             }
 
-            $ht_ctc_os['class_names'] = ( isset($ht_ctc_os['class_names']) ) ? esc_attr($ht_ctc_os['class_names']) : '';
-            $ht_ctc_os['class_names'] .= " ht_ctc_entry_animation ht_ctc_an_entry_$entry";
+            // if $entry is not corner or center the return
+            // if ( 'corner' == $entry || 'center' == $entry ) {
+                $ht_ctc_os['class_names'] = ( isset($ht_ctc_os['class_names']) ) ? esc_attr($ht_ctc_os['class_names']) : '';
+                $ht_ctc_os['class_names'] .= " ht_ctc_entry_animation ht_ctc_an_entry_$entry";
+            // }
+
+            
         }
 
         // Aria-hidden = true
@@ -203,6 +212,7 @@ class HT_CTC_Hooks {
 
 
 
+    // todo
     function load_app_js_bottom( $load_app_js_bottom ) {
         
         // compatibility

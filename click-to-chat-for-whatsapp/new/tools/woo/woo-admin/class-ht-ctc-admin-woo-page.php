@@ -178,15 +178,15 @@ class HT_CTC_Admin_Woo_Page {
 
             <div class="col s12">
                 <ul class="tabs tabs-fixed-width">
-                    <li class="tab col s3 md_tab_li"><a href="#overwrite_tab-1"><?php _e( 'Single Product Pages', 'click-to-chat-for-whatsapp' ); ?></a></li>
-                    <li class="tab col s3 md_tab_li"><a href="#overwrite_tab-2"><?php _e( 'Shop, cart, checkout, Account', 'click-to-chat-for-whatsapp' ); ?></a></li>
+                    <li class="tab col s3 md_tab_li"><a href="#overwrite_tab-1"><?php esc_html_e( 'Single Product Pages', 'click-to-chat-for-whatsapp' ); ?></a></li>
+                    <li class="tab col s3 md_tab_li"><a href="#overwrite_tab-2"><?php esc_html_e( 'Shop, cart, checkout, Account', 'click-to-chat-for-whatsapp' ); ?></a></li>
                 </ul>
             </div>
 
             <!-- overwrite: single product page -->
             <div id="overwrite_tab-1" class="col s12 md_tab">
                 <div class="ctc_md_tab">
-                    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/woocommerce-single-product-pages/"><?php _e( 'WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
+                    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/woocommerce-single-product-pages/"><?php esc_html_e( 'WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
                     <p class="description">Variables: {product}, {price}, {regular_price}, {sku}, {site}, {url}, {title} </p>
                     <p class="description">{{price}}: Formatted price with currency sign (e.g., $1,480,000.00).</p>
                     <p class="description">Leave blank to get value from main settings</p>
@@ -195,8 +195,8 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- prefilled message -->
                     <div class="row ctc_side_by_side">
                         <div class="input-field col s12 md_tab">
-                            <textarea name="ht_ctc_woo_options[woo_pre_filled]" id="woo_pre_filled" class="materialize-textarea input-margin" style="min-height: 64px;" placeholder="<?php echo $pf_placeholder ?>"><?php echo $woo_pre_filled ?></textarea>
-                            <label for="woo_pre_filled"><?php _e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
+                            <textarea name="ht_ctc_woo_options[woo_pre_filled]" id="woo_pre_filled" class="materialize-textarea input-margin" style="min-height: 64px;" placeholder="<?php echo esc_attr($pf_placeholder) ?>"><?php echo esc_textarea($woo_pre_filled) ?></textarea>
+                            <label for="woo_pre_filled"><?php esc_html_e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
                         </div>
                     </div>
 
@@ -204,8 +204,8 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- Call to Action -->
                     <div class="row ctc_side_by_side">
                         <div class="input-field col s12 md_tab">
-                            <input name="ht_ctc_woo_options[woo_call_to_action]" value="<?php echo $woo_call_to_action ?>" id="woo_call_to_action" type="text" class="input-margin" placeholder="<?php echo $ctc_placeholder ?>">
-                            <label for="woo_call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+                            <input name="ht_ctc_woo_options[woo_call_to_action]" value="<?php echo esc_attr($woo_call_to_action) ?>" id="woo_call_to_action" type="text" class="input-margin" placeholder="<?php echo esc_attr($ctc_placeholder) ?>">
+                            <label for="woo_call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
                         </div>
                     </div>
 
@@ -243,10 +243,10 @@ class HT_CTC_Admin_Woo_Page {
                         $myaccount_page_id = wc_get_page_id( 'myaccount' );
                         $myaccount_admin_url = "{$admin_url}post.php?post={$myaccount_page_id}&action=edit";
                         ?>
-                        <p class="description"><a target="_blank" href="<?php echo $shop_admin_url ?>">Edit Shop Page</a> </p>
-                        <p class="description"><a target="_blank" href="<?php echo $cart_admin_url ?>">Edit Cart Page</a> </p>
-                        <p class="description"><a target="_blank" href="<?php echo $checkout_admin_url ?>">Edit Checkout Page</a> </p>
-                        <p class="description"><a target="_blank" href="<?php echo $myaccount_admin_url ?>">Edit My Account Page</a> </p>
+                        <p class="description"><a target="_blank" href="<?php echo esc_url($shop_admin_url) ?>">Edit Shop Page</a> </p>
+                        <p class="description"><a target="_blank" href="<?php echo esc_url($cart_admin_url) ?>">Edit Cart Page</a> </p>
+                        <p class="description"><a target="_blank" href="<?php echo esc_url($checkout_admin_url) ?>">Edit Checkout Page</a> </p>
+                        <p class="description"><a target="_blank" href="<?php echo esc_url($myaccount_admin_url) ?>">Edit My Account Page</a> </p>
                         <?php
                     }
                     ?>
@@ -264,27 +264,27 @@ class HT_CTC_Admin_Woo_Page {
         <div class="row">
             <div class="col s12">
                 <ul class="tabs tabs-fixed-width">
-                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-1"><?php _e( 'Single Product Pages', 'click-to-chat-for-whatsapp' ); ?></a></li>
-                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-2"><?php _e( 'Shop Page', 'click-to-chat-for-whatsapp' ); ?></a></li>
-                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-3"><?php _e( 'Advanced', 'click-to-chat-for-whatsapp' ); ?></a></li>
+                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-1"><?php esc_html_e( 'Single Product Pages', 'click-to-chat-for-whatsapp' ); ?></a></li>
+                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-2"><?php esc_html_e( 'Shop Page', 'click-to-chat-for-whatsapp' ); ?></a></li>
+                    <li class="tab col s3 md_tab_li"><a href="#add_whatsapp_tab-3"><?php esc_html_e( 'Advanced', 'click-to-chat-for-whatsapp' ); ?></a></li>
                 </ul>
             </div>
 
             <div id="add_whatsapp_tab-1" class="col s12 md_tab">
                 <div class="ctc_md_tab">
                     <!-- Add button/icon -->
-                    <p class="description" style="margin-bottom:15px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/add-whatsapp-in-woocommerce-single-product-pages/"><?php _e( 'Add WhatsApp in WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
+                    <p class="description" style="margin-bottom:15px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/add-whatsapp-in-woocommerce-single-product-pages/"><?php esc_html_e( 'Add WhatsApp in WooCommerce Single Product pages', 'click-to-chat-for-whatsapp' ); ?></a></p>
 
                     <div class="row ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
-                            <p><?php _e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
+                            <p><?php esc_html_e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
                         </div>
                         <div class="input-field col s6">
-                            <select name="<?php echo $dbrow ?>[woo_position]" class="woo_single_position_select">
+                            <select name="<?php echo esc_attr($dbrow) ?>[woo_position]" class="woo_single_position_select">
                                 <?php
                                 foreach ($woo_places as $key => $value) {
                                     ?>
-                                    <option value="<?php echo $key ?>" <?php echo $woo_position == $key ? 'SELECTED' : ''; ?> ><?php _e( $value, 'click-to-chat-for-whatsapp' ); ?></option>
+                                    <option value="<?php echo esc_attr($key) ?>" <?php echo $woo_position == $key ? 'SELECTED' : ''; ?> ><?php echo esc_html($value); ?></option>
                                     <?php
                                 }
                                 ?>
@@ -296,22 +296,22 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- style -->
                     <div class="row ctc_init_display_none woo_single_position_settings ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
-                            <p><?php _e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
+                            <p><?php esc_html_e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
                         </div>
                         <div class="input-field col s6">
-                            <select name="<?php echo $dbrow; ?>[woo_style]" class="woo_single_style_select">
-                                <option value="1" <?php echo $woo_style == 1 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="2" <?php echo $woo_style == 2 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-2', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="3" <?php echo $woo_style == 3 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-3', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="3_1" <?php echo $woo_style == '3_1' ? 'SELECTED' : ''; ?> >&emsp;<?php _e( 'Style-3 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="4" <?php echo $woo_style == 4 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-4', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="5" <?php echo $woo_style == 5 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-5', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="7" <?php echo $woo_style == 7 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-7', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="7_1" <?php echo $woo_style == '7_1' ? 'SELECTED' : ''; ?> >&emsp;<?php _e( 'Style-7 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="8" <?php echo $woo_style == 8 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="99" <?php echo $woo_style == 99 ? 'SELECTED' : ''; ?> ><?php _e( 'Add your own image / GIF (Style-99)', 'click-to-chat-for-whatsapp' ); ?></option>
+                            <select name="<?php echo esc_attr($dbrow); ?>[woo_style]" class="woo_single_style_select">
+                                <option value="1" <?php echo $woo_style == 1 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="2" <?php echo $woo_style == 2 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-2', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="3" <?php echo $woo_style == 3 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-3', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="3_1" <?php echo $woo_style == '3_1' ? 'SELECTED' : ''; ?> >&emsp;<?php esc_html_e( 'Style-3 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="4" <?php echo $woo_style == 4 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-4', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="5" <?php echo $woo_style == 5 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-5', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="7" <?php echo $woo_style == 7 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-7', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="7_1" <?php echo $woo_style == '7_1' ? 'SELECTED' : ''; ?> >&emsp;<?php esc_html_e( 'Style-7 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="8" <?php echo $woo_style == 8 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="99" <?php echo $woo_style == 99 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Add your own image / GIF (Style-99)', 'click-to-chat-for-whatsapp' ); ?></option>
                             </select>
-                            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/list-of-styles/"><?php _e( 'List of Styles', 'click-to-chat-for-whatsapp' ); ?></a> &emsp; | &emsp; <span><a target="_blank" href="<?php echo admin_url( 'admin.php?page=click-to-chat-customize-styles' ); ?>">Customize the styles</a></span> </p>
+                            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/list-of-styles/"><?php esc_html_e( 'List of Styles', 'click-to-chat-for-whatsapp' ); ?></a> &emsp; | &emsp; <span><a target="_blank" href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-customize-styles' )); ?>">Customize the styles</a></span> </p>
                             <p class="description"><strong>Recommended Styles: 1, 4, 8</strong></p>
                         </div>
                     </div>
@@ -332,7 +332,7 @@ class HT_CTC_Admin_Woo_Page {
                                 </div>
                                 <div class="input-field col s6">
                                     <label>
-                                        <input name="<?php echo $dbrow; ?>[woo_single_layout_cart_btn]" type="checkbox" value="1" <?php checked( $woo_single_layout_cart_btn, 1 ); ?> id="woo_single_layout_cart_btn" />
+                                        <input name="<?php echo esc_attr($dbrow); ?>[woo_single_layout_cart_btn]" type="checkbox" value="1" <?php checked( $woo_single_layout_cart_btn, 1 ); ?> id="woo_single_layout_cart_btn" />
                                         <span>Displays like 'Add to Cart' button</span>
                                     </label>
                                 </div>
@@ -342,12 +342,12 @@ class HT_CTC_Admin_Woo_Page {
                         <!-- display - center -->
                         <div class="row ctc_side_by_side woo_single_position_settings" style="display: none;">
                             <div class="col s6" style="padding-top: 14px;">
-                                <p><?php _e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
+                                <p><?php esc_html_e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
                             <div class="input-field col s6">
                                 <label>
-                                    <input name="<?php echo $dbrow; ?>[woo_single_position_center]" type="checkbox" value="1" <?php checked( $woo_single_position_center, 1 ); ?> id="woo_single_position_center" />
-                                    <span><?php _e( 'Display center within available space', 'click-to-chat-for-whatsapp' ); ?></span>
+                                    <input name="<?php echo esc_attr($dbrow); ?>[woo_single_position_center]" type="checkbox" value="1" <?php checked( $woo_single_position_center, 1 ); ?> id="woo_single_position_center" />
+                                    <span><?php esc_html_e( 'Display center within available space', 'click-to-chat-for-whatsapp' ); ?></span>
                                 </label>
                             </div>
                         </div>
@@ -355,10 +355,10 @@ class HT_CTC_Admin_Woo_Page {
                         <!-- display: block, inline-block ..  -->
                         <div class="row ctc_side_by_side ctc_init_display_none woo_single_position_settings">
                             <div class="col s6" style="padding-top: 14px;">
-                                <p><?php _e( 'Display Block Type', 'click-to-chat-for-whatsapp' ); ?></p>
+                                <p><?php esc_html_e( 'Display Block Type', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
                             <div class="input-field col s6">
-                                <select name="<?php echo $dbrow; ?>[woo_single_block_type]" class="">
+                                <select name="<?php echo esc_attr($dbrow); ?>[woo_single_block_type]" class="">
                                     <option value="block" <?php echo $woo_single_block_type == 'block' ? 'SELECTED' : ''; ?> >block</option>
                                     <option value="inline" <?php echo $woo_single_block_type == 'inline' ? 'SELECTED' : ''; ?> >inline</option>
                                     <option value="inline-block" <?php echo $woo_single_block_type == 'inline-block' ? 'SELECTED' : ''; ?> >inline-block</option>
@@ -370,14 +370,14 @@ class HT_CTC_Admin_Woo_Page {
                         <!-- margin -->
                         <div class="row ctc_side_by_side ctc_init_display_none woo_single_position_settings">
                             <div class="col s6" style="padding-top: 14px;">
-                                <p><?php _e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
+                                <p><?php esc_html_e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
                             <div class="input-field col s6">
                                 <div  style="display: flex; margin-bottom: 1px;">
-                                    <input name="ht_ctc_woo_options[woo_single_margin_top]" value="<?php echo $woo_single_margin_top ?>" id="woo_single_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_single_margin_bottom]" value="<?php echo $woo_single_margin_bottom ?>" id="woo_single_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_single_margin_left]" value="<?php echo $woo_single_margin_left ?>" id="woo_single_margin_left" type="text" style="display:inline; margin-right:4px; margin-left:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_single_margin_right]" value="<?php echo $woo_single_margin_right ?>" id="woo_single_margin_right" type="text" style="display:inline; " class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_top]" value="<?php echo esc_attr($woo_single_margin_top) ?>" id="woo_single_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php esc_attr_e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_bottom]" value="<?php echo esc_attr($woo_single_margin_bottom) ?>" id="woo_single_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php esc_attr_e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_left]" value="<?php echo esc_attr($woo_single_margin_left) ?>" id="woo_single_margin_left" type="text" style="display:inline; margin-right:4px; margin-left:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php esc_attr_e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_single_margin_right]" value="<?php echo esc_attr($woo_single_margin_right) ?>" id="woo_single_margin_right" type="text" style="display:inline; " class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php esc_attr_e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
                                 </div>
                                 <span class="helper-text">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </span>
                             </div>
@@ -393,17 +393,17 @@ class HT_CTC_Admin_Woo_Page {
             <div id="add_whatsapp_tab-2" class="col s12 md_tab">
                 <div class="ctc_md_tab">
                     <!-- woo shop page -->
-                    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/"><?php _e( 'WooCommerce Shop page', 'click-to-chat-for-whatsapp' ); ?></a></p>
+                    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/"><?php esc_html_e( 'WooCommerce Shop page', 'click-to-chat-for-whatsapp' ); ?></a></p>
 
                     <!-- At WooCommerce shop pages, loop.. -->
                     <div class="row ctc_side_by_side">
                         <div class="col s6" style="padding-top: 14px;">
-                            <p><?php _e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
+                            <p><?php esc_html_e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>:</p>
                         </div>
                         <div class="input-field col s6">
                             <label>
-                                <input name="<?php echo $dbrow; ?>[woo_shop_add_whatsapp]" type="checkbox" value="1" <?php checked( $woo_shop_add_whatsapp, 1 ); ?> id="woo_shop_add_whatsapp" />
-                                <span><?php _e( "At Products - Archive, Shop Page", 'click-to-chat-for-whatsapp' ); ?></span>
+                                <input name="<?php echo esc_attr($dbrow); ?>[woo_shop_add_whatsapp]" type="checkbox" value="1" <?php checked( $woo_shop_add_whatsapp, 1 ); ?> id="woo_shop_add_whatsapp" />
+                                <span><?php esc_html_e( "At Products - Archive, Shop Page", 'click-to-chat-for-whatsapp' ); ?></span>
                             </label>
                         </div>
                     </div>
@@ -411,8 +411,8 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- prefilled message -->
                     <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="input-field col s12">
-                            <textarea name="ht_ctc_woo_options[woo_shop_pre_filled]" id="woo_shop_pre_filled" class="materialize-textarea input-margin" style="min-height: 84px;" placeholder="<?php echo $pf_placeholder ?>"><?php echo $woo_shop_pre_filled ?></textarea>
-                            <label for="woo_shop_pre_filled"><?php _e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
+                            <textarea name="ht_ctc_woo_options[woo_shop_pre_filled]" id="woo_shop_pre_filled" class="materialize-textarea input-margin" style="min-height: 84px;" placeholder="<?php echo esc_attr($pf_placeholder) ?>"><?php echo esc_textarea($woo_shop_pre_filled) ?></textarea>
+                            <label for="woo_shop_pre_filled"><?php esc_html_e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
                             <p class="description">pre-filled, call-to-action: if blank, get values from page-level settings if not from the main settings</p>
                         </div>
                     </div>
@@ -421,30 +421,30 @@ class HT_CTC_Admin_Woo_Page {
                     <!-- Call to Action -->
                     <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="input-field col s12">
-                            <input name="ht_ctc_woo_options[woo_shop_call_to_action]" value="<?php echo $woo_shop_call_to_action ?>" id="woo_shop_call_to_action" type="text" class="input-margin" placeholder="<?php echo $single_ctc_placeholder ?>">
-                            <label for="woo_shop_call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+                            <input name="ht_ctc_woo_options[woo_shop_call_to_action]" value="<?php echo esc_attr($woo_shop_call_to_action) ?>" id="woo_shop_call_to_action" type="text" class="input-margin" placeholder="<?php echo esc_attr($single_ctc_placeholder) ?>">
+                            <label for="woo_shop_call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
                         </div>
                     </div>
 
                     <!-- style -->
                     <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                         <div class="col s6" style="padding-top: 14px;">
-                            <p><?php _e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
+                            <p><?php esc_html_e( 'Select Style', 'click-to-chat-for-whatsapp' ); ?></p>
                         </div>
                         <div class="input-field col s6">
-                            <select name="<?php echo $dbrow; ?>[woo_shop_style]" class="woo_shop_style">
-                                <option value="1" <?php echo $woo_shop_style == 1 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="2" <?php echo $woo_shop_style == 2 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-2', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="3" <?php echo $woo_shop_style == 3 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-3', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="3_1" <?php echo $woo_shop_style == '3_1' ? 'SELECTED' : ''; ?> >&emsp;<?php _e( 'Style-3 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="4" <?php echo $woo_shop_style == 4 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-4', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="5" <?php echo $woo_shop_style == 5 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-5', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="7" <?php echo $woo_shop_style == 7 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-7', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="7_1" <?php echo $woo_shop_style == '7_1' ? 'SELECTED' : ''; ?> >&emsp;<?php _e( 'Style-7 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="8" <?php echo $woo_shop_style == 8 ? 'SELECTED' : ''; ?> ><?php _e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></option>
-                                <option value="99" <?php echo $woo_shop_style == 99 ? 'SELECTED' : ''; ?> ><?php _e( 'Add your own image / GIF (Style-99)', 'click-to-chat-for-whatsapp' ); ?></option>
+                            <select name="<?php echo esc_attr($dbrow); ?>[woo_shop_style]" class="woo_shop_style">
+                                <option value="1" <?php echo $woo_shop_style == 1 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-1', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="2" <?php echo $woo_shop_style == 2 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-2', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="3" <?php echo $woo_shop_style == 3 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-3', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="3_1" <?php echo $woo_shop_style == '3_1' ? 'SELECTED' : ''; ?> >&emsp;<?php esc_html_e( 'Style-3 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="4" <?php echo $woo_shop_style == 4 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-4', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="5" <?php echo $woo_shop_style == 5 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-5', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="7" <?php echo $woo_shop_style == 7 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-7', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="7_1" <?php echo $woo_shop_style == '7_1' ? 'SELECTED' : ''; ?> >&emsp;<?php esc_html_e( 'Style-7 Extend', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="8" <?php echo $woo_shop_style == 8 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Style-8', 'click-to-chat-for-whatsapp' ); ?></option>
+                                <option value="99" <?php echo $woo_shop_style == 99 ? 'SELECTED' : ''; ?> ><?php esc_html_e( 'Add your own image / GIF (Style-99)', 'click-to-chat-for-whatsapp' ); ?></option>
                             </select>
-                            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/list-of-styles/"><?php _e( 'List of Styles', 'click-to-chat-for-whatsapp' ); ?></a> &emsp; | &emsp; <span><a target="_blank" href="<?php echo admin_url( 'admin.php?page=click-to-chat-customize-styles' ); ?>">Customize the styles</a></span> </p>
+                            <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/list-of-styles/"><?php esc_html_e( 'List of Styles', 'click-to-chat-for-whatsapp' ); ?></a> &emsp; | &emsp; <span><a target="_blank" href="<?php echo esc_url(admin_url( 'admin.php?page=click-to-chat-customize-styles' )); ?>">Customize the styles</a></span> </p>
                             <p class="description"><b>Recommended Styles: 1, 8</b></p>
                         </div>
                     </div>
@@ -460,7 +460,7 @@ class HT_CTC_Admin_Woo_Page {
                                 </div>
                                 <div class="input-field col s6">
                                     <label>
-                                        <input name="<?php echo $dbrow; ?>[woo_shop_layout_cart_btn]" type="checkbox" value="1" <?php checked( $woo_shop_layout_cart_btn, 1 ); ?> id="woo_shop_layout_cart_btn" />
+                                        <input name="<?php echo esc_attr($dbrow); ?>[woo_shop_layout_cart_btn]" type="checkbox" value="1" <?php checked( $woo_shop_layout_cart_btn, 1 ); ?> id="woo_shop_layout_cart_btn" />
                                         <span>Displays like 'Add to Cart' button</span>
                                     </label>
                                 </div>
@@ -470,12 +470,12 @@ class HT_CTC_Admin_Woo_Page {
                         <!-- display - center -->
                         <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                             <div class="col s6" style="padding-top: 14px;">
-                                <p><?php _e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
+                                <p><?php esc_html_e( 'Display Center', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
                             <div class="input-field col s6">
                                 <label>
-                                    <input name="<?php echo $dbrow; ?>[woo_shop_position_center]" type="checkbox" value="1" <?php checked( $woo_shop_position_center, 1 ); ?> id="woo_shop_position_center" />
-                                    <span><?php _e( 'Display center', 'click-to-chat-for-whatsapp' ); ?></span>
+                                    <input name="<?php echo esc_attr($dbrow); ?>[woo_shop_position_center]" type="checkbox" value="1" <?php checked( $woo_shop_position_center, 1 ); ?> id="woo_shop_position_center" />
+                                    <span><?php esc_html_e( 'Display center', 'click-to-chat-for-whatsapp' ); ?></span>
                                 </label>
                             </div>
                         </div>
@@ -483,14 +483,14 @@ class HT_CTC_Admin_Woo_Page {
                         <!-- margin -->
                         <div class="row ctc_side_by_side ctc_init_display_none woo_shop_add_whatsapp_settings">
                             <div class="col s6" style="padding-top: 14px;">
-                                <p><?php _e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
+                                <p><?php esc_html_e( 'Spacing (Margin)', 'click-to-chat-for-whatsapp' ); ?></p>
                             </div>
                             <div class="input-field col s6">
                                 <div  style="display: flex; margin-bottom: 1px;">
-                                    <input name="ht_ctc_woo_options[woo_shop_margin_top]" value="<?php echo $woo_shop_margin_top ?>" id="woo_shop_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php _e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_shop_margin_bottom]" value="<?php echo $woo_shop_margin_bottom ?>" id="woo_shop_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php _e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_shop_margin_left]" value="<?php echo $woo_shop_margin_left ?>" id="woo_shop_margin_left" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php _e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
-                                    <input name="ht_ctc_woo_options[woo_shop_margin_right]" value="<?php echo $woo_shop_margin_right ?>" id="woo_shop_margin_right" type="text" style="display:inline;" class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php _e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_top]" value="<?php echo esc_attr($woo_shop_margin_top) ?>" id="woo_shop_margin_top" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Top" data-position="top" data-tooltip="<?php esc_attr_e( 'Top', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_bottom]" value="<?php echo esc_attr($woo_shop_margin_bottom) ?>" id="woo_shop_margin_bottom" type="text" style="display:inline; margin-right:8px;" class="input-margin tooltipped" placeholder="Bottom" data-position="bottom" data-tooltip="<?php esc_attr_e( 'Bottom', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_left]" value="<?php echo esc_attr($woo_shop_margin_left) ?>" id="woo_shop_margin_left" type="text" style="display:inline; margin-right:4px;" class="input-margin tooltipped" placeholder="Left" data-position="left" data-tooltip="<?php esc_attr_e( 'Left', 'click-to-chat-for-whatsapp' ); ?>">
+                                    <input name="ht_ctc_woo_options[woo_shop_margin_right]" value="<?php echo esc_attr($woo_shop_margin_right) ?>" id="woo_shop_margin_right" type="text" style="display:inline;" class="input-margin tooltipped" placeholder="Right" data-position="right" data-tooltip="<?php esc_attr_e( 'Right', 'click-to-chat-for-whatsapp' ); ?>">
                                 </div>
                                 <p class="helper-text">Top, Bottom, Left, Right <span> E.g. 10px, 50%</span> </p>
                             </div>
@@ -498,7 +498,7 @@ class HT_CTC_Admin_Woo_Page {
                         <br>
 
                         <br>
-                        <p class="description ctc_init_display_none woo_shop_add_whatsapp_settings"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/"><?php _e( 'WooCommerce Shop page', 'click-to-chat-for-whatsapp' ); ?></a></p>
+                        <p class="description ctc_init_display_none woo_shop_add_whatsapp_settings"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/"><?php esc_html_e( 'WooCommerce Shop page', 'click-to-chat-for-whatsapp' ); ?></a></p>
                     </details>
                     <br><br>
                 </div>

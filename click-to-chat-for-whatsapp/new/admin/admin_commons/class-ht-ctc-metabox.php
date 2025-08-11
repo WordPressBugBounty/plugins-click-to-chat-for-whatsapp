@@ -76,7 +76,7 @@ class HT_CTC_MetaBox {
 		if ( isset( $othersettings['disable_page_level_settings'] ) ) {
 			?>
 			<p class="description">
-				<?php _e( 'Enable page-level settings in', 'click-to-chat-for-whatsapp' ); ?>
+				<?php esc_html_e( 'Enable page-level settings in', 'click-to-chat-for-whatsapp' ); ?>
 				<strong>Click to Chat → Other Settings</strong>.
 			</p>
 			<?php
@@ -85,9 +85,9 @@ class HT_CTC_MetaBox {
 		?>
 
 		<p class="description">
-			<?php _e( 'Change values at', 'click-to-chat-for-whatsapp' ); ?>
+			<?php esc_html_e( 'Change values at', 'click-to-chat-for-whatsapp' ); ?>
 			<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">
-				<?php _e( 'Page level', 'click-to-chat-for-whatsapp' ); ?>
+				<?php esc_html_e( 'Page level', 'click-to-chat-for-whatsapp' ); ?>
 			</a>
 		</p>
 
@@ -192,15 +192,15 @@ class HT_CTC_MetaBox {
 
 
 		<div class="ht-ctc-meta-box">
-			<div class="ht-ctc-meta-section-title"><?php _e( 'Chat Settings', 'click-to-chat-for-whatsapp' ); ?></div>
+			<div class="ht-ctc-meta-section-title"><?php esc_html_e( 'Chat Settings', 'click-to-chat-for-whatsapp' ); ?></div>
 
 			<div class="ht-ctc-meta-field">
-				<label for="number"><?php _e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></label>
-				<input type="text" id="number" name="ht_ctc_pagelevel[number]" value="<?php echo $number; ?>" placeholder="<?php echo $ph_number; ?>">
+				<label for="number"><?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></label>
+				<input type="text" id="number" name="ht_ctc_pagelevel[number]" value="<?php echo esc_attr($number); ?>" placeholder="<?php echo esc_attr($ph_number); ?>">
 				<p class="ht-ctc-meta-description">
 					<a href="https://holithemes.com/plugins/click-to-chat/whatsapp-number/" target="_blank">
-						<?php _e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>
-					</a> <?php _e( 'with country code', 'click-to-chat-for-whatsapp' ); ?>
+						<?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>
+					</a> <?php esc_html_e( 'with country code', 'click-to-chat-for-whatsapp' ); ?>
 				</p>
 			</div>
 
@@ -213,29 +213,29 @@ class HT_CTC_MetaBox {
 			<?php do_action( 'ht_ctc_ah_admin_chat_meta_box_after_number', $current_post ); ?>
 
 			<div class="ht-ctc-meta-field">
-				<label for="call_to_action"><?php _e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
-				<input type="text" id="call_to_action" name="ht_ctc_pagelevel[call_to_action]" value="<?php echo $call_to_action; ?>" placeholder="<?php echo $ph_call_to_action; ?>">
+				<label for="call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
+				<input type="text" id="call_to_action" name="ht_ctc_pagelevel[call_to_action]" value="<?php echo esc_attr($call_to_action); ?>" placeholder="<?php echo esc_attr($ph_call_to_action); ?>">
 			</div>
 
 			<div class="ht-ctc-meta-field">
-				<label for="pre_filled"><?php _e( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ); ?></label>
-				<textarea id="pre_filled" name="ht_ctc_pagelevel[pre_filled]" placeholder="<?php echo $ph_pre_filled; ?>"><?php echo $pre_filled; ?></textarea>
+				<label for="pre_filled"><?php esc_html_e( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ); ?></label>
+				<textarea id="pre_filled" name="ht_ctc_pagelevel[pre_filled]" placeholder="<?php echo esc_attr($ph_pre_filled); ?>"><?php echo esc_textarea($pre_filled); ?></textarea>
 			</div>
 
 			<div class="ht-ctc-meta-field">
-				<label><?php _e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></label>
+				<label><?php esc_html_e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></label>
 				<div class="ht-ctc-radio-group">
 					<label>
 						<input type="radio" name="ht_ctc_pagelevel[show_hide]" value="show" <?php checked( $show_hide, 'show' ); ?>>
-						<?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?>
+						<?php esc_html_e( 'Show', 'click-to-chat-for-whatsapp' ); ?>
 					</label>
 					<label>
 						<input type="radio" name="ht_ctc_pagelevel[show_hide]" value="hide" <?php checked( $show_hide, 'hide' ); ?>>
-						<?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?>
+						<?php esc_html_e( 'Hide', 'click-to-chat-for-whatsapp' ); ?>
 					</label>
 					<label>
 						<input type="radio" name="ht_ctc_pagelevel[show_hide]" value="" <?php checked( $show_hide, '' ); ?>>
-						<?php _e( 'Default', 'click-to-chat-for-whatsapp' ); ?>
+						<?php esc_html_e( 'Default', 'click-to-chat-for-whatsapp' ); ?>
 					</label>
 				</div>
 			</div>
@@ -249,10 +249,10 @@ class HT_CTC_MetaBox {
 			?>
 
 			<div class="ht-ctc-meta-box">
-				<div class="ht-ctc-meta-section-title"><?php _e( 'Group Settings', 'click-to-chat-for-whatsapp' ); ?></div>
+				<div class="ht-ctc-meta-section-title"><?php esc_html_e( 'Group Settings', 'click-to-chat-for-whatsapp' ); ?></div>
 				<div class="ht-ctc-meta-field">
-					<label for="group_id"><?php _e( 'Group ID', 'click-to-chat-for-whatsapp' ); ?></label>
-					<input type="text" id="group_id" name="ht_ctc_pagelevel[group_id]" value="<?php echo $group_id; ?>">
+					<label for="group_id"><?php esc_html_e( 'Group ID', 'click-to-chat-for-whatsapp' ); ?></label>
+					<input type="text" id="group_id" name="ht_ctc_pagelevel[group_id]" value="<?php echo esc_attr($group_id); ?>">
 				</div>
 			</div>
 
@@ -272,7 +272,7 @@ class HT_CTC_MetaBox {
 			return;
 		}
 
-		$nonce = $_POST['ht_ctc_page_meta_box_nonce'];
+		$nonce = sanitize_text_field(wp_unslash($_POST['ht_ctc_page_meta_box_nonce']));
 
 		// Verify that the nonce is valid.
 		if ( ! wp_verify_nonce( $nonce, 'ht_ctc_page_meta_box' ) ) {
@@ -296,7 +296,7 @@ class HT_CTC_MetaBox {
 
 		if ( isset( $_POST['ht_ctc_pagelevel'] ) ) {
 			
-			$ht_ctc_pagelevel = array_filter( $_POST['ht_ctc_pagelevel'] );
+			$ht_ctc_pagelevel = array_filter( map_deep( wp_unslash($_POST['ht_ctc_pagelevel']), 'sanitize_text_field' ) );
 
 			if ( !empty( $ht_ctc_pagelevel ) ) {
 

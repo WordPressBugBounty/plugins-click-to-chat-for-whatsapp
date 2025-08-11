@@ -29,9 +29,9 @@ if ( '' != $s6_txt_decoration ) {
 
 ?>
 
-<a class="ctc-analytics ctc_s_6 ctc_cta" style="<?php echo $s6_styles ?>"
-    onmouseover = "this.style.color = '<?php echo $s6_txt_color_on_hover ?>', this.style.textDecoration = '<?php echo $s6_txt_decoration_on_hover ?>' "
-    onmouseout  = "this.style.color = '<?php echo $s6_txt_color ?>', this.style.textDecoration = '<?php echo $s6_txt_decoration ?>' "
+<a class="ctc-analytics ctc_s_6 ctc_cta" style="<?php echo esc_attr($s6_styles) ?>"
+    onmouseover = "this.style.color = '<?php echo esc_js($s6_txt_color_on_hover) ?>', this.style.textDecoration = '<?php echo esc_js($s6_txt_decoration_on_hover) ?>' "
+    onmouseout  = "this.style.color = '<?php echo esc_js($s6_txt_color) ?>', this.style.textDecoration = '<?php echo esc_js($s6_txt_decoration) ?>' "
     >
-    <?php echo $call_to_action ?>
+    <?php echo esc_html($call_to_action) ?>
 </a>

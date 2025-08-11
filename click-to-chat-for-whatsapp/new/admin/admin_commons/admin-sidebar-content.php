@@ -16,7 +16,7 @@ $othersettings = get_option('ht_ctc_othersettings');
         <div class="row">
             <ul class="collapsible popout ht_ctc_sidebar_contat">
                 <li class="active">
-                    <div class="collapsible-header"><?php _e( 'Contact Us', 'click-to-chat-for-whatsapp' ); ?>
+                    <div class="collapsible-header"><?php esc_html_e( 'Contact Us', 'click-to-chat-for-whatsapp' ); ?>
                         <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
                     </div>	
                     <div class="collapsible-body">
@@ -52,7 +52,7 @@ $othersettings = get_option('ht_ctc_othersettings');
             <div class="row">
                 <ul class="collapsible popout ht_ctc_sidebar_pro">
                     <li class="active">
-                        <div class="collapsible-header"><?php _e( 'PRO', 'click-to-chat-for-whatsapp' ); ?> FEATURES 
+                        <div class="collapsible-header"><?php esc_html_e( 'PRO', 'click-to-chat-for-whatsapp' ); ?> FEATURES 
                             <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
                         </div>
                       

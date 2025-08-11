@@ -31,13 +31,6 @@ class HT_CTC_Swift {
 		// $this->define( 'HT_CTC_HOME_URL', home_url('/') );
 		// $this->define( 'HT_CTC_HOME_URL', get_bloginfo('url') );
 
-		$os = get_option('ht_ctc_othersettings');
-
-		// if debug mode is enabled.
-		if ( isset($os['debug_mode']) ) {
-			$this->define( 'HT_CTC_DEBUG_MODE', true );
-		}
-		
         do_action('ht_ctc_ah_define_constants');
 
 	}

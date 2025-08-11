@@ -126,7 +126,7 @@ $bg_path = plugins_url( './new/inc/assets/img/wa_bg.png', HT_CTC_PLUGIN_FILE );
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('<?php echo $bg_path ?>');
+    background: url('<?php echo esc_url($bg_path) ?>');
     opacity: 0.07;
 }
 <?php
@@ -135,11 +135,11 @@ $bg_path = plugins_url( './new/inc/assets/img/wa_bg.png', HT_CTC_PLUGIN_FILE );
 if ('' !== $message_box_bg_color) {
 ?>
 :root {
-    --ctc_g_message_box_bg_color: <?php echo $message_box_bg_color ?>;
+    --ctc_g_message_box_bg_color: <?php echo esc_attr($message_box_bg_color) ?>;
 }
 .template-greetings-1 .ctc_g_message_box {
     position: relative;
-    max-width: calc(100% - <?php echo $message_box_minus_width ?>);
+    max-width: calc(100% - <?php echo esc_attr($message_box_minus_width) ?>);
     background-color: var(--ctc_g_message_box_bg_color);
 }
 .template-greetings-1 .ctc_g_message_box {
@@ -184,11 +184,11 @@ if ('yes' == $rtl_page) {
 
 if ( '' !== $ht_ctc_greetings['header_content'] ) {
     ?>
-    <div class="ctc_g_heading" style="<?php echo $header_css ?>">
+    <div class="ctc_g_heading" style="<?php echo esc_attr($header_css) ?>">
         <?php
         if (!empty($g_header_image) || 'yes' == $is_demo_page ) {
             ?>
-            <div class="greetings_header_image" style="<?php echo $g_header_image_css ?>">
+            <div class="greetings_header_image" style="<?php echo esc_attr($g_header_image_css) ?>">
                 <?php
                 try {
                     $g_header_image_filename = pathinfo($g_header_image, PATHINFO_FILENAME);
@@ -196,7 +196,7 @@ if ( '' !== $ht_ctc_greetings['header_content'] ) {
                     $g_header_image_filename = 'header-image';
                 }
                 ?>
-                <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?php echo $g_header_image ?>" alt="<?php echo $g_header_image_filename ?>">
+                <img style="display:inline-block; border-radius:50%; height:50px; width:50px;" src="<?php echo esc_url($g_header_image) ?>" alt="<?php echo esc_attr($g_header_image_filename) ?>">
                 <?php
                 if ( isset($greetings['g_header_online_status']) || 'yes' == $is_demo_page ) {
                     $g_header_online_status_color = ( isset($greetings['g_header_online_status_color']) ) ? esc_attr( $greetings['g_header_online_status_color'] ) : '';
@@ -205,7 +205,7 @@ if ( '' !== $ht_ctc_greetings['header_content'] ) {
                     }
                     // adds 'g_header_badge_online' class to the badge from js. to make it work with css.
                     ?>
-                    <span class="for_greetings_header_image_badge" style="display:none; border: 2px solid <?php echo $header_bg_color ?>; background-color: <?php echo $g_header_online_status_color ?>;"></span>
+                    <span class="for_greetings_header_image_badge" style="display:none; border: 2px solid <?php echo esc_attr($header_bg_color) ?>; background-color: <?php echo esc_attr($g_header_online_status_color) ?>;"></span>
                     <?php
                 }
                 ?>
@@ -227,7 +227,7 @@ if ('' !== $ht_ctc_greetings['main_content']) {
     if ('yes' == $main_bg_image) {
         // if bg image is added
         ?>
-        <div class="ctc_g_content" style="<?php echo $main_css ?> position:relative;">
+        <div class="ctc_g_content" style="<?php echo esc_attr($main_css) ?> position:relative;">
             <div class="ctc_g_content_for_bg_image">
                 <div class="ctc_g_message_box ctc_g_message_box_width" style="<?php echo $message_box_css ?>"><?php echo wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
             </div>
@@ -244,7 +244,7 @@ if ('' !== $ht_ctc_greetings['main_content']) {
 } 
 ?>
 
-<div class="ctc_g_sentbutton" style="<?php echo $send_css ?>">
+<div class="ctc_g_sentbutton" style="<?php echo esc_attr($send_css) ?>">
     <?php
     if ( isset($ht_ctc_greetings['is_opt_in']) && '' !== $ht_ctc_greetings['is_opt_in'] && is_file( $g_optin_path ) ) {
         include $g_optin_path;

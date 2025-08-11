@@ -70,9 +70,9 @@ include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 <?php echo $s7_hover_styles ?>
 </style>
 
-<div class="ctc_s_7_1 ctc-analytics" style="<?php echo $s7_n1_styles; ?>">
-    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo $s7_cta_class ?>" style="<?php echo $s7_cta_css ?>"><?php echo $call_to_action; ?></p>
-    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo $s7_icon_padding_css ?>">
+<div class="ctc_s_7_1 ctc-analytics" style="<?php echo esc_attr($s7_n1_styles); ?>">
+    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
+    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_padding_css) ?>">
         <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
     </div>
 </div>

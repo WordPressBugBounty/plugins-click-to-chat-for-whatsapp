@@ -10,5 +10,5 @@ $db_value = intval($db_value);
 $db_value = ++$db_value;
 ?>
 <div class="ctc_count">
-    <input name="<?php echo $dbrow; ?>[count]" value="<?php echo $db_value; ?>" type="hidden" class="hide">
+    <input name="<?php echo esc_attr($dbrow); ?>[count]" value="<?php echo esc_attr($db_value); ?>" type="hidden" class="hide">
 </div>

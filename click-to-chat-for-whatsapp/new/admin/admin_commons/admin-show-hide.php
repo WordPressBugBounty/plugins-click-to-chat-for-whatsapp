@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 <ul class="collapsible ht_ctc_show_hide_settings">
 <li class="">
-<div class="collapsible-header" id="showhide_settings"><?php _e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?>
+<div class="collapsible-header" id="showhide_settings"><?php esc_html_e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?>
     <span class="right_icon dashicons dashicons-arrow-down-alt2"></span>
 </div>
 <div class="collapsible-body">
@@ -82,19 +82,19 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 <div class="row show_hide_device">
     <p class="col s3">
         <span class="dashicons dashicons-desktop"></span>
-        <?php _e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>
+        <?php esc_html_e( 'Desktop', 'click-to-chat-for-whatsapp' ); ?>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display_desktop]" value="show" type="radio" <?php checked( 'show' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
-        <span><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display_desktop]" value="show" type="radio" <?php checked( 'show' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
+        <span><?php esc_html_e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display_desktop]" value="hide" type="radio" <?php checked( 'hide' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
-        <span><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display_desktop]" value="hide" type="radio" <?php checked( 'hide' == $display_desktop ); ?> class="with-gap device_display radio_desktop"/>
+        <span><?php esc_html_e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
     </p>
@@ -104,19 +104,19 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 <div class="row show_hide_device">
     <p class="col s3">
         <span class="dashicons dashicons-smartphone"></span>
-        <?php _e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>
+        <?php esc_html_e( 'Mobile', 'click-to-chat-for-whatsapp' ); ?>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display_mobile]" value="show" type="radio" <?php checked( 'show' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
-        <span><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display_mobile]" value="show" type="radio" <?php checked( 'show' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
+        <span><?php esc_html_e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display_mobile]" value="hide" type="radio" <?php checked( 'hide' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
-        <span><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display_mobile]" value="hide" type="radio" <?php checked( 'hide' == $display_mobile ); ?> class="with-gap device_display radio_mobile"/>
+        <span><?php esc_html_e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
     </p>
@@ -129,19 +129,19 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 <div class="row show_hide_global ">
     <p class="col s3">
         <!-- <span class="dashicons dashicons-admin-site-alt3"></span> -->
-        <strong><?php _e( 'Global', 'click-to-chat-for-whatsapp' ); ?></strong>
+        <strong><?php esc_html_e( 'Global', 'click-to-chat-for-whatsapp' ); ?></strong>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display][global_display]" value="show" type="radio" <?php checked( 'show' == $check_global_display ); ?> class="with-gap global_display"/>
-        <span><?php _e( 'Show on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][global_display]" value="show" type="radio" <?php checked( 'show' == $check_global_display ); ?> class="with-gap global_display"/>
+        <span><?php esc_html_e( 'Show on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-visibility"></span>
         </label>
     </p>
     <p class="col s4">
         <label>
-        <input name="<?php echo $dbrow; ?>[display][global_display]" value="hide" type="radio" <?php checked( 'hide' == $check_global_display ); ?> class="with-gap global_display"/>
-        <span><?php _e( 'Hide on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][global_display]" value="hide" type="radio" <?php checked( 'hide' == $check_global_display ); ?> class="with-gap global_display"/>
+        <span><?php esc_html_e( 'Hide on all pages', 'click-to-chat-for-whatsapp' ); ?></span>
         <span class="dashicons dashicons-hidden"></span>
         </label>
     </p>
@@ -149,7 +149,7 @@ $display_mobile = (isset($options['display_mobile'])) ? esc_attr( $options['disp
 
 <br>
 
-<p class="description" style="margin:16px 0px 20px 0px;"><strong><?php _e( 'Overwrite the Global settings', 'click-to-chat-for-whatsapp' ); ?></strong></p>
+<p class="description" style="margin:16px 0px 20px 0px;"><strong><?php esc_html_e( 'Overwrite the Global settings', 'click-to-chat-for-whatsapp' ); ?></strong></p>
 <?php
 
 foreach ($show_hide_settings as $key => $value) {
@@ -157,7 +157,7 @@ foreach ($show_hide_settings as $key => $value) {
     if ( '' == $value ) {
         // heading
         ?>
-       <p class="description" style="margin-bottom:16px;"><strong><?php echo $key; ?>: </strong></p>
+       <p class="description" style="margin-bottom:16px;"><strong><?php echo esc_html($key); ?>: </strong></p>
         <?php
     } else {
         $is_checked_show_hide = (isset($display_settings[$key])) ? esc_html($display_settings[$key]) : 'g';
@@ -171,26 +171,26 @@ foreach ($show_hide_settings as $key => $value) {
         ?>
         <div class="row show_hide_types">
             <p class="col s3">
-                <?php echo $value; ?>:
+                <?php echo esc_html($value); ?>:
             </p>
             <p class="col s3 m3 l2 show_box">
                 <label>
-                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="show" type="radio" <?php checked( 'show' == $is_checked_show_hide ); ?> class="with-gap show_btn <?php echo $key; ?>"/>
-                <span class="ctc_radio_text"><?php _e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
+                <input name="<?php echo esc_attr($dbrow); ?>[display][<?php echo esc_attr($key); ?>]" value="show" type="radio" <?php checked( 'show' == $is_checked_show_hide ); ?> class="with-gap show_btn <?php echo esc_attr($key); ?>"/>
+                <span class="ctc_radio_text"><?php esc_html_e( 'Show', 'click-to-chat-for-whatsapp' ); ?></span>
                 <span class="dashicons dashicons-visibility"></span>
                 </label>
             </p>
             <p class="col s3 m3 l2 hide_box">
                 <label>
-                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="hide" type="radio" <?php checked( 'hide' == $is_checked_show_hide ); ?> class="with-gap hide_btn <?php echo $key; ?>"/>
-                <span class="ctc_radio_text"><?php _e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
+                <input name="<?php echo esc_attr($dbrow); ?>[display][<?php echo esc_attr($key); ?>]" value="hide" type="radio" <?php checked( 'hide' == $is_checked_show_hide ); ?> class="with-gap hide_btn <?php echo esc_attr($key); ?>"/>
+                <span class="ctc_radio_text"><?php esc_html_e( 'Hide', 'click-to-chat-for-whatsapp' ); ?></span>
                 <span class="dashicons dashicons-hidden"></span>
                 </label>
             </p>
             <p class="col s3 m3 l2 global_box">
                 <label>
-                <input name="<?php echo $dbrow; ?>[display][<?php echo $key; ?>]" value="g" type="radio" <?php checked( '' == $is_checked_show_hide || 'g' == $is_checked_show_hide ); ?> class="with-gap global_btn <?php echo $key; ?>"/>
-                <span class="ctc_radio_text"><?php _e( 'Global', 'click-to-chat-for-whatsapp' ); ?> 
+                <input name="<?php echo esc_attr($dbrow); ?>[display][<?php echo esc_attr($key); ?>]" value="g" type="radio" <?php checked( '' == $is_checked_show_hide || 'g' == $is_checked_show_hide ); ?> class="with-gap global_btn <?php echo esc_attr($key); ?>"/>
+                <span class="ctc_radio_text"><?php esc_html_e( 'Global', 'click-to-chat-for-whatsapp' ); ?> 
                     <span class="global_show_or_hide_label"></span>
                     <span class="global_show_or_hide_icon"></span>
                 </span>
@@ -207,41 +207,41 @@ foreach ($show_hide_settings as $key => $value) {
 
 ?>
 <br>
-<p class="description"><strong><?php _e( 'Post Id\'s', 'click-to-chat-for-whatsapp' ); ?></strong></p>
+<p class="description"><strong><?php esc_html_e( 'Post Id\'s', 'click-to-chat-for-whatsapp' ); ?></strong></p>
 <!-- ID's list to hide styles  -->
 <div class="row hide_settings">
     <div class="input-field col s12 m7">
-        <input name="<?php echo $dbrow; ?>[display][list_hideon_pages]" value="<?php echo $list_hideon_pages ?>" id="ccw_list_id_tohide" type="text" class="input-margin">
-        <label for="ccw_list_id_tohide"><?php _e( "Hide on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-hidden"></span></label>
-        <p class="description"><?php _e( "Add post id's to hide. Add multiple post id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][list_hideon_pages]" value="<?php echo esc_attr($list_hideon_pages) ?>" id="ccw_list_id_tohide" type="text" class="input-margin">
+        <label for="ccw_list_id_tohide"><?php esc_html_e( "Hide on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-hidden"></span></label>
+        <p class="description"><?php esc_html_e( "Add post id's to hide. Add multiple post id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
 </div>
 
 <!-- ID's list to show styles -->   
 <div class="row show_settings">
     <div class="input-field col s7">
-        <input name="<?php echo $dbrow; ?>[display][list_showon_pages]" value="<?php echo $list_showon_pages ?>" id="ccw_list_id_toshow" type="text" class="input-margin">
-        <label for="ccw_list_id_toshow"><?php _e( "Show on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-visibility"></span></label>
-        <p class="description"><?php _e( "Add Post, Page, Media - ID's to show styles, Add multiple id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][list_showon_pages]" value="<?php echo esc_attr($list_showon_pages) ?>" id="ccw_list_id_toshow" type="text" class="input-margin">
+        <label for="ccw_list_id_toshow"><?php esc_html_e( "Show on this pages", 'click-to-chat-for-whatsapp' ); ?> <span class="dashicons dashicons-visibility"></span></label>
+        <p class="description"><?php esc_html_e( "Add Post, Page, Media - ID's to show styles, Add multiple id's by separating with a comma ( , )", 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
 </div>
 
-<p class="description"><strong><?php _e( 'Category names', 'click-to-chat-for-whatsapp' ); ?></strong></p>
+<p class="description"><strong><?php esc_html_e( 'Category names', 'click-to-chat-for-whatsapp' ); ?></strong></p>
 <!-- Categorys list - to hide -->
 <div class="row hide_settings">
     <div class="input-field col s12 m7">
-        <input name="<?php echo $dbrow; ?>[display][list_hideon_cat]" value="<?php echo $list_hideon_cat ?>" id="list_hideon_cat" type="text" class="input-margin">
-        <label for="list_hideon_cat"><?php _e( 'Hide on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-hidden"></span></label>
-        <p class="description"><?php _e( 'Hides on this Category type pages, Add multiple Categories by separating with a comma ( , ) ', 'click-to-chat-for-whatsapp' ); ?></p>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][list_hideon_cat]" value="<?php echo esc_attr($list_hideon_cat) ?>" id="list_hideon_cat" type="text" class="input-margin">
+        <label for="list_hideon_cat"><?php esc_html_e( 'Hide on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-hidden"></span></label>
+        <p class="description"><?php esc_html_e( 'Hides on this Category type pages, Add multiple Categories by separating with a comma ( , ) ', 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
 </div>
 
 <!-- Categorys list - to show -->
 <div class="row show_settings">
     <div class="input-field col s7">
-        <input name="<?php echo $dbrow; ?>[display][list_showon_cat]" value="<?php echo $list_showon_cat ?>" id="ccw_list_cat_toshow" type="text" class="input-margin">
-        <label for="ccw_list_cat_toshow"><?php _e( 'Show on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-visibility"></span></label>
-        <p class="description"><?php _e( 'Show on this Category type pages, Add multiple Categories by separating with a comma ( , )', 'click-to-chat-for-whatsapp' ); ?> </p>
+        <input name="<?php echo esc_attr($dbrow); ?>[display][list_showon_cat]" value="<?php echo esc_attr($list_showon_cat) ?>" id="ccw_list_cat_toshow" type="text" class="input-margin">
+        <label for="ccw_list_cat_toshow"><?php esc_html_e( 'Show on this Category posts' , 'click-to-chat-for-whatsapp' ) ?> <span class="dashicons dashicons-visibility"></span></label>
+        <p class="description"><?php esc_html_e( 'Show on this Category type pages, Add multiple Categories by separating with a comma ( , )', 'click-to-chat-for-whatsapp' ); ?> </p>
     </div>
 </div>
 
@@ -254,12 +254,12 @@ if ( 'chat' == $type ) {
 do_action('ht_ctc_ah_admin_after_showhide');
 ?>
 
-<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-hide-styles/"><?php _e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-hide-styles/"><?php esc_html_e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 <!-- <details style="margin-top:5px;">
-    <summary style="cursor:pointer;"><?php _e( 'Usecases', 'click-to-chat-for-whatsapp' ); ?></summary>
-    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-only-on-selected-pages/"><?php _e( 'Show only on selected pages', 'click-to-chat-for-whatsapp' ); ?></a><?php _e( ' (Single, Cart, Checkout page)', 'click-to-chat-for-whatsapp' ); ?></p>
-    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/hide-only-on-selected-pages/"><?php _e( 'Hide only on selected pages', 'click-to-chat-for-whatsapp' ); ?></a><?php _e( ' (Single, Cart, Checkout page)', 'click-to-chat-for-whatsapp' ); ?></p>
-    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-hide-on-mobile-desktop/"><?php _e( 'Show/Hide on Mobile/Desktop', 'click-to-chat-for-whatsapp' ); ?></a></p>
+    <summary style="cursor:pointer;"><?php esc_html_e( 'Usecases', 'click-to-chat-for-whatsapp' ); ?></summary>
+    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-only-on-selected-pages/"><?php esc_html_e( 'Show only on selected pages', 'click-to-chat-for-whatsapp' ); ?></a><?php esc_html_e( ' (Single, Cart, Checkout page)', 'click-to-chat-for-whatsapp' ); ?></p>
+    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/hide-only-on-selected-pages/"><?php esc_html_e( 'Hide only on selected pages', 'click-to-chat-for-whatsapp' ); ?></a><?php esc_html_e( ' (Single, Cart, Checkout page)', 'click-to-chat-for-whatsapp' ); ?></p>
+    <p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-hide-on-mobile-desktop/"><?php esc_html_e( 'Show/Hide on Mobile/Desktop', 'click-to-chat-for-whatsapp' ); ?></a></p>
 </details> -->
 
 <?php
@@ -270,16 +270,16 @@ if ( !defined('HT_CTC_PRO_VERSION') && isset($type) && 'chat' == $type ) {
     <p class="description">PRO</p>
 
     <div class="ctc_pro_content" style="margin-bottom: 25px;">
-        <p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/time-delay-scroll/"><?php _e( 'Time, Scroll Delay', 'click-to-chat-for-whatsapp' ); ?></a></p>
-        <p class="description ht_ctc_content_point"><?php _e( 'Display After Time Delay', 'click-to-chat-for-whatsapp' ); ?></p>
-        <p class="description ht_ctc_content_point"><?php _e( 'Display After User Scroll', 'click-to-chat-for-whatsapp' ); ?></p>
+        <p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/time-delay-scroll/"><?php esc_html_e( 'Time, Scroll Delay', 'click-to-chat-for-whatsapp' ); ?></a></p>
+        <p class="description ht_ctc_content_point"><?php esc_html_e( 'Display After Time Delay', 'click-to-chat-for-whatsapp' ); ?></p>
+        <p class="description ht_ctc_content_point"><?php esc_html_e( 'Display After User Scroll', 'click-to-chat-for-whatsapp' ); ?></p>
     </div>
 
     <div style="margin-bottom: 25px;" id="ht_ctc_bh">
-        <p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/business-hours-online-offline/"><?php _e( 'Business Hours', 'click-to-chat-for-whatsapp' ); ?> (<?php _e( 'online/offline', 'click-to-chat-for-whatsapp' ); ?>)</a></p>
-        <p class="description ht_ctc_content_point"><?php _e( 'Hide When offline', 'click-to-chat-for-whatsapp' ); ?> (or)</p>
-        <p class="description ht_ctc_content_point"><?php _e( 'Change WhatsApp Number When Offline', 'click-to-chat-for-whatsapp' ); ?></p>
-        <p class="description ht_ctc_content_point"><?php _e( 'Change Call to Action When Offline', 'click-to-chat-for-whatsapp' ); ?></p>
+        <p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/business-hours-online-offline/"><?php esc_html_e( 'Business Hours', 'click-to-chat-for-whatsapp' ); ?> (<?php esc_html_e( 'online/offline', 'click-to-chat-for-whatsapp' ); ?>)</a></p>
+        <p class="description ht_ctc_content_point"><?php esc_html_e( 'Hide When offline', 'click-to-chat-for-whatsapp' ); ?> (or)</p>
+        <p class="description ht_ctc_content_point"><?php esc_html_e( 'Change WhatsApp Number When Offline', 'click-to-chat-for-whatsapp' ); ?></p>
+        <p class="description ht_ctc_content_point"><?php esc_html_e( 'Change Call to Action When Offline', 'click-to-chat-for-whatsapp' ); ?></p>
         <p class="description ht_ctc_content_point">Online status badge at greetings header image during business hours</p>
     </div>
 

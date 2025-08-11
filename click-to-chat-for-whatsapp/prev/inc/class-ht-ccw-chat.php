@@ -51,8 +51,7 @@ class HT_CCW_Chat {
         $enable = esc_attr( $values['enable'] );
         $num = esc_attr( $values['number'] );
         $val = esc_attr( $values['input_placeholder'] );
-        // $val_form_db = esc_attr( $values['input_placeholder'] );
-        // $val = __( $val_form_db, 'click-to-chat-for-whatsapp' );
+        // $val = esc_attr( $values['input_placeholder'] );
 
         $position = esc_attr( $values['position'] );
 

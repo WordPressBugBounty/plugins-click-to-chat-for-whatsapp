@@ -52,11 +52,19 @@ class HT_CTC {
     }
 
     public function __clone() {
-		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'click-to-chat-for-whatsapp' ), '1.0' );
+        _doing_it_wrong(
+            __FUNCTION__,
+            esc_html__( 'Cheatin&#8217; huh?', 'click-to-chat-for-whatsapp' ),
+            '1.0'
+        );
     }
-    
+
     public function __wakeup() {
-		wc_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'click-to-chat-for-whatsapp' ), '1.0' );
+        _doing_it_wrong(
+            __FUNCTION__,
+            esc_html__( 'Cheatin&#8217; huh?', 'click-to-chat-for-whatsapp' ),
+            '1.0'
+        );
     }
 
     /**

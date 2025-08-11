@@ -145,21 +145,21 @@ class HT_CTC_Share {
         if ( is_file( $path ) ) {
             do_action('ht_ctc_ah_before_fixed_position');
             ?>
-            <div class="<?php echo $ht_ctc_share['class_names'] ?>" 
+            <div class="<?php echo esc_attr($ht_ctc_share['class_names']) ?>" 
                 style="display: none;"
-                data-return_type="<?php echo $type ?>" 
-                data-share_text="<?php echo $ht_ctc_share['share_text'] ?>" 
-                data-is_ga_enable="<?php echo $ht_ctc_os['is_ga_enable'] ?>" 
-                data-is_fb_pixel="<?php echo $ht_ctc_os['is_fb_pixel'] ?>" 
-                data-ga_ads="<?php echo $ht_ctc_os['ga_ads'] ?>" 
-                data-webandapi="<?php echo $ht_ctc_share['webandapi'] ?>" 
-                data-display_mobile="<?php echo $ht_ctc_share['display_mobile'] ?>" 
-                data-display_desktop="<?php echo $ht_ctc_share['display_desktop'] ?>" 
-                data-css="<?php echo $ht_ctc_share['css'] ?>" 
-                data-position="<?php echo $ht_ctc_share['position'] ?>" 
-                data-position_mobile="<?php echo $ht_ctc_share['position_mobile'] ?>" 
-                data-show_effect="<?php echo $ht_ctc_os['show_effect'] ?>" 
-                <?php echo $ht_ctc_os['data-attributes'] ?>  
+                data-return_type="<?php echo esc_attr($type) ?>" 
+                data-share_text="<?php echo esc_attr($ht_ctc_share['share_text']) ?>" 
+                data-is_ga_enable="<?php echo esc_attr($ht_ctc_os['is_ga_enable']) ?>" 
+                data-is_fb_pixel="<?php echo esc_attr($ht_ctc_os['is_fb_pixel']) ?>" 
+                data-ga_ads="<?php echo esc_attr($ht_ctc_os['ga_ads']) ?>" 
+                data-webandapi="<?php echo esc_attr($ht_ctc_share['webandapi']) ?>" 
+                data-display_mobile="<?php echo esc_attr($ht_ctc_share['display_mobile']) ?>" 
+                data-display_desktop="<?php echo esc_attr($ht_ctc_share['display_desktop']) ?>" 
+                data-css="<?php echo esc_attr($ht_ctc_share['css']) ?>" 
+                data-position="<?php echo esc_attr($ht_ctc_share['position']) ?>" 
+                data-position_mobile="<?php echo esc_attr($ht_ctc_share['position_mobile']) ?>" 
+                data-show_effect="<?php echo esc_attr($ht_ctc_os['show_effect']) ?>" 
+                <?php echo $ht_ctc_os['data-attributes'] ?>
                 >
                 <?php 
                 if ( isset( $options['select_styles_issue'] ) ) {

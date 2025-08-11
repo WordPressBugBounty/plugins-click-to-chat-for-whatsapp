@@ -25,11 +25,8 @@ class HT_CTC_Share_Shortcode {
         $options = get_option('ht_ctc_share');
         $ht_ctc_os = array();
 
-        $share_text_db = esc_attr( $options['share_text'] );
-        $call_to_action_db = esc_attr( $options['call_to_action'] );
-
-        $share_text = __( $share_text_db , 'click-to-chat-for-whatsapp' );
-        $call_to_action = __( $call_to_action_db , 'click-to-chat-for-whatsapp' );
+        $share_text = esc_attr( $options['share_text'] );
+        $call_to_action = esc_attr( $options['call_to_action'] );
 
         $style_desktop = (isset($options['style_desktop'])) ? esc_attr($options['style_desktop']) : '2';
         if (isset($options['same_settings'])) {

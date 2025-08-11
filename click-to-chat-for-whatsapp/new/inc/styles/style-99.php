@@ -49,4 +49,4 @@ try {
 
 ?>
 
-<img class="own-img ctc-analytics ctc_s_99 ctc_cta" title="<?php echo $call_to_action ?>" id="style-99" src="<?php echo $s_99_own_image ?>" style="<?php echo $s_99_img_css ?>" alt="<?php echo $filename ?>">
+<img class="own-img ctc-analytics ctc_s_99 ctc_cta" title="<?php echo esc_attr($call_to_action) ?>" id="style-99" src="<?php echo esc_url($s_99_own_image) ?>" style="<?php echo esc_attr($s_99_img_css) ?>" alt="<?php echo esc_attr($filename) ?>">

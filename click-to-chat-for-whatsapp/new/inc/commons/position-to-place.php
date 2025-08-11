@@ -29,6 +29,8 @@ $side_2_value = esc_attr( $options['side_2_value'] );
 
 $position = "position: $position_type; $side_1: $side_1_value; $side_2: $side_2_value;";
 
+$side_d = $side_2;
+$side_m = $side_d;
 
 
 if ( isset($options['same_settings']) ) {
@@ -42,6 +44,7 @@ if ( isset($options['same_settings']) ) {
     $mobile_side_2_value = ( isset( $options['mobile_side_2_value'])) ? esc_attr( $options['mobile_side_2_value'] ) : '';
 
     $position_mobile = "position: $position_type_mobile; $mobile_side_1: $mobile_side_1_value; $mobile_side_2: $mobile_side_2_value;";
+    $side_m = $mobile_side_2;
 }
 
 // wp_is_mobile way of position (amp may need this)

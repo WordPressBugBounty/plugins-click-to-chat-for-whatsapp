@@ -55,7 +55,7 @@ class HT_CTC_Admin_Demo {
     public function hooks() {
 
         if ( isset($_GET) && isset($_GET['page']) ) {
-            $this->get_page = $_GET['page'];
+            $this->get_page = sanitize_text_field(wp_unslash($_GET['page']));
         } else {
             return;
         }
@@ -80,14 +80,17 @@ class HT_CTC_Admin_Demo {
             $demo_active = get_option( 'ht_ctc_admin_demo_active');
 
             // check if demo is activating or deactivating..
-            if ( isset($_GET['demo']) && 'active' == $_GET['demo'] ) {
-                $this->load_demo = 'yes';
-                // add option to db
-                update_option( 'ht_ctc_admin_demo_active', 'yes' );
-            } else if ( isset($_GET['demo']) && 'deactive' == $_GET['demo'] ) {
-                $this->load_demo = 'no';
-                // add option to db
-                update_option( 'ht_ctc_admin_demo_active', 'no' );
+            if ( isset($_GET['demo']) ) {
+                $demo_action = sanitize_text_field(wp_unslash($_GET['demo']));
+                if ( 'active' === $demo_action ) {
+                    $this->load_demo = 'yes';
+                    // add option to db
+                    update_option( 'ht_ctc_admin_demo_active', 'yes' );
+                } else if ( 'deactive' === $demo_action ) {
+                    $this->load_demo = 'no';
+                    // add option to db
+                    update_option( 'ht_ctc_admin_demo_active', 'no' );
+                }
             } else {
                 // not activating or deactivating.. check if admin demo already deactived...
                 if ( 'no' == $demo_active ) {
@@ -146,10 +149,10 @@ class HT_CTC_Admin_Demo {
         
         $args = true;
         
-        global $wp_version;
+        $wp_ver = function_exists( 'get_bloginfo' ) ? get_bloginfo( 'version' ) : '1.0';
         
         // if wp version is not null and is greater than 6.3
-        if ( !$wp_version && version_compare( $wp_version, '6.3', '>=' ) ) {
+        if ( version_compare( $wp_ver, '6.3', '>=' ) ) {
             $args = array(
                 'in_footer' => true,
                 'strategy' => 'defer',
@@ -250,7 +253,7 @@ class HT_CTC_Admin_Demo {
         }
 
         // in styles
-        $call_to_action = (isset($options['call_to_action'])) ? __(esc_attr($options['call_to_action']) , 'click-to-chat-for-whatsapp' ) : '';
+        $call_to_action = isset($options['call_to_action']) ? esc_attr($options['call_to_action']) : '';
         if ( '' == $call_to_action ) {
             $call_to_action = "WhatsApp us";
         }
@@ -278,7 +281,7 @@ class HT_CTC_Admin_Demo {
         foreach ($styles as $style) {
             $class = "ctc_demo_style ctc_demo_style_$style ht_ctc_animation ht_ctc_entry_animation";
             ?>
-            <div class="<?php echo $class ?>" style="display: none; cursor: pointer;">
+            <div class="<?php echo esc_attr($class) ?>" style="display: none; cursor: pointer;">
             <?php
             // no duplicate as in greetings, other settings page as only one style is loaded
             if ( 'click-to-chat-greetings' == $this->get_page ) {
@@ -291,7 +294,7 @@ class HT_CTC_Admin_Demo {
                 if ( 'click-to-chat-other-settings' == $this->get_page ) {
                     ?>
                     <span class="ctc_ad_notification" style="display:none; padding:0px; margin:0px; position:relative; float:right; z-index:9999999;">
-                        <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?php echo $notification_count ?></span>
+                        <span class="ctc_ad_badge" style="position: absolute; top: -11px; right: -11px; font-size:12px; font-weight:600; height:22px; width:22px; box-sizing:border-box; border-radius:50%;border:2px solid #ffffff; background:#ff4c4c; color:#ffffff; display:flex; justify-content:center; align-items:center;"><?php echo esc_html($notification_count) ?></span>
                     </span>
                     <?php
                 }
@@ -319,11 +322,11 @@ class HT_CTC_Admin_Demo {
         <div class="ctc_menu_at_demo" style="position:fixed; bottom:4px; right:4px; z-index:99999999;">
 
            <p class="description ctc_ad_links ctc_init_display_none">
-                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo $cs_link ?>">Customize Styles</a> |</span>
-                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo $os_link ?>">Animations, Notification badge</a> |</span>
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo esc_url($cs_link) ?>">Customize Styles</a> |</span>
+                <span class="ctc_ad_page_link"><a target="_blank" href="<?php echo esc_url($os_link) ?>">Animations, Notification badge</a> |</span>
 
-                <span class="ctc_ad_show_hide_demo ctc_ad_show_demo ctc_init_display_none"><a target="_blank"><?php _e( 'Show Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
-                <span class="ctc_ad_show_hide_demo ctc_ad_hide_demo"><a target="_blank"><?php _e( 'Hide Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
+                <span class="ctc_ad_show_hide_demo ctc_ad_show_demo ctc_init_display_none"><a target="_blank"><?php esc_html_e( 'Show Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
+                <span class="ctc_ad_show_hide_demo ctc_ad_hide_demo"><a target="_blank"><?php esc_html_e( 'Hide Demo', 'click-to-chat-for-whatsapp' ); ?></a></span>
             </p>
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/#no-live-preview/" target="_blank" class="description ctc_no_demo_notice ctc_init_display_none">No live demo for this feature</a>
             <a href="https://holithemes.com/plugins/click-to-chat/admin-live-preview-messages/" target="_blank" class="description ctc_demo_messages ctc_init_display_none"></a>
@@ -438,13 +441,13 @@ class HT_CTC_Admin_Demo {
                 $g_box_class_template = " template-$template";
 
                 ?>
-                <div class="ctc_demo_greetings <?php echo "ctc_demo_greetings_" . $template ?> <?php echo $ctc_m_full_width ?>" style="position: relative; bottom: 18px; cursor: auto;" >
+                <div class="ctc_demo_greetings <?php echo esc_attr("ctc_demo_greetings_" . $template) ?> <?php echo esc_attr($ctc_m_full_width) ?>" style="position: relative; bottom: 18px; cursor: auto;" >
 
-                    <div class="ht_ctc_chat_greetings_box <?php echo $g_box_classes ?> <?php echo $g_box_class_template ?>" style="position: absolute; bottom: 0px; <?php echo $g_position_r_l ?>: 0px; min-width: <?php echo $min_width ?>; max-width: 420px; ">
+                    <div class="ht_ctc_chat_greetings_box <?php echo esc_attr($g_box_classes) ?> <?php echo esc_attr($g_box_class_template) ?>" style="position: absolute; bottom: 0px; <?php echo esc_attr($g_position_r_l) ?>: 0px; min-width: <?php echo esc_attr($min_width) ?>; max-width: 420px; ">
 
-                        <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?php echo $box_layout_bg_color ?> box-shadow: <?php echo $box_shadow ?>; border-radius:8px;clear:both;">
+                        <div class="ht_ctc_chat_greetings_box_layout" style="max-height: 84vh; overflow-y:auto; <?php echo esc_attr($box_layout_bg_color) ?> box-shadow: <?php echo esc_attr($box_shadow) ?>; border-radius:8px;clear:both;">
 
-                            <span style="<?php echo $g_close_button_styles ?>" class="ctc_greetings_close_btn">
+                            <span style="<?php echo esc_attr($g_close_button_styles) ?>" class="ctc_greetings_close_btn">
                                 <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                 </svg>

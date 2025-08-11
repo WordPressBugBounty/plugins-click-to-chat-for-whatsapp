@@ -225,6 +225,7 @@ class HT_CTC_DB {
         // plugin details 
         $values = array(
             'version' => HT_CTC_VERSION,
+            'first_version' => HT_CTC_VERSION,
             'first_install_time' => $time,
             'v3' => $time,
             'v3_2_5' => $time,

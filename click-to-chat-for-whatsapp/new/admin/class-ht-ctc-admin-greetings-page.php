@@ -27,13 +27,14 @@ class HT_CTC_Admin_Greetings {
         // @admin_perfomance - if this method is not working then we can add at add_settings_section .. 
 
         // check for options.php, _GET page = click-to-chat-greetings
-        $get_url = ( isset($_GET) && isset($_GET['page']) && 'click-to-chat-greetings' == $_GET['page'] ) ? true : false;
+        $get_url = (  isset($_GET) && isset($_GET['page']) && 'click-to-chat-greetings' === sanitize_text_field(wp_unslash($_GET['page'])) ) ? true : false;
 
         $options_page = false;
         // if request url have options.php .. (or if requesturl is not set.. or empty ) then $options_page = true
         if ( isset($_SERVER['REQUEST_URI']) ) {
-            if ( !empty($_SERVER['REQUEST_URI']) ) {
-                if ( false !== strpos( $_SERVER['REQUEST_URI'], 'options.php' ) ) {
+            $request_uri = esc_url_raw(wp_unslash($_SERVER['REQUEST_URI']));
+            if ( !empty($request_uri) ) {
+                if ( false !== strpos( $request_uri, 'options.php' ) ) {
                     // if options.php page
                     $options_page = true;
                 }

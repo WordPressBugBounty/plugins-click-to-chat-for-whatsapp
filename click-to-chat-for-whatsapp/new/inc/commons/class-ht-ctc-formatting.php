@@ -39,10 +39,15 @@ class HT_CTC_Formatting {
         // $is_editor = false;
         $is_editor = 'n';
 
-        if (isset($_GET)) {
-            if ( isset($_GET['elementor-preview']) || isset($_GET['et_fb']) || isset($_GET['is-editor-iframe']) || isset($_GET['fl_builder']) || isset($_GET['siteorigin_panels_live_editor']) || isset($_GET['pagelayer-iframe']) || isset($_GET['vcv-editable']) ) {
-                // $is_editor = true;
-                $is_editor = 'y';
+        if (isset($_GET) && is_array($_GET)) {
+            // Check for page builder editor parameters
+            $editor_params = ['elementor-preview', 'et_fb', 'is-editor-iframe', 'fl_builder', 'siteorigin_panels_live_editor', 'pagelayer-iframe', 'vcv-editable'];
+            
+            foreach ($editor_params as $param) {
+                if (isset($_GET[$param])) {
+                    $is_editor = 'y';
+                    break;
+                }
             }
         }
 

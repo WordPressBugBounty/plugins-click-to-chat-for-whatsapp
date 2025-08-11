@@ -33,21 +33,21 @@ if (isset($input['list'])) {
 }
 
 ?>
-<div class="row ctc_component_select <?php echo $parent_class ?>" id="<?php echo $parent_id ?>" style="margin:0;">
+<div class="row ctc_component_select <?php echo esc_attr($parent_class) ?>" id="<?php echo esc_attr($parent_id) ?>" style="margin:0;">
     <?php
     if ( '' !== $title ) {
     ?>
-    <p class="description"><?php _e( $title, 'click-to-chat-for-whatsapp' ); ?> </p>
+    <p class="description"><?php echo esc_html($title); ?> </p>
     <?php
     }
     ?>
     <div class="row">
         <div class="input-field col s12">
-            <select name="<?php echo $dbrow ?>[<?php echo $db_key ?>]" class="<?php echo $select_class ?>">
+            <select name="<?php echo esc_attr($dbrow) ?>[<?php echo esc_attr($db_key) ?>]" class="<?php echo esc_attr($select_class) ?>">
                 <?php
                 foreach ($list as $k => $v) {
                     ?>
-                    <option value="<?php echo $k ?>" <?php echo $db_value == $k ? 'SELECTED' : ''; ?> ><?php echo $v ?></option>
+                    <option value="<?php echo esc_attr($k) ?>" <?php echo $db_value == $k ? 'SELECTED' : ''; ?> ><?php echo esc_html($v) ?></option>
                     <?php
                 }
                 ?>

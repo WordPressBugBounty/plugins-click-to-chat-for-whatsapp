@@ -22,7 +22,7 @@ class HT_CTC_Security {
 
         try { 
             $site_url = get_site_url();
-            $referer = isset($_SERVER['HTTP_REFERER']) ? esc_attr($_SERVER['HTTP_REFERER']) : '';
+            $referer = isset($_SERVER['HTTP_REFERER']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER'])) : '';
 
             // Referer check
             if (strpos($referer, $site_url) === false) {
@@ -38,7 +38,7 @@ class HT_CTC_Security {
             }
 
             // Optional: Bounce or User-Agent logic (custom abuse logic)
-            $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? esc_attr($_SERVER['HTTP_USER_AGENT']) : '';
+            $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
             if (empty($user_agent)) {
                 return new WP_REST_Response(['error' => 'Invalid user agent'], 403);
             }

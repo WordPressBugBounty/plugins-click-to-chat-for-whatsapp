@@ -46,7 +46,7 @@ if ( isset( $s1_options['s1_m_fullwidth'] ) ) {
   $s1_fullwidth_css = "@media(max-width:1201px){.ht-ctc.style-1{left:unset !important;right:0px !important;}.ht-ctc.style-1,.ht-ctc .s1_btn{width:100%;}}";
 
 ?>
-<style id="ht-ctc-s1"><?php echo $s1_fullwidth_css ?></style>
+<style id="ht-ctc-s1"><?php echo esc_html($s1_fullwidth_css) ?></style>
 <?php
 }
 
@@ -67,14 +67,18 @@ if ('' !== $s1_add_icon) {
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>
-<span class="ctc_cta"><?php echo $call_to_action ?></span>
+<span class="ctc_cta"><?php echo esc_html($call_to_action) ?></span>
 </button>
 <?php
+// todo: instead of display message like this.. remove here and focus at customize styles settings.. and at select style.. 
 // admin - add for admin demo
 if ( is_admin() ) {
-  if (isset($_GET) && isset($_GET['page']) && ('click-to-chat' == $_GET['page'] || 'click-to-chat-customize-styles' == $_GET['page'])) {
-    ?>
-    <p class="description s1_admin_demo_note">Front-End: Theme Button</p>
-    <?php
+  if (isset($_GET['page'])) {
+    $page = sanitize_text_field(wp_unslash($_GET['page']));
+    if ('click-to-chat' === $page || 'click-to-chat-customize-styles' === $page) {
+      ?>
+      <p class="description s1_admin_demo_note">Front-End: Theme Button</p>
+      <?php
+    }
   }
 }

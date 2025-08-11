@@ -26,8 +26,11 @@ $s7_1_options = apply_filters( 'ht_ctc_fh_s7_1_options', $s7_1_options );
 $is_ctc_admin = '';
 
 if ( is_admin() ) {
-  if ( isset( $_GET ) && isset( $_GET['page'] ) && ( 'click-to-chat' == $_GET['page'] || 'click-to-chat-other-settings' == $_GET['page'] || 'click-to-chat-customize-styles' == $_GET['page'] ) ) {
-    $is_ctc_admin = 'yes';
+  if ( isset( $_GET['page'] ) ) {
+    $page = sanitize_text_field(wp_unslash($_GET['page']));
+    if ( 'click-to-chat' === $page || 'click-to-chat-other-settings' === $page || 'click-to-chat-customize-styles' === $page ) {
+      $is_ctc_admin = 'yes';
+    }
   }
 }
 
@@ -128,12 +131,12 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 }
 ?>
 <style id="ht-ctc-s7_1">
-<?php echo $s7_hover_styles ?>
+<?php echo esc_html($s7_hover_styles) ?>
 </style>
 
-<div class="ctc_s_7_1 ctc-analytics ctc_nb" style="<?php echo $s7_n1_styles; ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
-    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo $s7_cta_class ?>" style="<?php echo $s7_cta_css ?>"><?php echo $call_to_action; ?></p>
-    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo $s7_icon_padding_css ?>">
+<div class="ctc_s_7_1 ctc-analytics ctc_nb" style="<?php echo esc_attr($s7_n1_styles); ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
+    <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
+    <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_padding_css) ?>">
         <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
     </div>
 </div>

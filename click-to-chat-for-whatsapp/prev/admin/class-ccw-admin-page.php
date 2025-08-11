@@ -166,7 +166,7 @@ class CCW_Admin_Page {
                 </select>
                 <label>Select Style for Desktop</label>
                 <p class="description"> - <a target="_blank" href="https://holithemes.com/plugins/whatsapp-chat/styles/">List of Styles</a> </p>
-                <p class="description">These styles are customizable - <a target="_blank" href="<?php echo admin_url( 'admin.php?page=ccw-edit-styles' ); ?>">Customize Styles</a> </p>
+                <p class="description">These styles are customizable - <a target="_blank" href="<?php echo esc_url(admin_url( 'admin.php?page=ccw-edit-styles' )); ?>">Customize Styles</a> </p>
                 
             </div>
         </div>
@@ -352,7 +352,7 @@ class CCW_Admin_Page {
         ?>
         
         <p class="description"> If Google Analytics is installed - creates an Event at there - <a target="_blank" href="https://holithemes.com/plugins/whatsapp-chat/google-analytics/">more info</a> </p>
-        <p class="description"> Customize Event Values - <a target="_blank" href="<?php echo admin_url( 'admin.php?page=ccw-edit-styles#ga-analytics' ); ?>"><?php _e( 'Customize Styles' , 'click-to-chat-for-whatsapp' ) ?></a>  </p>
+        <p class="description"> Customize Event Values - <a target="_blank" href="<?php echo esc_url(admin_url( 'admin.php?page=ccw-edit-styles#ga-analytics' )); ?>"><?php esc_html_e( 'Customize Styles' , 'click-to-chat-for-whatsapp' ) ?></a>  </p>
         <p class="description"> Using - <a target="_blank" href="https://holithemes.com/google-analytics-for-click-to-chat-for-whatsapp-plugin/">Google Tag Manager</a> </p>
         <?php
     }
@@ -564,7 +564,7 @@ class CCW_Admin_Page {
                  }
                 ?>
                 <p class="description"> Default values is 'chat', can customize shortcode name - <a target="_blank" href="https://holithemes.com/plugins/whatsapp-chat/change-shortcode-name/">more info</a> </p>
-                <!-- <p class="description"> please dont add this already existing shortcode names - <?php echo $shortcode_list ?> </p> -->
+                <!-- <p class="description"> please dont add this already existing shortcode names - <?php echo esc_html($shortcode_list) ?> </p> -->
                 <p class="description"> please dont change to already existing shortcode name </p>
             </div>
         </div>

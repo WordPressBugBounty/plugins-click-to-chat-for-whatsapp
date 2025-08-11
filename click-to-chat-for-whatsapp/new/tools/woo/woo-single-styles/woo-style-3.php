@@ -41,6 +41,6 @@ $ht_ctc_svg_css = "pointer-events:none; display:block; height:$img_size; width:$
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 
 ?>
-<div title="<?php echo $call_to_action ?>" style="<?php echo $s3_css ?>">
+<div title="<?php echo esc_attr($call_to_action) ?>" style="<?php echo esc_attr($s3_css) ?>">
     <?php echo ht_ctc_style_3_svg( $img_size, $type, $ht_ctc_svg_css ); ?>
 </div>

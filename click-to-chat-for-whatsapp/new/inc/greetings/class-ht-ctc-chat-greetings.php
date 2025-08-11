@@ -88,9 +88,11 @@ class HT_CTC_Chat_Greetings {
             $post_title = esc_html( get_the_title() );
         } elseif ( is_archive() ) {
 
-            if ( isset($_SERVER['HTTP_HOST']) && $_SERVER['REQUEST_URI'] ) {
+            if ( isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI']) ) {
                 $protocol = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ) ? 'https' : 'http';
-                $page_url = $protocol . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                $http_host = sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST']));
+                $request_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI']));
+                $page_url = $protocol . '://' . $http_host . $request_uri;
             }
 
             if ( is_category() ) {
@@ -254,6 +256,7 @@ class HT_CTC_Chat_Greetings {
          * 
          * for inside close button - to the close button, ctc_greetings_close_btn added background-color: unset !important; border-radius:50%; for backword compatibility i.e. user changed by adding css..
          * z-index: 9 added to fix style-5 icon mobile layer with greetings dialog 
+         * 
          */
         if ( is_file( $ht_ctc_greetings['path'] ) ) {
 
@@ -267,13 +270,13 @@ class HT_CTC_Chat_Greetings {
                 <?php
             }
             ?>
-            <div style="position: relative; bottom: 18px; cursor: auto; z-index:9;" class="ht_ctc_greetings <?php echo $ctc_m_full_width ?>">
+            <div style="position: relative; bottom: 18px; cursor: auto; z-index:9;" class="ht_ctc_greetings <?php echo esc_attr($ctc_m_full_width) ?>">
 
-                <div class="ht_ctc_chat_greetings_box <?php echo $g_box_classes ?>  <?php echo $ctc_g_position ?>" style="display: none; <?php echo $greetings_box_styles ?> min-width: <?php echo $min_width ?>; max-width: 420px; ">
+                <div class="ht_ctc_chat_greetings_box <?php echo esc_attr($g_box_classes) ?>  <?php echo esc_attr($ctc_g_position) ?>" style="display: none; <?php echo esc_attr($greetings_box_styles) ?> min-width: <?php echo esc_attr($min_width) ?>; max-width: 420px; ">
 
-                    <div class="ht_ctc_chat_greetings_box_layout" style="<?php echo $greetings_box_layout_styles ?>  box-shadow: <?php echo $box_shadow ?>; border-radius:8px;">
+                    <div class="ht_ctc_chat_greetings_box_layout" style="<?php echo esc_attr($greetings_box_layout_styles) ?>  box-shadow: <?php echo esc_attr($box_shadow) ?>; border-radius:8px;">
 
-                        <span style="<?php echo $g_close_button_styles ?>" class="ctc_greetings_close_btn">
+                        <span style="<?php echo esc_attr($g_close_button_styles) ?>" class="ctc_greetings_close_btn">
                             <svg style="color:lightgray; background-color: unset !important; border-radius:50%;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>

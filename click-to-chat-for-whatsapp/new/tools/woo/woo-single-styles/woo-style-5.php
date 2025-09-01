@@ -63,13 +63,12 @@ $s5_css_code = '
 .ht-ctc-style-5 .s5_img{box-shadow:2px 5px 10px rgba(0,0,0,.5)}.ht-ctc-style-5 .s5_content{box-shadow:2px 5px 10px rgba(0,0,0,.5);border-radius:5px}.ht-ctc-style-5 .s5_content span{padding:5px;overflow:hidden}.ht-ctc-style-5 .s5_content .heading{font-size:20px}.ht-ctc-style-5 .s5_content .description{font-size:12px}.ht-ctc-style-5 .s5_content.right{animation:1s s5_translate_right}.ht-ctc-style-5 .s5_content.left{animation:1s s5_translate_left}@keyframes s5_translate_right{0%{transform:translateX(55px)}100%{transform:translateX(0)}}@keyframes s5_translate_left{0%{transform:translateX(-55px)}100%{transform:translateX(0)}}
 ';
 
-$o = '';
-$o .= '<style>';
-$o .= '.ht-ctc-style-5 .s5_content{display:none}.ht-ctc-style-5 .s5_cta:hover .s5_content{display:flex}';
-$o .= $s5_css_code;
-$o .= '</style>';
-
-echo $o;
+$o = '.ht-ctc-style-5 .s5_content{display:none}.ht-ctc-style-5 .s5_cta:hover .s5_content{display:flex}' . $s5_css_code;
+?>
+<style>
+<?php echo esc_html( $o ); ?>
+</style>
+<?php
 
 ?>
 
@@ -84,3 +83,4 @@ echo $o;
     </div>
 
 </div>
+

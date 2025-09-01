@@ -26,9 +26,9 @@ if ('' == $s1_icon_color) {
   $s1_icon_color = '#ffffff';
 }
 
-$s1_style = ('' !== $s1_css) ? "style='$s1_css'": "";
+$s1_style = ( '' !== $s1_css ) ? $s1_css : '';
 ?>
-<button <?php echo $s1_style; ?> class="ctc-analytics g_s1_cta_btn ctc_cta">
+<button <?php if ( $s1_style ) { printf( 'style="%s"', esc_attr( $s1_style ) ); } ?> class="ctc-analytics g_s1_cta_btn ctc_cta">
 <?php
 if ('' !== $s1_add_icon) {
   
@@ -41,6 +41,7 @@ if ('' !== $s1_add_icon) {
       'ht_ctc_svg_css' => "$s1_svg_css",
   );
   include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
+  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>

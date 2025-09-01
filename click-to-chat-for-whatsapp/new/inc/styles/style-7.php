@@ -80,6 +80,9 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 <div <?php echo esc_attr($title) ?> class="ctc_s_7 ctc-analytics ctc_nb" style="<?php echo esc_attr($s7_n1_styles); ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
     <p class="ctc_s_7_cta ctc_cta ctc_cta_stick ctc-analytics <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
     <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_css) ?>">
-        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
+        echo ht_ctc_singlecolor( $s7_svg_attrs );
+        ?>
     </div>
 </div>

@@ -63,12 +63,15 @@ $s7_svg_attrs = array(
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 ?>
 <style id="ht-ctc-s7_1">
-<?php echo $s7_hover_styles ?>
+<?php echo esc_html( $s7_hover_styles ); ?>
 </style>
 
-<div class="g_ctc_s_7_1 ctc-analytics" style="<?php echo $s7_n1_styles; ?>">
+<div class="g_ctc_s_7_1 ctc-analytics" style="<?php echo esc_attr( $s7_n1_styles ); ?>">
     <p class="g_ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($ht_ctc_greetings['call_to_action']) ?></p>
     <div class="g_ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_padding_css) ?>">
-        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
+        echo ht_ctc_singlecolor( $s7_svg_attrs );
+        ?>
     </div>
 </div>

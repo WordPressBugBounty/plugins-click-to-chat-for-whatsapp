@@ -39,15 +39,15 @@ class HT_CTC_Formatting {
         // $is_editor = false;
         $is_editor = 'n';
 
-        if (isset($_GET) && is_array($_GET)) {
-            // Check for page builder editor parameters
-            $editor_params = ['elementor-preview', 'et_fb', 'is-editor-iframe', 'fl_builder', 'siteorigin_panels_live_editor', 'pagelayer-iframe', 'vcv-editable'];
-            
-            foreach ($editor_params as $param) {
-                if (isset($_GET[$param])) {
-                    $is_editor = 'y';
-                    break;
-                }
+        $editor_params = ['elementor-preview', 'et_fb', 'is-editor-iframe', 'fl_builder', 'siteorigin_panels_live_editor', 'pagelayer-iframe', 'vcv-editable'];
+        // $editor_params = apply_filters( 'ht_ctc_fh_editor_params', $editor_params );
+
+        // Check for page builder editor parameters
+        foreach ( $editor_params as $param ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: checking existence of query keys; no state change performed.
+            if (  isset( $_GET ) && isset( $_GET[ $param ] ) ) {
+                $is_editor = 'y';
+                break;
             }
         }
 
@@ -59,3 +59,5 @@ class HT_CTC_Formatting {
 
 }
 endif; // END class_exists check
+
+

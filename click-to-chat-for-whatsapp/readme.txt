@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.8.2
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.27
+Stable tag: 4.28
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -541,6 +541,9 @@ Thank you so much in advance from "Click to Chat" Team
 * Or enable Auto-updates to update automatically
 
 == Changelog ==
+
+= 4.28 =
+* Fix: The Custom Element feature now works correctly even when the 'ctc_chat' class is added dynamically.
 
 = 4.27 =
 * app.js file now loads asynchronously and deferred to improve page load performance.

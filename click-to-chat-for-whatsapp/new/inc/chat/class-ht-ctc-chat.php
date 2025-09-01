@@ -33,7 +33,7 @@ class HT_CTC_Chat {
     public function is_valid_http_url( $url ) {
         return is_string( $url ) &&
             filter_var( $url, FILTER_VALIDATE_URL ) &&
-            in_array( parse_url( $url, PHP_URL_SCHEME ), [ 'http', 'https' ], true );
+            in_array( wp_parse_url( $url, PHP_URL_SCHEME ), [ 'http', 'https' ], true );
     }
 
 
@@ -77,6 +77,32 @@ class HT_CTC_Chat {
                 return;
             }
         }
+
+
+
+        /**
+         * 
+         * ~ if get_queried_object_id is 0.. then it might not be page, post type.. it migth be home, front page, shop, 404, etc..
+         * 
+         * ~ if get_queried_object_id and get_the_ID is not same.. then it might be archive type.. 
+         *                      get_the_ID: will retun the last post id in archive pages..
+         *                      get_queried_object_id: is that tag_id.. for archive category, tag, author, ..  
+         * 
+         *                      get_queried_object_id: 0 - for shop, home, front page, 404, etc..
+         * 
+         * 404 page - get_queried_object_id: 0, get_the_ID: blank.. might be false..
+         * 
+         * 
+         * 
+         * solution: 
+         * ~ if its an archive page.. dont get page level settings.. to avoid gettings settings from the last post in that archive page.
+         * 
+         * is_home.. have to work out..
+         * is_home.. is_page.. is_front_page.. is_singular.. 
+         * 
+         * https://chatgpt.com/share/6853df60-5aa8-800b-8ad4-fac62f19e91c
+         */
+
 
         /**
          * dont get page level settings if its an archive page..
@@ -368,6 +394,7 @@ class HT_CTC_Chat {
 
         // webhook
         $hook_url = isset($othersettings['hook_url']) ? esc_attr( $othersettings['hook_url'] ) : '';
+        // todo: changed from string to json.. will test
         $webhook_format = isset($othersettings['webhook_format']) ? esc_attr( $othersettings['webhook_format'] ) : 'json';
         
         /**
@@ -474,7 +501,7 @@ class HT_CTC_Chat {
         }
 
 
-        // Greetings - init display ..
+        // Greetings - init display - default( preset)/open/close
         $g_init = isset($greetings_settings['g_init']) ? esc_attr( $greetings_settings['g_init'] ) : 'default';
         $ctc['g_init'] = $g_init;
 

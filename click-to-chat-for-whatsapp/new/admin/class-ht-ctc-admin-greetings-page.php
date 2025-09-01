@@ -27,7 +27,8 @@ class HT_CTC_Admin_Greetings {
         // @admin_perfomance - if this method is not working then we can add at add_settings_section .. 
 
         // check for options.php, _GET page = click-to-chat-greetings
-        $get_url = (  isset($_GET) && isset($_GET['page']) && 'click-to-chat-greetings' === sanitize_text_field(wp_unslash($_GET['page'])) ) ? true : false;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking current admin page only.
+        $get_url = ( isset($_GET) && isset( $_GET['page'] ) && 'click-to-chat-greetings' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) ? true : false;
 
         $options_page = false;
         // if request url have options.php .. (or if requesturl is not set.. or empty ) then $options_page = true
@@ -455,7 +456,7 @@ class HT_CTC_Admin_Greetings {
                                 <div class="row">
                                     <ul class="collapsible popout ht_ctc_sidebar_greetings">
                                         <li class="active">
-                                            <div class="collapsible-header"><?php _e( 'PRO', 'click-to-chat-for-whatsapp' ); ?></div>	
+                                            <div class="collapsible-header"><?php esc_html_e( 'PRO', 'click-to-chat-for-whatsapp' ); ?></div>
                                             <div class="collapsible-body">
                                                 <p class="description">📝 Greetings - Form filling</p>
                                                 <p class="description">👥 Greetings - Multi-Agent</p>
@@ -677,3 +678,4 @@ if ( current_user_can( 'manage_options' ) ) {
 
 
 endif; // END class_exists check
+

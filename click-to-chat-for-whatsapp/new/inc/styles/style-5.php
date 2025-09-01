@@ -69,13 +69,12 @@ $s5_css_code = '
 ';
 
 // Output CSS
-$o = '';
-$o .= '<style>';
-$o .= '.ht-ctc-style-5 .s5_content{display:none}.ht-ctc-style-5 .s5_cta:hover .s5_content{display:flex}';
-$o .= $s5_css_code;
-$o .= '</style>';
-
-echo $o;
+$o = '.ht-ctc-style-5 .s5_content{display:none}.ht-ctc-style-5 .s5_cta:hover .s5_content{display:flex}' . $s5_css_code;
+?>
+<style>
+<?php echo esc_html( $o ); ?>
+</style>
+<?php
 
 ?>
 
@@ -90,3 +89,4 @@ echo $o;
     </div>
 
 </div>
+

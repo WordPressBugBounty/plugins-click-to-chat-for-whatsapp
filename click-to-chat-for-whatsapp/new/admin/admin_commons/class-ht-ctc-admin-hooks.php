@@ -380,12 +380,14 @@ class HT_CTC_Admin_Others {
     function dequeue() {
 
         // As now only if in &special mode
-        if ( isset($_GET) && isset($_GET['special']) ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only reading data, no state change.
+        if ( isset($_GET) && isset( $_GET['special'] ) ) {
 
             add_action( 'wp_print_scripts', [$this, 'dequeue_scripts'] );
-            
+
             // &special&nocss
-            if ( isset($_GET['nocss']) ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Debug parameter triggers display changes only.
+            if ( isset( $_GET['nocss'] ) ) {
                 // add_action( 'wp_print_scripts', [$this, 'dequeue_styles'] );
                 add_action( 'admin_enqueue_scripts', [$this, 'dequeue_styles'], 99 );
             }
@@ -607,3 +609,4 @@ class HT_CTC_Admin_Others {
 new HT_CTC_Admin_Others();
 
 endif; // END class_exists check
+

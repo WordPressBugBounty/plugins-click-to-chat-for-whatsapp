@@ -1237,10 +1237,22 @@
 				number = values.getAttribute('data-number');
 				console.log('data-number: ' + number);
 			}
+
 			// Check if the clicked element has a data-pre_filled attribute
 			if (values.hasAttribute('data-pre_filled')) {
-				console.log('has pre_filled attribute');
-				pre_filled = values.getAttribute('data-pre_filled');
+
+				const dataPreFilled = values.getAttribute('data-pre_filled') || '';
+				console.log('has pre_filled attribute:', dataPreFilled);
+
+				// prefix for pre_filled text might be added.
+				// const prefix = ctc.prefix_pre_filled || '';
+				const prefix = (ctc.prefix_pre_filled) ? ctc.prefix_pre_filled : '';
+
+				// pre_filled = prefix ? `${prefix}${dataPreFilled}` : dataPreFilled;
+    			pre_filled = prefix + dataPreFilled;
+
+
+				console.log('pre_filled:', pre_filled);
 			}
 
 			/**
@@ -1446,56 +1458,32 @@
 		function custom_link() {
 			console.log('custom link');
 
-			// // Event Delegation: handles clicks on elements that may exist now or be added later
-			// document.addEventListener('click', function (e) {
+			// Event Delegation: handles clicks on elements that may exist now or be added later
+			document.addEventListener('click', function (e) {
 
-			//     // Check if the clicked element (or its parent) matches `.ctc_chat` or `#ctc_chat`
-			//     const el1 = e.target.closest('.ctc_chat, #ctc_chat');
-			//     if (el1) {
-			//         console.log('class/Id: ctc_chat');
+			    // Check if the clicked element (or its parent) matches `.ctc_chat` or `#ctc_chat`
+			    const el1 = e.target.closest('.ctc_chat, #ctc_chat');
+			    if (el1) {
+			        console.log('class/Id: ctc_chat');
 
-			//         ht_ctc_link(el1); // Trigger WhatsApp action
+			        ht_ctc_link(el1); // Trigger WhatsApp action
 
-			//         // Prevent default if it's a WooCommerce-specific placement
-			//         if (el1.classList.contains('ctc_woo_place')) {
-			//             e.preventDefault();
-			//         }
-			//     }
+			        // Prevent default if it's a WooCommerce-specific placement
+			        if (el1.classList.contains('ctc_woo_place')) {
+			            e.preventDefault();
+			        }
+			    }
 
-			//     // Check for anchor links like <a href="#ctc_chat">
-			//     const el2 = e.target.closest('[href="#ctc_chat"]');
-			//     if (el2) {
-			//         console.log('href="#ctc_chat" clicked');
+			    // Check for anchor links like <a href="#ctc_chat">
+			    const el2 = e.target.closest('[href="#ctc_chat"]');
+			    if (el2) {
+			        console.log('href="#ctc_chat" clicked');
 
-			//         e.preventDefault();    // Prevent browser jumping to #ctc_chat
-			//         ht_ctc_link(el2);      // Trigger WhatsApp action
-			//     }
-			// });
-
-			// Direct Event Binding (for static elements only)
-			// Attach click handler to elements with class `.ctc_chat` or ID `#ctc_chat`
-			document.querySelectorAll('.ctc_chat, #ctc_chat').forEach(function (el) {
-				el.addEventListener('click', function (e) {
-					console.log('class/Id: ctc_chat');
-
-					ht_ctc_link(this); // Handle click
-
-					// Prevent default if WooCommerce-specific element
-					if (this.classList.contains('ctc_woo_place')) {
-						e.preventDefault();
-					}
-				});
+			        e.preventDefault();    // Prevent browser jumping to #ctc_chat
+			        ht_ctc_link(el2);      // Trigger WhatsApp action
+			    }
 			});
 
-			// Attach click handler to elements with href="#ctc_chat"
-			document.querySelectorAll('[href="#ctc_chat"]').forEach(function (el) {
-				el.addEventListener('click', function (e) {
-					console.log('href="#ctc_chat" clicked');
-
-					e.preventDefault(); // Prevent default anchor jump
-					ht_ctc_link(this); // Handle  click
-				});
-			});
 		}
 
 		// hook related values..
@@ -1542,6 +1530,7 @@
 				console.log(h_url);
 				console.log(hook_values);
 
+				// todo: if strigify and if else.. then make it like json.. make json default.
 				if (ctc.webhook_format && 'json' == ctc.webhook_format) {
 					console.log('main hook: json');
 					var data = hook_values;

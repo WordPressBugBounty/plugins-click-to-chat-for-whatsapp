@@ -78,7 +78,8 @@ $s8_main_span_css = "display: flex; $rtl_css padding: 0 2rem;letter-spacing: .5p
       <?php 
       if ('hide' !== $s8_icon_position) {
         include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
-        echo ht_ctc_singlecolor( $s8_svg_attrs ); 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
+        echo ht_ctc_singlecolor( $s8_svg_attrs );
       }
       ?>
     </span>

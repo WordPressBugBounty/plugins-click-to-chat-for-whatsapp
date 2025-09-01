@@ -141,7 +141,7 @@ class HT_CTC_Group {
                 data-position="<?php echo esc_attr($ht_ctc_group['position']) ?>" 
                 data-position_mobile="<?php echo esc_attr($ht_ctc_group['position_mobile']) ?>" 
                 data-show_effect="<?php echo esc_attr($ht_ctc_os['show_effect']) ?>" 
-                <?php echo $ht_ctc_os['data-attributes'] ?>  
+                <?php echo wp_kses_data( $ht_ctc_os['data-attributes'] ); ?>
                 >
                 <?php 
                 if ( isset( $options['select_styles_issue'] ) ) {

@@ -214,7 +214,7 @@ if ( '' !== $ht_ctc_greetings['header_content'] ) {
         }
         ?>
         <div class="ctc_g_header_content">
-            <?php echo wpautop($ht_ctc_greetings['header_content']) ?>
+            <?php echo wp_kses_post( wpautop( $ht_ctc_greetings['header_content'] ) ); ?>
         </div>
     </div>
     <?php
@@ -227,17 +227,17 @@ if ('' !== $ht_ctc_greetings['main_content']) {
     if ('yes' == $main_bg_image) {
         // if bg image is added
         ?>
-        <div class="ctc_g_content" style="<?php echo esc_attr($main_css) ?> position:relative;">
+        <div class="ctc_g_content" style="<?php echo esc_attr( $main_css ); ?> position:relative;">
             <div class="ctc_g_content_for_bg_image">
-                <div class="ctc_g_message_box ctc_g_message_box_width" style="<?php echo $message_box_css ?>"><?php echo wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
+                <div class="ctc_g_message_box ctc_g_message_box_width" style="<?php echo esc_attr( $message_box_css ); ?>"><?php echo wp_kses_post( wpautop( $ht_ctc_greetings['main_content'] ) ); ?></div>
             </div>
         </div>
         <?php
     } else {
         // if bg image is not added
         ?>
-        <div class="ctc_g_content" style="<?php echo $main_css ?>">
-            <div class="ctc_g_message_box ctc_g_message_box_width" style="<?php echo $message_box_css ?>"><?php echo wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
+        <div class="ctc_g_content" style="<?php echo esc_attr( $main_css ); ?>">
+            <div class="ctc_g_message_box ctc_g_message_box_width" style="<?php echo esc_attr( $message_box_css ); ?>"><?php echo wp_kses_post( wpautop( $ht_ctc_greetings['main_content'] ) ); ?></div>
         </div>
         <?php
     }
@@ -262,8 +262,8 @@ if ('' !== $ht_ctc_greetings['main_content']) {
 <?php
 if ( '' !== $ht_ctc_greetings['bottom_content'] ) {
 ?>
-<div class="ctc_g_bottom" style="<?php echo $bottom_css ?>">
-    <?php echo wpautop( $ht_ctc_greetings['bottom_content'] ) ?>
+<div class="ctc_g_bottom" style="<?php echo esc_attr( $bottom_css ); ?>">
+    <?php echo wp_kses_post( wpautop( $ht_ctc_greetings['bottom_content'] ) ); ?>
 </div>
 <?php
 }

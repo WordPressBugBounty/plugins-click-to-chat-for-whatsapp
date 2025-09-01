@@ -31,7 +31,7 @@ if ('' == $s1_icon_color) {
   $s1_icon_color = '#ffffff';
 }
 
-$s1_style = ('' !== $s1_css) ? "style='$s1_css'": "";
+$s1_style = ( '' !== $s1_css ) ? $s1_css : '';
 
 $s1_fullwidth_css = "";
 
@@ -43,12 +43,12 @@ if ( isset( $s1_options['s1_m_fullwidth'] ) ) {
   $s1_fullwidth_css = "@media(max-width:1201px){.ht-ctc.style-1{left:unset !important;right:0px !important;}.ht-ctc.style-1,.ht-ctc .s1_btn{width:100%;}}";
 
 ?>
-<style id="ht-ctc-s1"><?php echo $s1_fullwidth_css ?></style>
+<style id="ht-ctc-s1"><?php echo esc_html( $s1_fullwidth_css ); ?></style>
 <?php
 }
 
 ?>
-<button <?php echo $s1_style; ?> class="ctc-analytics s1_btn ctc_cta">
+<button <?php if ( $s1_style ) { printf( 'style="%s"', esc_attr( $s1_style ) ); } ?> class="ctc-analytics s1_btn ctc_cta">
 <?php
 if ('' !== $s1_add_icon) {
   
@@ -61,6 +61,7 @@ if ('' !== $s1_add_icon) {
       'ht_ctc_svg_css' => "$s1_svg_css",
   );
   include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
+  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>

@@ -62,6 +62,11 @@ $args = [
     ];
 
 wp_editor( $content, $editor_id, $args );
+
+if ( '' !== $description ) {
+    ?>
+    <p class="description"><?php echo wp_kses_post( $description ); ?></p>
+    <?php
+}
 ?>
-<p class="description"><?php echo $description ?></p>
 </div>

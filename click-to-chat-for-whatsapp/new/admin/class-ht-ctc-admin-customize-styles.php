@@ -139,8 +139,12 @@ class HT_CTC_Admin_Customize_Styles {
         
         
         // check for options.php, _GET page = click-to-chat-customize-styles
-        $get_url = ( isset($_GET) && isset($_GET['page']) && 'click-to-chat-customize-styles' == $_GET['page'] ) ? true : false;
-        
+        $get_url = false;
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking current admin page only.
+        if ( ( isset($_GET) && isset($_GET['page']) ) && 'click-to-chat-customize-styles' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+            $get_url = true;
+        }
+
         $options_page = false;
         // if request url have options.php .. (or if requesturl is not set.. or empty ) then $options_page = true
         if ( isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI']) ) {
@@ -628,7 +632,7 @@ class HT_CTC_Admin_Customize_Styles {
         <p>
             <label class="ctc_checkbox_label">
                 <input name="ht_ctc_s3_1[s3_box_shadow]" type="checkbox" value="1" <?php checked( $options['s3_box_shadow'], 1 ); ?> id="s3_box_shadow" class=""/>
-                <span><?php _e( 'Shadow', 'click-to-chat-for-whatsapp' ); ?></span>
+                <span><?php esc_html_e( 'Shadow', 'click-to-chat-for-whatsapp' ); ?></span>
             </label>
         </p>
         <?php
@@ -1728,3 +1732,4 @@ add_action('admin_menu', array($ht_ctc_admin_customize_styles, 'menu') );
 add_action('admin_init', array($ht_ctc_admin_customize_styles, 'settings') );
 
 endif; // END class_exists check
+

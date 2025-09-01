@@ -37,8 +37,8 @@ $g_optin_path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greet
 
 ?>
 
-<div class="ctc_g_content" style="<?php echo $main_css ?>">
-    <div class="ctc_g_message_box" style=""><?php echo wpautop( $ht_ctc_greetings['main_content'] ) ?></div>
+<div class="ctc_g_content" style="<?php echo esc_attr( $main_css ); ?>">
+    <div class="ctc_g_message_box" style=""><?php echo wp_kses_post( wpautop( $ht_ctc_greetings['main_content'] ) ); ?></div>
 </div>
 
 <div class="ctc_g_sentbutton" style="<?php echo esc_attr( $send_css ) ?>">
@@ -59,8 +59,8 @@ $g_optin_path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greet
 <?php
 if ( '' !== $ht_ctc_greetings['bottom_content'] ) {
 ?>
-<div class="ctc_g_bottom" style="<?php echo $bottom_css ?>">
-    <?php echo wpautop( $ht_ctc_greetings['bottom_content'] ) ?>
+<div class="ctc_g_bottom" style="<?php echo esc_attr( $bottom_css ); ?>">
+    <?php echo wp_kses_post( wpautop( $ht_ctc_greetings['bottom_content'] ) ); ?>
 </div>
 <?php
 }

@@ -87,7 +87,7 @@ $othersettings = get_option('ht_ctc_othersettings');
                             <p class="description">⚙️ Page Level Settings:</p>
                             <p class="description">&emsp;🎨 Style adjustments</p>
                             <p class="description">&emsp;⏲️ Time/Scroll-based triggers</p>
-                            <p class="description">&emsp;💬 Personalized Greetings</p>
+                            <p class="description">&emsp;💬 Greetings Content</p>
                             <p class="description">✨ More Features</p>
 
                             <p class="description" style="text-align: center; position:sticky; bottom:2px; margin-top:20px;"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pricing/" class="waves-effect waves-light btn" style="width: 100%;">PRO Version</a></p>

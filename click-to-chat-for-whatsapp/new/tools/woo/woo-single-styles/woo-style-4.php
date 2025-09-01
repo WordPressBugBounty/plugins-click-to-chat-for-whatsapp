@@ -51,7 +51,10 @@ $ht_ctc_svg_css = "pointer-events:none; display: block; height:$s4_img_size; wid
         include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
         $type = "$type-s4";
         ?>
-        <span style="<?php echo $s4_chip_svg_css ?>"><?php echo ht_ctc_style_3_svg( $s4_img_size, $type, $ht_ctc_svg_css ); ?></span>
+        <span style="<?php echo esc_attr( $s4_chip_svg_css ); ?>"><?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_style_3_svg().
+        echo ht_ctc_style_3_svg( $s4_img_size, $type, $ht_ctc_svg_css );
+        ?></span>
         <?php
     } else {
         // if user changed the image

@@ -8,6 +8,19 @@
 (function ($) {
     // ready
     $(function () {
+        
+
+        // // todo: iframe.. 
+        // const inIframe = (() => {
+        //     try { return window.self !== window.top; } catch { return true; }
+        // })();
+        // console.log('checking iframe.. ');
+        // if (!inIframe) return;
+        // console.log('in iframe.. ');
+
+
+
+
 
         console.log('ctc admin demo');
 
@@ -225,6 +238,14 @@
                     
                     main_page_update();
                 });
+
+
+                /**
+                 * todo: 
+                 * ctc_ad_main_page_on_change_input ?
+                 * ctc_ad_main_page_on_change_input_update_var ?  where demo_var need to update..  it conatins.. attribute data-var ?
+                 * 
+                 */
 
                 // on change, input (some filed to update on change only and some on input, ..)
                 $('.ctc_ad_main_page_on_change_input').on('change input paste', function () {
@@ -891,6 +912,8 @@
 
             /**
              * Gretings page
+             * 
+             * todo: symobols not working properly on live demo. (works after page reloads)
              */
             if ($('body').hasClass('click-to-chat_page_click-to-chat-greetings')) {
 

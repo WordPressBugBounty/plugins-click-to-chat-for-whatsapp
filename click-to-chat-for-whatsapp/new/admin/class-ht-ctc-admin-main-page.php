@@ -150,14 +150,14 @@ class HT_CTC_Admin_Main_Page {
         }
 
         // if _get have number-field 1 then load 1 else if 2 then load 2 ( &number-field=1 )
-        if ( isset($_GET) && isset( $_GET['number-field'] ) ) {
-            $number_field = sanitize_text_field(wp_unslash($_GET['number-field']));
-            if ( '1' === $number_field ) {
-                $intl = '1';
-            } else if ( '2' === $number_field ) {
-                $intl = '2';
-            }
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of 'number-field', no action or data modification.
+        $get_number_field = ( isset($_GET) && isset( $_GET['number-field'] ) ) ? sanitize_text_field( wp_unslash( $_GET['number-field'] ) ) : '';
+        if ( '1' === $get_number_field ) {
+            $intl = '1';
+        } elseif ( '2' === $get_number_field ) {
+            $intl = '2';
         }
+
 
         ?>
 
@@ -627,3 +627,4 @@ add_action('admin_menu', array($ht_ctc_admin_main_page, 'menu') );
 add_action('admin_init', array($ht_ctc_admin_main_page, 'settings') );
 
 endif; // END class_exists check
+

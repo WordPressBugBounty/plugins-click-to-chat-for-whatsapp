@@ -30,7 +30,7 @@ $ul_class = (isset($input['ul_class'])) ? $input['ul_class'] : '';
 <?php
 if ('' !== $description) {
     ?>
-    <p class="description"><?php echo $description; ?></p>
+    <p class="description"><?php echo wp_kses_post( $description ); ?></p>
     <br>
     <?php
 }

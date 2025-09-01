@@ -34,7 +34,7 @@ if (is_admin()) {
   $s1_css .= "padding:5px 7px;";
 }
 
-$s1_style = ('' !== $s1_css) ? "style='$s1_css'": "";
+$s1_style = ( '' !== $s1_css ) ? $s1_css : '';
 
 $s1_fullwidth_css = "";
 
@@ -51,7 +51,7 @@ if ( isset( $s1_options['s1_m_fullwidth'] ) ) {
 }
 
 ?>
-<button <?php echo $s1_style; ?> class="ctc-analytics s1_btn ctc_s_1">
+<button <?php if ( $s1_style ) { printf( 'style="%s"', esc_attr( $s1_style ) ); } ?> class="ctc-analytics s1_btn ctc_s_1">
 <?php
 if ('' !== $s1_add_icon) {
   
@@ -64,6 +64,7 @@ if ('' !== $s1_add_icon) {
       'ht_ctc_svg_css' => "$s1_svg_css",
   );
   include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
+  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
   echo ht_ctc_singlecolor( $s1_svg_attrs );
 }
 ?>
@@ -73,12 +74,11 @@ if ('' !== $s1_add_icon) {
 // todo: instead of display message like this.. remove here and focus at customize styles settings.. and at select style.. 
 // admin - add for admin demo
 if ( is_admin() ) {
-  if (isset($_GET['page'])) {
-    $page = sanitize_text_field(wp_unslash($_GET['page']));
-    if ('click-to-chat' === $page || 'click-to-chat-customize-styles' === $page) {
-      ?>
-      <p class="description s1_admin_demo_note">Front-End: Theme Button</p>
-      <?php
-    }
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of the 'page' slug on admin screens; no state change or privilege escalation.
+  $page = ( isset($_GET) && isset( $_GET['page'] ) ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+  if ( 'click-to-chat' === $page || 'click-to-chat-customize-styles' === $page ) {
+    ?>
+    <p class="description s1_admin_demo_note">Front-End: Theme Button</p>
+    <?php
   }
 }

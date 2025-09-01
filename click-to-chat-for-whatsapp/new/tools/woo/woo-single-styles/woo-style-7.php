@@ -51,11 +51,14 @@ $s7_hover_icon_styles = ".ht-ctc .ctc_s_7:hover .ctc_s_7_icon_padding, .ht-ctc .
 include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 ?>
 <style id="ht-ctc-s7">
-<?php echo $s7_hover_icon_styles ?>
+<?php echo esc_html( $s7_hover_icon_styles ); ?>
 </style>
 
 <div title="<?php echo esc_attr($call_to_action) ?>" class="ctc_s_7 ctc-analytics" style="<?php echo esc_attr($s7_n1_styles); ?>">
     <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_css) ?>">
-        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
+        echo ht_ctc_singlecolor( $s7_svg_attrs );
+        ?>
     </div>
 </div>

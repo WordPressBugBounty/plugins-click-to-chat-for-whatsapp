@@ -63,14 +63,44 @@ class HT_CTC_Register {
             delete_option( 'ht_ctc_code_blocks' );
             delete_option( 'ht_ctc_woo_options' );
 
-            // deletes custom styles, ht_ctc_share, ht_ctc_switch
-            $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'ht\_ctc\_s%';" );
-            // greetings
-            $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'ht\_ctc\_g%';" );
 
-            // deletes page level settings
-            $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE 'ht\_ctc\_page%';" );
+            // todo: hard test.. as changed 'ht\_ctc\_s%' to 'ht_ctc_s%'
+
+            // todo: update this logic at ht-commons and test..
+
+            // deletes custom styles, ht_ctc_share, ht_ctc_switch
+            $like_s = $wpdb->esc_like( 'ht_ctc_s' ) . '%';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s", $like_s ) );
+            
+            // greetings
+            $like_g = $wpdb->esc_like( 'ht_ctc_g' ) . '%';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s", $like_g ) );
+
+            // deletes page level settings - postmeta starting with ht_ctc_page*
+            $like_page = $wpdb->esc_like( 'ht_ctc_page' ) . '%';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+            $wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s", $like_page ) );
+
+
+            // // deletes custom styles, ht_ctc_share, ht_ctc_switch
+            // $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'ht\_ctc\_s%';" );
+            // // greetings
+            // $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'ht\_ctc\_g%';" );
+
+            // // deletes page level settings
+            // $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE 'ht\_ctc\_page%';" );
+            
         }
+
+
+
+        // If these options are autoloaded, consider refreshing the options cache after bulk deletes:
+		// $alloptions = wp_cache_get( 'alloptions', 'options' );
+        // if ( function_exists('wp_cache_delete') ) {
+        //     wp_cache_delete('alloptions', 'options');
+        // }
 
         // clear cache
         if ( function_exists('wp_cache_flush') ) {

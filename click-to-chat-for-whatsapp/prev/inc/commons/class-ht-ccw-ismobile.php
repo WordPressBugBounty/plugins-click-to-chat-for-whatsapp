@@ -57,8 +57,11 @@ class HT_CCW_IsMobile {
      * @return boolean
      */
     public function php_is_mobile() {
+        if ( ! isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+            return false;
+        }
         // return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
-        return preg_match("/(android|webos|avantgo|iphone|ipad|ipod|blackbe‌​rry|iemobile|bolt|bo‌​ost|cricket|docomo|f‌​one|hiptop|mini|oper‌​a mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|‌​webos|wos)/i", wp_unslash($_SERVER["HTTP_USER_AGENT"]));
+        return preg_match("/(android|webos|avantgo|iphone|ipad|ipod|blackberry|iemobile|bolt|boost|cricket|docomo|fone|hiptop|mini|opera mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ));
     }  
 
 

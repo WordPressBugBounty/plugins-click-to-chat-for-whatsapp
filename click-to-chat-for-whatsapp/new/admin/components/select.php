@@ -51,8 +51,14 @@ if (isset($input['list'])) {
                     <?php
                 }
                 ?>
-            </select>
-            <p class="description"><?php echo $description ?></p>
-        </div>
-    </div>
-</div>
+              </select>
+              <?php
+                if ( '' !== $description ) {
+                    ?>
+                    <p class="description"><?php echo wp_kses_post( $description ); ?></p>
+                    <?php
+                }
+              ?>
+          </div>
+      </div>
+  </div>

@@ -54,8 +54,9 @@ class HT_CTC_Admin_Demo {
 
     public function hooks() {
 
-        if ( isset($_GET) && isset($_GET['page']) ) {
-            $this->get_page = sanitize_text_field(wp_unslash($_GET['page']));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking which admin page is being loaded.
+        if ( isset($_GET) && isset( $_GET['page'] ) ) {
+            $this->get_page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
         } else {
             return;
         }
@@ -65,11 +66,11 @@ class HT_CTC_Admin_Demo {
          * retun if not active
          * 
          * to deactivate from user side:
-         *  -> if _GET have &demo=deactive
+         *  -> if _GET have "&demo=deactive"
          *  set ht_ctc_admin_demo_active to yes
          * 
          * to active from user side:
-         *  -> if _GET have &demo=active 
+         *  -> if _GET have "&demo=active"
          *  set ht_ctc_admin_demo_active to no
          */
 
@@ -77,16 +78,22 @@ class HT_CTC_Admin_Demo {
         if ( 'click-to-chat' == $this->get_page  || 'click-to-chat-other-settings' == $this->get_page || 'click-to-chat-customize-styles' == $this->get_page ) {
             
             // check if admin demo is active.. (added inside to run only in ctc admin pages..)
-            $demo_active = get_option( 'ht_ctc_admin_demo_active');
+            $demo_active = get_option( 'ht_ctc_admin_demo_active' );
 
             // check if demo is activating or deactivating..
-            if ( isset($_GET['demo']) ) {
-                $demo_action = sanitize_text_field(wp_unslash($_GET['demo']));
+            if ( isset( $_GET['demo'] ) ) {
+                
+                // $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+                // if ( ! wp_verify_nonce( $nonce, 'ht_ctc_admin_demo' ) ) {
+                //     return;
+                // }
+
+                $demo_action = sanitize_text_field( wp_unslash( $_GET['demo'] ) );
                 if ( 'active' === $demo_action ) {
                     $this->load_demo = 'yes';
                     // add option to db
                     update_option( 'ht_ctc_admin_demo_active', 'yes' );
-                } else if ( 'deactive' === $demo_action ) {
+                } elseif ( 'deactive' === $demo_action ) {
                     $this->load_demo = 'no';
                     // add option to db
                     update_option( 'ht_ctc_admin_demo_active', 'no' );
@@ -471,3 +478,4 @@ class HT_CTC_Admin_Demo {
 new HT_CTC_Admin_Demo();
 
 endif; // END class_exists check
+

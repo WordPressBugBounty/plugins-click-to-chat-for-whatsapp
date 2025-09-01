@@ -16,6 +16,13 @@ $parent_class = (isset($input['parent_class'])) ? $input['parent_class'] : '';
     <div class="input-field col s12">
         <input name="<?php echo esc_attr($dbrow) ?>[<?php echo esc_attr($db_key) ?>]" type="text" value="<?php echo esc_attr($db_value) ?>" placeholder="<?php echo esc_attr($placeholder) ?>"/>
         <label for="pre_filled"><?php echo esc_html($label) ?></label>
-        <p class="description"><?php echo esc_html($description) ?></p>
+        <?php
+        // if description is set.. 
+        if ( '' !== $description ) {
+            ?>
+            <p class="description"><?php echo wp_kses_post($description) ?></p>
+            <?php
+        }
+        ?>
     </div>
 </div>

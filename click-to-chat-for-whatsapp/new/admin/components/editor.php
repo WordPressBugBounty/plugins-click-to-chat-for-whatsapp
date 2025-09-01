@@ -103,6 +103,11 @@ $args = [
     ];
 
 wp_editor( $content, $editor_id, $args );
+
+if ( '' !== $description ) {
+    ?>
+    <p class="description" style="padding-left: 0.9rem;"><?php echo wp_kses_post( $description ); ?></p>
+    <?php
+}
 ?>
-<p class="description" style="padding-left: 0.9rem;"><?php echo $description ?></p>
 </div>

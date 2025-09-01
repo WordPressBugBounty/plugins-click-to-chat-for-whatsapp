@@ -69,6 +69,9 @@ $others = array(
 
 <div title="<?php echo esc_attr($call_to_action) ?>" style="<?php echo esc_attr($s3_1_css) ?>" class="ctc_s_3_1">
     <div class="ctc-analytics ht_ctc_padding" style="<?php echo esc_attr($s3_1_extend_css) ?>">
-        <?php echo ht_ctc_style_3_1_svg( $img_size, $type, $ht_ctc_svg_css, $others ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_style_3_1_svg().
+        echo ht_ctc_style_3_1_svg( $img_size, $type, $ht_ctc_svg_css, $others );
+        ?>
     </div>
 </div>

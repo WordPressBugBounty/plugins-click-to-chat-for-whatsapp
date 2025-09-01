@@ -9,9 +9,9 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if ( ! class_exists( 'HT_CTC_Swift' ) ) :
+if ( ! class_exists( 'HT_CTC_Switch' ) ) :
 
-class HT_CTC_Swift {
+class HT_CTC_Switch {
 
 	public function __construct() {
         $this->define_constants();
@@ -30,6 +30,8 @@ class HT_CTC_Swift {
 		// $this->define( 'HT_CTC_SITE_URL', get_site_url() );
 		// $this->define( 'HT_CTC_HOME_URL', home_url('/') );
 		// $this->define( 'HT_CTC_HOME_URL', get_bloginfo('url') );
+
+		$this->define( 'HT_CTC_PLUGIN_SLUG', 'click-to-chat-for-whatsapp' );
 
         do_action('ht_ctc_ah_define_constants');
 
@@ -134,6 +136,6 @@ class HT_CTC_Swift {
 
 }
 
-new HT_CTC_Swift();
+new HT_CTC_Switch();
 
 endif; // END class_exists check

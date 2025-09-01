@@ -24,7 +24,7 @@ $description = (isset($input['description'])) ? $input['description'] : '';
         <?php
         if ('' !== $description) {
             ?>
-            <p class="description"><?php echo $description ?></p>
+            <p class="description"><?php echo wp_kses_post( $description ); ?></p>
             <?php
         }
         ?>

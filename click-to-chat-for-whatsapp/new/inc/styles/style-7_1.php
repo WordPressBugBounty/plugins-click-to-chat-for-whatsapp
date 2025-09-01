@@ -26,12 +26,11 @@ $s7_1_options = apply_filters( 'ht_ctc_fh_s7_1_options', $s7_1_options );
 $is_ctc_admin = '';
 
 if ( is_admin() ) {
-  if ( isset( $_GET['page'] ) ) {
-    $page = sanitize_text_field(wp_unslash($_GET['page']));
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of the 'page' slug on admin screens; no state change or privilege escalation.
+    $page = ( isset($_GET) && isset( $_GET['page'] ) ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
     if ( 'click-to-chat' === $page || 'click-to-chat-other-settings' === $page || 'click-to-chat-customize-styles' === $page ) {
-      $is_ctc_admin = 'yes';
+        $is_ctc_admin = 'yes';
     }
-  }
 }
 
 $s7_icon_size = isset( $s7_1_options['s7_icon_size'] ) ? esc_attr( $s7_1_options['s7_icon_size'] ) : '20px';
@@ -137,6 +136,9 @@ if ( isset( $is_same_side ) && 'no' == $is_same_side && isset( $mobile_side ) ) 
 <div class="ctc_s_7_1 ctc-analytics ctc_nb" style="<?php echo esc_attr($s7_n1_styles); ?>" data-nb_top="-7.8px" data-nb_right="-7.8px">
     <p class="ctc_s_7_1_cta ctc-analytics ctc_cta <?php echo esc_attr($s7_cta_class) ?>" style="<?php echo esc_attr($s7_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
     <div class="ctc_s_7_icon_padding ctc-analytics " style="<?php echo esc_attr($s7_icon_padding_css) ?>">
-        <?php echo ht_ctc_singlecolor( $s7_svg_attrs ); ?>
+        <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
+        echo ht_ctc_singlecolor( $s7_svg_attrs );
+        ?>
     </div>
 </div>

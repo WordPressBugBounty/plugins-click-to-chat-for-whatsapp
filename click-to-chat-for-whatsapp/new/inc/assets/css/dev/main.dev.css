@@ -1,3 +1,12 @@
+/* --------------------------------------------------------------
+ * Click to Chat - Main Stylesheet
+ * --------------------------------------------------------------
+ * Description: Core UI styles, entry animations, greetings layout,
+ * and mobile responsiveness for WhatsApp Click to Chat plugin.
+ * Version: 4.26
+ * Source: https://holithemes.com/plugins/click-to-chat/
+ * --------------------------------------------------------------
+*/
 
 
 /*
@@ -105,6 +114,7 @@
     animation-fill-mode: both;
 } */
 
+/* todo: test c/g/s */
 /* call to action stick - hover effects */ 
 /* transform --shift changes at js based on widget side right/left */
 /* pointer-events: none; */

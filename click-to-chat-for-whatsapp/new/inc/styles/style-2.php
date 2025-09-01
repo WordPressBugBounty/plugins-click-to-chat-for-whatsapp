@@ -73,5 +73,8 @@ include_once HT_CTC_PLUGIN_DIR .'new/inc/assets/img/ht-ctc-svg-images.php';
 ?>
 <div <?php echo esc_attr($title) ?> style="<?php echo esc_attr($s2_css); ?>" class="ctc-analytics ctc_s_2">
     <p class="ctc-analytics ctc_cta ctc_cta_stick <?php echo esc_attr($s2_cta_class) ?>" style="<?php echo esc_attr($s2_cta_css) ?>"><?php echo esc_html($call_to_action); ?></p>
-    <?php echo ht_ctc_style_2_svg( $img_size, $type, $ht_ctc_svg_css ); ?>
+    <?php
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_style_2_svg().
+    echo ht_ctc_style_2_svg( $img_size, $type, $ht_ctc_svg_css );
+    ?>
 </div>

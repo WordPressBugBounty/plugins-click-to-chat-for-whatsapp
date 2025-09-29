@@ -1,6 +1,6 @@
 <?php
 /**
- * logo
+ * Logo
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

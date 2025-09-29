@@ -1,13 +1,13 @@
 <?php
 /**
- * chip - logo+text
+ * Chip - logo+text
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // $ccw_options_cs = get_option('ccw_options_cs');
-$s4_text_color = esc_attr( $ccw_options_cs['s4_text_color'] );
-$s4_background_color = esc_attr( $ccw_options_cs['s4_background_color'] );
+$s4_text_color = isset( $ccw_options_cs['s4_text_color'] ) ? esc_attr( $ccw_options_cs['s4_text_color'] ) : '#ffffff';
+$s4_background_color = isset( $ccw_options_cs['s4_background_color'] ) ? esc_attr( $ccw_options_cs['s4_background_color'] ) : '#000000';
 
 ?>
 <div class="ccw_plugin chatbot" style="<?php echo esc_attr($p1) ?>; <?php echo esc_attr($p2) ?>;">

@@ -1,11 +1,11 @@
 <?php
 /**
- * logo
+ * Logo
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // $ccw_options_cs = get_option('ccw_options_cs');
-$s9_icon_size = esc_attr( $ccw_options_cs['s9_icon_size'] );
+$s9_icon_size = isset($ccw_options_cs['s9_icon_size']) ? esc_attr( $ccw_options_cs['s9_icon_size'] ) : '50px';
 ?>
 
 <div class="ccw_plugin chatbot" style="<?php echo esc_attr($p1) ?>; <?php echo esc_attr($p2) ?>;">

@@ -2,87 +2,86 @@
 /**
  * Meta box
  * change values at page level
+ *
+ * @package Click_To_Chat
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-if ( ! class_exists( 'HT_CTC_MetaBox' ) ) :
-
-class HT_CTC_MetaBox {
+if ( ! class_exists( 'HT_CTC_MetaBox' ) ) {
 
 	/**
-	 * constructor
+	 * Meta box class for Click to Chat plugin.
 	 */
-	public function __construct() {
-		// call hooks
-		$this->hooks();
-	}
-
-	public function hooks() {
+	class HT_CTC_MetaBox {
 
 		/**
-		 * Initialize plugin hooks:
-		 * - If 'disable_page_level_settings' is not set in 'ht_ctc_othersettings' option,
-		 *   then:
-		 *   - Add a meta box to all posts and pages.
-		 *   - Save meta box data when the post is saved.
+		 * Constructor.
 		 */
+		public function __construct() {
+			// Call hooks.
+			$this->hooks();
+		}
 
-		$othersettings = get_option('ht_ctc_othersettings');
-		
-		// add meta box
-		add_action( 'add_meta_boxes', array($this, 'meta_box') );
-		
-		if ( ! isset($othersettings['disable_page_level_settings']) ) {
-			// save meta box
-			add_action( 'save_post', array($this, 'save_meta_box') );
-        }
+		/**
+		 * Initialize hooks.
+		 */
+		public function hooks() {
 
-	}
+			/**
+			 * Initialize plugin hooks:
+			 * - If 'disable_page_level_settings' is not set in 'ht_ctc_othersettings' option,
+			 *   then:
+			 *   - Add a meta box to all posts and pages.
+			 *   - Save meta box data when the post is saved.
+			 */
 
+			$othersettings = get_option( 'ht_ctc_othersettings' );
 
-	/**
-	 * add meta box
-	 */
-	function meta_box() {
-
-		$post_types = get_post_types( array('public' => true) );
-
-		foreach ( $post_types as $type ) {
-			if ( 'attachment' !== $type ) {
-				add_meta_box(
-					'ht_ctc_settings_meta_box',             // Id.
-					'Click to Chat',                        // Title.
-					array( $this, 'display_meta_box' ),     // Callback.
-					$type,                                  	// Post_type.
-					'side',                                 // Context.
-					'default'                               // Priority.
-				);
+			if ( ! isset( $othersettings['disable_page_level_settings'] ) ) {
+				// Add meta box.
+				add_action( 'add_meta_boxes', array( $this, 'meta_box' ) );
+				// Save meta box.
+				add_action( 'save_post', array( $this, 'save_meta_box' ) );
 			}
 		}
 
-	}
 
+		/**
+		 * Add meta box.
+		 */
+		public function meta_box() {
 
-	/**
-	 * render meta box content
-	 */
-	function display_meta_box( $current_post ) {
-		wp_nonce_field( 'ht_ctc_page_meta_box', 'ht_ctc_page_meta_box_nonce' );
+			$post_types = get_post_types( array( 'public' => true ) );
 
-		$othersettings = get_option( 'ht_ctc_othersettings' );
-		$ht_ctc_pagelevel = get_post_meta( $current_post->ID, 'ht_ctc_pagelevel', true );
-
-		if ( isset( $othersettings['disable_page_level_settings'] ) ) {
-			?>
-			<p class="description">
-				<?php esc_html_e( 'Enable page-level settings in', 'click-to-chat-for-whatsapp' ); ?>
-				<strong>Click to Chat → Other Settings</strong>.
-			</p>
-			<?php
-			return;
+			foreach ( $post_types as $type ) {
+				if ( 'attachment' !== $type ) {
+					add_meta_box(
+						'ht_ctc_settings_meta_box',             // Id.
+						'Click to Chat',                        // Title.
+						array( $this, 'display_meta_box' ),     // Callback.
+						$type,                                      // Post_type.
+						'side',                                 // Context.
+						'default'                               // Priority.
+					);
+				}
+			}
 		}
-		?>
+
+
+		/**
+		 * Render meta box content.
+		 *
+		 * @param WP_Post $current_post The current post object.
+		 */
+		public function display_meta_box( $current_post ) {
+			wp_nonce_field( 'ht_ctc_page_meta_box', 'ht_ctc_page_meta_box_nonce' );
+
+			$othersettings    = get_option( 'ht_ctc_othersettings' );
+			$ht_ctc_pagelevel = get_post_meta( $current_post->ID, 'ht_ctc_pagelevel', true );
+			?>
 
 		<p class="description">
 			<?php esc_html_e( 'Change values at', 'click-to-chat-for-whatsapp' ); ?>
@@ -91,25 +90,25 @@ class HT_CTC_MetaBox {
 			</a>
 		</p>
 
-		<?php
-		// Defaults
-		$number         = isset( $ht_ctc_pagelevel['number'] ) ? esc_attr( $ht_ctc_pagelevel['number'] ) : '';
-		$call_to_action = isset( $ht_ctc_pagelevel['call_to_action'] ) ? esc_attr( $ht_ctc_pagelevel['call_to_action'] ) : '';
-		$pre_filled     = isset( $ht_ctc_pagelevel['pre_filled'] ) ? esc_attr( $ht_ctc_pagelevel['pre_filled'] ) : '';
-		$show_hide      = isset( $ht_ctc_pagelevel['show_hide'] ) ? esc_attr( $ht_ctc_pagelevel['show_hide'] ) : '';
+			<?php
+			// Defaults.
+			$number         = isset( $ht_ctc_pagelevel['number'] ) ? esc_attr( $ht_ctc_pagelevel['number'] ) : '';
+			$call_to_action = isset( $ht_ctc_pagelevel['call_to_action'] ) ? esc_attr( $ht_ctc_pagelevel['call_to_action'] ) : '';
+			$pre_filled     = isset( $ht_ctc_pagelevel['pre_filled'] ) ? esc_attr( $ht_ctc_pagelevel['pre_filled'] ) : '';
+			$show_hide      = isset( $ht_ctc_pagelevel['show_hide'] ) ? esc_attr( $ht_ctc_pagelevel['show_hide'] ) : '';
 
-		$options = get_option('ht_ctc_chat_options');
+			$options = get_option( 'ht_ctc_chat_options' );
 
-		$ph_number = '';
-		$ph_call_to_action = '';
-		$ph_pre_filled = '';
-		// If db values are correct
-		if ( is_array($options) ) {
-			$ph_number = ( isset( $options['number']) ) ? esc_attr( $options['number'] ) : '';
-			$ph_call_to_action = ( isset( $options['call_to_action']) ) ? esc_attr( $options['call_to_action'] ) : '';
-			$ph_pre_filled = ( isset( $options['pre_filled']) ) ? esc_attr( $options['pre_filled'] ) : '';
-        }
-		?>
+			$ph_number         = '';
+			$ph_call_to_action = '';
+			$ph_pre_filled     = '';
+			// If db values are correct.
+			if ( is_array( $options ) ) {
+				$ph_number         = ( isset( $options['number'] ) ) ? esc_attr( $options['number'] ) : '';
+				$ph_call_to_action = ( isset( $options['call_to_action'] ) ) ? esc_attr( $options['call_to_action'] ) : '';
+				$ph_pre_filled     = ( isset( $options['pre_filled'] ) ) ? esc_attr( $options['pre_filled'] ) : '';
+			}
+			?>
 
 
 		<style>
@@ -196,7 +195,7 @@ class HT_CTC_MetaBox {
 
 			<div class="ht-ctc-meta-field">
 				<label for="number"><?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></label>
-				<input type="text" id="number" name="ht_ctc_pagelevel[number]" value="<?php echo esc_attr($number); ?>" placeholder="<?php echo esc_attr($ph_number); ?>">
+				<input type="text" id="number" name="ht_ctc_pagelevel[number]" value="<?php echo esc_attr( $number ); ?>" placeholder="<?php echo esc_attr( $ph_number ); ?>">
 				<p class="ht-ctc-meta-description">
 					<a href="https://holithemes.com/plugins/click-to-chat/whatsapp-number/" target="_blank">
 						<?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>
@@ -204,22 +203,22 @@ class HT_CTC_MetaBox {
 				</p>
 			</div>
 
-			<?php if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) : ?>
+			<?php if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) { ?>
 				<p class="ht-ctc-meta-description">
 					<a href="https://holithemes.com/plugins/click-to-chat/custom-url/" target="_blank">Custom Link</a> (PRO)
 				</p>
-			<?php endif; ?>
+			<?php } ?>
 
 			<?php do_action( 'ht_ctc_ah_admin_chat_meta_box_after_number', $current_post ); ?>
 
 			<div class="ht-ctc-meta-field">
 				<label for="call_to_action"><?php esc_html_e( 'Call to Action', 'click-to-chat-for-whatsapp' ); ?></label>
-				<input type="text" id="call_to_action" name="ht_ctc_pagelevel[call_to_action]" value="<?php echo esc_attr($call_to_action); ?>" placeholder="<?php echo esc_attr($ph_call_to_action); ?>">
+				<input type="text" id="call_to_action" name="ht_ctc_pagelevel[call_to_action]" value="<?php echo esc_attr( $call_to_action ); ?>" placeholder="<?php echo esc_attr( $ph_call_to_action ); ?>">
 			</div>
 
 			<div class="ht-ctc-meta-field">
 				<label for="pre_filled"><?php esc_html_e( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ); ?></label>
-				<textarea id="pre_filled" name="ht_ctc_pagelevel[pre_filled]" placeholder="<?php echo esc_attr($ph_pre_filled); ?>"><?php echo esc_textarea($pre_filled); ?></textarea>
+				<textarea id="pre_filled" name="ht_ctc_pagelevel[pre_filled]" placeholder="<?php echo esc_attr( $ph_pre_filled ); ?>"><?php echo esc_textarea( $pre_filled ); ?></textarea>
 			</div>
 
 			<div class="ht-ctc-meta-field">
@@ -241,101 +240,96 @@ class HT_CTC_MetaBox {
 			</div>
 		</div>
 
-		<?php
-		do_action( 'ht_ctc_ah_admin_chat_bottom_meta_box', $current_post );
+			<?php
+			do_action( 'ht_ctc_ah_admin_chat_bottom_meta_box', $current_post );
 
-		if ( isset( $othersettings['enable_group'] ) ) {
-			$group_id = isset( $ht_ctc_pagelevel['group_id'] ) ? esc_attr( $ht_ctc_pagelevel['group_id'] ) : '';
-			?>
+			if ( isset( $othersettings['enable_group'] ) ) {
+				$group_id = isset( $ht_ctc_pagelevel['group_id'] ) ? esc_attr( $ht_ctc_pagelevel['group_id'] ) : '';
+				?>
 
 			<div class="ht-ctc-meta-box">
 				<div class="ht-ctc-meta-section-title"><?php esc_html_e( 'Group Settings', 'click-to-chat-for-whatsapp' ); ?></div>
 				<div class="ht-ctc-meta-field">
 					<label for="group_id"><?php esc_html_e( 'Group ID', 'click-to-chat-for-whatsapp' ); ?></label>
-					<input type="text" id="group_id" name="ht_ctc_pagelevel[group_id]" value="<?php echo esc_attr($group_id); ?>">
+					<input type="text" id="group_id" name="ht_ctc_pagelevel[group_id]" value="<?php echo esc_attr( $group_id ); ?>">
 				</div>
 			</div>
 
-			<?php
-		}
-	}
-
-
-	/**
-	 * save meta box
-	 */
-	function save_meta_box( $post_id ) {
-
-
-		// Check if our nonce is set.
-		if ( ! isset( $_POST['ht_ctc_page_meta_box_nonce'] ) ) {
-			return;
-		}
-
-		$nonce = sanitize_text_field(wp_unslash($_POST['ht_ctc_page_meta_box_nonce']));
-
-		// Verify that the nonce is valid.
-		if ( ! wp_verify_nonce( $nonce, 'ht_ctc_page_meta_box' ) ) {
-			return;
-		}
-
-		// If this is an autosave
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-
-		// Check the user's permissions.
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return $post_id;
-		}
-
-        include_once HT_CTC_PLUGIN_DIR .'new/admin/admin_commons/ht-ctc-admin-formatting.php';
-
-		$editor = [];
-        $editor = apply_filters( 'ht_ctc_fh_greetings_setting_meta_editor', $editor );
-
-		if ( isset( $_POST['ht_ctc_pagelevel'] ) ) {
-			
-			$ht_ctc_pagelevel = array_filter( map_deep( wp_unslash($_POST['ht_ctc_pagelevel']), 'sanitize_text_field' ) );
-
-			if ( !empty( $ht_ctc_pagelevel ) ) {
-
-				// sanitize
-				foreach ($ht_ctc_pagelevel as $key => $value) {
-					if( isset( $ht_ctc_pagelevel[$key] ) ) {
-						if ( 'pre_filled' == $key ) {
-							if ( function_exists('sanitize_textarea_field') ) {
-								$new[$key] = sanitize_textarea_field( $ht_ctc_pagelevel[$key] );
-							} else {
-								$new[$key] = sanitize_text_field( $ht_ctc_pagelevel[$key] );
-							}
-						} else if ( 'call_to_action' == $key ) {
-							$new[$key] = sanitize_text_field( $ht_ctc_pagelevel[$key] );
-						}  else if ( in_array( $key, $editor ) ) {
-							if ( !empty( $ht_ctc_pagelevel[$key]) && '' !== $ht_ctc_pagelevel[$key] && function_exists('ht_ctc_wp_sanitize_text_editor') ) {
-								$new[$key] = ht_ctc_wp_sanitize_text_editor( $ht_ctc_pagelevel[$key] );
-							}
-						} else {
-							$new[$key] = sanitize_text_field( $ht_ctc_pagelevel[$key] );
-						}
-						$ht_ctc_pagelevel[$key] = $new[$key];
-					}
-				}
-
-				update_post_meta( $post_id, 'ht_ctc_pagelevel', $ht_ctc_pagelevel );
-			} else {
-				delete_post_meta($post_id, 'ht_ctc_pagelevel', '' );
+				<?php
 			}
 		}
 
+
+		/**
+		 * Save meta box.
+		 *
+		 * @param int $post_id The post ID.
+		 */
+		public function save_meta_box( $post_id ) {
+
+			// Check if our nonce is set.
+			if ( ! isset( $_POST['ht_ctc_page_meta_box_nonce'] ) ) {
+				return;
+			}
+
+			$nonce = sanitize_text_field( wp_unslash( $_POST['ht_ctc_page_meta_box_nonce'] ) );
+
+			// Verify that the nonce is valid.
+			if ( ! wp_verify_nonce( $nonce, 'ht_ctc_page_meta_box' ) ) {
+				return;
+			}
+
+			// If this is an autosave.
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+				return;
+			}
+
+			// Check the user's permissions.
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				return $post_id;
+			}
+
+			include_once HT_CTC_PLUGIN_DIR . 'new/admin/admin_commons/ht-ctc-admin-formatting.php';
+
+			$editor = array();
+			$editor = apply_filters( 'ht_ctc_fh_greetings_setting_meta_editor', $editor );
+
+			if ( isset( $_POST['ht_ctc_pagelevel'] ) ) {
+
+				$ht_ctc_pagelevel = array_filter( map_deep( wp_unslash( $_POST['ht_ctc_pagelevel'] ), 'sanitize_text_field' ) );
+
+				if ( ! empty( $ht_ctc_pagelevel ) ) {
+
+					// Sanitize.
+					foreach ( $ht_ctc_pagelevel as $key => $value ) {
+						if ( isset( $ht_ctc_pagelevel[ $key ] ) ) {
+							if ( 'pre_filled' === $key ) {
+								if ( function_exists( 'sanitize_textarea_field' ) ) {
+									$new[ $key ] = sanitize_textarea_field( $ht_ctc_pagelevel[ $key ] );
+								} else {
+									$new[ $key ] = sanitize_text_field( $ht_ctc_pagelevel[ $key ] );
+								}
+							} elseif ( 'call_to_action' === $key ) {
+								$new[ $key ] = sanitize_text_field( $ht_ctc_pagelevel[ $key ] );
+							} elseif ( in_array( $key, $editor ) ) {
+								if ( ! empty( $ht_ctc_pagelevel[ $key ] ) && '' !== $ht_ctc_pagelevel[ $key ] && function_exists( 'ht_ctc_wp_sanitize_text_editor' ) ) {
+									$new[ $key ] = ht_ctc_wp_sanitize_text_editor( $ht_ctc_pagelevel[ $key ] );
+								}
+							} else {
+								$new[ $key ] = sanitize_text_field( $ht_ctc_pagelevel[ $key ] );
+							}
+							$ht_ctc_pagelevel[ $key ] = $new[ $key ];
+						}
+					}
+
+					update_post_meta( $post_id, 'ht_ctc_pagelevel', $ht_ctc_pagelevel );
+				} else {
+					delete_post_meta( $post_id, 'ht_ctc_pagelevel', '' );
+				}
+			}
+		}
 	}
 
+	new HT_CTC_MetaBox();
 
-
-
-
-}
-
-new HT_CTC_MetaBox();
-
-endif; // END class_exists check
+} // END class_exists check.

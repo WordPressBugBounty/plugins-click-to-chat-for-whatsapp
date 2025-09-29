@@ -17,7 +17,7 @@ class CCW_Add_Styles_Scripts_Admin {
     // Register css styles, javascript files only on 'click-to-chat' page
     function ccw_register_files_admin($hook) {
         
-        if( 'toplevel_page_click-to-chat' == $hook || 'click-to-chat_page_ccw-edit-styles' == $hook ) {
+        if( 'toplevel_page_click-to-chat' === $hook || 'click-to-chat_page_ccw-edit-styles' === $hook ) {
 
             wp_enqueue_style( 'wp-color-picker' );
             

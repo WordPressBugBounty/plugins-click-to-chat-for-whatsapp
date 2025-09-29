@@ -1,6 +1,6 @@
 <?php
 /**
- * material button - text , icon
+ * Material button - text , icon
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;

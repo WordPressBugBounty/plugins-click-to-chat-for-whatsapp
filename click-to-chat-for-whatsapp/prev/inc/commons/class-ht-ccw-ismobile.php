@@ -1,6 +1,6 @@
 <?php
 /**
- * detect device -  mobile or not
+ * Detect device -  mobile or not
  * 
  */
 
@@ -11,7 +11,7 @@ if ( ! class_exists( 'HT_CCW_IsMobile' ) ) :
 class HT_CCW_IsMobile {
 
     /**
-     * return is mobile or not
+     * Return is mobile or not
      * while using in condition check with 1 not with 2
      * @var int - if mobile : 1 ?  2
      */
@@ -24,7 +24,7 @@ class HT_CCW_IsMobile {
     }
 
     /**
-     * added this  -  an user mention that wp_is_mobile uncauched error
+     * Added this  -  an user mention that wp_is_mobile uncauched error
      *  so now it easy to fix incase more users repoted this issue
      * 
      * Check is mobile device or not
@@ -52,7 +52,7 @@ class HT_CCW_IsMobile {
     /**
      * @uses $this -> is_mobile
      * 
-     * php way of find is mobile
+     * Php way of find is mobile
      * fallback if wp_is_mobile is not defined 
      * @return boolean
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * button with icon - box
+ * Button with icon - box
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -24,7 +24,7 @@ $s7_css_div = "background-color: $s7_box_background_color; height: $s7_box_heigh
     style="<?php echo esc_attr($p1) ?>; <?php echo esc_attr($p2) ?>; <?php echo esc_attr($s7_css_div) ?>"
     onmouseover = "this.style.backgroundColor = '<?php echo esc_attr($s7_box_background_hover_color) ?>', document.getElementsByClassName('ccw-s7-icon')[0].style.color = '<?php echo esc_attr($s7_hover_color) ?>' "
     onmouseout  = "this.style.backgroundColor = '<?php echo esc_attr($s7_box_background_color) ?>', document.getElementsByClassName('ccw-s7-icon')[0].style.color = '<?php echo esc_attr($s7_color) ?>' "
-    onclick = "<?php echo esc_js($redirect) ?>" >
+    onclick = "<?php echo esc_attr($redirect) ?>" >
         <span class="icon icon-whatsapp2 ccw-s7-icon nofocus ccw-analytics" id="s7-icon" data-ccw="style-7" style="<?php echo esc_attr($s7_css_icon) ?>"></span>
 </div>
 </div>

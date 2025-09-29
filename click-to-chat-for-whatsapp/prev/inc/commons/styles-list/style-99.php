@@ -19,7 +19,7 @@ $s_99_img_width_mobile = esc_attr( $ccw_options_cs['s99_img_width_mobile'] );
 // image - width, height based on device
 $img_css = "";
 
-if( 1 == $is_mobile ) {
+if( '1' === $is_mobile ) {
     // $own_image = esc_attr( $ccw_options_cs['s99_mobile_img'] );
     $own_image = esc_url( $ccw_options_cs['s99_mobile_img'] );
 
@@ -31,7 +31,7 @@ if( 1 == $is_mobile ) {
     }
 } else {
     // $own_image = esc_attr( $ccw_options_cs['s99_desktop_img'] );
-    $own_image = esc_url( $ccw_options_cs['s99_desktop_img'] );
+    $own_image = isset($ccw_options_cs['s99_desktop_img']) ? esc_url( $ccw_options_cs['s99_desktop_img'] ) : '';
 
     if ( '' !== $s_99_img_height_desktop ) {
         $img_css .= "height: $s_99_img_height_desktop; ";
@@ -42,7 +42,7 @@ if( 1 == $is_mobile ) {
     }
 }
 
-if ( '' == $own_image ) {
+if ( '' === $own_image ) {
     $own_image = plugins_url( './new/inc/assets/img/whatsapp-logo.svg', HT_CTC_PLUGIN_FILE );
 }
 

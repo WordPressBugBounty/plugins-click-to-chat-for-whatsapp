@@ -1,6 +1,6 @@
 <?php
 /**
-* options page
+* Options page
 * content of this page load / continue at admin_page.php
 *
 * @package ccw

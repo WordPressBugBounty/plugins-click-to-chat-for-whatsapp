@@ -1,267 +1,311 @@
-(function ($) {
+( function ( $ ) {
+	// ready
+	$( function () {
+		if ( document.querySelector( '.pr_greetings_template' ) ) {
+			try {
+				greetings_template();
+			} catch ( e ) {}
+		}
 
-    // ready
-    $(function () {
+		if (
+			document.querySelector( '.ctc-admin-greetings-page' ) ||
+			document.querySelector( '.ctc-admin-woo-page' )
+		) {
+			try {
+				editor();
+			} catch ( e ) {}
+		}
 
-        if (document.querySelector('.pr_greetings_template')) {
-            try {
-                greetings_template();
-            } catch (e) { }
-        }
+		/**
+		 * display settings based on Greetings template selection
+		 */
+		function greetings_template () {
+			var greetings_template = $( '.pr_greetings_template select' )
+				.find( ':selected' )
+				.val();
 
-        if (document.querySelector('.ctc-admin-greetings-page') || document.querySelector('.ctc-admin-woo-page')) {
-            try {
-                editor();
-            } catch (e) { }
-        }
+			if ( greetings_template == 'no' || '' == greetings_template ) {
+				$( '.g_content_collapsible' )
+					.hide();
+			} else {
+				$( '.g_content_collapsible' )
+					.show();
+			}
 
-        /**
-        * display settings based on Greetings template selection
-        */
-        function greetings_template() {
+			// greetings-1
+			if ( greetings_template == 'greetings-1' ) {
+				$( '.ctc_greetings_settings.ctc_g_1' )
+					.show();
+				$( '.pr_ht_ctc_greetings_1' )
+					.show();
+				$( '.pr_ht_ctc_greetings_settings' )
+					.show();
+				$( '.ctc_greetings_notes' )
+					.show();
+				optin();
+			}
 
-            var greetings_template = $('.pr_greetings_template select').find(":selected").val();
+			// greetings-2
+			if ( greetings_template == 'greetings-2' ) {
+				$( '.ctc_greetings_settings.ctc_g_2' )
+					.show();
+				$( '.pr_ht_ctc_greetings_2' )
+					.show();
+				$( '.pr_ht_ctc_greetings_settings' )
+					.show();
+				$( '.ctc_greetings_notes' )
+					.show();
+				optin();
+			}
 
-            if (greetings_template == 'no' || '' == greetings_template) {
-                $('.g_content_collapsible').hide();
-            } else {
-                $('.g_content_collapsible').show();
-            }
+			// on change
+			$( '.pr_greetings_template select' )
+				.on( 'change', function ( e ) {
+					var greetings_template = e.target.value;
 
-            // greetings-1
-            if (greetings_template == 'greetings-1') {
-                $('.ctc_greetings_settings.ctc_g_1').show();
-                $('.pr_ht_ctc_greetings_1').show();
-                $('.pr_ht_ctc_greetings_settings').show();
-                $('.ctc_greetings_notes').show();
-                optin();
-            }
+					// ctc_greetings_settings
+					if ( greetings_template == 'no' ) {
+						$( '.g_content_collapsible' )
+							.hide( 100 );
+						$( ' .ctc_greetings_settings' )
+							.hide();
+					} else {
+					// $(" ." + greetings_template).show(100);
 
-            // greetings-2
-            if (greetings_template == 'greetings-2') {
-                $('.ctc_greetings_settings.ctc_g_2').show();
-                $('.pr_ht_ctc_greetings_2').show();
-                $('.pr_ht_ctc_greetings_settings').show();
-                $('.ctc_greetings_notes').show();
-                optin();
-            }
+						$( '.g_content_collapsible' )
+							.show();
 
-            // on change
-            $('.pr_greetings_template select').on("change", function (e) {
-                var greetings_template = e.target.value;
+						// if not no - then first hide all and again display required fields..
+						if (
+							greetings_template == 'greetings-2' ||
+						greetings_template == 'greetings-1'
+						) {
+							$( ' .ctc_greetings_settings' )
+								.hide();
+						}
+						$( '.ctc_greetings_notes' )
+							.show();
 
-                // ctc_greetings_settings 
-                if (greetings_template == 'no') {
-                    $('.g_content_collapsible').hide(100);
-                    $(" .ctc_greetings_settings").hide();
-                } else {
-                    // $(" ." + greetings_template).show(100);
+						// greetings-1
+						if ( greetings_template == 'greetings-1' ) {
+							$( '.ctc_greetings_settings.ctc_g_1' )
+								.show( 100 );
+							$( '.pr_ht_ctc_greetings_1' )
+								.show( 100 );
+							optin();
+						}
 
-                    $('.g_content_collapsible').show();
+						// greetings-2
+						if ( greetings_template == 'greetings-2' ) {
+							$( '.ctc_greetings_settings.ctc_g_2' )
+								.show( 100 );
+							$( '.pr_ht_ctc_greetings_2' )
+								.show( 100 );
+							optin();
+						}
 
-                    // if not no - then first hide all and again display required fields..
-                    if (greetings_template == 'greetings-2' || greetings_template == 'greetings-1') {
-                        $(" .ctc_greetings_settings").hide();
-                    }
-                    $('.ctc_greetings_notes').show();
+						$( '.pr_ht_ctc_greetings_settings' )
+							.show();
+					}
+				} );
 
-                    // greetings-1
-                    if (greetings_template == 'greetings-1') {
-                        $('.ctc_greetings_settings.ctc_g_1').show(100);
-                        $('.pr_ht_ctc_greetings_1').show(100);
-                        optin();
-                    }
-                    // greetings-2
-                    if (greetings_template == 'greetings-2') {
-                        $('.ctc_greetings_settings.ctc_g_2').show(100);
-                        $('.pr_ht_ctc_greetings_2').show(100);
-                        optin();
-                    }
+			// optin - show/hide
+			function optin () {
+				if ( $( '.is_opt_in' )
+					.is( ':checked' ) ) {
+					$( '.pr_opt_in ' )
+						.show( 200 );
+				} else {
+					$( '.pr_opt_in ' )
+						.hide( 200 );
+				}
+			}
 
-                    $('.pr_ht_ctc_greetings_settings').show();
+			// optin change
+			$( '.is_opt_in' )
+				.on( 'change', function ( e ) {
+					optin();
+				} );
+		}
 
-                }
-            });
+		/**
+		 * greetings header image
+		 *
+		 * @since 3.34
+		 */
+		function greetings_header_image () {
+			var mediaUploader;
 
+			// Event listener for adding an image
+			$( '.ctc_add_image_wp' )
+				.on( 'click', function ( e ) {
+					e.preventDefault();
 
-            // optin - show/hide
-            function optin() {
-                if ($('.is_opt_in').is(':checked')) {
-                    $(".pr_opt_in ").show(200);
-                } else {
-                    $(".pr_opt_in ").hide(200);
-                }
-            }
-            // optin change
-            $(".is_opt_in").on("change", function (e) {
-                optin();
-            });
+					// If mediaUploader already exists, open it
+					if ( mediaUploader ) {
+						mediaUploader.open();
+						return;
+					}
 
-        }
+					// Create a new media uploader instance
+					mediaUploader = wp.media.frames.file_frame = wp.media( {
+						title: 'Select Header Image',
+						button: {
+							text: 'Select',
+						},
+						multiple: false,
+					} );
 
+					// When an image is selected
+					mediaUploader.on( 'select', function () {
+						attachment = mediaUploader.state()
+							.get( 'selection' )
+							.first()
+							.toJSON();
+						console.log( attachment );
 
-        /**
-         * greetings header image
-         * 
-         * @since 3.34
-         */
-        function greetings_header_image() {
+						// if closed with out selecting image
+						if ( typeof attachment === 'undefined' ) { return true; }
 
-            var mediaUploader;
-        
-            // Event listener for adding an image
-            $('.ctc_add_image_wp').on('click', function (e) {
-                e.preventDefault();
-        
-                // If mediaUploader already exists, open it
-                if (mediaUploader) {
-                    mediaUploader.open();
-                    return;
-                }
-        
-                // Create a new media uploader instance
-                mediaUploader = wp.media.frames.file_frame = wp.media({
-                    title: 'Select Header Image',
-                    button: {
-                        text: 'Select'
-                    },
-                    multiple: false
-                });
-        
-                // When an image is selected
-                mediaUploader.on('select', function () {
+						// Set the image URL and update the preview
+						image_url = attachment.url;
+						$( '.g_header_image' )
+							.val( image_url );
+						$( '.g_header_image_preview' )
+							.attr( 'src', image_url );
+						$( '.g_header_image_preview' )
+							.show();
+						$( '.ctc_remove_image_wp' )
+							.show();
+						header_image_badge();
 
-                    attachment = mediaUploader.state().get('selection').first().toJSON();
-                    console.log(attachment);
+						console.log( 'image_url: ' + image_url );
 
-                    // if closed with out selecting image
-                    if (typeof attachment == 'undefined') return true;
+						// Custom event: ht_ctc_event_greetings_header_image
+						document.dispatchEvent( new CustomEvent( 'ht_ctc_event_greetings_header_image', {
+							detail: image_url,
+						} ) );
+					} );
 
-                    // Set the image URL and update the preview
-                    image_url = attachment.url;
-                    $('.g_header_image').val(image_url);
-                    $('.g_header_image_preview').attr('src', image_url);
-                    $('.g_header_image_preview').show();
-                    $('.ctc_remove_image_wp').show();
-                    header_image_badge();
+					// Open the media uploader
+					mediaUploader.open();
+				} );
 
-                    console.log('image_url: ' + image_url);
-                    // Custom event: ht_ctc_event_greetings_header_image
-                    document.dispatchEvent(
-                        new CustomEvent("ht_ctc_event_greetings_header_image", { detail: image_url })
-                    );
+			// Event listener for removing an image
+			$( '.ctc_remove_image_wp' )
+				.on( 'click', function ( e ) {
+					e.preventDefault();
+					$( '.g_header_image' )
+						.val( '' );
+					$( '.g_header_image_preview' )
+						.hide();
+					$( '.ctc_remove_image_wp' )
+						.hide();
+					header_image_badge();
+					return;
+				} );
 
-                });
-        
-                // Open the media uploader
-                mediaUploader.open();
-            });
+			// Function to show/hide elements based on the presence of a header image
+			function header_image_badge () {
+				// pr_g_header_online_badge display only if header image is set
+				console.log( $( '.g_header_image' )
+					.val() );
 
-            // Event listener for removing an image
-            $('.ctc_remove_image_wp').on('click', function (e) {
-                e.preventDefault();
-                $('.g_header_image').val('');
-                $('.g_header_image_preview').hide();
-                $('.ctc_remove_image_wp').hide();
-                header_image_badge();
-                return;
-            });
+				// If no header image is set, hide related elements
+				if ( $( '.g_header_image' )
+					.val() == '' ) {
+					$( '.row_g_header_online_status' )
+						.hide();
+					$( '.row_g_header_online_status_color' )
+						.hide();
+					console.log( 'hide' );
+				} else {
+					// If a header image is set, show related elements
+					$( '.row_g_header_online_status' )
+						.show();
 
-            // Function to show/hide elements based on the presence of a header image
-            function header_image_badge() {
-                // pr_g_header_online_badge display only if header image is set
-                console.log($('.g_header_image').val());
+					// Show/hide online status color based on checkbox state
+					if ( $( '.g_header_online_status' )
+						.is( ':checked' ) ) {
+						$( '.row_g_header_online_status_color' )
+							.show();
+					} else {
+						$( '.row_g_header_online_status_color' )
+							.hide();
+					}
+					console.log( 'show' );
+				}
+			}
 
-                // If no header image is set, hide related elements
-                if ($('.g_header_image').val() == '') {
-                    $('.row_g_header_online_status').hide();
-                    $('.row_g_header_online_status_color').hide();
-                    console.log('hide');
-                } else {
-                    // If a header image is set, show related elements
-                    $('.row_g_header_online_status').show();
+			// Initial call to set the correct visibility of elements
+			header_image_badge();
 
-                    // Show/hide online status color based on checkbox state
-                    if ($('.g_header_online_status').is(':checked')) {
-                        $('.row_g_header_online_status_color').show();
-                    } else {
-                        $('.row_g_header_online_status_color').hide();
-                    }
-                    console.log('show');
-                }
-            }
+			// Event listener for changes to the online status checkbox
+			$( '.g_header_online_status' )
+				.on( 'change', function () {
+					console.log( 'on change g_header_online_status' );
 
-            // Initial call to set the correct visibility of elements
-            header_image_badge();
+					// Show/hide online status color based on checkbox state
+					if ( $( '.g_header_online_status' )
+						.is( ':checked' ) ) {
+						console.log( 'g_header_online_status checked' );
+						$( '.row_g_header_online_status_color' )
+							.show();
+					} else {
+						console.log( 'g_header_online_status unchecked' );
+						$( '.row_g_header_online_status_color' )
+							.hide();
+					}
+				} );
+		}
+		greetings_header_image();
 
-            // Event listener for changes to the online status checkbox
-            $('.g_header_online_status').on('change', function () {
-                console.log('on change g_header_online_status');
+		/**
+		 * tinymce editor
+		 * only on greetings, woo pages
+		 *  bg color
+		 */
+		function editor () {
+			var check = 1;
+			var check_interval = 1000;
+			var check_times = 28; // ( check_times * check_interval = total milliseconds )
 
-                // Show/hide online status color based on checkbox state
-                if ($('.g_header_online_status').is(':checked')) {
-                    console.log('g_header_online_status checked');
-                    $('.row_g_header_online_status_color').show();
-                } else {
-                    console.log('g_header_online_status unchecked');
-                    $('.row_g_header_online_status_color').hide();
-                }
-            });
-        }
-        greetings_header_image();
+			function tiny_bg () {
+				if ( document.getElementById( 'header_content_ifr' ) ) {
+					try {
+						tiny_bg_color();
+					} catch ( e ) {}
+				} else {
+					check++;
+					if ( check < check_times ) {
+						setTimeout( tiny_bg, check_interval );
+					}
+				}
+			}
 
+			// also calls from setTimeout....
+			tiny_bg();
 
+			function tiny_bg_color () {
+				console.log( 'tiny_bg_color' );
 
+				try {
+					// this works for single editor.
+					// tinyMCE.activeEditor.dom.setStyle(tinyMCE.activeEditor.getBody(), 'backgroundColor', '#26a69a');
 
-        /**
-         * tinymce editor
-         * only on greetings, woo pages
-         *  bg color
-         */
-        function editor() {
-            var check = 1;
-            var check_interval = 1000;
-            var check_times = 28; // ( check_times * check_interval = total milliseconds )
+					// for multiple editors
+					for ( var i = 0; i < tinyMCE.editors.length; i++ ) {
+						var editor = tinyMCE.editors[ i ];
+						editor.dom.setStyle( editor.getBody(), 'backgroundColor', '#26a69a' );
+					}
+				} catch ( e ) {}
 
-            function tiny_bg() {
-                if (document.getElementById("header_content_ifr")) {
-                    try {
-                        tiny_bg_color();
-                    } catch (e) { }
-                } else {
-                    check++;
-                    if (check < check_times) {
-                        setTimeout(tiny_bg, check_interval);
-                    }
-                }
-            }
-            // also calls from setTimeout....
-            tiny_bg();
-
-            function tiny_bg_color() {
-                console.log('tiny_bg_color');
-                
-                try {
-                    // this works for single editor. 
-                    // tinyMCE.activeEditor.dom.setStyle(tinyMCE.activeEditor.getBody(), 'backgroundColor', '#26a69a');
-
-                    // for multiple editors
-                    for (var i = 0; i < tinyMCE.editors.length; i++) {
-                        var editor = tinyMCE.editors[i];
-                        editor.dom.setStyle(editor.getBody(), 'backgroundColor', '#26a69a');
-                    }
-                } catch (e) {}
-
-                // var i = document.querySelectorAll(".ctc_wp_editor iframe");
-                // i.forEach(e => {
-                //     var elmnt = e.contentWindow.document.getElementsByTagName("body")[0];
-                //     elmnt.style.backgroundColor = "#26a69a";
-                // });
-            }
-        }
-
-
-    });
-
-
-})(jQuery);
+				// var i = document.querySelectorAll(".ctc_wp_editor iframe");
+				// i.forEach(e => {
+				//     var elmnt = e.contentWindow.document.getElementsByTagName("body")[0];
+				//     elmnt.style.backgroundColor = "#26a69a";
+				// });
+			}
+		}
+	} );
+} )( jQuery );

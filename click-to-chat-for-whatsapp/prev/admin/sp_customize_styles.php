@@ -1,6 +1,6 @@
 <?php
 /**
-* settings page - customize styles  ( settings_page.php is main page and this is sub page )
+* Settings page - customize styles  ( settings_page.php is main page and this is sub page )
 * options page
 * content of this page load / continue at admin_page_customize_styles.php
 *  cs  - customize styles

@@ -1,6 +1,6 @@
 <?php
 /**
-* content of the options page ..  Customize Styles ..
+* Content of the options page ..  Customize Styles ..
 * admin_menu.php  -> settings_page.php  -> admin_page.php
 *  in name exists - this short values - it means 
 *   cs  - customize styles
@@ -74,8 +74,8 @@ class CCW_Admin_Page_Customize_Styles {
     // style - 2
     function ccw_style_2_cb() {
         $ccw_style_2 = get_option('ccw_options_cs');
-        $s2_decoration_value = esc_attr( $ccw_style_2['s2_decoration'] );
-        $s2_decoration_onhover = esc_attr( $ccw_style_2['s2_decoration_onhover'] );
+        $s2_decoration_value = isset($ccw_style_2['s2_decoration']) ? esc_attr( $ccw_style_2['s2_decoration'] ) : 'none';
+        $s2_decoration_onhover = isset($ccw_style_2['s2_decoration_onhover']) ? esc_attr( $ccw_style_2['s2_decoration_onhover'] ) : 'underline';
         ?>
         <ul class="collapsible" data-collapsible="accordion">
         <li>
@@ -87,7 +87,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Text Color', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s2_text_color]" data-default-color="inherit" value="<?php echo esc_attr( $ccw_style_2['s2_text_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s2_text_color]" data-default-color="inherit" value="<?php echo isset($ccw_style_2['s2_text_color']) ? esc_attr( $ccw_style_2['s2_text_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -96,7 +96,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Text Color on Hover', 'click-to-chat-for-whatsapp' ); ?> </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s2_text_color_onhover]" data-default-color="inherit" value="<?php echo esc_attr( $ccw_style_2['s2_text_color_onhover'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s2_text_color_onhover]" data-default-color="inherit" value="<?php echo isset($ccw_style_2['s2_text_color_onhover']) ? esc_attr( $ccw_style_2['s2_text_color_onhover'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
         
@@ -106,12 +106,12 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <select name="ccw_options_cs[s2_decoration]" class="select-2_2">
-                        <option value="none" <?php echo $s2_decoration_value == 'none' ? 'SELECTED' : ''; ?> >none</option>
-                        <option value="underline" <?php echo $s2_decoration_value == 'underline' ? 'SELECTED' : ''; ?> >underline</option>
-                        <option value="overline" <?php echo $s2_decoration_value == 'overline' ? 'SELECTED' : ''; ?> >overline</option>
-                        <option value="line-through" <?php echo $s2_decoration_value == 'line-through' ? 'SELECTED' : ''; ?> >line-through</option>
-                        <option value="initial" <?php echo $s2_decoration_value == 'initial' ? 'SELECTED' : ''; ?> >initial</option>
-                        <option value="inherit" <?php echo $s2_decoration_value == 'inherit' ? 'SELECTED' : ''; ?> >inherit</option>
+                        <option value="none" <?php echo $s2_decoration_value === 'none' ? 'SELECTED' : ''; ?> >none</option>
+                        <option value="underline" <?php echo $s2_decoration_value === 'underline' ? 'SELECTED' : ''; ?> >underline</option>
+                        <option value="overline" <?php echo $s2_decoration_value === 'overline' ? 'SELECTED' : ''; ?> >overline</option>
+                        <option value="line-through" <?php echo $s2_decoration_value === 'line-through' ? 'SELECTED' : ''; ?> >line-through</option>
+                        <option value="initial" <?php echo $s2_decoration_value === 'initial' ? 'SELECTED' : ''; ?> >initial</option>
+                        <option value="inherit" <?php echo $s2_decoration_value === 'inherit' ? 'SELECTED' : ''; ?> >inherit</option>
                     </select>
                     <label><?php esc_html_e( 'Text Decoration', 'click-to-chat-for-whatsapp' ); ?> </label>
                 </div>
@@ -123,12 +123,12 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <select name="ccw_options_cs[s2_decoration_onhover]" class="select-2_2">
-                        <option value="none" <?php echo $s2_decoration_onhover == 'none' ? 'SELECTED' : ''; ?> >none</option>
-                        <option value="underline" <?php echo $s2_decoration_onhover == 'underline' ? 'SELECTED' : ''; ?> >underline</option>
-                        <option value="overline" <?php echo $s2_decoration_onhover == 'overline' ? 'SELECTED' : ''; ?> >overline</option>
-                        <option value="line-through" <?php echo $s2_decoration_onhover == 'line-through' ? 'SELECTED' : ''; ?> >line-through</option>
-                        <option value="initial" <?php echo $s2_decoration_onhover == 'initial' ? 'SELECTED' : ''; ?> >initial</option>
-                        <option value="inherit" <?php echo $s2_decoration_onhover == 'inherit' ? 'SELECTED' : ''; ?> >inherit</option>
+                        <option value="none" <?php echo $s2_decoration_onhover === 'none' ? 'SELECTED' : ''; ?> >none</option>
+                        <option value="underline" <?php echo $s2_decoration_onhover === 'underline' ? 'SELECTED' : ''; ?> >underline</option>
+                        <option value="overline" <?php echo $s2_decoration_onhover === 'overline' ? 'SELECTED' : ''; ?> >overline</option>
+                        <option value="line-through" <?php echo $s2_decoration_onhover === 'line-through' ? 'SELECTED' : ''; ?> >line-through</option>
+                        <option value="initial" <?php echo $s2_decoration_onhover === 'initial' ? 'SELECTED' : ''; ?> >initial</option>
+                        <option value="inherit" <?php echo $s2_decoration_onhover === 'inherit' ? 'SELECTED' : ''; ?> >inherit</option>
                     </select>
                     <label>Text Decoration on focus </label>
                 </div>
@@ -157,7 +157,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Image size', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s3_icon_size]" value="<?php echo esc_attr( $ccw_style_3['s3_icon_size'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s3_icon_size]" value="<?php echo isset($ccw_style_3['s3_icon_size']) ? esc_attr( $ccw_style_3['s3_icon_size'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -185,7 +185,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Text Color', 'click-to-chat-for-whatsapp' ); ?> </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s4_text_color]" data-default-color="rgba(0, 0, 0, 0.6)" value="<?php echo esc_attr( $ccw_style_4['s4_text_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s4_text_color]" data-default-color="rgba(0, 0, 0, 0.6)" value="<?php echo isset($ccw_style_4['s4_text_color']) ? esc_attr( $ccw_style_4['s4_text_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -194,7 +194,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Background Color', 'click-to-chat-for-whatsapp' ); ?> </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s4_background_color]" data-default-color="#e4e4e4" value="<?php echo esc_attr( $ccw_style_4['s4_background_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s4_background_color]" data-default-color="#e4e4e4" value="<?php echo isset($ccw_style_4['s4_background_color']) ? esc_attr( $ccw_style_4['s4_background_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
         
@@ -222,7 +222,7 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <!--   style="height: 1.375rem;"  or  22px   -->
-                    <input name="ccw_options_cs[s5_color]" data-default-color="#000" value="<?php echo esc_attr( $ccw_style_5['s5_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s5_color]" data-default-color="#000" value="<?php echo isset($ccw_style_5['s5_color']) ? esc_attr( $ccw_style_5['s5_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
             
@@ -231,7 +231,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Color of icon - when hover  </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s5_hover_color]" data-default-color="#ddd" value="<?php echo esc_attr( $ccw_style_5['s5_hover_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s5_hover_color]" data-default-color="#ddd" value="<?php echo isset($ccw_style_5['s5_hover_color']) ? esc_attr( $ccw_style_5['s5_hover_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -240,7 +240,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Size of icon </p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s5_icon_size]" value="<?php echo esc_attr( $ccw_style_5['s5_icon_size'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s5_icon_size]" value="<?php echo isset($ccw_style_5['s5_icon_size']) ? esc_attr( $ccw_style_5['s5_icon_size'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -267,7 +267,7 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <!--   style="height: 1.375rem;"  or  22px   -->
-                    <input name="ccw_options_cs[s6_color]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_6['s6_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s6_color]" data-default-color="#fff" value="<?php echo isset($ccw_style_6['s6_color']) ? esc_attr( $ccw_style_6['s6_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
             
@@ -276,7 +276,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Color of icon - when hover </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s6_hover_color]" data-default-color="#000" value="<?php echo esc_attr( $ccw_style_6['s6_hover_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s6_hover_color]" data-default-color="#000" value="<?php echo isset($ccw_style_6['s6_hover_color']) ? esc_attr( $ccw_style_6['s6_hover_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -285,7 +285,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Size of icon</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s6_icon_size]" value="<?php echo esc_attr( $ccw_style_6['s6_icon_size'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s6_icon_size]" value="<?php echo isset($ccw_style_6['s6_icon_size']) ? esc_attr( $ccw_style_6['s6_icon_size'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -294,7 +294,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Circle color </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s6_circle_background_color]" data-default-color="#ffa500" value="<?php echo esc_attr( $ccw_style_6['s6_circle_background_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s6_circle_background_color]" data-default-color="#ffa500" value="<?php echo isset($ccw_style_6['s6_circle_background_color']) ? esc_attr( $ccw_style_6['s6_circle_background_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -303,7 +303,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Circle color - when hover </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s6_circle_background_hover_color]" data-default-color="#ffa500" value="<?php echo esc_attr( $ccw_style_6['s6_circle_background_hover_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s6_circle_background_hover_color]" data-default-color="#ffa500" value="<?php echo isset($ccw_style_6['s6_circle_background_hover_color']) ? esc_attr( $ccw_style_6['s6_circle_background_hover_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -313,7 +313,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Circle Height</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s6_circle_height]" value="<?php echo esc_attr( $ccw_style_6['s6_circle_height'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s6_circle_height]" value="<?php echo isset($ccw_style_6['s6_circle_height']) ? esc_attr( $ccw_style_6['s6_circle_height'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -322,7 +322,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Circle Width</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s6_circle_width]" value="<?php echo esc_attr( $ccw_style_6['s6_circle_width'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s6_circle_width]" value="<?php echo isset($ccw_style_6['s6_circle_width']) ? esc_attr( $ccw_style_6['s6_circle_width'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -331,7 +331,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Circle Line Height</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s6_line_height]" value="<?php echo esc_attr( $ccw_style_6['s6_line_height'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s6_line_height]" value="<?php echo isset($ccw_style_6['s6_line_height']) ? esc_attr( $ccw_style_6['s6_line_height'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -363,7 +363,7 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <!--   style="height: 1.375rem;"  or  22px   -->
-                    <input name="ccw_options_cs[s7_color]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_7['s7_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s7_color]" data-default-color="#fff" value="<?php echo isset($ccw_style_7['s7_color']) ? esc_attr( $ccw_style_7['s7_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
             
@@ -372,7 +372,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Color of icon - when hover </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s7_hover_color]" data-default-color="#000" value="<?php echo esc_attr( $ccw_style_7['s7_hover_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s7_hover_color]" data-default-color="#000" value="<?php echo isset($ccw_style_7['s7_hover_color']) ? esc_attr( $ccw_style_7['s7_hover_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -381,7 +381,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Size of icon</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s7_icon_size]" value="<?php echo esc_attr( $ccw_style_7['s7_icon_size'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s7_icon_size]" value="<?php echo isset($ccw_style_7['s7_icon_size']) ? esc_attr( $ccw_style_7['s7_icon_size'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -390,7 +390,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>box color </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s7_box_background_color]" data-default-color="#ffa500" value="<?php echo esc_attr( $ccw_style_7['s7_box_background_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s7_box_background_color]" data-default-color="#ffa500" value="<?php echo isset($ccw_style_7['s7_box_background_color']) ? esc_attr( $ccw_style_7['s7_box_background_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -399,7 +399,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>box color - when hover </p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s7_box_background_hover_color]" data-default-color="#ffa500" value="<?php echo esc_attr( $ccw_style_7['s7_box_background_hover_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s7_box_background_hover_color]" data-default-color="#ffa500" value="<?php echo isset($ccw_style_7['s7_box_background_hover_color']) ? esc_attr( $ccw_style_7['s7_box_background_hover_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -409,7 +409,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>box Height</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s7_box_height]" value="<?php echo esc_attr( $ccw_style_7['s7_box_height'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s7_box_height]" value="<?php echo isset($ccw_style_7['s7_box_height']) ? esc_attr( $ccw_style_7['s7_box_height'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -418,7 +418,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>box Width</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s7_box_width]" value="<?php echo esc_attr( $ccw_style_7['s7_box_width'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s7_box_width]" value="<?php echo isset($ccw_style_7['s7_box_width']) ? esc_attr( $ccw_style_7['s7_box_width'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -427,7 +427,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>box Line Height</p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s7_line_height]" value="<?php echo esc_attr( $ccw_style_7['s7_line_height'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s7_line_height]" value="<?php echo isset($ccw_style_7['s7_line_height']) ? esc_attr( $ccw_style_7['s7_line_height'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -446,7 +446,7 @@ class CCW_Admin_Page_Customize_Styles {
     // style - 8
     function ccw_style_8_cb() {
         $ccw_style_8 = get_option('ccw_options_cs');
-        $s8_icon_float = esc_attr( $ccw_style_8['s8_icon_float'] )
+        $s8_icon_float = isset($ccw_style_8['s8_icon_float']) ? esc_attr( $ccw_style_8['s8_icon_float'] ) : 'left';
         ?>
         <ul class="collapsible" data-collapsible="accordion">
         <li>
@@ -459,7 +459,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Text Color', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_text_color]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_8['s8_text_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_text_color]" data-default-color="#fff" value="<?php echo isset($ccw_style_8['s8_text_color']) ? esc_attr( $ccw_style_8['s8_text_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -468,7 +468,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Background Color', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_background_color]" data-default-color="#26a69a" value="<?php echo esc_attr( $ccw_style_8['s8_background_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_background_color]" data-default-color="#26a69a" value="<?php echo isset($ccw_style_8['s8_background_color']) ? esc_attr( $ccw_style_8['s8_background_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -477,7 +477,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Icon color', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_icon_color]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_8['s8_icon_color'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_icon_color]" data-default-color="#fff" value="<?php echo isset($ccw_style_8['s8_icon_color']) ? esc_attr( $ccw_style_8['s8_icon_color'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -486,7 +486,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Text Color on hover', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_text_color_onhover]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_8['s8_text_color_onhover'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_text_color_onhover]" data-default-color="#fff" value="<?php echo isset($ccw_style_8['s8_text_color_onhover']) ? esc_attr( $ccw_style_8['s8_text_color_onhover'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -495,7 +495,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Background Color on hover', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_background_color_onhover]" data-default-color="#26a69a" value="<?php echo esc_attr( $ccw_style_8['s8_background_color_onhover'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_background_color_onhover]" data-default-color="#26a69a" value="<?php echo isset($ccw_style_8['s8_background_color_onhover']) ? esc_attr( $ccw_style_8['s8_background_color_onhover'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -504,7 +504,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Icon color on hover', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s6">
-                    <input name="ccw_options_cs[s8_icon_color_onhover]" data-default-color="#fff" value="<?php echo esc_attr( $ccw_style_8['s8_icon_color_onhover'] ) ?>" type="text" class="color-wp" style="height: 1.375rem;" >
+                    <input name="ccw_options_cs[s8_icon_color_onhover]" data-default-color="#fff" value="<?php echo isset($ccw_style_8['s8_icon_color_onhover']) ? esc_attr( $ccw_style_8['s8_icon_color_onhover'] ) : ''; ?>" type="text" class="color-wp" style="height: 1.375rem;" >
                 </div>
             </div>
 
@@ -514,9 +514,9 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <select name="ccw_options_cs[s8_icon_float]" class="select-2_2">
-                        <option value="left" <?php echo $s8_icon_float == 'left' ? 'SELECTED' : ''; ?> >left</option>
-                        <option value="right" <?php echo $s8_icon_float == 'right' ? 'SELECTED' : ''; ?> >right</option>
-                        <option value="hide" <?php echo $s8_icon_float == 'hide' ? 'SELECTED' : ''; ?> >hide</option>
+                        <option value="left" <?php echo $s8_icon_float === 'left' ? 'SELECTED' : ''; ?> >left</option>
+                        <option value="right" <?php echo $s8_icon_float === 'right' ? 'SELECTED' : ''; ?> >right</option>
+                        <option value="hide" <?php echo $s8_icon_float === 'hide' ? 'SELECTED' : ''; ?> >hide</option>
                     </select>
                     <label>Icon flow</label>
                 </div>
@@ -528,7 +528,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Icon size', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s8_1_width]" value="<?php echo esc_attr( $ccw_style_8['s8_1_width'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s8_1_width]" value="<?php echo isset($ccw_style_8['s8_1_width']) ? esc_attr( $ccw_style_8['s8_1_width'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
         
@@ -555,7 +555,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Image size', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s9_icon_size]" value="<?php echo esc_attr( $ccw_style_9['s9_icon_size'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s9_icon_size]" value="<?php echo isset($ccw_style_9['s9_icon_size']) ? esc_attr( $ccw_style_9['s9_icon_size'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
         
@@ -580,7 +580,7 @@ class CCW_Admin_Page_Customize_Styles {
 
            <div class="row">
                 <div class="input-field col s12">
-                    <input name="ccw_options_cs[s99_desktop_img]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_desktop_img'] ) ?>" id="img-url-desktop" type="text" class="validate">
+                    <input name="ccw_options_cs[s99_desktop_img]" value="<?php echo isset($ccw_style_99_own_img['s99_desktop_img']) ? esc_attr( $ccw_style_99_own_img['s99_desktop_img'] ) : ''; ?>" id="img-url-desktop" type="text" class="validate">
                     <label for="img-url-desktop"><?php esc_html_e( 'Image URL - Desktop', 'click-to-chat-for-whatsapp' ); ?> </label>
                     <p class="description">e.g. https://example.com/img.png - <a target="_blank" href="https://holithemes.com/plugins/whatsapp-chat/style-99-own-image/">own image - style 99</a> </p>
                     <p class="description">Image / GIF </p>
@@ -589,7 +589,7 @@ class CCW_Admin_Page_Customize_Styles {
 
             <div class="row">
                 <div class="input-field col s12">
-                    <input name="ccw_options_cs[s99_mobile_img]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_mobile_img'] ) ?>" id="img-url-mobile" type="text" class="validate">
+                    <input name="ccw_options_cs[s99_mobile_img]" value="<?php echo isset($ccw_style_99_own_img['s99_mobile_img']) ? esc_attr( $ccw_style_99_own_img['s99_mobile_img'] ) : ''; ?>" id="img-url-mobile" type="text" class="validate">
                     <label for="img-url-mobile"><?php esc_html_e( 'Image URL - Mobile', 'click-to-chat-for-whatsapp' ); ?> </label>
                     <p class="description">e.g. https://example.com/img.png - <a target="_blank" href="https://holithemes.com/plugins/whatsapp-chat/style-99-own-image/">own image - style 99</a> </p>
                 </div>
@@ -605,7 +605,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Desktop - Image Height', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s99_img_height_desktop]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_img_height_desktop'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s99_img_height_desktop]" value="<?php echo isset($ccw_style_99_own_img['s99_img_height_desktop']) ? esc_attr( $ccw_style_99_own_img['s99_img_height_desktop'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -614,7 +614,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Desktop - Image Width', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s99_img_width_desktop]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_img_width_desktop'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s99_img_width_desktop]" value="<?php echo isset($ccw_style_99_own_img['s99_img_width_desktop']) ? esc_attr( $ccw_style_99_own_img['s99_img_width_desktop'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -624,7 +624,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Mobile - Image Height', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s99_img_height_mobile]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_img_height_mobile'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s99_img_height_mobile]" value="<?php echo isset($ccw_style_99_own_img['s99_img_height_mobile']) ? esc_attr( $ccw_style_99_own_img['s99_img_height_mobile'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -633,7 +633,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p><?php esc_html_e( 'Mobile - Image Width', 'click-to-chat-for-whatsapp' ); ?></p>
                 </div>
                 <div class="input-field col s4">
-                    <input name="ccw_options_cs[s99_img_width_mobile]" value="<?php echo esc_attr( $ccw_style_99_own_img['s99_img_width_mobile'] ) ?>" type="text" class="" >
+                    <input name="ccw_options_cs[s99_img_width_mobile]" value="<?php echo isset($ccw_style_99_own_img['s99_img_width_mobile']) ? esc_attr( $ccw_style_99_own_img['s99_img_width_mobile'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -659,8 +659,8 @@ class CCW_Admin_Page_Customize_Styles {
     function ccw_animations_cb() {
         $ccw_animations = get_option('ccw_options_cs');
         // $an_enable = esc_attr( $ccw_animations['an_enable'] );
-        $an_on_load = esc_attr( $ccw_animations['an_on_load'] );
-        $an_on_hover = esc_attr( $ccw_animations['an_on_hover'] );
+        $an_on_load = isset($ccw_animations['an_on_load']) ? esc_attr( $ccw_animations['an_on_load'] ) : 'no-animation';
+        $an_on_hover = isset($ccw_animations['an_on_hover']) ? esc_attr( $ccw_animations['an_on_hover'] ) : 'ccw-no-hover-an';
         
         ?>
         <ul class="collapsible" data-collapsible="accordion">
@@ -684,7 +684,7 @@ class CCW_Admin_Page_Customize_Styles {
 
                     foreach ( $an_list as $value ) {
                     ?>
-                    <option value="<?php echo esc_attr($value) ?>" <?php echo $an_on_load == $value ? 'SELECTED' : ''; ?> ><?php echo esc_html($value) ?></option>
+                    <option value="<?php echo esc_attr($value) ?>" <?php echo $an_on_load === $value ? 'SELECTED' : ''; ?> ><?php echo esc_html($value) ?></option>
                     <?php
                     }
 
@@ -701,8 +701,8 @@ class CCW_Admin_Page_Customize_Styles {
                 </div>
                 <div class="input-field col s6">
                     <select name="ccw_options_cs[an_on_hover]" class="select-2_2">
-                        <option value="ccw-an" <?php echo $an_on_hover == 'ccw-an' ? 'SELECTED' : ''; ?> >Yes</option>
-                        <option value="ccw-no-hover-an" <?php echo $an_on_hover == 'ccw-no-hover-an' ? 'SELECTED' : ''; ?> >No</option>
+                        <option value="ccw-an" <?php echo $an_on_hover === 'ccw-an' ? 'SELECTED' : ''; ?> >Yes</option>
+                        <option value="ccw-no-hover-an" <?php echo $an_on_hover === 'ccw-no-hover-an' ? 'SELECTED' : ''; ?> >No</option>
                     </select>
                     <label>Animation on mouse hover</label>
                 </div>
@@ -725,9 +725,9 @@ class CCW_Admin_Page_Customize_Styles {
     // Google Analytics
     function ht_ccw_ga_cb() {
         $ht_ccw_ga = get_option('ht_ccw_ga');
-        $ga_category = esc_attr( $ht_ccw_ga['ga_category'] );
-        $ga_action = esc_attr( $ht_ccw_ga['ga_action'] );
-        $ga_label = esc_attr( $ht_ccw_ga['ga_label'] );
+        $ga_category = isset($ht_ccw_ga['ga_category']) ? esc_attr( $ht_ccw_ga['ga_category'] ) : '';
+        $ga_action = isset($ht_ccw_ga['ga_action']) ? esc_attr( $ht_ccw_ga['ga_action'] ) : '';
+        $ga_label = isset($ht_ccw_ga['ga_label']) ? esc_attr( $ht_ccw_ga['ga_label'] ) : '';
         
         ?>
         <ul class="collapsible" data-collapsible="accordion">
@@ -745,7 +745,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Category Name</p>
                 </div>
                 <div class="input-field col s5">
-                    <input name="ht_ccw_ga[ga_category]" value="<?php echo esc_attr( $ht_ccw_ga['ga_category'] ) ?>" type="text" class="" >
+                    <input name="ht_ccw_ga[ga_category]" value="<?php echo isset($ht_ccw_ga['ga_category']) ? esc_attr( $ht_ccw_ga['ga_category'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -755,7 +755,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Action Name</p>
                 </div>
                 <div class="input-field col s5">
-                    <input name="ht_ccw_ga[ga_action]" value="<?php echo esc_attr( $ht_ccw_ga['ga_action'] ) ?>" type="text" class="" >
+                    <input name="ht_ccw_ga[ga_action]" value="<?php echo isset($ht_ccw_ga['ga_action']) ? esc_attr( $ht_ccw_ga['ga_action'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
 
@@ -765,7 +765,7 @@ class CCW_Admin_Page_Customize_Styles {
                     <p>Label Name</p>
                 </div>
                 <div class="input-field col s5">
-                    <input name="ht_ccw_ga[ga_label]" value="<?php echo esc_attr( $ht_ccw_ga['ga_label'] ) ?>" type="text" class="" >
+                    <input name="ht_ccw_ga[ga_label]" value="<?php echo isset($ht_ccw_ga['ga_label']) ? esc_attr( $ht_ccw_ga['ga_label'] ) : ''; ?>" type="text" class="" >
                 </div>
             </div>
         

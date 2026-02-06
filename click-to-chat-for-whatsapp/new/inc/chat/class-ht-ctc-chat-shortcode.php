@@ -39,15 +39,19 @@ if ( ! class_exists( 'HT_CTC_Chat_Shortcode' ) ) {
 		 */
 		public function shortcode( $atts = array(), $content = null, $shortcode = '' ) {
 
-			$options   = get_option( 'ht_ctc_chat_options' );
-			$ht_ctc_os = array();
+			$options     = get_option( 'ht_ctc_chat_options' );
+			$woo_options = get_option( 'ht_ctc_woo_options' );
+			$ht_ctc_os   = array();
 
 			$call_to_action = esc_attr( $options['call_to_action'] );
 			$pre_filled     = esc_attr( $options['pre_filled'] );
 
+			$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'call_to_action' );
+			$pre_filled     = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'pre_filled' );
+
 			// @since 4.3 if shortcode number attribute is not added, global number will be used at js.
 			// $number = (isset($options['number'])) ? esc_attr($options['number']) : '';
-
+			// if woocommerce single product page
 			$style_desktop = ( isset( $options['style_desktop'] ) ) ? esc_attr( $options['style_desktop'] ) : '2';
 			if ( isset( $options['same_settings'] ) ) {
 				$style_mobile = $style_desktop;
@@ -62,31 +66,30 @@ if ( ! class_exists( 'HT_CTC_Chat_Shortcode' ) ) {
 				$style = $style_mobile;
 			}
 
-			// if woocommerce single product page
 			if ( function_exists( 'is_product' ) && function_exists( 'wc_get_product' ) ) {
 				if ( is_product() ) {
 
-					$product = wc_get_product();
+					// $product = wc_get_product();
 
-					$name = $product->get_name();
-					// $title = $product->get_title();
-					$price         = $product->get_price();
-					$regular_price = $product->get_regular_price();
-					$sku           = $product->get_sku();
+					// $name = $product->get_name();
+					// // $title = $product->get_title();
+					// $price         = $product->get_price();
+					// $regular_price = $product->get_regular_price();
+					// $sku           = $product->get_sku();
 
 					// pre-filled
-					if ( isset( $options['woo_pre_filled'] ) && '' !== $options['woo_pre_filled'] ) {
-						$pre_filled = esc_attr( $options['woo_pre_filled'] );
+					if ( isset( $woo_options['woo_pre_filled'] ) && '' !== $woo_options['woo_pre_filled'] ) {
+						$pre_filled = esc_attr( $woo_options['woo_pre_filled'] );
 						$pre_filled = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'woo_pre_filled' );
 					}
 					// variables now works in default pre_filled also
-					$pre_filled = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $pre_filled );
+					// $pre_filled = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $pre_filled );
 
 					// call to action
-					if ( isset( $options['woo_call_to_action'] ) && '' !== $options['woo_call_to_action'] ) {
-						$call_to_action = esc_attr( $options['woo_call_to_action'] );
+					if ( isset( $woo_options['woo_call_to_action'] ) && '' !== $woo_options['woo_call_to_action'] ) {
+						$call_to_action = esc_attr( $woo_options['woo_call_to_action'] );
 						$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'woo_call_to_action' );
-						$call_to_action = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $call_to_action );
+						// $call_to_action = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $call_to_action );
 					}
 				}
 			}
@@ -140,6 +143,34 @@ if ( ! class_exists( 'HT_CTC_Chat_Shortcode' ) ) {
 			$pre_filled = esc_attr( $a['pre_filled'] );
 			$pre_filled = str_replace( array( '{{url}}', '{url}', '{{title}}', '{title}', '{{site}}', '{site}' ), array( $page_url, $page_url, $post_title, $post_title, HT_CTC_BLOG_NAME, HT_CTC_BLOG_NAME ), $pre_filled );
 
+			// call to action
+			$call_to_action = esc_attr( $a['call_to_action'] );
+
+			if ( function_exists( 'is_product' ) && function_exists( 'wc_get_product' ) ) {
+				if ( is_product() ) {
+
+					$product = wc_get_product();
+
+					$name = $product->get_name();
+					// $title = $product->get_title();
+					$price         = $product->get_price();
+					$regular_price = $product->get_regular_price();
+					$sku           = $product->get_sku();
+
+					// variables now works in default pre_filled also
+					$pre_filled = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $pre_filled );
+					// call to action
+					$call_to_action = str_replace( array( '{product}', '{price}', '{regular_price}', '{sku}' ), array( $name, $price, $regular_price, $sku ), $call_to_action );
+				}
+			}
+
+			// output: is throwing '1', '4', '6, '8' in string only
+			if ( '' === $call_to_action ) {
+				if ( '1' === $style || '4' === $style || '6' === $style || '8' === $style ) {
+					$call_to_action = 'WhatsApp us';
+				}
+			}
+
 			// hide on devices
 			// if 'yes' then hide
 			$hide_mobile  = esc_attr( $a['hide_mobile'] );
@@ -147,11 +178,9 @@ if ( ! class_exists( 'HT_CTC_Chat_Shortcode' ) ) {
 
 			if ( 'yes' === $is_mobile ) {
 				if ( 'yes' === $hide_mobile ) {
-					// TODO: Validate shortcode hide behaviour.
 					return '';
 				}
 			} elseif ( 'yes' === $hide_desktop ) {
-					// TODO: Validate shortcode hide behaviour.
 					return '';
 			}
 
@@ -195,15 +224,6 @@ if ( ! class_exists( 'HT_CTC_Chat_Shortcode' ) ) {
 
 			$style = esc_attr( $a['style'] );
 			$style = sanitize_file_name( $style );
-
-			// call to action
-			$call_to_action = esc_attr( $a['call_to_action'] );
-
-			if ( '' === $call_to_action ) {
-				if ( '1' === $style || '4' === $style || '6' === $style || '8' === $style ) {
-					$call_to_action = 'WhatsApp us';
-				}
-			}
 
 			$type        = 'chat-sc';
 			$class_names = "ht-ctc-sc ht-ctc-sc-chat sc-style-$style";

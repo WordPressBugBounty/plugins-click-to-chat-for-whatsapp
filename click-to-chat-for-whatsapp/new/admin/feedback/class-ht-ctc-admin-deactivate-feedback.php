@@ -43,7 +43,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Deactivate_Feedback' ) ) {
 				// Ajax call - data of feedback form will be sent to server.
 				add_action( 'wp_ajax_ht_ctc_deactivate_feedback_details', array( $this, 'ht_ctc_deactivate_feedback_details' ) );
 
-				// TODO: Evaluate whether this approach is best or use server URL.
 				global $pagenow;
 
 				if ( 'plugins.php' !== $pagenow ) {

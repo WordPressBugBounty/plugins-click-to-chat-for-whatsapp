@@ -97,6 +97,7 @@ class HT_CCW_Chat {
         wp_localize_script( 'ccw_app', 'ht_ccw_var', $ht_ccw_var );
 
         // enable
+        // the output : is string '1'
         if( '1' === $enable ) {
             return;
         }
@@ -167,7 +168,7 @@ class HT_CCW_Chat {
             }
         }
         
-
+        // the value is getting in string 'num'
         if( '1' === $position ) {
             $p1 = 'bottom:'.(isset($values['position-1_bottom']) ? esc_attr( $values['position-1_bottom'] ) : '20px');
             $p2 = 'right:'.(isset($values['position-1_right']) ? esc_attr( $values['position-1_right'] ) : '20px');

@@ -114,18 +114,16 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 		 */
 		private function hooks() {
 
-			// init
+			// Init.
 			add_action( 'init', array( $this, 'init' ), 0 );
 
-			// enable shortcodes in widget area.
+			// Enable shortcodes in widget area.
 			add_filter( 'widget_text', 'do_shortcode' );
 
-			// add_filter( 'the_excerpt', 'do_shortcode');
-
-			// settings page link
+			// Settings page link.
 			add_filter( 'plugin_action_links_' . HT_CTC_PLUGIN_BASENAME, array( 'HT_CTC_Register', 'plugin_action_links' ) );
 
-			// when plugin updated - check version diff
+			// When plugin updated - check version diff.
 			add_action( 'plugins_loaded', array( 'HT_CTC_Register', 'version_check' ) );
 		}
 
@@ -144,25 +142,23 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 			$this->values      = new HT_CTC_Values();
 			$this->device_type = new HT_CTC_IsMobile();
 
-			// stub
+			// Stub
 			// Rest api - init
 			// include_once HT_CTC_PLUGIN_DIR .'new/inc/api/class-ht-ctc-rest-api.php';
 
 			// hooks
 			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-hooks.php';
-			// woo init
+			// WooCommerce init.
 			include_once HT_CTC_PLUGIN_DIR . 'new/tools/woo/ht-ctc-woo.php';
 
-			// is_admin ? include file to admin area : include files to non-admin area
+			// Is admin? Include file to admin area : include files to non-admin area.
 			if ( is_admin() ) {
-				// admin
-				// admin main file
+				// Admin main file.
 				include_once HT_CTC_PLUGIN_DIR . 'new/admin/admin.php';
 			} else {
-				// front
-				// main file - Enable - Chat, Group, Share
+				// Front - main file - Enable - Chat, Group, Share.
 				include_once HT_CTC_PLUGIN_DIR . 'new/inc/class-ht-ctc-main.php';
-				// scripts
+				// Scripts.
 				include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-scripts.php';
 			}
 

@@ -319,7 +319,8 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 
 			$analytics = ( isset( $othersettings['analytics'] ) ) ? esc_attr( $othersettings['analytics'] ) : 'all';
 
-			$ht_ctc_chat['css'] = "display: none; cursor: pointer; z-index: $zindex;";
+			// $ht_ctc_chat['css'] = "display: none; cursor: pointer; z-index: $zindex;";
+			$ht_ctc_chat['css'] = "cursor: pointer; z-index: $zindex;";
 
 			// analytics
 			$ht_ctc_os['is_ga_enable']    = 'yes';
@@ -372,6 +373,7 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			$style_mobile = sanitize_file_name( $style_mobile );
 			$path_m       = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/styles/style-' . $style_mobile . '.php';
 
+			// output : is in string ony '1', '4', '6', '8'
 			if ( '' === $call_to_action ) {
 				if ( '1' === $style || '4' === $style || '6' === $style || '8' === $style ) {
 					$call_to_action = 'WhatsApp us';
@@ -393,8 +395,7 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			}
 
 			// webhook
-			$hook_url = isset( $othersettings['hook_url'] ) ? esc_attr( $othersettings['hook_url'] ) : '';
-			// todo: changed from string to json.. will test
+			$hook_url       = isset( $othersettings['hook_url'] ) ? esc_attr( $othersettings['hook_url'] ) : '';
 			$webhook_format = isset( $othersettings['webhook_format'] ) ? esc_attr( $othersettings['webhook_format'] ) : 'json';
 
 			/**
@@ -450,6 +451,15 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			// ga
 			if ( 'yes' === $ht_ctc_os['is_ga_enable'] ) {
 				$ctc['ga'] = 'yes';
+			}
+			// gtm
+			if ( isset( $othersettings['gtm'] ) ) {
+				$ctc['gtm'] = $othersettings['gtm'];
+			}
+
+			// g_an_gtm
+			if ( isset( $othersettings['g_an_gtm'] ) ) {
+				$ctc['g_an_gtm'] = $othersettings['g_an_gtm'];
 			}
 
 			// ads
@@ -516,6 +526,9 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			$g_an_event_name        = ( isset( $othersettings['g_an_event_name'] ) ) ? esc_attr( $othersettings['g_an_event_name'] ) : 'click to chat';
 			$ctc['g_an_event_name'] = $g_an_event_name;
 
+			$gtm_event_name        = ( isset( $othersettings['gtm_event_name'] ) ) ? esc_attr( $othersettings['gtm_event_name'] ) : 'click to chat';
+			$ctc['gtm_event_name'] = $gtm_event_name;
+
 			$pixel_event_type = ( isset( $othersettings['pixel_event_type'] ) ) ? esc_attr( $othersettings['pixel_event_type'] ) : 'trackCustom';
 			$pixel_event_name = 'Click to Chat by HoliThemes';
 			if ( 'trackCustom' === $pixel_event_type ) {
@@ -543,11 +556,13 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 
 			$g_an_params  = ( isset( $othersettings['g_an_params'] ) && is_array( $othersettings['g_an_params'] ) ) ? array_map( 'esc_attr', $othersettings['g_an_params'] ) : '';
 			$pixel_params = ( isset( $othersettings['pixel_params'] ) && is_array( $othersettings['pixel_params'] ) ) ? array_map( 'esc_attr', $othersettings['pixel_params'] ) : '';
+			$gtm_params   = ( isset( $othersettings['gtm_params'] ) && is_array( $othersettings['gtm_params'] ) ) ? array_map( 'esc_attr', $othersettings['gtm_params'] ) : '';
 
 			$g_an_value = ( isset( $options['g_an'] ) ) ? esc_attr( $options['g_an'] ) : 'ga4';
 
 			$values = array(
 				'g_an_event_name'  => $g_an_event_name,
+				'gtm_event_name'   => $gtm_event_name,
 				'pixel_event_type' => $pixel_event_type,
 				'pixel_event_name' => $pixel_event_name,
 			);
@@ -568,43 +583,6 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 						);
 					}
 				}
-			} elseif ( ! isset( $othersettings['parms_saved'] ) ) {
-
-				// If user not yet saved the params. (backward compatibility)
-				if ( 'ga' === $g_an_value ) {
-					$values['g_an_params'] = array(
-						'g_an_param_1',
-						'g_an_param_2',
-					);
-
-					$values['g_an_param_1'] = array(
-						'key'   => 'event_category',
-						'value' => 'Click to Chat for WhatsApp',
-					);
-
-					$values['g_an_param_2'] = array(
-						'key'   => 'event_label',
-						'value' => '{title}, {url}',
-					);
-				} else {
-					$values['g_an_params']  = array(
-						'g_an_param_1',
-						'g_an_param_2',
-						'g_an_param_3',
-					);
-					$values['g_an_param_1'] = array(
-						'key'   => 'number',
-						'value' => '{number}',
-					);
-					$values['g_an_param_2'] = array(
-						'key'   => 'title',
-						'value' => '{title}',
-					);
-					$values['g_an_param_3'] = array(
-						'key'   => 'url',
-						'value' => '{url}',
-					);
-				}
 			}
 
 			// pixel params
@@ -623,33 +601,24 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 						);
 					}
 				}
-			} elseif ( ! isset( $othersettings['parms_saved'] ) ) {
-					$values['pixel_params'] = array(
-						'pixel_param_1',
-						'pixel_param_2',
-						'pixel_param_3',
-						'pixel_param_4',
-					);
+			}
 
-					$values['pixel_param_1'] = array(
-						'key'   => 'Category',
-						'value' => 'Click to Chat for WhatsApp',
-					);
+			// gtm params
+			if ( is_array( $gtm_params ) && isset( $gtm_params[0] ) ) {
 
-					$values['pixel_param_2'] = array(
-						'key'   => 'ID',
-						'value' => '{number}',
-					);
+				foreach ( $gtm_params as $param ) {
+					$param_options = ( isset( $othersettings[ $param ] ) ) ? $othersettings[ $param ] : array();
+					$key           = ( isset( $param_options['key'] ) ) ? esc_attr( $param_options['key'] ) : '';
+					$value         = ( isset( $param_options['value'] ) ) ? esc_attr( $param_options['value'] ) : '';
 
-					$values['pixel_param_3'] = array(
-						'key'   => 'Title',
-						'value' => '{title}',
-					);
-
-					$values['pixel_param_4'] = array(
-						'key'   => 'URL',
-						'value' => '{url}',
-					);
+					if ( ! empty( $key ) && ! empty( $value ) ) {
+						$values['gtm_params'][] = $param;
+						$values[ $param ]       = array(
+							'key'   => $key,
+							'value' => $value,
+						);
+					}
+				}
 			}
 
 			$values = apply_filters( 'ht_ctc_fh_variables', $values );

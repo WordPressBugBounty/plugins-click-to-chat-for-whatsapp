@@ -1,5 +1,6 @@
+/* global ht_ccw_var, ga, gtag */
 jQuery( document )
-	.ready( function () {
+	.ready( function onDocReady () {
 		jQuery( '.inline_issue' )
 			.prev( 'p' )
 			.css( 'display', 'inline' );
@@ -14,6 +15,7 @@ jQuery( document )
 				.removeClass( 'animated infinite' );
 		}
 	} );
+
 var url = window.location.href;
 var google_analytics = ht_ccw_var.google_analytics;
 var title = ht_ccw_var.page_title;
@@ -25,7 +27,7 @@ function ht_ccw_clickevent () {
 	}
 }
 function ht_ccw_clicked () {
-	if ( 'true' == google_analytics ) {
+	if ( 'true' === google_analytics ) {
 		google_analytics_event();
 	}
 }
@@ -39,7 +41,7 @@ function google_analytics_event () {
 
 	// ga('send', 'event', 'Contact', 'Call Now Button', 'Phone');
 	if ( 'ga' in window ) {
-		tracker = ga.getAll()[ 0 ];
+		var tracker = ga.getAll()[ 0 ];
 		if ( tracker ) { tracker.send( 'event', ga_category, ga_action, ga_label ); }
 	} else if ( 'gtag' in window ) {
 		gtag( 'event', ga_action, {

@@ -1,7 +1,9 @@
+/* global gtag, ga, __gaTracker, dataLayer, gtag_report_conversion, fbq */
 // Click to Chat - Group
-( function ( $ ) {
+( function htCtcGroupModule ( $ ) {
 	// ready
-	$( function () {
+	$( function handleGroupReady () {
+
 		var url = window.location.href;
 		var is_mobile = typeof screen.width !== 'undefined' && screen.width > 1024 ? 'no' : 'yes';
 		var post_title = typeof document.title !== 'undefined' ? document.title : '';
@@ -12,7 +14,7 @@
 				group_display( ht_ctc_group );
 
 				// click
-				ht_ctc_group.addEventListener( 'click', function () {
+				ht_ctc_group.addEventListener( 'click', function handleGroupButtonClick () {
 					// link
 					var base_link = 'https://chat.whatsapp.com/';
 					var group_id = ht_ctc_group.getAttribute( 'data-group_id' );
@@ -25,8 +27,8 @@
 
 			// shortcode - click
 			$( document )
-				.on( 'click', '.ht-ctc-sc-group', function () {
-					data_link = this.getAttribute( 'data-ctc-link' );
+				.on( 'click', '.ht-ctc-sc-group', function handleGroupShortcodeClick () {
+					var data_link = this.getAttribute( 'data-ctc-link' );
 					data_link = encodeURI( data_link );
 					window.open( data_link, '_blank', 'noopener' );
 
@@ -36,30 +38,33 @@
 		group_ht_ctc();
 
 		// Hide based on device
-		function group_display ( p ) {
-			if ( is_mobile == 'yes' ) {
-				var display_mobile = p.getAttribute( 'data-display_mobile' );
-				if ( 'show' == display_mobile ) {
+		function group_display ( element ) {
+			const cssStyles = element.getAttribute( 'data-css' );
+			if ( is_mobile === 'yes' ) {
+				var display_mobile = element.getAttribute( 'data-display_mobile' );
+				if ( 'show' === display_mobile ) {
 					// remove desktop style
-					var rm = document.querySelector( '.ht_ctc_desktop_group' );
-					rm ? rm.remove() : '';
+					var removeDesktopGroup = document.querySelector( '.ht_ctc_desktop_group' );
+					if ( removeDesktopGroup ) {
+						removeDesktopGroup.remove();
+					}
 
-					var css = p.getAttribute( 'data-css' );
-					var position_mobile = p.getAttribute( 'data-position_mobile' );
-					p.style.cssText = position_mobile + css;
-					display( p );
+					var position_mobile = element.getAttribute( 'data-position_mobile' );
+					element.style.cssText = position_mobile + cssStyles;
+					display( element );
 				}
 			} else {
-				var display_desktop = p.getAttribute( 'data-display_desktop' );
-				if ( 'show' == display_desktop ) {
+				var display_desktop = element.getAttribute( 'data-display_desktop' );
+				if ( 'show' === display_desktop ) {
 					// remove mobile style
-					var rm = document.querySelector( '.ht_ctc_mobile_group' );
-					rm ? rm.remove() : '';
+					var removeMobileGroup = document.querySelector( '.ht_ctc_mobile_group' );
+					if ( removeMobileGroup ) {
+						removeMobileGroup.remove();
+					}
 
-					var css = p.getAttribute( 'data-css' );
-					var position = p.getAttribute( 'data-position' );
-					p.style.cssText = position + css;
-					display( p );
+					var position = element.getAttribute( 'data-position' );
+					element.style.cssText = position + cssStyles;
+					display( element );
 				}
 			}
 		}
@@ -69,35 +74,39 @@
 		 * animations
 		 * cta hover effects
 		 */
-		function display ( p ) {
+		function display ( element ) {
 			// p.style.display = "block";
 			try {
-				var dt = parseInt( p.getAttribute( 'data-show_effect' ) );
-				$( p )
+				// var dt = parseInt( element.getAttribute( 'data-show_effect' ), 10 );
+				// NaN this can works perfect with jQuery show function to display css animations
+				var dt = parseInt( element.getAttribute( 'data-show_effect' ) );
+
+				$( element )
 					.show( dt );
-			} catch ( e ) {
-				p.style.display = 'block';
+			} catch ( error ) {
+				console.warn( 'Group display fallback triggered', error );
+				element.style.display = 'block';
 			}
 
 			// animations
-			var animateclass = p.getAttribute( 'data-an_type' );
-			var an_time = $( p )
+			var animateclass = element.getAttribute( 'data-an_type' );
+			var an_time = $( element )
 				.hasClass( 'ht_ctc_entry_animation' ) ?
 				1200 :
 				120;
 
-			setTimeout( function () {
-				p.classList.add( 'ht_ctc_animation', animateclass );
+			setTimeout( function runGroupAnimation () {
+				element.classList.add( 'ht_ctc_animation', animateclass );
 			}, an_time );
 
 			// cta hover effects
 			$( '.ht-ctc-group' )
 				.hover(
-					function () {
+					function showGroupHoverCta () {
 						$( '.ht-ctc-group .ht-ctc-cta-hover' )
 							.show( 220 );
 					},
-					function () {
+					function hideGroupHoverCta () {
 						$( '.ht-ctc-group .ht-ctc-cta-hover' )
 							.hide( 100 );
 					},
@@ -116,7 +125,7 @@
 			var ga_label = post_title + ', ' + url;
 
 			// if ga_enabled
-			if ( 'yes' == values.getAttribute( 'data-is_ga_enable' ) ) {
+			if ( 'yes' === values.getAttribute( 'data-is_ga_enable' ) ) {
 				console.log( 'google analytics' );
 				if ( typeof gtag !== 'undefined' ) {
 					console.log( 'gtag' );
@@ -148,7 +157,7 @@
 			}
 
 			// google ads - call conversation code
-			if ( 'yes' == values.getAttribute( 'data-ga_ads' ) ) {
+			if ( 'yes' === values.getAttribute( 'data-ga_ads' ) ) {
 				console.log( 'google ads enabled' );
 				if ( typeof gtag_report_conversion !== 'undefined' ) {
 					console.log( 'calling gtag_report_conversion' );
@@ -157,7 +166,7 @@
 			}
 
 			// FB Pixel
-			if ( 'yes' == values.getAttribute( 'data-is_fb_pixel' ) ) {
+			if ( 'yes' === values.getAttribute( 'data-is_fb_pixel' ) ) {
 				console.log( 'fb pixel' );
 				if ( typeof fbq !== 'undefined' ) {
 					fbq( 'trackCustom', 'Click to Chat by HoliThemes', {

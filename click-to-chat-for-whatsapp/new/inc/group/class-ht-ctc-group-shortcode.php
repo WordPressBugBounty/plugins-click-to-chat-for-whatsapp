@@ -104,11 +104,9 @@ if ( ! class_exists( 'HT_CTC_Group_Shortcode' ) ) {
 
 			if ( 'yes' === $is_mobile ) {
 				if ( 'yes' === $hide_mobile ) {
-					// todo: test
 					return '';
 				}
 			} elseif ( 'yes' === $hide_desktop ) {
-					// todo: test
 					return '';
 			}
 

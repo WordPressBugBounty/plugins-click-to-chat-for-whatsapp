@@ -259,7 +259,7 @@ if ( 'chat' === $type ) {
 do_action( 'ht_ctc_ah_admin_after_showhide' );
 ?>
 
-<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-hide-styles/"><?php esc_html_e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/show-hide-styles/"><?php esc_html_e( 'Display Settings', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 <!-- <details style="margin-top:5px;">
 	<summary style="cursor:pointer;"><?php esc_html_e( 'Usecases', 'click-to-chat-for-whatsapp' ); ?></summary>
 	<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/show-only-on-selected-pages/"><?php esc_html_e( 'Show only on selected pages', 'click-to-chat-for-whatsapp' ); ?></a><?php esc_html_e( ' (Single, Cart, Checkout page)', 'click-to-chat-for-whatsapp' ); ?></p>
@@ -281,7 +281,7 @@ if ( ! defined( 'HT_CTC_PRO_VERSION' ) && isset( $type ) && 'chat' === $type ) {
 	</div>
 
 	<div style="margin-bottom: 25px;" id="ht_ctc_bh">
-		<p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/business-hours-online-offline/"><?php esc_html_e( 'Business Hours', 'click-to-chat-for-whatsapp' ); ?> (<?php esc_html_e( 'online/offline', 'click-to-chat-for-whatsapp' ); ?>)</a></p>
+		<p class="description ht_ctc_subtitle"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/business-hours-online-offline/"><?php esc_html_e( 'Business Hours', 'click-to-chat-for-whatsapp' ); ?> (<?php esc_html_e( 'online/offline', 'click-to-chat-for-whatsapp' ); ?>)</a></p>
 		<p class="description ht_ctc_content_point"><?php esc_html_e( 'Hide When offline', 'click-to-chat-for-whatsapp' ); ?> (or)</p>
 		<p class="description ht_ctc_content_point"><?php esc_html_e( 'Change WhatsApp Number When Offline', 'click-to-chat-for-whatsapp' ); ?></p>
 		<p class="description ht_ctc_content_point"><?php esc_html_e( 'Change Call to Action When Offline', 'click-to-chat-for-whatsapp' ); ?></p>

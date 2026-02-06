@@ -13,6 +13,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! function_exists( 'ht_ctc_process_page_list_value' ) ) {
+	/**
+	 * Process page list values for display settings.
+	 *
+	 * Trims whitespace and converts numeric values to strings with absint validation.
+	 *
+	 * @param string $value The value to process from comma-separated list.
+	 * @return string The processed value - empty string, sanitized numeric string, or original value.
+	 * @since 3.40
+	 */
+	function ht_ctc_process_page_list_value( $value ) {
+		$value = trim( $value );
+		if ( '' === $value ) {
+			return '';
+		}
+		if ( is_numeric( $value ) ) {
+			return (string) absint( $value );
+		}
+		return $value;
+	}
+}
+
 // $this_page_id = get_the_ID();
 $this_page_id = 0;
 if ( isset( $page_id ) && is_scalar( $page_id ) ) {
@@ -76,7 +98,7 @@ if ( 'hide' === $show_or_hide ) {
 				unset( $custom_post_types['product'] );
 
 				if ( ! empty( $custom_post_types ) ) {
-					if ( in_array( $current_post_type, $custom_post_types ) ) {
+					if ( in_array( (string) $current_post_type, array_keys( $custom_post_types ), true ) ) {
 						if ( isset( $display_settings[ $current_post_type ] ) && 'show' === $display_settings[ $current_post_type ] ) {
 							$display = 'yes';
 							return;
@@ -146,11 +168,13 @@ if ( 'hide' === $show_or_hide ) {
 		}
 
 		// based on post id's
-		$pages_list_toshow       = ( isset( $display_settings['list_showon_pages'] ) ) ? esc_html( $display_settings['list_showon_pages'] ) : '';
-		$pages_list_toshow_array = explode( ',', $pages_list_toshow );
-
-		if ( is_array( $pages_list_toshow_array ) && $pages_list_toshow_array[0] ) {
-			if ( in_array( $this_page_id, $pages_list_toshow_array ) ) {
+		$pages_list_toshow               = ( isset( $display_settings['list_showon_pages'] ) ) ? esc_html( $display_settings['list_showon_pages'] ) : '';
+				$pages_list_toshow_array = array_filter(
+					array_map( 'ht_ctc_process_page_list_value', explode( ',', $pages_list_toshow ) ),
+					'strlen'
+				);
+		if ( is_array( $pages_list_toshow_array ) && ! empty( $pages_list_toshow_array ) && $this_page_id > 0 ) {
+			if ( in_array( (string) $this_page_id, $pages_list_toshow_array, true ) ) {
 				$display = 'yes';
 				return;
 			}
@@ -173,7 +197,7 @@ if ( 'hide' === $show_or_hide ) {
 
 			foreach ( $list_showon_cat_array as $category ) {
 				$category_trim = trim( $category );
-				if ( in_array( strtolower( $category_trim ), $current_categorys_array ) ) {
+				if ( in_array( strtolower( $category_trim ), $current_categorys_array, true ) ) {
 					$display = 'yes';
 					return;
 				}
@@ -256,7 +280,7 @@ if ( 'hide' === $show_or_hide ) {
 				unset( $custom_post_types['product'] );
 
 				if ( ! empty( $custom_post_types ) ) {
-					if ( in_array( $current_post_type, $custom_post_types ) ) {
+					if ( in_array( (string) $current_post_type, array_keys( $custom_post_types ), true ) ) {
 						if ( isset( $display_settings[ $current_post_type ] ) && 'hide' === $display_settings[ $current_post_type ] ) {
 							$display = 'no';
 							return;
@@ -322,16 +346,18 @@ if ( 'hide' === $show_or_hide ) {
 
 
 		// based on post id's'
-		$pages_list_tohide       = ( isset( $display_settings['list_hideon_pages'] ) ) ? esc_html( $display_settings['list_hideon_pages'] ) : '';
-		$pages_list_tohide_array = explode( ',', $pages_list_tohide );
+		$pages_list_tohide = isset( $display_settings['list_hideon_pages'] ) ? esc_html( $display_settings['list_hideon_pages'] ) : '';
 
-		if ( ( is_single() || is_page() ) ) {
-			if ( is_array( $pages_list_tohide_array ) && $pages_list_tohide_array[0] ) {
-				// todo: issue. if strict comparison (true in in_array) is added an issue to hide.. 
-				if ( in_array( $this_page_id, $pages_list_tohide_array ) ) {
-					$display = 'no';
-					return;
-				}
+
+		if ( is_single() || is_page() ) {
+			$pages_list_tohide_array = array_filter(
+				array_map( 'ht_ctc_process_page_list_value', explode( ',', $pages_list_tohide ) ),
+				'strlen'
+			);
+
+			if ( $this_page_id > 0 && in_array( (string) $this_page_id, $pages_list_tohide_array, true ) ) {
+				$display = 'no';
+				return;
 			}
 		}
 
@@ -352,7 +378,7 @@ if ( 'hide' === $show_or_hide ) {
 
 			foreach ( $list_hideon_cat_array as $category ) {
 				$category_trim = trim( $category );
-				if ( in_array( strtolower( $category_trim ), $current_categorys_array ) ) {
+				if ( in_array( strtolower( $category_trim ), $current_categorys_array, true ) ) {
 					$display = 'no';
 					return;
 				}

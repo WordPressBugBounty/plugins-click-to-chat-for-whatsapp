@@ -74,6 +74,20 @@ if ( ! class_exists( 'HT_CTC_Update_DB' ) ) {
 				if ( ! isset( $ht_ctc_plugin_details['v3_31'] ) ) {
 					$this->v3_31_update();
 				}
+
+				/**
+				 * V4.34: if not yet updated to v4.34 or above
+				 */
+				if ( ! isset( $ht_ctc_plugin_details['v4_34'] ) ) {
+					$this->v4_34_update();
+				}
+
+				/**
+				 * V4.36: if not yet updated to v4.36 or above
+				 */
+				if ( ! isset( $ht_ctc_plugin_details['v4_36'] ) ) {
+					$this->v4_36_update();
+				}
 			}
 		}
 
@@ -84,7 +98,198 @@ if ( ! class_exists( 'HT_CTC_Update_DB' ) ) {
 
 
 
+		/**
+		 * Updating to v4.36 or above
+		 *
+		 * 4.36 changes.
+		 * Google Analytics params, gtm params, pixel params are added to db. when upgrades.
+		 *
+		 * google analytis setting for parameters added in approx. v3.31.
+		 */
+		public function v4_36_update() {
 
+			$os = get_option( 'ht_ctc_othersettings', array() );
+
+			// Ensure $os is an array to prevent errors.
+			if ( ! is_array( $os ) ) {
+				$os = array();
+			}
+
+			$new_data = array(); // hold new structure data
+
+			/**
+			 * Migration Logic:
+			 * We check if the parameters exist in the DB.
+			 * We also check 'parms_saved' (for GA/Pixel) and 'parms_saved_2' (for GTM).
+			 *
+			 * 'parms_saved'/'parms_saved_2' are hidden fields saved when the user submits the settings form.
+			 * If these flags exist, it means the user has explicitly saved the settings at some point.
+			 * In that case, we TRUST the database (even if params are empty, the user might have deleted them intentionally).
+			 *
+			 * If these flags DO NOT exist, it means the user is likely running on default settings (runtime defaults).
+			 * In this case, we populate the DB with those defaults to maintain behavior now that runtime generation is removed.
+			 */
+
+			// 1. Google Analytics Params
+			// Check if params are missing AND user hasn't actively saved settings before (backward compatibility).
+			// isset check is safe because $os is guaranteed strictly to be an array above.
+			if ( ! isset( $os['g_an_params'] ) && ! isset( $os['parms_saved'] ) ) {
+
+				$g_an_value = ( isset( $os['g_an'] ) ) ? esc_attr( $os['g_an'] ) : 'ga4';
+
+				if ( 'ga' === $g_an_value ) {
+					// Legacy Google Analytics (Universal Analytics) defaults
+					$new_data['g_an_params'] = array(
+						'g_an_param_1',
+						'g_an_param_2',
+					);
+
+					$new_data['g_an_param_1'] = array(
+						'key'   => 'event_category',
+						'value' => 'Click to Chat for WhatsApp',
+					);
+
+					$new_data['g_an_param_2'] = array(
+						'key'   => 'event_label',
+						'value' => '{title}, {url}',
+					);
+
+				} else {
+					// GA4 defaults
+					$new_data['g_an_params'] = array(
+						'g_an_param_1',
+						'g_an_param_2',
+						'g_an_param_3',
+					);
+
+					$new_data['g_an_param_1'] = array(
+						'key'   => 'number',
+						'value' => '{number}',
+					);
+
+					$new_data['g_an_param_2'] = array(
+						'key'   => 'title',
+						'value' => '{title}',
+					);
+
+					$new_data['g_an_param_3'] = array(
+						'key'   => 'url',
+						'value' => '{url}',
+					);
+				}
+			}
+
+			// 2. GTM (Google Tag Manager) Params
+			// Check if params are missing AND 'parms_saved_2' flag does not exist.
+			if ( ! isset( $os['gtm_params'] ) && ! isset( $os['parms_saved_2'] ) ) {
+
+				$new_data['gtm_params'] = array(
+					'gtm_param_1',
+					'gtm_param_2',
+					'gtm_param_3',
+					'gtm_param_4',
+					'gtm_param_5',
+				);
+
+				$new_data['gtm_param_1'] = array(
+					'key'   => 'type',
+					'value' => 'chat',
+				);
+
+				$new_data['gtm_param_2'] = array(
+					'key'   => 'number',
+					'value' => '{number}',
+				);
+
+				$new_data['gtm_param_3'] = array(
+					'key'   => 'title',
+					'value' => '{title}',
+				);
+
+				$new_data['gtm_param_4'] = array(
+					'key'   => 'url',
+					'value' => '{url}',
+				);
+
+				$new_data['gtm_param_5'] = array(
+					'key'   => 'ref',
+					'value' => 'dataLayer push',
+				);
+
+			}
+
+			// 3. Meta Pixel Params
+			// Check if params are missing AND user hasn't actively saved settings before.
+			if ( ! isset( $os['pixel_params'] ) && ! isset( $os['parms_saved'] ) ) {
+
+				$new_data['pixel_params'] = array(
+					'pixel_param_1',
+					'pixel_param_2',
+					'pixel_param_3',
+					'pixel_param_4',
+				);
+
+				$new_data['pixel_param_1'] = array(
+					'key'   => 'Category',
+					'value' => 'Click to Chat for WhatsApp',
+				);
+
+				$new_data['pixel_param_2'] = array(
+					'key'   => 'ID',
+					'value' => '{number}',
+				);
+
+				$new_data['pixel_param_3'] = array(
+					'key'   => 'Title',
+					'value' => '{title}',
+				);
+
+				$new_data['pixel_param_4'] = array(
+					'key'   => 'URL',
+					'value' => '{url}',
+				);
+
+			}
+
+			if ( ! is_array( $new_data ) ) {
+				$new_data = array();
+			}
+
+			// Merge defaults ($new_data) with existing options ($os).
+			// Existing keys in $os will overwrite $new_data, preserving user settings if they exist.
+			$update_othersettings = array_merge( $new_data, $os );
+
+			update_option( 'ht_ctc_othersettings', $update_othersettings );
+		}
+
+
+
+		/**
+		 * Updating to v4.34 or above
+		 *
+		 * 4.34 changes. setting form GTM datalayer push. so by default enabled. (as like early app js how datalayer pused. now with settings.)
+		 * and in 4.30 we added google anayalytics data to send to gtm datalayer form app js but now as deprecated. so added ga_gtm as enabled.
+		 */
+		public function v4_34_update() {
+
+			$os = get_option( 'ht_ctc_othersettings' );
+
+			$new_data = array(); // hold new structure data
+
+			$new_data['ga_gtm']         = '1';
+			$new_data['gtm']            = '1';
+			$new_data['gtm_event_name'] = 'Click to Chat';
+
+			if ( ! is_array( $new_data ) ) {
+				$new_data = array();
+			}
+			if ( ! is_array( $os ) ) {
+				$os = array();
+			}
+
+			$os = array_merge( $new_data, $os );
+			update_option( 'ht_ctc_othersettings', $os );
+		}
 
 
 
@@ -213,11 +418,11 @@ if ( ! class_exists( 'HT_CTC_Update_DB' ) ) {
 
 			$group        = get_option( 'ht_ctc_group', array() );
 			$update_group = array_merge( $n, $group );
-			update_option( 'ht_ctc_group', $update_chat );
+			update_option( 'ht_ctc_group', $update_group );
 
 			$share        = get_option( 'ht_ctc_share', array() );
 			$update_share = array_merge( $n, $share );
-			update_option( 'ht_ctc_share', $update_chat );
+			update_option( 'ht_ctc_share', $update_share );
 		}
 
 

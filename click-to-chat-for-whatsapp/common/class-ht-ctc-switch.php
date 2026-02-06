@@ -66,10 +66,10 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 		 */
 		public function to_switch() {
 
-			// new interface  yes/no
+			// New interface yes/no.
 			$is_new = '';
 
-			// user new/prev
+			// User new/prev.
 			$user = '';
 
 				/**
@@ -89,7 +89,7 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				$is_new = 'yes';
 			}
 
-			// prev user and if switched
+			// Previous user and if switched.
 			if ( 'prev' === $user ) {
 
 				$ht_ctc_switch = get_option( 'ht_ctc_switch' );
@@ -102,22 +102,22 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			// while testing
 			// $is_new = 'yes';
 
-			// define HT_CTC_IS_NEW
+			// Define HT_CTC_IS_NEW.
 			if ( ! defined( 'HT_CTC_IS_NEW' ) ) {
 				define( 'HT_CTC_IS_NEW', $is_new );
 			}
 
-			// include related files ..
+			// Include related files.
 			if ( 'yes' === HT_CTC_IS_NEW ) {
-				// new interface
+				// New interface.
 
-				// register hooks
+				// Register hooks.
 				include_once HT_CTC_PLUGIN_DIR . 'new/inc/class-ht-ctc-register.php';
 				register_activation_hook( HT_CTC_PLUGIN_FILE, array( 'HT_CTC_Register', 'activate' ) );
 				register_deactivation_hook( HT_CTC_PLUGIN_FILE, array( 'HT_CTC_Register', 'deactivate' ) );
 				register_uninstall_hook( HT_CTC_PLUGIN_FILE, array( 'HT_CTC_Register', 'uninstall' ) );
 
-				// include main file - prev
+				// Include main file - new.
 				include_once HT_CTC_PLUGIN_DIR . 'new/class-ht-ctc.php';
 
 				/**
@@ -132,9 +132,9 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				ht_ctc();
 
 			} else {
-				// prev interface
+				// Previous interface.
 
-				// include main file - prev
+				// Include main file - previous.
 				include_once HT_CTC_PLUGIN_DIR . 'prev/inc/class-ht-ccw.php';
 
 				/**

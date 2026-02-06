@@ -171,6 +171,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Main_Page' ) ) {
 			// if _get have number-field 1 then load 1 else if 2 then load 2 ( &number-field=1 )
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of 'number-field', no action or data modification.
 			$get_number_field = ( isset( $_GET ) && isset( $_GET['number-field'] ) ) ? sanitize_text_field( wp_unslash( $_GET['number-field'] ) ) : '';
+
+			// output : if number-field is set in url its throughing "1"
 			if ( '1' === $get_number_field ) {
 				$intl = '1';
 			} elseif ( '2' === $get_number_field ) {
@@ -288,7 +290,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Main_Page' ) ) {
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 				?>
 			<p class="description greetings_links">Greetings dialog(message window) at <a href="<?php echo esc_url( admin_url( 'admin.php?page=click-to-chat-greetings' ) ); ?>" target="_blank">Greetings</a> page</p>
-			<p class="description greetings_links">PRO: <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">Multi Agent</a> | <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/random-number/">Random Number</a></p>
+			<p class="description greetings_links">PRO: <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/multi-agent/">Multi Agent</a> | <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/random-number/">Random Number</a></p>
 				<?php
 			}
 		}
@@ -308,7 +310,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Main_Page' ) ) {
 			<div class="input-field col s12">
 				<textarea style="min-height: 64px;" placeholder="<?php echo esc_attr( $placeholder ); ?>" name="ht_ctc_chat_options[pre_filled]" id="pre_filled" data-var="pre_filled" class="materialize-textarea input-margin ctc_ad_main_page_on_change_input_update_var"><?php echo esc_textarea( $value ); ?></textarea>
 				<label for="pre_filled"><?php esc_html_e( 'Pre-filled message', 'click-to-chat-for-whatsapp' ); ?></label>
-				<p class="description"><?php esc_html_e( 'Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/pre-filled-message/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+				<p class="description"><?php esc_html_e( 'Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters', 'click-to-chat-for-whatsapp' ); ?> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/pre-filled-message/"><?php esc_html_e( 'more info', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 			</div>
 		</div>
 			<?php
@@ -471,7 +473,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Main_Page' ) ) {
 			</div>
 		</div>
 
-		<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/custom-url/"><?php esc_html_e( 'Custom URL', 'click-to-chat-for-whatsapp' ); ?></a> </p>
+		<p class="description"><a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/custom-url/"><?php esc_html_e( 'Custom URL', 'click-to-chat-for-whatsapp' ); ?></a> </p>
 
 
 		</div>

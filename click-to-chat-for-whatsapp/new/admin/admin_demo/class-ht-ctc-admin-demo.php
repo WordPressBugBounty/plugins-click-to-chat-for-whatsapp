@@ -460,7 +460,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 			}
 
 			$box_layout_bg_color = '';
-			// // todo:
 			// if ( 'greetings-1' === $ht_ctc_greetings['greetings_template'] || 'greetings-2' === $ht_ctc_greetings['greetings_template'] ) {
 			// } else {
 			// $box_layout_bg_color = 'background-color: #ffffff;';
@@ -473,7 +472,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 			$g_position_r_l = 'right';
 
 			$box_shadow = '0px 1px 9px 0px rgba(0,0,0,.14)';
-			// // todo
 			// if ( 'greetings-2' === $ht_ctc_greetings['greetings_template'] ) {
 			// $box_shadow = '0px 0px 5px 1px rgba(0,0,0,.14)';
 			// }

@@ -98,6 +98,32 @@ if ( ! class_exists( 'HT_CTC_Animations' ) ) {
 		}
 
 		/**
+		 * Minify CSS by removing comments, whitespace, and unnecessary characters.
+		 *
+		 * @param string $css CSS code to minify.
+		 * @return string Minified CSS code.
+		 */
+		private function minify_css( $css ) {
+
+			// Remove comments
+			$css = preg_replace( '!/\*.*?\*/!s', '', $css );
+
+			// Remove space before/after colons, semicolons, commas, braces
+			$css = preg_replace( '/\s*([{};:,])\s*/', '$1', $css );
+
+			// Remove trailing semicolon before }
+			$css = preg_replace( '/;}/', '}', $css );
+
+			// Compress multiple spaces into one
+			$css = preg_replace( '/\s+/', ' ', $css );
+
+			// Trim space
+			$css = trim( $css );
+
+			return $css;
+		}
+
+		/**
 		 * Output CSS for the bounce animation.
 		 *
 		 * @param string $selector Target selector class.
@@ -238,9 +264,12 @@ if ( ! class_exists( 'HT_CTC_Animations' ) ) {
 		 */
 		public function corner( $selector ) {
 			?>
-		@keyframes corner{0%{transform: scale(0.3);opacity: 0;transform-origin: bottom var(--side, right);}100% {transform: scale(1);opacity: 1;transform-origin: bottom var(--side, right);}}.<?php echo esc_attr( $selector ); ?> {animation: corner 0.12s ease-out;animation-fill-mode: both;}
+			@keyframes ht_ctc_anim_corner {0% {opacity: 0;transform: scale(0);}100% {opacity: 1;transform: scale(1);}}.<?php echo esc_attr( $selector ); ?> {animation-name: ht_ctc_anim_corner;animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);transform-origin: bottom var(--side, right);}
 			<?php
+			// animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);  ~ if timing set to 0.12s
+			// animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1); if timing set to 0.4s
 		}
+
 
 		/**
 		 * Output CSS for the zoom-in animation.

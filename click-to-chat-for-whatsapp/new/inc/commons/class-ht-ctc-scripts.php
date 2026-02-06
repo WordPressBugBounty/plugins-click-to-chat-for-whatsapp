@@ -90,6 +90,15 @@ if ( ! class_exists( 'HT_CTC_Scripts' ) ) {
 				$share_js = 'dev/share.dev.js';
 			}
 
+			// in v3.34 app.js is refactored. a lot of changed done. so added backward compatibility.
+			if ( defined( 'HT_CTC_PRO_VERSION' ) && version_compare( HT_CTC_PRO_VERSION, '2.16', '<' ) ) {
+				if ( defined( 'HT_CTC_DEBUG_MODE' ) ) {
+					$js = 'bc/3-33.app.dev.js';
+				} else {
+					$js = 'bc/app.js';
+				}
+			}
+
 			do_action( 'ht_ctc_ah_scripts_before' );
 
 			// enqueue main.css
@@ -118,19 +127,46 @@ if ( ! class_exists( 'HT_CTC_Scripts' ) ) {
 
 			if ( '' !== $custom_css ) {
 
-				if ( function_exists( 'sanitize_textarea_field' ) ) {
-					$custom_css = sanitize_text_field( $custom_css );
-				} else {
-					$custom_css = '';
+				// Decode HTML entities (Fixes &quot; to ")
+				$custom_css = html_entity_decode( $custom_css, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+
+				// Remove CSS Comments completely (Fixes the / text / bug)
+				// We do this first so comments don't mess up regex or become garbage text.
+				$custom_css = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $custom_css );
+
+				// Strip HTML tags (Security layer)
+				$custom_css = wp_strip_all_tags( $custom_css );
+
+				// Remove malicious "url" usage and "expression"
+				// Removes url(...) entirely to prevent hidden XSS
+				$custom_css = preg_replace( '/url\s*\((?:["\']?)(?:[^"\')]+)(?:["\']?)\)/i', '', $custom_css );
+				// Removes expression(...)
+				$custom_css = preg_replace( '/expression\s*\(/i', '', $custom_css );
+				// Removes javascript: protocols
+				$custom_css = preg_replace( '/javascript\s*:/i', '', $custom_css );
+
+				// Remove malicious "alert", "confirm", "prompt"
+				$custom_css = preg_replace(
+					'/\b(alert|confirm|prompt)\s*\([^)]*\)/i',
+					'',
+					$custom_css
+				);
+
+				// Allow-list valid CSS characters
+				// Note: We included '\*' (asterisk) so Universal Selectors work.
+				$custom_css = preg_replace(
+					'/[^a-zA-Z0-9\s\#\.\:\;\,\-\%\{\}\(\)\/\@\!\[\]\=\"\'_\*\>\+\~\&\\\]/',
+					'',
+					$custom_css
+				);
+
+				// Normalize whitespace (Compression)
+				$custom_css = preg_replace( '/\s+/', ' ', trim( $custom_css ) );
+
+				// Output
+				if ( ! empty( $custom_css ) ) {
+					wp_add_inline_style( 'ht_ctc_main_css', $custom_css );
 				}
-
-				// to compress css
-				$custom_css = preg_replace( '/\s+/', ' ', $custom_css );
-
-				$allowed_html = wp_kses_allowed_html( 'post' );
-				$custom_css   = wp_kses( $custom_css, $allowed_html );
-
-				wp_add_inline_style( 'ht_ctc_main_css', $custom_css );
 			}
 
 			// group.js

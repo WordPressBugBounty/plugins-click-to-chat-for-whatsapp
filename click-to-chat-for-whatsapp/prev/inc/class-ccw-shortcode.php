@@ -57,6 +57,7 @@ class CCW_Shortcode {
          *   there is no content for that
          *   so shortcode added in post will be hide / null.
          */
+        // the output : '1' is in string only
         if( '1' === $enable_sc ) {
             return;
         }
@@ -178,6 +179,8 @@ class CCW_Shortcode {
          * If type = group_chat , then only it consider as group chat,
          * if type = chat or any thing else, consider as chat. ( default is chat )
          */
+
+        // output : 1 - for mobile, '' - for desktop
         if( 1 === $is_mobile ) {
 
             if ( "true" === $hide_mobile ) {

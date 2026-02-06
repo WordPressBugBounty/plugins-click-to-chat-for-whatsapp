@@ -310,42 +310,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Data' ) ) {
 						);
 					}
 				}
-			} elseif ( ! isset( $othersettings['parms_saved'] ) ) {
-				// if user not yet saved the params. (backward compatibility)
-				if ( 'ga' === $g_an_value ) {
-					$values['g_an_params'] = array(
-						'g_an_param_1',
-						'g_an_param_2',
-					);
-
-					$values['g_an_param_1'] = array(
-						'key'   => 'event_category',
-						'value' => 'Click to Chat for WhatsApp',
-					);
-
-					$values['g_an_param_2'] = array(
-						'key'   => 'event_label',
-						'value' => '{title}, {url}',
-					);
-				} else {
-					$values['g_an_params']  = array(
-						'g_an_param_1',
-						'g_an_param_2',
-						'g_an_param_3',
-					);
-					$values['g_an_param_1'] = array(
-						'key'   => 'number',
-						'value' => '{number}',
-					);
-					$values['g_an_param_2'] = array(
-						'key'   => 'title',
-						'value' => '{title}',
-					);
-					$values['g_an_param_3'] = array(
-						'key'   => 'url',
-						'value' => '{url}',
-					);
-				}
 			}
 
 			// pixel params
@@ -364,33 +328,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Data' ) ) {
 						);
 					}
 				}
-			} elseif ( ! isset( $othersettings['parms_saved'] ) ) {
-					$values['pixel_params'] = array(
-						'pixel_param_1',
-						'pixel_param_2',
-						'pixel_param_3',
-						'pixel_param_4',
-					);
-
-					$values['pixel_param_1'] = array(
-						'key'   => 'Category',
-						'value' => 'Click to Chat for WhatsApp',
-					);
-
-					$values['pixel_param_2'] = array(
-						'key'   => 'ID',
-						'value' => '{number}',
-					);
-
-					$values['pixel_param_3'] = array(
-						'key'   => 'Title',
-						'value' => '{title}',
-					);
-
-					$values['pixel_param_4'] = array(
-						'key'   => 'URL',
-						'value' => '{url}',
-					);
 			}
 
 			// filter hook - values - ht_ctc_variables

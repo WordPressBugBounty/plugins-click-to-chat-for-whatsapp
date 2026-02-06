@@ -5,10 +5,13 @@
  *
  */
 
-( function ( $ ) {
+/* global ht_ctc_admin_demo_var, tinyMCE */
+
+( function htCtcAdminDemoModule ( $ ) {
 	// ready
-	$( function () {
-		// // todo: iframe..
+	$( function handleAdminDemoReady () {
+
+		// // iframe..
 		// const inIframe = (() => {
 		//     try { return window.self !== window.top; } catch { return true; }
 		// })();
@@ -35,8 +38,8 @@
 			document.dispatchEvent( new CustomEvent( 'ht_ctc_demo_messages', {
 				detail: { admin_demo, ctc_demo_messages },
 			} ) );
-		} catch ( e ) {
-			console.log( 'ht_ctc_demo_messages error' + e );
+		} catch ( error ) {
+			console.log( 'ht_ctc_demo_messages error' + error );
 		}
 
 		/**
@@ -44,22 +47,23 @@
 		 * @param {*} m
 		 * @used at number blank, url target _self, etc..
 		 */
-		function ctc_demo_messages ( m = '' ) {
+		function ctc_demo_messages ( message = '' ) {
 			var demo_notice_timeoutId;
 
-			console.log( 'ctc_demo_messages: ' + m );
-			console.log( m );
+			console.log( 'ctc_demo_messages: ' + message );
+			console.log( message );
 
 			clearTimeout( demo_notice_timeoutId );
 
 			$( '.ctc_ad_links' )
 				.hide();
 			$( '.ctc_demo_messages' )
-				.html( m );
+				.html( message );
 
 			// ctc_demo_messages
 			$( '.ctc_demo_messages' )
 				.hide()
+
 				.fadeIn( 500 );
 
 			demo_notice_timeoutId = setTimeout( () => {
@@ -71,7 +75,8 @@
 		}
 
 		/**
-		 * Initializes and manages the display of various styles and settings for the Click to Chat plugin.
+		 * Initializes and manages the display of various styles and settings
+		 * for the Click to Chat plugin.
 		 *
 		 * This function handles the following:
 		 * - Click events for demo styles.
@@ -95,7 +100,7 @@
 			 * click event..
 			 */
 			$( '.ctc_demo_style' )
-				.on( 'click', function () {
+				.on( 'click', function handleCallback () {
 					console.log( 'click: navigation part..' );
 
 					if ( ! $( '.ht_ctc_chat_greetings_box' ).length ) {
@@ -111,7 +116,8 @@
 				console.log( 'ht_ctc_link()' );
 
 				// number
-				// maybe need to update as like HT_CTC_Formatting: wa_number. (currently updating from intl_onchange)
+				// maybe need to update as like HT_CTC_Formatting: wa_number.
+				// (currently updating from intl_onchange)
 				var number = ht_ctc_admin_demo_var.number;
 
 				console.log( number );
@@ -133,7 +139,9 @@
 					// pre_filled = encodeURIComponent(pre_filled);
 					pre_filled = encodeURIComponent( decodeURI( pre_filled ) );
 					console.log( pre_filled );
-				} catch ( e ) {}
+				} catch ( error ) {
+					console.error( 'Failed to build pre-filled message', error );
+				}
 
 				// url structure
 				// navigation
@@ -150,11 +158,11 @@
 
 				var url_type = 'number';
 
-				if ( is_mobile == 'yes' ) {
+				if ( is_mobile === 'yes' ) {
 					console.log( '-- mobile --' );
 
 					// mobile
-					if ( 'wa_colon' == url_structure_m ) {
+					if ( 'wa_colon' === url_structure_m ) {
 						console.log( '-- url struture: whatsapp:// --' );
 
 						// whatsapp://.. is selected.
@@ -165,7 +173,7 @@
 					}
 
 					// mobile: custom url
-					if ( 'custom_url' == url_structure_m && '' !== custom_url_m ) {
+					if ( 'custom_url' === url_structure_m && '' !== custom_url_m ) {
 						console.log( 'custom url mobile' );
 						base_url = custom_url_m;
 						url_type = 'custom_url';
@@ -173,7 +181,7 @@
 				} else {
 					// desktop
 					console.log( '-- desktop --' );
-					if ( 'web' == url_structure_d ) {
+					if ( 'web' === url_structure_d ) {
 						console.log( '-- url struture: web whatsapp --' );
 
 						// web whatsapp is enabled/selected.
@@ -186,7 +194,7 @@
 					}
 
 					// desktop: custom url
-					if ( 'custom_url' == url_structure_d && '' !== custom_url_d ) {
+					if ( 'custom_url' === url_structure_d && '' !== custom_url_d ) {
 						console.log( 'custom url desktop' );
 						base_url = custom_url_d;
 						url_type = 'custom_url';
@@ -195,19 +203,20 @@
 
 				// 3.specs - specs - if popup then add 'pop_window_features' else 'noopener'
 				var pop_window_features =
-					'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=788,height=514,left=100,top=100';
-				var specs = 'popup' == url_target ? pop_window_features : 'noopener';
+					'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,' +
+					'width=788,height=514,left=100,top=100';
+				var specs = 'popup' === url_target ? pop_window_features : 'noopener';
 				console.log( '-- specs: ' + specs + ' --' );
 
 				// navigation or display message
 				// if custom url blank. it navigate to number. (as like it works in frontend)
-				if ( url_type == 'number' && '' == number ) {
+				if ( url_type === 'number' && '' === number ) {
 					// no demo: if number is empty
 					console.log( demo_var.m1 );
 					ctc_demo_messages( demo_var.m1 );
 
 					// default_position();
-				} else if ( '_self' == url_target ) {
+				} else if ( '_self' === url_target ) {
 					// no demo: if url target is _self
 					console.log( demo_var.m2 );
 					ctc_demo_messages( demo_var.m2 );
@@ -231,8 +240,8 @@
 
 				// on change - style..
 				$( '.select_style_item' )
-					.on( 'click', function () {
-					// styles
+					.on( 'click', function handleCallback () {
+						// styles
 						demo_style = $( '.select_style_desktop' )
 							.val();
 
@@ -244,8 +253,8 @@
 
 				// on change - mobile style..
 				$( '.m_select_style_item' )
-					.on( 'click', function () {
-					// console.log('change');
+					.on( 'click', function handleCallback () {
+						// console.log('change');
 
 						// styles
 						demo_style = $( '.select_style_mobile' )
@@ -258,21 +267,21 @@
 				/**
 				 * todo:
 				 * ctc_ad_main_page_on_change_input ?
-				 * ctc_ad_main_page_on_change_input_update_var ?  where demo_var need to update..  it conatins.. attribute data-var ?
-				 *
+				 * ctc_ad_main_page_on_change_input_update_var ?
+				 * where demo_var need to update.. it contains attribute data-var ?
 				 */
 
 				// on change, input (some filed to update on change only and some on input, ..)
 				$( '.ctc_ad_main_page_on_change_input' )
-					.on( 'change input paste', function () {
-					// console.log('input change');
+					.on( 'change input paste', function handleCallback () {
+						// console.log('input change');
 						main_page_update();
 					} );
 
 				$( '.ctc_ad_main_page_on_change_input_update_var' )
 					.on(
 						'change input paste',
-						function () {
+						function handleCallback () {
 							console.log( 'input change: ctc_ad_main_page_on_change_input_update_var' );
 
 							// main_page_update();
@@ -290,14 +299,18 @@
 					);
 
 				// number
-				// here this event works. but in general admin-demo.js have to load early then admin.js ..
-				document.addEventListener( 'ht_ctc_admin_event_valid_number', function ( e ) {
-					console.log( 'addEventListener: ht_ctc_admin_event_valid_number' );
-					console.log( e.detail );
-					console.log( e );
+				// here this event works.
+				// but in general admin-demo.js have to load early then admin.js ..
+				document.addEventListener(
+					'ht_ctc_admin_event_valid_number',
+					function handleEvent ( event ) {
+						console.log( 'addEventListener: ht_ctc_admin_event_valid_number' );
+						console.log( event.detail );
+						console.log( event );
 
-					main_page_update();
-				} );
+						main_page_update();
+					},
+				);
 
 				function main_page_update () {
 					// call to action
@@ -323,12 +336,14 @@
 							$( '.ht-ctc-admin-sidebar .collapsible' )
 								.collapsible( 'close' );
 							collapse = 'close';
-						} catch ( e ) {}
+						} catch ( error ) {
+							console.error( 'Failed to parse animation values', error );
+						}
 					}
 
 					// on click .ht-ctc-admin-sidebar .collapsible - hide demo.
 					$( '.ht-ctc-admin-sidebar .collapsible' )
-						.on( 'click', function () {
+						.on( 'click', function handleCallback () {
 							console.log( 'collapsible clicked' );
 							$( '.ctc_demo_style' )
 								.hide();
@@ -344,7 +359,7 @@
 
 				// position on chanage .ctc_demo_position
 				$( '.ctc_demo_position' )
-					.on( 'change input paste', function () {
+					.on( 'change input paste', function handleCallback () {
 						console.log( 'ctc_demo_position' );
 						var position = $( this )
 							.val();
@@ -373,13 +388,13 @@
 					var top_bottom = $( '.ctc_demo_position' )
 						.val();
 					console.log( top_bottom );
-					var top_bottom_unset = 'top' == top_bottom ? 'bottom' : 'top';
+					var top_bottom_unset = 'top' === top_bottom ? 'bottom' : 'top';
 					console.log( top_bottom_unset );
 
 					var left_right = $( '.position_right_left' )
 						.val();
 					console.log( left_right );
-					var left_right_unset = 'left' == left_right ? 'right' : 'left';
+					var left_right_unset = 'left' === left_right ? 'right' : 'left';
 					console.log( left_right_unset );
 
 					var regex = /^\d+$/;
@@ -387,7 +402,7 @@
 						.val();
 
 					// if blank add 20px
-					if ( '' == left_right_value ) {
+					if ( '' === left_right_value ) {
 						left_right_value = '0px';
 					} else if ( regex.test( left_right_value ) ) {
 						// if is init then add suffix px
@@ -399,7 +414,7 @@
 					var bottom_top_value = $( '.position_bottom_top_value' )
 						.val();
 
-					if ( '' == bottom_top_value ) {
+					if ( '' === bottom_top_value ) {
 						bottom_top_value = '0px';
 					} else if ( regex.test( bottom_top_value ) ) {
 						// if is int then add suffix px
@@ -407,6 +422,15 @@
 						bottom_top_value = bottom_top_value + 'px';
 					}
 					console.log( bottom_top_value );
+
+					// // Sanitize values
+					// var validCssRegex = /^(-?\d*\.?\d+)(px|%|em|rem|vh|vw|vmin|vmax|cm|mm|in|pt|pc|ex|ch)?$|^auto$|^inherit$|^initial$|^unset$/i;
+					// if ( ! validCssRegex.test( bottom_top_value ) ) {
+					// 	bottom_top_value = '0px';
+					// }
+					// if ( ! validCssRegex.test( left_right_value ) ) {
+					// 	left_right_value = '0px';
+					// }
 
 					var position_css = {
 						[ top_bottom ]: bottom_top_value,
@@ -423,12 +447,14 @@
 					main_page_update();
 					hide_bottom_right_descriptions();
 
-					// when position is updated. remove menu links at demo. (to not over write the position))
+					// when position is updated remove menu links at demo
+					// (to not over write the position)
 					$( '.ctc_menu_at_demo .ctc_ad_page_link' )
 						.remove();
 
 					/**
-					 * this is for show and hide demo links at bottom right. when position is updated this not working properly.
+					 * this is for show and hide demo links at bottom right.
+					 * when position is updated this not working properly.
 					 */
 					// $('.ctc_ad_links').show();
 					// $('.ctc_ad_hide_demo').show();
@@ -448,7 +474,7 @@
 					// if left then order 1 else 0
 
 					// s2
-					if ( 'left' == left_right ) {
+					if ( 'left' === left_right ) {
 						$( '.ctc_s_2 .ctc_cta' )
 							.css( 'order', '1' );
 						$( '.ctc_s_3 .ctc_cta' )
@@ -523,17 +549,18 @@
 					.show();
 
 				var an_class = '';
-				var select_an_type = $( '.select_an_type' )
-					.val();
+
+				// var select_an_type = $( '.select_an_type' )
+				// 	.val();
 
 				$( '.select_an_type' )
-					.on( 'change', function ( e ) {
+					.on( 'change', function handleEvent ( event ) {
 						main_animation();
 					} );
 
 				// animate demo - link clicked.
 				$( '.ctc_an_demo_btn' )
-					.on( 'click', function ( e ) {
+					.on( 'click', function handleEvent ( event ) {
 						$( '.ctc_demo_style' )
 							.removeClass( an_class );
 						setTimeout( () => {
@@ -566,7 +593,7 @@
 						.css( an_css );
 
 					// animated demo button
-					if ( 'no-animation' == val ) {
+					if ( 'no-animation' === val ) {
 						$( '.ctc_an_demo_btn' )
 							.hide();
 					} else {
@@ -577,17 +604,18 @@
 
 				// entry effects
 				var ee = '';
-				var select_an_type = $( '.select_an_type' )
-					.val();
+
+				// var select_an_type = $( '.select_an_type' )
+				// 	.val();
 
 				$( '.show_effect' )
-					.on( 'change', function ( e ) {
+					.on( 'change', function handleEvent ( event ) {
 						entry_effects();
 					} );
 
 				// entry effect demo - link clicked.
 				$( '.ctc_ee_demo_btn' )
-					.on( 'click', function ( e ) {
+					.on( 'click', function handleEvent ( event ) {
 						$( '.ctc_demo_style' )
 							.removeClass( ee );
 						setTimeout( () => {
@@ -613,13 +641,13 @@
 					var val = $( '.show_effect' )
 						.val();
 
-					if ( 'From Center' == val ) {
+					if ( 'From Center' === val ) {
 						ee = 'ht_ctc_an_entry_center';
 						$( '.ctc_demo_style' )
 							.addClass( ee );
 						$( '.ctc_demo_style' )
 							.show();
-					} else if ( 'From Corner' == val ) {
+					} else if ( 'From Corner' === val ) {
 						setTimeout( () => {
 							$( '.ctc_demo_style' )
 								.show( 180 );
@@ -627,7 +655,7 @@
 					}
 
 					// entry effect demo button
-					if ( 'no-show-effects' == val ) {
+					if ( 'no-show-effects' === val ) {
 						$( '.ctc_demo_style' )
 							.show();
 						$( '.ctc_ee_demo_btn' )
@@ -647,7 +675,7 @@
 					var time = $( '.field_notification_time' )
 						.val();
 					console.log( time );
-					time = time && '' != time ? time : 0;
+					time = time && '' !== time ? time : 0;
 					setTimeout( () => {
 						n_b();
 						n_b_position();
@@ -655,7 +683,7 @@
 				}
 
 				$( '.notification_badge' )
-					.on( 'change', function ( e ) {
+					.on( 'change', function handleEvent ( event ) {
 						n_b();
 						n_b_position();
 						n_b_border();
@@ -664,7 +692,7 @@
 				$( '.notification_border_color_field .wp-picker-container' )
 					.on(
 						'click',
-						function ( e ) {
+						function handleEvent ( event ) {
 							console.log( 'notification_border_color_field' );
 							n_b_border();
 						},
@@ -704,6 +732,7 @@
 						.val();
 
 					// console.log(border_color);
+					var border;
 					if ( '' !== border_color ) {
 						border = '2px solid ' + border_color;
 					} else {
@@ -716,33 +745,36 @@
 				// notification badge position specific to each style
 				function n_b_position () {
 					console.log( 'n_b_position' );
-					if ( document.querySelector( '.ctc_nb' ) ) {
+					var nbElement = document.querySelector( '.ctc_nb' );
+					if ( nbElement ) {
 						console.log( 'overwrite top, right' );
 
-						// get parent of badge and then get top, right with in that element. (to avoid conflict with other styles if added using shortcode or so...)
-						var main = $( '.ctc_ad_badge' )
-							.closest( '.ctc_demo_style' );
+						// get parent of badge and then get top/right within that element.
+						// avoids conflicts with styles added via shortcode
+						var $adBadge = $( '.ctc_ad_badge' );
+						var $main = $adBadge.closest( '.ctc_demo_style' );
+						var $nb = $main.find( '.ctc_nb' );
 
-						$( '.ctc_ad_badge' )
+						$adBadge
 							.css( {
-							// overwrite top, right. if undefined or false then use default(as it can't overwrite at broswer).
-								top: $( main )
-									.find( '.ctc_nb' )
-									.attr( 'data-nb_top' ),
-								right: $( main )
-									.find( '.ctc_nb' )
-									.attr( 'data-nb_right' ),
+								// overwrite top, right.
+								// if undefined or false then use default (browser can't overwrite)
+								top: $nb.attr( 'data-nb_top' ),
+								right: $nb.attr( 'data-nb_right' ),
 							} );
 					}
 				}
 
 				// notification_bg_color   field_notification_bg_color
 				// mousemove, change, input, keyup
+				const notificationColorSelectors =
+					'.field_notification_bg_color, .field_notification_text_color,' +
+					' .field_notification_border_color';
 				$( document )
 					.on(
 						'change, input, keyup',
-						'.field_notification_bg_color, .field_notification_text_color, .field_notification_border_color',
-						function () {
+						notificationColorSelectors,
+						function handleCallback () {
 							console.log( 'color value changed..' );
 							n_b();
 						},
@@ -752,7 +784,7 @@
 
 				// notification count
 				$( '.field_notification_count' )
-					.on( 'input', function () {
+					.on( 'input', function handleCallback () {
 						var count = $( this )
 							.val();
 						$( '.ctc_ad_badge' )
@@ -762,15 +794,15 @@
 				// time delay
 				var timeoutId;
 				$( '.field_notification_time' )
-					.on( 'change', function () {
+					.on( 'change', function handleCallback () {
 						$( '.ctc_ad_notification' )
 							.hide();
 						clearTimeout( timeoutId );
 						var time = $( this )
 							.val();
-						time = time && '' != time ? time : 0;
+						time = time && '' !== time ? time : 0;
 						timeoutId = setTimeout( () => {
-							if ( 'yes' == is_nb ) {
+							if ( 'yes' === is_nb ) {
 								console.log( time );
 								$( '.ctc_ad_notification' )
 									.show();
@@ -793,11 +825,13 @@
 				$( '.ctc_ad_links' )
 					.css( 'margin', '0 50px' );
 
-				// display style based on editing area (work super. expect one issue - if directly clicked on color picker the style is not changing/displaying. fix: wp-picker-container click event added below)
+				// display style based on editing area (works super).
+				// issue: if directly clicked on color picker the style is not updating.
+				// fix: wp-picker-container click event added below.
 				$( '.ht_ctc_customize_style' )
-					.on( 'click', function () {
-					// console.log('customize_style clicked');
-					// get data-style='1' from clicked element
+					.on( 'click', function handleCallback () {
+						// console.log('customize_style clicked');
+						// get data-style='1' from clicked element
 						var style = $( this )
 							.attr( 'data-style' );
 
@@ -811,12 +845,13 @@
 							.show();
 					} );
 
-				// click on wp-picker-container - find closest ht_ctc_customize_style and display that style
+				// click on wp-picker-container
+				// find closest ht_ctc_customize_style and display that style
 				$( '.wp-picker-container' )
-					.on( 'click', function () {
-						var x = $( this )
+					.on( 'click', function handleCallback () {
+						var customizeStyleWrapper = $( this )
 							.closest( '.ht_ctc_customize_style' );
-						var style = $( x )
+						var style = $( customizeStyleWrapper )
 							.attr( 'data-style' );
 						if ( style ) {
 							$( '.ctc_demo_style_' + style + '' )
@@ -830,16 +865,16 @@
 				// on hover..
 
 				// // s7_1:hover
-				// $('.ctc_s_7_1').hover(function () {
+				// $('.ctc_s_7_1').hover(function handleCallback () {
 				//     console.log('hover');
-				// }, function () {
+				// }, function handleCallback () {
 				//     console.log('hover out');
 				// });
 
 				// s3_1:hover
 				$( '.ctc_s_3_1' )
 					.hover(
-						function () {
+						function handleCallback () {
 							console.log( 'hover' );
 							console.log( $( '#s3_1_bg_color_hover' )
 								.val() );
@@ -854,8 +889,8 @@
 							if (
 								! $( '#s3_box_shadow' )
 									.is( ':checked' ) &&
-							$( '#s3_box_shadow_hover' )
-								.is( ':checked' )
+								$( '#s3_box_shadow_hover' )
+									.is( ':checked' )
 							) {
 								console.log( 'hover only checked' );
 								$( '.ctc_s_3_1 .ht_ctc_padding' )
@@ -865,7 +900,7 @@
 									);
 							}
 						},
-						function () {
+						function handleCallback () {
 							console.log( 'hover out' );
 							console.log( $( '#s3_1_bg_color' )
 								.val() );
@@ -879,8 +914,8 @@
 							if (
 								! $( '#s3_box_shadow' )
 									.is( ':checked' ) &&
-							$( '#s3_box_shadow_hover' )
-								.is( ':checked' )
+								$( '#s3_box_shadow_hover' )
+									.is( ':checked' )
 							) {
 								console.log( 'hover only checked' );
 								$( '.ctc_s_3_1 .ht_ctc_padding' )
@@ -891,7 +926,7 @@
 
 				// s3_1: shadow (not ok at admin demo. so commented)
 				$( '#s3_box_shadow' )
-					.on( 'change', function ( e ) {
+					.on( 'change', function handleEvent ( event ) {
 						console.log( 's3_box_shadow' );
 						if ( $( '#s3_box_shadow' )
 							.is( ':checked' ) ) {
@@ -908,25 +943,25 @@
 							$( '.ctc_s_3_1 .ht_ctc_padding' )
 								.css( 'box-shadow', 'unset' );
 
-						// $(".s3_box_shadow_hover").show(500);
+							// $(".s3_box_shadow_hover").show(500);
 						}
 					} );
 
 				// s4: image position
 				$( '.s4_img_position' )
-					.on( 'change', function ( e ) {
+					.on( 'change', function handleEvent ( event ) {
 						console.log( 's4_image_position' );
 
 						// if slelected left
 						var s4_img_position = $( this )
 							.val();
 						console.log( s4_img_position );
-						if ( 'left' == s4_img_position ) {
+						if ( 'left' === s4_img_position ) {
 							$( '.ctc_s_4 .s4_img' )
 								.css( 'margin', '0 8px 0 -12px' );
 							$( '.ctc_s_4 .s4_img' )
 								.css( 'order', '0' );
-						} else if ( 'right' == s4_img_position ) {
+						} else if ( 'right' === s4_img_position ) {
 							$( '.ctc_s_4 .s4_img' )
 								.css( 'margin', '0 -12px 0 8px' );
 							$( '.ctc_s_4 .s4_img' )
@@ -938,7 +973,7 @@
 
 				$( '.ctc_s_6' )
 					.hover(
-						function () {
+						function handleCallback () {
 							console.log( 'hover' );
 							console.log( $( '#s6_txt_color_on_hover' )
 								.val() );
@@ -954,7 +989,7 @@
 										.val(),
 								} );
 						},
-						function () {
+						function handleCallback () {
 							console.log( 'hover out' );
 							$( '.ctc_s_6' )
 								.css( {
@@ -970,7 +1005,7 @@
 				// s7:hover
 				$( '.ctc_s_7' )
 					.hover(
-						function () {
+						function handleCallback () {
 							console.log( 'hover' );
 							console.log( $( '#s7_icon_color_hover' )
 								.val() );
@@ -987,7 +1022,7 @@
 										.val(),
 								);
 						},
-						function () {
+						function handleCallback () {
 							console.log( 'hover out' );
 							$( '.ctc_s_7 svg path' )
 								.css( 'fill', $( '#s7_icon_color' )
@@ -1004,7 +1039,7 @@
 				// s7_1:hover
 				$( '.ctc_s_7_1' )
 					.hover(
-						function () {
+						function handleCallback () {
 							console.log( 'hover' );
 							console.log( $( '#s7_1_icon_color_hover' )
 								.val() );
@@ -1031,7 +1066,7 @@
 										.val(),
 								);
 						},
-						function () {
+						function handleCallback () {
 							console.log( 'hover out' );
 							console.log( $( '#s7_1_icon_color' )
 								.val() );
@@ -1058,7 +1093,7 @@
 				// s8:hover
 				$( '.ctc_s_8' )
 					.hover(
-						function () {
+						function handleCallback () {
 							console.log( 'hover' );
 							console.log( $( '#s8_bg_color_on_hover' )
 								.val() );
@@ -1077,7 +1112,7 @@
 								.css( 'fill', $( '#s8_icon_color_on_hover' )
 									.val() );
 						},
-						function () {
+						function handleCallback () {
 							console.log( 'hover out' );
 							console.log( $( '#s8_bg_color' )
 								.val() );
@@ -1102,7 +1137,7 @@
 				 * on chnage,
 				 */
 				$( '.ctc_oninput' )
-					.on( 'change paste keyup', function ( e ) {
+					.on( 'change paste keyup', function handleEvent ( event ) {
 						console.log( 'on change' );
 
 						// check if element have data-update attribute
@@ -1123,13 +1158,13 @@
 						if ( update_type && update_class ) {
 							console.log( 'update' );
 
-							if ( 'text' == update_type ) {
-							// if update type is text
+							if ( 'text' === update_type ) {
+								// if update type is text
 								console.log( 'update text' );
 								$( update_class )
 									.text( update_value );
-							} else if ( 'cta' == update_type ) {
-							// call to action
+							} else if ( 'cta' === update_type ) {
+								// call to action
 								console.log( 'update cta' );
 
 								// parent with class name: ctc_demo_style
@@ -1137,8 +1172,8 @@
 									.closest( '.ctc_demo_style' );
 								console.log( update_class_parent );
 
-								if ( 'show' == update_value ) {
-								// if update_value is show
+								if ( 'show' === update_value ) {
+									// if update_value is show
 									console.log( 'show' );
 									$( update_class )
 										.show();
@@ -1146,8 +1181,8 @@
 										.removeClass( 'ht-ctc-cta-hover' );
 									$( update_class_parent )
 										.removeAttr( 'title' );
-								} else if ( 'hide' == update_value ) {
-								// hide
+								} else if ( 'hide' === update_value ) {
+									// hide
 									console.log( 'hide' );
 									$( update_class )
 										.hide();
@@ -1155,8 +1190,8 @@
 										.removeClass( 'ht-ctc-cta-hover' );
 									$( update_class_parent )
 										.attr( 'title', 'Call to action' );
-								} else if ( 'hover' == update_value ) {
-								// hover: add class: ht-ctc-cta-hover
+								} else if ( 'hover' === update_value ) {
+									// hover: add class: ht-ctc-cta-hover
 									console.log( 'hover' );
 									$( update_class )
 										.hide();
@@ -1189,7 +1224,7 @@
 			/**
 			 * Gretings page
 			 *
-			 * todo: symobols not working properly on live demo. (works after page reloads)
+			 * check: symobols not working properly on live demo. (works after page reloads)
 			 */
 			if ( $( 'body' )
 				.hasClass( 'click-to-chat_page_click-to-chat-greetings' ) ) {
@@ -1212,7 +1247,7 @@
 				console.log( 'greetings_template: ' + greetings_template );
 
 				// if not 'no' then display that greetings
-				if ( 'no' == greetings_template ) {
+				if ( 'no' === greetings_template ) {
 					$( '.ctc_demo_greetings' )
 						.hide();
 				} else {
@@ -1222,7 +1257,8 @@
 				// initial update.. to avoid displaying code blocks at greetings content.
 				update_greetings_content();
 
-				// setintervie .. to call_update_greetings_content() every 200ms if tinyMCE.get('header_content').getContent()
+				// setInterval .. to call_update_greetings_content() every 200ms
+				// if tinyMCE.get('header_content').getContent()
 				var intervalId_limit = 0;
 				var intervalId = setInterval( () => {
 					console.log( 'intervalId_limit: ' + intervalId_limit );
@@ -1252,18 +1288,24 @@
 				// });
 
 				try {
-					for ( var i = 0; i < tinyMCE.editors.length; i++ ) {
-						var editor = tinyMCE.editors[ i ];
-						console.log( editor.id );
+					Array.prototype.forEach.call(
+						tinyMCE.editors,
+						function processDemoEditor ( editor ) {
+							if ( ! editor ) {
+								return;
+							}
+							console.log( editor.id );
 
-						// on change
-						editor.on( 'change paste keyup', function ( e ) {
-							console.log( 'tinyMCE editor on change' );
-							update_greetings_content();
-						} );
-					}
-				} catch ( e ) {
+							// on change
+							editor.on( 'change paste keyup', function handleCallback () {
+								console.log( 'tinyMCE editor on change' );
+								update_greetings_content();
+							} );
+						},
+					);
+				} catch ( error ) {
 					console.log( 'cache: mightbe no tinyMCE editor' );
+					console.error( error );
 				}
 
 				/**
@@ -1342,7 +1384,10 @@
 									.hide();
 							}
 
-							// $('.ctc_g_heading').show().find('.ctc_g_header_content').html(header_content);
+							// $('.ctc_g_heading')
+							// 	.show()
+							// 	.find('.ctc_g_header_content')
+							// 	.html(header_content);
 						} else {
 							console.log( 'no header_content, no header_content_image' );
 							$( '.ctc_g_heading' )
@@ -1380,8 +1425,9 @@
 						// } else {
 						//     $('.ctc_opt_in').hide();
 						// }
-					} catch ( e ) {
+					} catch ( error ) {
 						console.log( 'cache: no tinyMCE editor' );
+						console.error( error );
 					}
 				}
 
@@ -1390,11 +1436,11 @@
 					console.log( 'greetings_header_image' );
 
 					$( '.ctc_remove_image_wp' )
-						.on( 'click', function () {
+						.on( 'click', function handleCallback () {
 							console.log( 'remove image' );
 							const headerImageContainer = $( '.greetings_header_image' );
 							if ( headerImageContainer.is( ':visible' ) ) {
-							// Hide the container without removing its content
+								// Hide the container without removing its content
 								headerImageContainer.css( 'display', 'none' );
 								console.log( 'Header image container hidden' );
 
@@ -1408,13 +1454,17 @@
 							console.log( 'headerImageContainer: ', headerImageContainer );
 						} );
 
-					// custom event listner 'ht_ctc_event_greetings_header_image' .. call header_image_badge
-					document.addEventListener( 'ht_ctc_event_greetings_header_image', function ( e ) {
-						console.log( 'ht_ctc_event_greetings_header_image' );
-						console.log( e.detail );
-						console.log( e );
-						header_image_badge( e.detail );
-					} );
+					// custom event listener 'ht_ctc_event_greetings_header_image'
+					// call header_image_badge
+					document.addEventListener(
+						'ht_ctc_event_greetings_header_image',
+						function handleEvent ( event ) {
+							console.log( 'ht_ctc_event_greetings_header_image' );
+							console.log( event.detail );
+							console.log( event );
+							header_image_badge( event.detail );
+						},
+					);
 
 					// Optional: Function to handle additional actions like adding a badge
 					function header_image_badge ( imageUrl ) {
@@ -1424,7 +1474,9 @@
 						console.log( headerImageContainer );
 
 						// Add the image to a container as a badge or decorative element
-						// headerImageContainer.html(`<img src="${imageUrl}" alt="Header Image" style="max-width: 100%; height: 100%; border-radius:50%;">`).show();
+						// headerImageContainer
+						// 	.html('<img src=\"...\" alt=\"Header Image\">')
+						// 	.show();
 
 						// add src to the image tag inside the container
 						$( '.greetings_header_image img' )
@@ -1441,7 +1493,7 @@
 					$( 'input[name="ht_ctc_greetings_options[call_to_action]"]' )
 						.on(
 							'input',
-							function () {
+							function handleCallback () {
 								console.log( 'input change' );
 								console.log( $( this )
 									.val() );
@@ -1470,11 +1522,11 @@
 					console.log( 'gSize: ', gSize );
 					let minWidth = '330px'; // Ensure a default value
 
-					if ( gSize == 's' ) {
+					if ( gSize === 's' ) {
 						minWidth = '300px';
-					} else if ( gSize == 'm' ) {
+					} else if ( gSize === 'm' ) {
 						minWidth = '330px';
-					} else if ( gSize == 'l' ) {
+					} else if ( gSize === 'l' ) {
 						minWidth = '360px';
 					}
 
@@ -1516,7 +1568,7 @@
 
 				// on change - greetings template
 				$( '.pr_greetings_template select' )
-					.on( 'change', function () {
+					.on( 'change', function handleCallback () {
 						console.log( 'greetings dialog on change' );
 
 						// greetings_template = $(this).val();
@@ -1552,7 +1604,7 @@
 				if ( $( '.ht_ctc_chat_greetings_box' ).length ) {
 					// Toggle the greetings dialog
 					$( document )
-						.on( 'click', '.ht_ctc_chat_style ', function () {
+						.on( 'click', '.ht_ctc_chat_style ', function handleCallback () {
 							const greetingsBox = $( '.ht_ctc_chat_greetings_box' );
 							if ( greetingsBox.is( ':visible' ) ) {
 								greetings_close();
@@ -1563,7 +1615,7 @@
 
 					// Close button - greetings dialog
 					$( document )
-						.on( 'click', '.ctc_greetings_close_btn', function () {
+						.on( 'click', '.ctc_greetings_close_btn', function handleCallback () {
 							greetings_close();
 						} );
 				}
@@ -1586,47 +1638,53 @@
 
 				// Bind the function to the checkbox change event
 				$( document )
-					.on( 'change', '.g_header_online_status', function () {
+					.on( 'change', '.g_header_online_status', function handleCallback () {
 						demo_online_badge();
 					} );
 
 				$( document )
-					.on( 'click', '.ht_ctc_chat_greetings_box_link', function ( e ) {
-						console.log( 'ht_ctc_chat_greetings_box_link' );
-						e.preventDefault();
+					.on(
+						'click',
+						'.ht_ctc_chat_greetings_box_link',
+						function handleEvent ( event ) {
+							event.preventDefault();
+							console.log( 'ht_ctc_chat_greetings_box_link' );
 
-						ht_ctc_link();
-						greetings_close_500();
+							ht_ctc_link();
+							greetings_close_500();
 
-						/*
-                     / workout that if user clicks optin once it want to save in db(local storage) and dont show again and again..
-                     / once optin settings are changed the optin details in local storage need to reset..
-                    */
+							/*
+							 * workout that if user clicks optin once it needs to save
+							 * in db(local storage) and dont show again and again.
+							 * once optin settings are changed the optin details in local storage
+							 * need to reset.
+							 */
 
-						//  if (document.querySelector('#ctc_opt')) {
+							//  if (document.querySelector('#ctc_opt')) {
 
-					//     if ($('#ctc_opt').is(':checked')) {
-					//         console.log('optin - checkbox checked');
-					//         ht_ctc_link();
-					//         // close greetings dialog
-					//         greetings_open();
-					//     } else {
-					//         console.log('animate option checkbox');
-					//         $('.ctc_opt_in').show().fadeOut('1').fadeIn('1');
-					//     }
-					// } else {
-					//     ht_ctc_link();
-					//     greetings_close_500();
-					// }
-					// document.dispatchEvent(
-					//     new CustomEvent("ht_ctc_event_greetings")
-					// );
-					} );
+							//     if ($('#ctc_opt').is(':checked')) {
+							//         console.log('optin - checkbox checked');
+							//         ht_ctc_link();
+							//         // close greetings dialog
+							//         greetings_open();
+							//     } else {
+							//         console.log('animate option checkbox');
+							//         $('.ctc_opt_in').show().fadeOut('1').fadeIn('1');
+							//     }
+							// } else {
+							//     ht_ctc_link();
+							//     greetings_close_500();
+							// }
+							// document.dispatchEvent(
+							//     new CustomEvent("ht_ctc_event_greetings")
+							// );
+						},
+					);
 
 				// Automatically handle opt-in when checkbox is clicked
 
 				$( document )
-					.on( 'change', '#ctc_opt', function () {
+					.on( 'change', '#ctc_opt', function handleCallback () {
 						if ( $( this )
 							.is( ':checked' ) ) {
 							console.log( 'Checkbox checked - automatic opt-in' );
@@ -1645,7 +1703,7 @@
 			 */
 			var no_demo_timeoutId;
 			$( '.ctc_no_demo' )
-				.on( 'change paste keyup', function () {
+				.on( 'change paste keyup', function handleCallback () {
 					console.log( 'no live demo for this...' );
 					hide_bottom_right_descriptions();
 					clearTimeout( no_demo_timeoutId );
@@ -1663,18 +1721,18 @@
 				} );
 
 			// ctc_demo_messages
-			function ctc_demo_messages ( m = '' ) {
+			function ctc_demo_messages ( message = '' ) {
 				var demo_notice_timeoutId;
 
 				console.log( 'ctc_demo_messages...' );
-				console.log( m );
+				console.log( message );
 
 				clearTimeout( demo_notice_timeoutId );
 
 				$( '.ctc_ad_links' )
 					.hide();
 				$( '.ctc_demo_messages' )
-					.html( m );
+					.html( message );
 
 				// ctc_demo_messages
 				$( '.ctc_demo_messages' )
@@ -1716,17 +1774,17 @@
 			// cta hover effects
 			$( '.ctc_demo_style' )
 				.hover(
-					function () {
-					// $('.ctc_demo_style .ht-ctc-cta-hover').show(120);
+					function handleCallback () {
+						// $('.ctc_demo_style .ht-ctc-cta-hover').show(120);
 						$( this )
 							.find( '.ht-ctc-cta-hover' )
 							.show( 120 );
 					},
-					function () {
+					function handleCallback () {
 						$( '.ctc_demo_style .ht-ctc-cta-hover' )
 							.hide( 100 );
 
-					// $(this).find('.ht-ctc-cta-hover').hide(100);
+						// $(this).find('.ht-ctc-cta-hover').hide(100);
 					},
 				);
 
@@ -1737,7 +1795,7 @@
 				const pageLinks = $( '.ctc_ad_page_link' );
 
 				// Show Demo functionality
-				showDemoButton.on( 'click', function () {
+				showDemoButton.on( 'click', function handleCallback () {
 					console.log( 'Show demo' );
 					demoLoadSection.show();
 					showDemoButton.hide();
@@ -1746,7 +1804,7 @@
 				} );
 
 				// Hide Demo functionality
-				hideDemoButton.on( 'click', function () {
+				hideDemoButton.on( 'click', function handleCallback () {
 					console.log( 'Hide demo' );
 					demoLoadSection.hide();
 					hideDemoButton.hide();

@@ -121,6 +121,7 @@ if ( ! class_exists( 'HT_CTC_Group' ) ) {
 
 			$ht_ctc_group['class_names'] .= " style-$style $other_classes";
 
+			// output: is in string ony '1', '4', '6', '8'
 			if ( '' === $call_to_action ) {
 				if ( '1' === $style || '4' === $style || '6' === $style || '8' === $style ) {
 					$call_to_action = 'WhatsApp Share';

@@ -42,6 +42,7 @@ $an_on_hover = isset( $ccw_options_cs['an_on_hover'] ) ? esc_attr( $ccw_options_
  */
 $redirect = "";
 
+// output : 1 - for mobile, '' - for desktop
 if( 1 === $is_mobile ) {
 
     // selected style for mobile devices

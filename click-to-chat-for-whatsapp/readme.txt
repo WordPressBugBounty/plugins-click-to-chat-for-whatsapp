@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
 Requires at least: 4.7
-Tested up to: 6.8.2
+Tested up to: 6.9
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.29
+Stable tag: 4.37
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -541,83 +541,30 @@ Thank you so much in advance from "Click to Chat" Team
 
 == Changelog ==
 
-= 4.29 =
-* Settings to load JavaScript files as Normal, Async, or Defer for improved performance.
+= 4.37 =
+* Fix: Webhook not working with some integration tools.
 
-= 4.28 =
-* Fix: The Custom Element feature now works correctly even when the 'ctc_chat' class is added dynamically.
+= 4.36 =
+* Enhancement: Google Analytics feature.
 
-= 4.27 =
-* app.js file now loads asynchronously and deferred to improve page load performance.
+= 4.35 =
+* Enhancement: Custom CSS feature.
+* Enhancement: Aria hidden attribute settings.
 
-= 4.26 =
-* Custom URL feature is now available in this main plugin. We can add WhatsApp Chanel URL in the plugin settings to open WhatsApp Channel. 
-* Enhancement: Page level settings design.
+= 4.34 =
+* Enhancement: Added settings to send dataLayer objects to Google Tag Manager.
+* Enhancement: Chat widget now works on WooCommerce shop pages with page-level call to action and pre-filled messages.
+* Enhancement: Added Notification badge feature.
+* Fix: Shortcodes were not working with WooCommerce-specific variables.
 
-= 4.25 =
-* Fix: Greeting dialog modal not displaying correctly due to z-index issues when certain background elements were present.
+= 4.33 =
+* Fix: Animations issues for call to action, Greetings dialog.
 
-= 4.24 =
-* Fixed: Page-level settings now work correctly on the WooCommerce Shop page.
-* Improved: Better visual styling for the base widget.
+= 4.32 =
+* Enhancement: Display chat button like WooCommerce add to cart button.
+* Fix: Greetings dialog header image not adding properly.
 
-= 4.23 =
-🚨 Important Update
-* ✨ New Feature: Greetings Dialog can now appear as a modal for better visibility and UX.
-* 🛠️ Fix: Resolved an issue where the Greetings Dialog was not displaying correctly when the base widget was positioned at the top.
-* 🛠️ Fix: On iPhone Chrome, the Share feature now opens WhatsApp correctly without opening a new tab.
-* 🔧 Improvement: When a WhatsApp number is not set, the admin notice is now displayed using a more reliable and secure method — instead of using JS .html().
-
-= 4.22 =
-* The Custom Image widget now automatically uses the image file name as the alt attribute
-* Settings to disable page-level settings.
-
-= 4.21 =
-* Fix: Resolved issue where phone numbers with +1888 prefix were not being saved in settings.
-
-= 4.20 =
-* New: Added {{price}} variable for WooCommerce product pages to display price with currency symbol, thousand separator, and decimal separator.
-* Fix: Resolved conflict with some themes caused by animation class name.
-
-= 4.19 =
-* Fix: PHP Error. Thanks, Malae, for reporting it!
-
-= 4.18 =
-* Fix: Resolved an issue where the Style-5 profile image was displaying above the greetings dialog on mobile devices.
-* Fix: Corrected the border alignment in Style-5.
-* Enhancement: Admin Demo for better usability
-
-= 4.17 =
-* Fix: Display Widget as an Add to Cart like button is not working on the WooCommerce single product page, Archive list.
-
-= 4.16 =
-* Added 'Alt' attribute value for greetings header image
-* Fix: Style-7, Style-7 Extend hover effects not working.
-
-= 4.15 = 
-* Fix: Page-level settings not working properly.
-* Fix: Alignment issues at admin setting pages
-
-= 4.14 =
-* Enhancement: Show or hide the admin demo.
-
-= 4.13 =
-* Fix: Alignment issues at admin setting pages
-
-= 4.12.1 =
-* Fix: Hover effects for Style-7 Extend
-* Fix: Dual lines issue for Style-8 with large call to action text
-
-= 4.12 =
-* Fix: Custom CSS Code block not allowing quotes at front end
-
-= 4.11 =
-* New: Custom CSS Code block.
-
-= 4.10 =
-* Fix: Page level display settings for WooCommerce single product page
-
-= 4.9 =
-* Fix: Display based on device not working as expected on iPad Pro
+= 4.31 =
+* Fix: Shortcode style-1 added icon
 
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)

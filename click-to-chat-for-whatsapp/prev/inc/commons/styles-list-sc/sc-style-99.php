@@ -13,6 +13,7 @@ $s_99_mobile_img = esc_attr($a['s99_mobile_img']);
 // image - width, height based on device
 $img_css = "";
 
+// output : is in string ony '1'
 if( '1' === $is_mobile ) {
     $own_image = $s_99_mobile_img;
 

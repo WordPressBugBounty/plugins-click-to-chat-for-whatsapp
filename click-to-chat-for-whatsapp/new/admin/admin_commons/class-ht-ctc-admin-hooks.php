@@ -64,10 +64,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 				// ht_ctc_ah_admin.
 			add_action( 'ht_ctc_ah_admin_after_sanitize', array( $this, 'after_sanitize' ) );
 
-			/**
-			 * TODO: Check all pages, cache plugins are covered.
-			 * https://chatgpt.com/share/67ad8eff-8668-800c-acfe-f762c128becd
-			 */
 				// Clear cache.
 			add_action( 'update_option_ht_ctc_admin_pages', array( $this, 'clear_cache' ) );
 				// Clear cache - customize styles.
@@ -403,8 +399,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 			);
 
 			// Add data.
-			// TODO: Ensure strict check for in_array.
-			if ( '' !== $db_key && in_array( $db_key, $db_key_values ) ) {
+			if ( '' !== $db_key && in_array( $db_key, $db_key_values, true ) ) {
 
 				$update_values[ $db_key ] = $time;
 

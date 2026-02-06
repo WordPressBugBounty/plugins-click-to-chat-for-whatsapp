@@ -29,22 +29,27 @@ if ( ! class_exists( 'HT_CTC_Security' ) ) {
 				$site_url = get_site_url();
 				$referer  = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
 
-				// Referer check
-				if ( strpos( $referer, $site_url ) === false ) {
+				// Referer checks should only run when a header is present.
+				// A growing number of browsers/extensions block the Referer header for privacy.
+				if ( $referer && strpos( $referer, $site_url ) === false ) {
 					return new WP_REST_Response( array( 'error' => 'Invalid referer' ), 403 );
 				}
 
-				// Nonce check (optional, only if frontend sends it)
+				// Nonce check:
+				// 1. Allow optional/missing nonce for public caching compatibility (Settings are public data).
+				// 2. If a nonce IS provided (e.g. from app.js), verify it strictly to prevent spoofing.
 				$nonce = $request->get_header( 'x_wp_nonce' );
+				if ( empty( $nonce ) ) {
+					$nonce = $request->get_param( '_wpnonce' );
+				}
 
-				// ht_ctc_nonce
-				if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				if ( $nonce && ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 					return new WP_REST_Response( array( 'error' => 'Invalid nonce' ), 403 );
 				}
 
 				// Optional: Bounce or User-Agent logic (custom abuse logic)
 				$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
-				if ( empty( $user_agent ) ) {
+				if ( '' === $user_agent ) {
 					return new WP_REST_Response( array( 'error' => 'Invalid user agent' ), 403 );
 				}
 			} catch ( Throwable $e ) {

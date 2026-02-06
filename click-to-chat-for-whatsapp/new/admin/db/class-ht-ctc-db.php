@@ -22,7 +22,7 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 		 *
 		 * @var array
 		 */
-		public $os = '';
+		public $os = array();
 
 		/**
 		 * Constructor.
@@ -92,10 +92,98 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 				$values['g_an']            = 'ga4';
 				$values['g_an_event_name'] = 'click to chat';
 
+				// google analytics params
+				$values['g_an_params'] = array(
+					'g_an_param_1',
+					'g_an_param_2',
+					'g_an_param_3',
+				);
+
+				$values['g_an_param_1'] = array(
+					'key'   => 'number',
+					'value' => '{number}',
+				);
+
+				$values['g_an_param_2'] = array(
+					'key'   => 'title',
+					'value' => '{title}',
+				);
+
+				$values['g_an_param_3'] = array(
+					'key'   => 'url',
+					'value' => '{url}',
+				);
+
+				$values['gtm']            = '1';
+				$values['gtm_event_name'] = 'Click to Chat';
+
+				// gtm params
+				$values['gtm_params'] = array(
+					'gtm_param_1',
+					'gtm_param_2',
+					'gtm_param_3',
+					'gtm_param_4',
+					'gtm_param_5',
+				);
+
+				$values['gtm_param_1'] = array(
+					'key'   => 'type',
+					'value' => 'chat',
+				);
+
+				$values['gtm_param_2'] = array(
+					'key'   => 'number',
+					'value' => '{number}',
+				);
+
+				$values['gtm_param_3'] = array(
+					'key'   => 'title',
+					'value' => '{title}',
+				);
+
+				$values['gtm_param_4'] = array(
+					'key'   => 'url',
+					'value' => '{url}',
+				);
+
+				$values['gtm_param_5'] = array(
+					'key'   => 'ref',
+					'value' => 'dataLayer push',
+				);
+
 				$values['fb_pixel']                  = '1';
 				$values['pixel_event_type']          = 'trackCustom';
 				$values['pixel_custom_event_name']   = 'Click to Chat by HoliThemes';
 				$values['pixel_standard_event_name'] = 'Lead';
+
+				// pixel params
+				$values['pixel_params'] = array(
+					'pixel_param_1',
+					'pixel_param_2',
+					'pixel_param_3',
+					'pixel_param_4',
+				);
+
+				$values['pixel_param_1'] = array(
+					'key'   => 'Category',
+					'value' => 'Click to Chat for WhatsApp',
+				);
+
+				$values['pixel_param_2'] = array(
+					'key'   => 'ID',
+					'value' => '{number}',
+				);
+
+				$values['pixel_param_3'] = array(
+					'key'   => 'Title',
+					'value' => '{title}',
+				);
+
+				$values['pixel_param_4'] = array(
+					'key'   => 'URL',
+					'value' => '{url}',
+				);
+
 			}
 
 			$db_values = get_option( 'ht_ctc_othersettings', array() );
@@ -235,6 +323,8 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 				'v3_28'              => $time,
 				'v3_31'              => $time,
 				'v4_3'               => $time,
+				'v4_34'              => $time,
+				'v4_36'              => $time,
 			);
 
 			$db_values = get_option( 'ht_ctc_plugin_details', array() );

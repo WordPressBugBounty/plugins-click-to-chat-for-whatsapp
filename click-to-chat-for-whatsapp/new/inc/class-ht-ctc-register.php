@@ -92,10 +92,6 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 				delete_option( 'ht_ctc_code_blocks' );
 				delete_option( 'ht_ctc_woo_options' );
 
-				// todo: hard test.. as changed 'ht\_ctc\_s%' to 'ht_ctc_s%'
-
-				// todo: update this logic at ht-commons and test..
-
 				// deletes custom styles, ht_ctc_share, ht_ctc_switch
 				$like_s = $wpdb->esc_like( 'ht_ctc_s' ) . '%';
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

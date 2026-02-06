@@ -74,14 +74,25 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 		 */
 		public function css_styles() {
 
-			$othersettings = get_option( 'ht_ctc_othersettings' );
+			$othersettings      = get_option( 'ht_ctc_othersettings' );
+			$greetings_settings = get_option( 'ht_ctc_greetings_settings' );
 
 			// Entry effects
 			// check: - entry effect - 'from center', 'from corner' - have to make work as similar to other effects
 			$entry = ( isset( $othersettings['show_effect'] ) ) ? esc_attr( $othersettings['show_effect'] ) : '';
 
-			// todo: v4.28 remove:    && 'From Corner' !== $entry   - i.e. now corner animation works using jquery
-			if ( '' !== $entry && 'no-show-effects' !== $entry && 'From Corner' !== $entry ) {
+			// if greetings dialog is modal, then dont add animations. its causing position issue i.e. due to animation-fill-mode: both;
+			$is_greetings_modal = 'no';
+			if ( isset( $greetings_settings['g_position'] ) && 'modal' === $greetings_settings['g_position'] ) {
+				$is_greetings_modal = 'yes';
+			}
+
+			if ( '' !== $entry && 'no-show-effects' !== $entry && 'no' === $is_greetings_modal ) {
+				// if ( '' !== $entry && 'no-show-effects' !== $entry && 'From Corner' !== $entry ) {
+
+				$an_duration = '1s';
+				$an_delay    = '0s';
+				$an_itr      = '1';
 
 				if ( 'From Center' === $entry ) {
 					$entry = 'center';
@@ -89,12 +100,9 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 
 				// From Corner animation handle from js
 				if ( 'From Corner' === $entry ) {
-					$entry = 'corner';
+					$entry       = 'corner';
+					$an_duration = '0.4s';
 				}
-
-				$an_duration = '1s';
-				$an_delay    = '0s';
-				$an_itr      = '1';
 
 				include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-animations.php';
 				$animations = new HT_CTC_Animations();
@@ -105,7 +113,7 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 			// Animation styles
 			$an_type = ( isset( $othersettings['an_type'] ) ) ? esc_attr( $othersettings['an_type'] ) : '';
 
-			if ( '' !== $an_type && 'no-animation' !== $an_type ) {
+			if ( '' !== $an_type && 'no-animation' !== $an_type && 'no' === $is_greetings_modal ) {
 
 				$an_duration = '1s';
 				$an_delay    = ( isset( $othersettings['an_delay'] ) ) ? esc_attr( $othersettings['an_delay'] ) : '0';
@@ -180,6 +188,12 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 			$ht_ctc_os['is_fb_pixel'] = ( isset( $othersettings['fb_pixel'] ) ) ? 'yes' : 'no';
 			$ht_ctc_os['ga_ads']      = ( isset( $othersettings['ga_ads'] ) ) ? 'yes' : 'no';
 
+			if ( ! isset( $ht_ctc_os['data-attributes'] ) ) {
+				$ht_ctc_os['data-attributes'] = '';
+			} else {
+				$ht_ctc_os['data-attributes'] = (string) $ht_ctc_os['data-attributes'];
+			}
+
 			$ht_ctc_os['show_effect'] = ( isset( $othersettings['show_effect'] ) ) ? esc_attr( $othersettings['show_effect'] ) : '';
 
 			// show effect ? if 'From Corner' - then return time (for other effects - this->css_styles() handles)
@@ -226,8 +240,8 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 
 			// Aria-hidden = true
 			if ( isset( $othersettings['aria'] ) ) {
-				$ht_ctc_os['data-attributes'] .= " aria-hidden='true' ";
-				$ht_ctc_os['attributes']       = " aria-hidden='true'";
+				$ht_ctc_os['data-attributes'] .= ' aria-hidden=true ';
+				$ht_ctc_os['attributes']       = ' aria-hidden=true';
 			}
 
 			return $ht_ctc_os;

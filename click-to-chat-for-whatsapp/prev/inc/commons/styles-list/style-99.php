@@ -19,6 +19,7 @@ $s_99_img_width_mobile = esc_attr( $ccw_options_cs['s99_img_width_mobile'] );
 // image - width, height based on device
 $img_css = "";
 
+// output : is in string ony '1'
 if( '1' === $is_mobile ) {
     // $own_image = esc_attr( $ccw_options_cs['s99_mobile_img'] );
     $own_image = esc_url( $ccw_options_cs['s99_mobile_img'] );

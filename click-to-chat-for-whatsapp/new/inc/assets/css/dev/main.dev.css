@@ -19,7 +19,73 @@
 	/* --side-mobile: right; */
 }
 
+/* pointer-events: none; */
+/* .ht-ctc-init-hidden {
+	opacity: 0;
+	visibility: hidden;
+} */
 
+
+.ht-ctc-opacity-hide {
+	opacity: 0;
+}
+
+.ht-ctc-opacity-show {
+	opacity: 1;
+}
+
+/* for display types.. */
+.ht-ctc-display-hide {
+	display: none;
+}
+
+.ht-ctc-display-show {
+	display: block;
+}
+
+/* todo */
+.ht-ctc-display-unset {
+	display: unset !important;
+}
+
+
+
+/* Animations */
+@keyframes ctcBounce {
+	0% {
+		transform: scale(0);
+		opacity: 0;
+	}
+
+	60% {
+		transform: scale(1.3);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+/* FadeIn Animation */
+@keyframes ctc_fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.ht-ctc-bounce {
+	animation: ctcBounce 0.45s ease-out forwards;
+}
+
+.ht-ctc-fade-in {
+	animation: ctc_fadeIn 0.25s ease;
+}
 
 
 /* Reset for Greetings Box */
@@ -39,6 +105,40 @@
 .ht_ctc_chat_greetings_box_layout {
 	clear: both;
 }
+
+/* the parent - where position relative, .. is added. but display propery are added to the child ht_ctc_chat_greetings_box, that why added none at here and auto at child */
+.ht_ctc_greetings {
+	pointer-events: none;
+}
+
+.ht_ctc_chat_greetings_box {
+	pointer-events: auto;
+}
+
+
+.ht_ctc_greetings_box {
+	/* overflow: hidden; */
+
+	/* ANIMATION STATE: CLOSED */
+	opacity: 0;
+	transform-origin: bottom var(--side, right);
+	transform: scale(0) translate(20px, 20px);
+	/* pointer-events: none; */
+	/* Prevents clicking when hidden */
+
+	/* Smooth Transition */
+	transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ANIMATION STATE: OPEN */
+.ht_ctc_greetings_box.ht_ctc_greetings_box_open {
+	opacity: 1;
+	transform: scale(1) translate(0, 0);
+	pointer-events: auto;
+	/* pointer-events: all; */
+}
+
+
 
 /* Backdrop Overlay - element auto creates from js file*/
 .ht_ctc_modal_backdrop {
@@ -62,20 +162,11 @@
 } */
 
 .ht_ctc_notification {
-	animation: ctc_fadeIn 0.25s ease;
+	/* animation: ctc_fadeIn 0.25s ease; */
+	animation: ctcBounce 0.45s ease-out forwards;
 }
 
-/* Animations */
-/* FadeIn Animation */
-@keyframes ctc_fadeIn {
-	from {
-		opacity: 0;
-	}
 
-	to {
-		opacity: 1;
-	}
-}
 
 /* .ht_ctc_chat_greetings_box {
     opacity: 0;
@@ -131,6 +222,36 @@
     pointer-events: auto;
 } */
 
+@keyframes ht_ctc_cta_stick {
+	0% {
+		opacity: 0;
+		transform: translateX(6px) scaleX(0.6);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0) scaleX(1);
+	}
+}
+
+.ht-ctc-cta-stick {
+	transform-origin: var(--side, right) center;
+	animation-name: ht_ctc_cta_stick;
+	animation-duration: 0.12s;
+	animation-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+	animation-fill-mode: both;
+}
+
+/* display: inline-flex;
+align-items: center;
+white-space: nowrap;
+border-radius: 999px; */
+
+
+
+
+
+
 /* Greetings Scroll Behavior */
 .ctc_g_content {
 	max-height: calc(80vh - 140px);
@@ -167,6 +288,7 @@
     background-color: #06e376;
     border: 2px solid #075e54; */
 }
+
 
 /* Scrollbar Styling for Large Screens */
 @media only screen and (min-width: 900px) {

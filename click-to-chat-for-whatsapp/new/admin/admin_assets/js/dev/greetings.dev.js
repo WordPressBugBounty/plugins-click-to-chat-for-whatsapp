@@ -1,30 +1,35 @@
-( function ( $ ) {
+/* global tinyMCE */
+( function htCtcGreetingsModule ( $ ) {
 	// ready
-	$( function () {
-		if ( document.querySelector( '.pr_greetings_template' ) ) {
+	$( function handleGreetingsReady () {
+		var greetingsTemplateElement = document.querySelector( '.pr_greetings_template' );
+		if ( greetingsTemplateElement ) {
 			try {
 				greetings_template();
-			} catch ( e ) {}
+			} catch ( error ) {
+				console.error( 'Failed to initialize greetings template', error );
+			}
 		}
 
-		if (
-			document.querySelector( '.ctc-admin-greetings-page' ) ||
-			document.querySelector( '.ctc-admin-woo-page' )
-		) {
+		var hasGreetingsPage = document.querySelector( '.ctc-admin-greetings-page' );
+		var hasWooPage = document.querySelector( '.ctc-admin-woo-page' );
+		if ( hasGreetingsPage || hasWooPage ) {
 			try {
 				editor();
-			} catch ( e ) {}
+			} catch ( error ) {
+				console.error( 'Failed to initialize greetings editor', error );
+			}
 		}
 
 		/**
 		 * display settings based on Greetings template selection
 		 */
 		function greetings_template () {
-			var greetings_template = $( '.pr_greetings_template select' )
-				.find( ':selected' )
+			var $greetingsTemplateSelect = $( '.pr_greetings_template select' );
+			var greetings_template = $greetingsTemplateSelect.find( ':selected' )
 				.val();
 
-			if ( greetings_template == 'no' || '' == greetings_template ) {
+			if ( greetings_template === 'no' || '' === greetings_template ) {
 				$( '.g_content_collapsible' )
 					.hide();
 			} else {
@@ -33,7 +38,7 @@
 			}
 
 			// greetings-1
-			if ( greetings_template == 'greetings-1' ) {
+			if ( greetings_template === 'greetings-1' ) {
 				$( '.ctc_greetings_settings.ctc_g_1' )
 					.show();
 				$( '.pr_ht_ctc_greetings_1' )
@@ -46,7 +51,7 @@
 			}
 
 			// greetings-2
-			if ( greetings_template == 'greetings-2' ) {
+			if ( greetings_template === 'greetings-2' ) {
 				$( '.ctc_greetings_settings.ctc_g_2' )
 					.show();
 				$( '.pr_ht_ctc_greetings_2' )
@@ -60,25 +65,25 @@
 
 			// on change
 			$( '.pr_greetings_template select' )
-				.on( 'change', function ( e ) {
-					var greetings_template = e.target.value;
+				.on( 'change', function handleGreetingsTemplateOptionChange ( event ) {
+					var greetings_template = event.target.value;
 
 					// ctc_greetings_settings
-					if ( greetings_template == 'no' ) {
+					if ( greetings_template === 'no' ) {
 						$( '.g_content_collapsible' )
 							.hide( 100 );
 						$( ' .ctc_greetings_settings' )
 							.hide();
 					} else {
-					// $(" ." + greetings_template).show(100);
+						// $(" ." + greetings_template).show(100);
 
 						$( '.g_content_collapsible' )
 							.show();
 
 						// if not no - then first hide all and again display required fields..
 						if (
-							greetings_template == 'greetings-2' ||
-						greetings_template == 'greetings-1'
+							greetings_template === 'greetings-2' ||
+							greetings_template === 'greetings-1'
 						) {
 							$( ' .ctc_greetings_settings' )
 								.hide();
@@ -87,7 +92,7 @@
 							.show();
 
 						// greetings-1
-						if ( greetings_template == 'greetings-1' ) {
+						if ( greetings_template === 'greetings-1' ) {
 							$( '.ctc_greetings_settings.ctc_g_1' )
 								.show( 100 );
 							$( '.pr_ht_ctc_greetings_1' )
@@ -96,7 +101,7 @@
 						}
 
 						// greetings-2
-						if ( greetings_template == 'greetings-2' ) {
+						if ( greetings_template === 'greetings-2' ) {
 							$( '.ctc_greetings_settings.ctc_g_2' )
 								.show( 100 );
 							$( '.pr_ht_ctc_greetings_2' )
@@ -123,7 +128,7 @@
 
 			// optin change
 			$( '.is_opt_in' )
-				.on( 'change', function ( e ) {
+				.on( 'change', function handleOptInToggle ( event ) {
 					optin();
 				} );
 		}
@@ -135,11 +140,13 @@
 		 */
 		function greetings_header_image () {
 			var mediaUploader;
+			var attachment;
+			var image_url;
 
 			// Event listener for adding an image
 			$( '.ctc_add_image_wp' )
-				.on( 'click', function ( e ) {
-					e.preventDefault();
+				.on( 'click', function handleAddGreetingImageClick ( event ) {
+					event.preventDefault();
 
 					// If mediaUploader already exists, open it
 					if ( mediaUploader ) {
@@ -157,7 +164,7 @@
 					} );
 
 					// When an image is selected
-					mediaUploader.on( 'select', function () {
+					mediaUploader.on( 'select', function processGreetingImageSelection () {
 						attachment = mediaUploader.state()
 							.get( 'selection' )
 							.first()
@@ -182,9 +189,12 @@
 						console.log( 'image_url: ' + image_url );
 
 						// Custom event: ht_ctc_event_greetings_header_image
-						document.dispatchEvent( new CustomEvent( 'ht_ctc_event_greetings_header_image', {
-							detail: image_url,
-						} ) );
+						document.dispatchEvent( new CustomEvent(
+							'ht_ctc_event_greetings_header_image',
+							{
+								detail: image_url,
+							},
+						) );
 					} );
 
 					// Open the media uploader
@@ -193,8 +203,8 @@
 
 			// Event listener for removing an image
 			$( '.ctc_remove_image_wp' )
-				.on( 'click', function ( e ) {
-					e.preventDefault();
+				.on( 'click', function handleRemoveGreetingImageClick ( event ) {
+					event.preventDefault();
 					$( '.g_header_image' )
 						.val( '' );
 					$( '.g_header_image_preview' )
@@ -212,8 +222,9 @@
 					.val() );
 
 				// If no header image is set, hide related elements
+				// g_header_image type is string
 				if ( $( '.g_header_image' )
-					.val() == '' ) {
+					.val() === '' ) {
 					$( '.row_g_header_online_status' )
 						.hide();
 					$( '.row_g_header_online_status_color' )
@@ -242,7 +253,7 @@
 
 			// Event listener for changes to the online status checkbox
 			$( '.g_header_online_status' )
-				.on( 'change', function () {
+				.on( 'change', function handleHeaderOnlineStatusChange () {
 					console.log( 'on change g_header_online_status' );
 
 					// Show/hide online status color based on checkbox state
@@ -274,7 +285,9 @@
 				if ( document.getElementById( 'header_content_ifr' ) ) {
 					try {
 						tiny_bg_color();
-					} catch ( e ) {}
+					} catch ( error ) {
+						console.error( 'tiny_bg_color() failed', error );
+					}
 				} else {
 					check++;
 					if ( check < check_times ) {
@@ -291,14 +304,27 @@
 
 				try {
 					// this works for single editor.
-					// tinyMCE.activeEditor.dom.setStyle(tinyMCE.activeEditor.getBody(), 'backgroundColor', '#26a69a');
+					// tinyMCE.activeEditor.dom.setStyle(
+					// 	tinyMCE.activeEditor.getBody(), 'backgroundColor', '#26a69a'
+					// );
 
 					// for multiple editors
-					for ( var i = 0; i < tinyMCE.editors.length; i++ ) {
-						var editor = tinyMCE.editors[ i ];
-						editor.dom.setStyle( editor.getBody(), 'backgroundColor', '#26a69a' );
-					}
-				} catch ( e ) {}
+					Array.prototype.forEach.call(
+						tinyMCE.editors,
+						function applyTinyMceBackground ( editor ) {
+							if ( ! editor || ! editor.dom || ! editor.getBody ) {
+								return;
+							}
+							editor.dom.setStyle(
+								editor.getBody(),
+								'backgroundColor',
+								'#26a69a',
+							);
+						},
+					);
+				} catch ( error ) {
+					console.error( 'Unable to set TinyMCE background color', error );
+				}
 
 				// var i = document.querySelectorAll(".ctc_wp_editor iframe");
 				// i.forEach(e => {

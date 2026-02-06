@@ -53,33 +53,44 @@ if ( isset( $s1_options['s1_m_fullwidth'] ) ) {
 	<?php
 }
 
+
+$ctc_type = isset( $type ) ? $type : 'chat';
+
+$icon_html = '';
+/* Load Icon if enabled */
+if ( '' !== $s1_add_icon ) {
+
+	$s1_svg_css = 'margin-right:6px;';
+
+	$s1_svg_attrs = array(
+		'color'          => $s1_icon_color,
+		'icon_size'      => $s1_icon_size,
+		'type'           => $ctc_type,
+		'ht_ctc_svg_css' => $s1_svg_css,
+	);
+
+	// Load SVG functions
+	include_once HT_CTC_PLUGIN_DIR . 'new/inc/assets/img/ht-ctc-svg-images.php';
+
+	$icon_html = ht_ctc_singlecolor( $s1_svg_attrs );
+}
 ?>
+
 <button 
 <?php
 if ( $s1_style ) {
 	printf( 'style="%s"', esc_attr( $s1_style ) ); }
 ?>
 class="ctc-analytics s1_btn ctc_s_1">
-<?php
-if ( '' !== $s1_add_icon ) {
-
-	$s1_svg_css = 'margin-right:6px;';
-
-	$s1_svg_attrs = array(
-		'color'          => "$s1_icon_color",
-		'icon_size'      => "$s1_icon_size",
-		'type'           => "$type",
-		'ht_ctc_svg_css' => "$s1_svg_css",
-	);
-	include_once HT_CTC_PLUGIN_DIR . 'new/inc/assets/img/ht-ctc-svg-images.php';
-  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG markup is escaped in ht_ctc_singlecolor().
-	echo ht_ctc_singlecolor( $s1_svg_attrs );
-}
-?>
-<span class="ctc_cta"><?php echo esc_html( $call_to_action ); ?></span>
+	<?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG is sanitized at source.
+	echo $icon_html;
+	?>
+	<span class="ctc_cta"><?php echo esc_html( $call_to_action ); ?></span>
 </button>
+
 <?php
-// todo: instead of display message like this.. remove here and focus at customize styles settings.. and at select style..
+// instead of display message like this.. remove here and focus at customize styles settings.. and at select style..
 // admin - add for admin demo
 if ( is_admin() ) {
   // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of the 'page' slug on admin screens; no state change or privilege escalation.

@@ -1733,7 +1733,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Customize_Styles' ) ) {
 			foreach ( $input as $key => $value ) {
 				if ( isset( $input[ $key ] ) ) {
 
-					if ( in_array( $key, $add_suffix ) ) {
+					if ( in_array( $key, $add_suffix, true ) ) {
 
 						$input[ $key ] = str_replace( ' ', '', $input[ $key ] );
 

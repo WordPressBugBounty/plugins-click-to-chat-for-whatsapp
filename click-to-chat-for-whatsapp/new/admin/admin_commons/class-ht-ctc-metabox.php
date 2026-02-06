@@ -205,7 +205,7 @@ if ( ! class_exists( 'HT_CTC_MetaBox' ) ) {
 
 			<?php if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) { ?>
 				<p class="ht-ctc-meta-description">
-					<a href="https://holithemes.com/plugins/click-to-chat/custom-url/" target="_blank">Custom Link</a> (PRO)
+					<a href="https://holithemes.com/plugins/click-to-chat/docs/custom-url/" target="_blank">Custom Link</a> (PRO)
 				</p>
 			<?php } ?>
 
@@ -311,7 +311,7 @@ if ( ! class_exists( 'HT_CTC_MetaBox' ) ) {
 								}
 							} elseif ( 'call_to_action' === $key ) {
 								$new[ $key ] = sanitize_text_field( $ht_ctc_pagelevel[ $key ] );
-							} elseif ( in_array( $key, $editor ) ) {
+							} elseif ( in_array( $key, $editor, true ) ) {
 								if ( ! empty( $ht_ctc_pagelevel[ $key ] ) && '' !== $ht_ctc_pagelevel[ $key ] && function_exists( 'ht_ctc_wp_sanitize_text_editor' ) ) {
 									$new[ $key ] = ht_ctc_wp_sanitize_text_editor( $ht_ctc_pagelevel[ $key ] );
 								}

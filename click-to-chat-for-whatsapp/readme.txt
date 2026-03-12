@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.9
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.37
+Stable tag: 4.38
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -355,15 +355,39 @@ Help by [Translating the plugin](https://translate.wordpress.org/projects/wp-plu
 
 == Installation ==
 
-= From Dashboard ( WordPress admin ) =
-* plugins -> Add New
-* search for 'click to chat'
-* click on Install Now and then Activate.
+Getting started is quick and simple. You can install the plugin directly from your WordPress dashboard or manually via FTP.
 
-= using FTP or similar =
-* Unzip "Click-to-Chat" file and 
-* Upload "Click-to-Chat" folder to the "/wp-content/plugins/" directory.
-* Activate the plugin through the "Plugins" menu in WordPress.
+= 🚀 Install from WordPress Dashboard (Recommended) =
+
+1. Log in to your WordPress admin dashboard.
+2. Navigate to **Plugins** > **Add New** in the left sidebar.
+3. In the top right search bar, type `Click to Chat`.
+4. Find the plugin in the search results. Check that it is built by **HoliThemes**, and click **Install Now**.
+5. Once the installation is complete, click **Activate**.
+
+= 📂 Manual Installation (via FTP) =
+
+If you prefer to install the plugin manually, use the instructions below:
+
+1. Download the plugin ZIP file and extract its contents.
+2. Access your website server using an FTP client or File Manager.
+3. Upload the extracted folder to the `/wp-content/plugins/` directory on your server.
+4. Go to the **Plugins** menu in your WordPress admin dashboard.
+5. Locate **Click to Chat** in the list and click **Activate**.
+
+= 🚀 What's Next? (Quick Setup) =
+
+Once activated, establishing your WhatsApp chat button takes less than a minute:
+
+1. In your WordPress dashboard, navigate to the newly added **Click to Chat** menu located in the left sidebar.
+2. Enter your **WhatsApp Number** (include your country code, but omit `+` or `00`).
+3. Choose a beautiful layout from the **Select Style** to match your website design.
+4. Add a **Pre-filled Message** (optional) to make it easier for users to start a conversation with you.
+5. Click **Save Changes**.
+
+🎉 **You are all set!** Your website now has a fully functional, highly engaging WhatsApp chat button. 
+
+For advanced customizations—like greeting dialogs, page-level settings, analytics, or WooCommerce integration—explore the additional tabs at the **Click to Chat** menu or visit our [Documentation](https://holithemes.com/plugins/click-to-chat/).
 
 == Frequently Asked Questions ==
 
@@ -376,7 +400,7 @@ country code +1
 number: 6123456789
 ** WhatsApp number: 16123456789 **
 
-(WhatsApp Number)[https://holithemes.com/plugins/click-to-chat/whatsapp-number/]
+[WhatsApp Number](https://holithemes.com/plugins/click-to-chat/whatsapp-number/)
 
 
 = Pre-filled Message =
@@ -501,7 +525,7 @@ Share Text - E.g.
 
 = AMP Compatibility =
 
-Click to Chat is Compatible with (AMP)[https://wordpress.org/plugins/amp/] plugin. AMP won't load plugins JavaScript files so limited functionality available.
+Click to Chat is Compatible with [AMP](https://wordpress.org/plugins/amp/) plugin. AMP won't load plugins JavaScript files so limited functionality available.
 
 = 🔧 Basic Troubleshooting = 
 
@@ -510,7 +534,7 @@ Click to Chat is Compatible with (AMP)[https://wordpress.org/plugins/amp/] plugi
     * Server side cache (some hosting providers adds cache functionality by default)
     * CDN cache (Cache invalidation)
 * Check Display settings
-* (page level settings)[https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/]
+* [page level settings](https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/)
 
 ✍️ For any queries, please contact us.
 
@@ -520,26 +544,42 @@ For any issues with the plugin / suggestions:
 
 * WordPress [new topic](https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0) 
 
-= ⭐️ Give Support =
+= ⭐️ Leave a Review =
 
-If you like the plugin, support the developers by giving [5 star rating](https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/reviews/#new-post)  
+If Click to Chat is helping your website connect with visitors, we’d really appreciate it if you could take a moment to leave a [5-star rating](https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/reviews/#new-post) on WordPress.org.
 
-Thank you so much in advance from "Click to Chat" Team
+Your feedback helps us improve the plugin and continue building useful features for the community.
+
+Thank you for your support!
+
+— The Click to Chat Team, HoliThemes
 
 == Upgrade Notice ==
 
-= using FTP or similar =
-* Delete Click-to-Chat folder - your setting will not lost.
-* unzip Click-to-Chat file and 
-* Upload "Click-to-Chat" folder to the "/wp-content/plugins/" directory.
-* Activate the plugin through the "Plugins" menu in WordPress.
+Keeping your plugin updated guarantees you have the most up-to-date features and performance improvements. Your settings will be safely preserved.
 
-= From WordPress Dashboard =
-* From wp-admin -> plugins
-* Click Update now when a new version is available
-* Or enable Auto-updates to update automatically
+= 🚀 Update from WordPress Dashboard (Recommended) =
+
+1. Log in to your WordPress admin dashboard.
+2. Navigate to **Plugins** > **Installed Plugins**.
+3. Locate **Click to Chat** and click **Update Now** if a new version is available.
+4. *Optional:* Click **Enable auto-updates** to ensure you always have the most recent release without having to manually check!
+
+= 📂 Manual Update (via FTP) =
+
+If you prefer to update manually, your settings will remain perfectly intact in your database:
+
+1. Download the newest plugin ZIP file and extract its contents.
+2. Connect to your server using an FTP client or File Manager.
+3. Delete the existing plugin folder from the `/wp-content/plugins/` directory on your server. 
+4. Upload the newly extracted plugin folder to the `/wp-content/plugins/` directory.
+5. Go to the **Plugins** menu in your WordPress admin dashboard and ensure the plugin is **Active**.
 
 == Changelog ==
+
+= 4.38 =
+* Fix: Style 6 initial color not applied.
+* Fix: Greetings dialog loads fallback values if not found in the database.
 
 = 4.37 =
 * Fix: Webhook not working with some integration tools.
@@ -556,15 +596,5 @@ Thank you so much in advance from "Click to Chat" Team
 * Enhancement: Chat widget now works on WooCommerce shop pages with page-level call to action and pre-filled messages.
 * Enhancement: Added Notification badge feature.
 * Fix: Shortcodes were not working with WooCommerce-specific variables.
-
-= 4.33 =
-* Fix: Animations issues for call to action, Greetings dialog.
-
-= 4.32 =
-* Enhancement: Display chat button like WooCommerce add to cart button.
-* Fix: Greetings dialog header image not adding properly.
-
-= 4.31 =
-* Fix: Shortcode style-1 added icon
 
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)

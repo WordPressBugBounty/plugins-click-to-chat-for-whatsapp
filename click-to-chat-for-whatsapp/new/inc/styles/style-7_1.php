@@ -104,9 +104,13 @@ if ( 'hover' === $s7_cta_type ) {
 
 	if ( 'yes' === $is_ctc_admin ) {
 		$s7_icon_padding_css .= 'padding: 12px; border-radius:25px;';
-		$s7_cta_css          .= "$s7_hover_cta_padding_css";
+		// $s7_border_size
+		// $s7_icon_padding_css .= "padding: $s7_border_size; border-radius:25px;";
+		$s7_cta_css .= "$s7_hover_cta_padding_css";
 	} else {
+		// $s7_icon_padding_css .= "padding: $s7_border_size; border-radius:25px;";
 		$s7_cta_css .= 'padding: 1px 16px;';
+		// $s7_cta_css          .= "$s7_hover_cta_padding_css";
 	}
 
 	$s7_hover_styles = ".ht-ctc .ctc_s_7_1:hover{background-color:$s7_bgcolor_hover !important;}.ht-ctc .ctc_s_7_1:hover .ctc_s_7_1_cta{color:$s7_icon_color_hover !important;}.ht-ctc .ctc_s_7_1:hover svg g path{fill:$s7_icon_color_hover !important;}";

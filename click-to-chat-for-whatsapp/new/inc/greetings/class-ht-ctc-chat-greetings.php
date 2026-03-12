@@ -167,6 +167,30 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 
 			$g_close_button_styles = "position:absolute; top:0; $g_close_button_position:0; cursor:pointer; padding:5px; margin:4px; border-radius:50%; background-color: unset !important; z-index: 9999; line-height: 1;";
 
+			include_once HT_CTC_PLUGIN_DIR . 'new/admin/db/defaults/class-ht-ctc-defaults-greetings.php';
+
+			$greetings_fallback_values  = array();
+			$g1_fallback_values         = array();
+			$g2_fallback_values         = array();
+			$g_settings_fallback_values = array();
+
+			// check if class exists
+			if ( class_exists( 'HT_CTC_Defaults_Greetings' ) ) {
+
+				$default_greetings = new HT_CTC_Defaults_Greetings();
+
+				// if greetings function exist in class
+				// if ( method_exists( $default_greetings, 'greetings' ) ) {
+				// $greetings_fallback_values = $default_greetings->greetings();
+				// }
+
+				$greetings_fallback_values  = $default_greetings->greetings;
+				$g1_fallback_values         = $default_greetings->g_1;
+				$g2_fallback_values         = $default_greetings->g_2;
+				$g_settings_fallback_values = $default_greetings->g_settings;
+
+			}
+
 			/**
 			 * If desktop and mobile have different settings and different position (left/right)
 			 * If greetings dialog is set to 'next' position and if greetings dialog size is 'small' (for 'mid' and 'large' sizes, position adjustments are not required)

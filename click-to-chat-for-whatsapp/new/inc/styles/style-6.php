@@ -22,7 +22,7 @@ $s6_txt_decoration_on_hover = isset( $s6_options['s6_txt_decoration_on_hover'] )
 $s6_styles = '';
 
 if ( '' !== $s6_txt_color ) {
-	$s6_styles .= "color: '.$s6_txt_color.'; ";
+	$s6_styles .= 'color: ' . $s6_txt_color . '; ';
 }
 if ( '' !== $s6_txt_decoration ) {
 	$s6_styles .= 'text-decoration: ' . $s6_txt_decoration . '; ';

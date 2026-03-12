@@ -109,10 +109,11 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 					'value' => '{title}',
 				);
 
-				$values['g_an_param_3'] = array(
+				$values['g_an_param_3']     = array(
 					'key'   => 'url',
 					'value' => '{url}',
 				);
+				$values['g_an_param_order'] = '4';
 
 				$values['gtm']            = '1';
 				$values['gtm_event_name'] = 'Click to Chat';
@@ -146,10 +147,11 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 					'value' => '{url}',
 				);
 
-				$values['gtm_param_5'] = array(
+				$values['gtm_param_5']     = array(
 					'key'   => 'ref',
 					'value' => 'dataLayer push',
 				);
+				$values['gtm_param_order'] = '6';
 
 				$values['fb_pixel']                  = '1';
 				$values['pixel_event_type']          = 'trackCustom';
@@ -179,10 +181,11 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 					'value' => '{title}',
 				);
 
-				$values['pixel_param_4'] = array(
+				$values['pixel_param_4']     = array(
 					'key'   => 'URL',
 					'value' => '{url}',
 				);
+				$values['pixel_param_order'] = '5';
 
 			}
 

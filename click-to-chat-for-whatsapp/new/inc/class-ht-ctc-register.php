@@ -91,6 +91,7 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 				delete_option( 'ht_ctc_cs_options' );
 				delete_option( 'ht_ctc_code_blocks' );
 				delete_option( 'ht_ctc_woo_options' );
+				delete_option( 'ht_ctc_admin_settings' );
 
 				// deletes custom styles, ht_ctc_share, ht_ctc_switch
 				$like_s = $wpdb->esc_like( 'ht_ctc_s' ) . '%';

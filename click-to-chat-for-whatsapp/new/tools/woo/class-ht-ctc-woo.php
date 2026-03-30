@@ -28,6 +28,7 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 		/**
 		 * Register WooCommerce integration hooks.
+		 * Decides where to place the WhatsApp widget on Shop and Single Product pages.
 		 *
 		 * @return void
 		 */
@@ -36,17 +37,17 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			$woo = get_option( 'ht_ctc_woo_options' );
 
 			// chat - woo values
-			add_filter( 'ht_ctc_fh_chat', array( $this, 'chat' ) );
+			add_filter( 'ht_ctc_fh_chat', array( $this, 'override_chat' ) );
 
 			// woo places
 			$woo_position = ( isset( $woo['woo_position'] ) ) ? esc_attr( $woo['woo_position'] ) : 'select';
 			if ( 'select' !== $woo_position ) {
-				add_action( $woo_position, array( $this, 'call_add_styles' ) );
+				add_action( $woo_position, array( $this, 'add_widget_single_product_page' ) );
 			}
 
 			// shop page - add styles
 			if ( isset( $woo['woo_shop_add_whatsapp'] ) ) {
-				add_action( 'woocommerce_after_shop_loop_item', array( $this, 'shop_page_add_styles' ), 20 );
+				add_action( 'woocommerce_after_shop_loop_item', array( $this, 'add_widget_shop_page' ), 20 );
 			}
 
 			// cart page
@@ -68,10 +69,12 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 		/**
 		 * Shop page, archive items add style..
+		 * Displays the WhatsApp button next to each product in the shop/archive grid.
+		 * Retrieves product data and replaces dynamic variables like {product} and {price}.
 		 *
 		 * @return void
 		 */
-		public function shop_page_add_styles() {
+		public function add_widget_shop_page() {
 
 			$woo_options   = get_option( 'ht_ctc_woo_options' );
 			$chat          = get_option( 'ht_ctc_chat_options' );
@@ -99,14 +102,26 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			 * shop call to action - if not - shop page level - if not - call to action ..
 			 * here variables works based on the product .. {url} its product url not the page url..
 			 */
-			$call_to_action = ( isset( $woo_options['woo_shop_call_to_action'] ) ) ? esc_attr( $woo_options['woo_shop_call_to_action'] ) : '';
-			if ( '' === $call_to_action ) {
-				$call_to_action = ( isset( $ht_ctc_pagelevel['call_to_action'] ) ) ? esc_attr( $ht_ctc_pagelevel['call_to_action'] ) : esc_attr( $chat['call_to_action'] );
+			// Call to action
+			if ( isset( $ht_ctc_pagelevel['call_to_action'] ) ) {
+				$call_to_action = esc_attr( $ht_ctc_pagelevel['call_to_action'] );
+			} elseif ( isset( $woo_options['woo_shop_call_to_action'] ) && '' !== $woo_options['woo_shop_call_to_action'] ) {
+				$call_to_action = esc_attr( $woo_options['woo_shop_call_to_action'] );
+				$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'woo_shop_call_to_action' );
+			} else {
+				$call_to_action = ( isset( $chat['call_to_action'] ) ) ? esc_attr( $chat['call_to_action'] ) : '';
+				$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'call_to_action' );
 			}
 
-			$pre_filled = ( isset( $woo_options['woo_shop_pre_filled'] ) ) ? esc_attr( $woo_options['woo_shop_pre_filled'] ) : '';
-			if ( '' === $pre_filled ) {
-				$pre_filled = ( isset( $ht_ctc_pagelevel['pre_filled'] ) ) ? esc_attr( $ht_ctc_pagelevel['pre_filled'] ) : esc_attr( $chat['pre_filled'] );
+			// Pre-filled
+			if ( isset( $ht_ctc_pagelevel['pre_filled'] ) ) {
+				$pre_filled = esc_attr( $ht_ctc_pagelevel['pre_filled'] );
+			} elseif ( isset( $woo_options['woo_shop_pre_filled'] ) && '' !== $woo_options['woo_shop_pre_filled'] ) {
+				$pre_filled = esc_attr( $woo_options['woo_shop_pre_filled'] );
+				$pre_filled = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'woo_shop_pre_filled' );
+			} else {
+				$pre_filled = ( isset( $chat['pre_filled'] ) ) ? esc_attr( $chat['pre_filled'] ) : '';
+				$pre_filled = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'pre_filled' );
 			}
 
 			if ( function_exists( 'wc_get_product' ) ) {
@@ -204,10 +219,11 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 		/**
 		 * Render styles when viewing WooCommerce single product pages.
+		 * Checks if the current page is a single product page before displaying the widget.
 		 *
 		 * @return void
 		 */
-		public function call_add_styles() {
+		public function add_widget_single_product_page() {
 
 			if ( function_exists( 'is_product' ) && function_exists( 'wc_get_product' ) ) {
 				if ( is_product() ) {
@@ -220,6 +236,7 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 		 * Woo places - add styles..
 		 *
 		 * Woo single styles located at woo-single-styles/woo-style-*.php for single product pages.
+		 * Renders the WhatsApp widget on the Single Product Page with correct CSS and layout.
 		 *
 		 * @return void
 		 */
@@ -254,15 +271,32 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 				return;
 			}
 
-			// call to action
-			$call_to_action = ( isset( $ht_ctc_pagelevel['call_to_action'] ) ) ? esc_attr( $ht_ctc_pagelevel['call_to_action'] ) : esc_attr( $chat['call_to_action'] );
-			if ( ! isset( $ht_ctc_pagelevel['call_to_action'] ) && isset( $woo_options['woo_call_to_action'] ) && '' !== $woo_options['woo_call_to_action'] ) {
+			// Call to action
+			if ( isset( $ht_ctc_pagelevel['call_to_action'] ) ) {
+				$call_to_action = esc_attr( $ht_ctc_pagelevel['call_to_action'] );
+			} elseif ( isset( $woo_options['woo_call_to_action'] ) && '' !== $woo_options['woo_call_to_action'] ) {
 				$call_to_action = esc_attr( $woo_options['woo_call_to_action'] );
+				$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'woo_call_to_action' );
+			} else {
+				$call_to_action = ( isset( $chat['call_to_action'] ) ) ? esc_attr( $chat['call_to_action'] ) : '';
+				$call_to_action = apply_filters( 'wpml_translate_single_string', $call_to_action, 'Click to Chat for WhatsApp', 'call_to_action' );
 			}
+
+			// Pre-filled
+			// if ( isset( $ht_ctc_pagelevel['pre_filled'] ) ) {
+			// $pre_filled = esc_attr( $ht_ctc_pagelevel['pre_filled'] );
+			// } elseif ( isset( $woo_options['woo_pre_filled'] ) && '' !== $woo_options['woo_pre_filled'] ) {
+			// $pre_filled = esc_attr( $woo_options['woo_pre_filled'] );
+			// $pre_filled = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'woo_pre_filled' );
+			// } else {
+			// $pre_filled = ( isset( $chat['pre_filled'] ) ) ? esc_attr( $chat['pre_filled'] ) : '';
+			// $pre_filled = apply_filters( 'wpml_translate_single_string', $pre_filled, 'Click to Chat for WhatsApp', 'pre_filled' );
+			// }
 
 			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/ht-ctc-formatting.php';
 			if ( function_exists( 'ht_ctc_woo_single_product_page_variables' ) ) {
 				$call_to_action = ht_ctc_woo_single_product_page_variables( $call_to_action );
+				// $pre_filled     = ht_ctc_woo_single_product_page_variables( $pre_filled );
 			}
 
 			$woo_single_position_center = ( isset( $woo_options['woo_single_position_center'] ) ) ? esc_attr( $woo_options['woo_single_position_center'] ) : '';
@@ -332,6 +366,7 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			$path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/tools/woo/woo-single-styles/woo-style-' . $style . '.php';
 
 			if ( is_file( $path ) ) {
+				// data-pre_filled="<?php echo esc_attr( $pre_filled );
 				?>
 			<div class="<?php echo esc_attr( $class_names ); ?>" style="<?php echo esc_attr( $css ); ?>" data-dt="<?php echo esc_attr( $woo_single_block_type ); ?>">
 				<?php include $path; ?>
@@ -344,11 +379,13 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 		/**
 		 * Filter WooCommerce chat configuration for product context.
+		 * Intercepts the default chat message settings and replaces generic text
+		 * with the current product's Name, Price, and SKU before sending to WhatsApp.
 		 *
 		 * @param array<string, mixed> $ht_ctc_chat Chat configuration array.
 		 * @return array<string, mixed> Filtered chat configuration.
 		 */
-		public function chat( $ht_ctc_chat ) {
+		public function override_chat( $ht_ctc_chat ) {
 
 			$woo_options   = get_option( 'ht_ctc_woo_options' );
 			$othersettings = get_option( 'ht_ctc_othersettings' );

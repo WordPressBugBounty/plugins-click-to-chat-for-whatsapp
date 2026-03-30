@@ -76,13 +76,10 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			$ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings_start', $ht_ctc_greetings );
 
 			$page_id = get_the_ID();
-			// $page_id = get_queried_object_id();
 
-			// $object_id = get_queried_object_id();
-			// if (0 === $object_id || '' === $object_id) {
+			// $page_id = get_queried_object_id();
+			// if ( 0 === $page_id || '' === $page_id ) {
 			// $page_id = get_the_ID();
-			// } else {
-			// $page_id = $object_id;
 			// }
 
 			$page_url   = get_permalink();

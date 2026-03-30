@@ -120,13 +120,10 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			$is_page_level_settings = 'yes';
 
 			$page_id = get_the_ID();
-			// $page_id = get_queried_object_id();
 
-			// $object_id = get_queried_object_id();
-			// if ( 0 === $object_id || '' === $object_id ) {
+			// $page_id = get_queried_object_id();
+			// if ( 0 === $page_id || '' === $page_id ) {
 			// $page_id = get_the_ID();
-			// } else {
-			// $page_id = $object_id;
 			// }
 
 			$page_url   = get_permalink();
@@ -145,8 +142,9 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				}
 
 				// Home page is not singular; get_the_ID might not be correct; no page-level settings.
-				// $is_page_level_settings = 'no';
-
+				if ( ! is_singular() ) {
+					$is_page_level_settings = 'no';
+				}
 			} elseif ( is_singular() ) {
 				// Singular page.
 				$page_url   = get_permalink();
@@ -415,6 +413,7 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				'schedule'   => $ht_ctc_chat['schedule'],
 				'se'         => $ht_ctc_os['show_effect'],
 				'ani'        => $ht_ctc_os['an_type'],
+				'page_id'    => $page_id,
 			);
 
 			// desktop url structure if web whatsapp

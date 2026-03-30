@@ -3,7 +3,7 @@ Requires at least: 4.7
 Tested up to: 6.9
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.38
+Stable tag: 4.39
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -576,6 +576,10 @@ If you prefer to update manually, your settings will remain perfectly intact in 
 5. Go to the **Plugins** menu in your WordPress admin dashboard and ensure the plugin is **Active**.
 
 == Changelog ==
+
+= 4.39 =
+* Fix: WooCommerce single product page widget configuration with multilingual plugins.
+* Fix: Homepage settings were incorrectly inherited from other pages when not set as a single page.
 
 = 4.38 =
 * Fix: Style 6 initial color not applied.

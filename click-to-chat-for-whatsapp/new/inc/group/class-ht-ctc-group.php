@@ -75,6 +75,10 @@ if ( ! class_exists( 'HT_CTC_Group' ) ) {
 			$ht_ctc_group['class_names'] = 'ht-ctc ht-ctc-group ';
 
 			$page_id = get_the_ID();
+			// $page_id = get_queried_object_id();
+			// if ( 0 === $page_id || '' === $page_id ) {
+			// $page_id = get_the_ID();
+			// }
 
 			// At page level
 			$ht_ctc_pagelevel = get_post_meta( $page_id, 'ht_ctc_pagelevel', true );

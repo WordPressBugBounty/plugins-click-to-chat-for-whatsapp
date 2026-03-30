@@ -39,6 +39,8 @@ if ( ! function_exists( 'ht_ctc_process_page_list_value' ) ) {
 $this_page_id = 0;
 if ( isset( $page_id ) && is_scalar( $page_id ) ) {
 	$this_page_id = intval( $page_id );
+} elseif ( function_exists( 'get_queried_object_id' ) && get_queried_object_id() ) {
+	$this_page_id = get_queried_object_id();
 } elseif ( function_exists( 'get_the_ID' ) && get_the_ID() ) {
 	$this_page_id = get_the_ID();
 }

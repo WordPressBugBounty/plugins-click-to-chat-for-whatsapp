@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
 Requires at least: 4.7
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.39
+Stable tag: 4.40
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +14,7 @@ WhatsApp Chat🔥. Let's make your Web page visitors contact you through 'WhatsA
 
 WhatsApp Chat. Let's make your Web page visitors contact you through "WhatsApp" or "WhatsApp Business" with a single click (WhatsApp Chat, Group).
 
-[Demo](https://holithemes.com/plugins/click-to-chat/list-of-styles/)  |  [Documentation](https://holithemes.com/plugins/click-to-chat/)  |  [Support](https://holithemes.com/plugins/click-to-chat/support/)  |  [PRO](https://holithemes.com/plugins/click-to-chat/pricing/)
+[Home](https://holithemes.com/plugins/click-to-chat/)  |  [Demo](https://holithemes.com/plugins/click-to-chat/list-of-styles/)  |  [Documentation](https://holithemes.com/plugins/click-to-chat/docs/)  |  [Support](https://holithemes.com/plugins/click-to-chat/support/)  |  [PRO](https://holithemes.com/plugins/click-to-chat/pricing/)
 
 == WhatsApp Chat ==
 
@@ -554,28 +554,11 @@ Thank you for your support!
 
 — The Click to Chat Team, HoliThemes
 
-== Upgrade Notice ==
-
-Keeping your plugin updated guarantees you have the most up-to-date features and performance improvements. Your settings will be safely preserved.
-
-= 🚀 Update from WordPress Dashboard (Recommended) =
-
-1. Log in to your WordPress admin dashboard.
-2. Navigate to **Plugins** > **Installed Plugins**.
-3. Locate **Click to Chat** and click **Update Now** if a new version is available.
-4. *Optional:* Click **Enable auto-updates** to ensure you always have the most recent release without having to manually check!
-
-= 📂 Manual Update (via FTP) =
-
-If you prefer to update manually, your settings will remain perfectly intact in your database:
-
-1. Download the newest plugin ZIP file and extract its contents.
-2. Connect to your server using an FTP client or File Manager.
-3. Delete the existing plugin folder from the `/wp-content/plugins/` directory on your server. 
-4. Upload the newly extracted plugin folder to the `/wp-content/plugins/` directory.
-5. Go to the **Plugins** menu in your WordPress admin dashboard and ensure the plugin is **Active**.
-
 == Changelog ==
+
+= 4.40 =
+* Enhancement: Admin UI improvements for better user experience.
+* Fix: Minor bug fixes and performance optimizations.
 
 = 4.39 =
 * Fix: WooCommerce single product page widget configuration with multilingual plugins.
@@ -602,3 +585,11 @@ If you prefer to update manually, your settings will remain perfectly intact in 
 * Fix: Shortcodes were not working with WooCommerce-specific variables.
 
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)
+
+== Upgrade Notice ==
+
+= 4.40 =
+Admin UI improvements and minor bug fixes. Update recommended.
+
+= 4.39 =
+Fixes WooCommerce single product page widget config with multilingual plugins and homepage settings inheritance. Update recommended.

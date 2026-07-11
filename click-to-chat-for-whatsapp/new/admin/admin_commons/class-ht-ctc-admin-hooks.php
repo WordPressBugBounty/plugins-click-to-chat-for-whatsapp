@@ -61,9 +61,16 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 				// Admin notices.
 			$this->admin_notice();
 
+				// Detect settings saves truncated by the server (max_input_vars).
+			// add_action( 'admin_init', array( $this, 'detect_truncated_save' ) );
+			// add_action( 'admin_notices', array( $this, 'truncated_save_notice' ) );
+
 				// ht_ctc_ah_admin.
 			add_action( 'ht_ctc_ah_admin_after_sanitize', array( $this, 'after_sanitize' ) );
 
+			/**
+			 * Check all pages, cache plugins are covered.
+			 */
 				// Clear cache.
 			add_action( 'update_option_ht_ctc_admin_pages', array( $this, 'clear_cache' ) );
 				// Clear cache - customize styles.
@@ -96,11 +103,129 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 			 * DB and DB2 will also run when version changes
 			 * from class-ht-ctc-register.php -> version_changed().
 			 */
-			$s1 = get_option( 'ht_ctc_s1' );
+			$s1 = HT_CTC_Utils::get_option( 'ht_ctc_s1' );
 
 			if ( ! isset( $s1['s1_text_color'] ) ) {
 				include_once HT_CTC_PLUGIN_DIR . '/new/admin/db/class-ht-ctc-db2.php';
 			}
+		}
+
+		/**
+		 * Detect a settings-save POST that the server truncated (max_input_vars).
+		 *
+		 * Admin JS prepends a hidden ht_ctc_field_count field (first in the form,
+		 * so it survives truncation) holding the number of fields the browser
+		 * submitted. If PHP received fewer input vars than that, the server
+		 * dropped fields (typically the nonce and later settings), so the save
+		 * fails or loses data. Store the counts for an admin notice.
+		 *
+		 * Runs on admin_init, before options.php verifies the nonce — the nonce
+		 * field itself may be one of the dropped fields, so this check cannot
+		 * rely on nonce verification. It only reads counts and writes a
+		 * per-user transient; it does not touch settings.
+		 *
+		 * @return void
+		 */
+		public function detect_truncated_save() {
+
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- diagnostic only; truncation may have dropped the nonce field itself.
+			if ( ! isset( $_POST['ht_ctc_field_count'], $_POST['option_page'] ) ) {
+				return;
+			}
+
+			$option_page = sanitize_text_field( wp_unslash( $_POST['option_page'] ) );
+
+			// Only Click to Chat settings groups.
+			if ( 0 !== strpos( $option_page, 'ht_ctc_' ) ) {
+				return;
+			}
+
+			$expected = absint( wp_unslash( $_POST['ht_ctc_field_count'] ) );
+			$received = $this->count_post_leaves( $_POST );
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
+
+			if ( $expected > 0 && $received < $expected ) {
+				set_transient(
+					'ht_ctc_truncated_save_' . get_current_user_id(),
+					array(
+						'expected'       => $expected,
+						'received'       => $received,
+						'max_input_vars' => (int) ini_get( 'max_input_vars' ),
+					),
+					5 * MINUTE_IN_SECONDS
+				);
+			}
+		}
+
+		/**
+		 * Count scalar leaf values in a (possibly nested) request array.
+		 *
+		 * Matches how PHP counts input vars for max_input_vars: each scalar
+		 * value is one var, array fields count per entry.
+		 *
+		 * @param array $data Request data.
+		 * @return int
+		 */
+		private function count_post_leaves( $data ) {
+
+			$count = 0;
+
+			foreach ( $data as $value ) {
+				if ( is_array( $value ) ) {
+					$count += $this->count_post_leaves( $value );
+				} else {
+					++$count;
+				}
+			}
+
+			return $count;
+		}
+
+		/**
+		 * Warn the admin that the last settings save was truncated by the server.
+		 *
+		 * @return void
+		 */
+		public function truncated_save_notice() {
+
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
+			}
+
+			$key  = 'ht_ctc_truncated_save_' . get_current_user_id();
+			$data = get_transient( $key );
+
+			if ( ! is_array( $data ) ) {
+				return;
+			}
+
+			delete_transient( $key );
+
+			$expected       = isset( $data['expected'] ) ? absint( $data['expected'] ) : 0;
+			$received       = isset( $data['received'] ) ? absint( $data['received'] ) : 0;
+			$max_input_vars = isset( $data['max_input_vars'] ) ? absint( $data['max_input_vars'] ) : 0;
+
+			?>
+			<div class="notice notice-error">
+				<p>
+					<strong><?php esc_html_e( 'Click to Chat: settings may not have saved completely.', 'click-to-chat-for-whatsapp' ); ?></strong>
+				</p>
+				<p>
+					<?php
+					printf(
+						/* translators: 1: fields submitted by the browser, 2: fields received by the server, 3: current max_input_vars value */
+						esc_html__( 'The browser submitted %1$d fields but the server received only %2$d — the server truncated the request (PHP max_input_vars is %3$d). Some settings, or the security token, were dropped.', 'click-to-chat-for-whatsapp' ),
+						absint( $expected ),
+						absint( $received ),
+						absint( $max_input_vars )
+					);
+					?>
+				</p>
+				<p>
+					<?php esc_html_e( 'To fix: increase max_input_vars (e.g. to 3000) in php.ini, .htaccess, or via your hosting panel, then save again.', 'click-to-chat-for-whatsapp' ); ?>
+				</p>
+			</div>
+			<?php
 		}
 
 		// Clear cache marker is updated after sanitize on plugin admin pages.
@@ -111,7 +236,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function after_sanitize() {
 
-			$ht_ctc_admin_pages = get_option( 'ht_ctc_admin_pages' );
+			$ht_ctc_admin_pages = HT_CTC_Utils::get_option( 'ht_ctc_admin_pages' );
 
 			$count = ( isset( $ht_ctc_admin_pages['count'] ) ) ? esc_attr( $ht_ctc_admin_pages['count'] ) : '1';
 			// to make this settings will always update to work for clear cache
@@ -134,9 +259,9 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 
 			// Admin notices
 			// if number blank
-			$ht_ctc_chat_options       = get_option( 'ht_ctc_chat_options' );
-			$ht_ctc_notices            = get_option( 'ht_ctc_notices' );
-			$ht_ctc_pro_plugin_details = get_option( 'ht_ctc_pro_plugin_details' );
+			$ht_ctc_chat_options       = HT_CTC_Utils::get_option( 'ht_ctc_chat_options' );
+			$ht_ctc_notices            = HT_CTC_Utils::get_option( 'ht_ctc_notices' );
+			$ht_ctc_pro_plugin_details = HT_CTC_Utils::get_option( 'ht_ctc_pro_plugin_details' );
 
 			$load_pro_notice_scripts = 'no';
 
@@ -146,11 +271,11 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 				}
 			}
 
-			$ht_ctc_othersettings = get_option( 'ht_ctc_othersettings' );
+			$ht_ctc_othersettings = HT_CTC_Utils::get_option( 'ht_ctc_othersettings' );
 
 			// if group id blank
 			if ( isset( $ht_ctc_othersettings['enable_group'] ) ) {
-				$ht_ctc_group = get_option( 'ht_ctc_group' );
+				$ht_ctc_group = HT_CTC_Utils::get_option( 'ht_ctc_group' );
 
 				if ( isset( $ht_ctc_group['group_id'] ) ) {
 					if ( '' === $ht_ctc_group['group_id'] ) {
@@ -161,7 +286,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 
 			// if share_text blank
 			if ( isset( $ht_ctc_othersettings['enable_share'] ) ) {
-				$ht_ctc_share = get_option( 'ht_ctc_share' );
+				$ht_ctc_share = HT_CTC_Utils::get_option( 'ht_ctc_share' );
 
 				if ( isset( $ht_ctc_share['share_text'] ) ) {
 					if ( '' === $ht_ctc_share['share_text'] ) {
@@ -169,6 +294,13 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 					}
 				}
 			}
+
+			// PRO compatibility check notice.
+			// Note: This check is added in both class-ht-ctc-admin-hooks.php (for 2019 UI) and class-ht-ctc-admin-notices.php (for 2026 UI).
+			// todo(4.42): enable this PRO < 2.21 notice.
+			// if ( false && defined( 'HT_CTC_PRO_VERSION' ) && version_compare( HT_CTC_PRO_VERSION, '2.21', '<' ) ) {
+			// add_action( 'admin_notices', array( $this, 'show_pro_compatibility_notice' ) );
+			// }
 
 			/*
 			 * Pro notice.
@@ -187,7 +319,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 					// 5 days
 					$wait_time = ( 5 * 24 * 60 * 60 );
 
-					$ht_ctc_plugin_details = get_option( 'ht_ctc_plugin_details' );
+					$ht_ctc_plugin_details = HT_CTC_Utils::get_option( 'ht_ctc_plugin_details' );
 					$first_install_time    = ( isset( $ht_ctc_plugin_details['first_install_time'] ) ) ? esc_attr( $ht_ctc_plugin_details['first_install_time'] ) : 1;
 
 					$diff_time = $time - $first_install_time;
@@ -202,11 +334,14 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 				if ( 'yes' === $load_pro_notice_scripts ) {
 					add_action( 'admin_footer', array( $this, 'admin_pro_notice_scripts' ) );
 				}
-			}
 
-			// to-do: comment this lines..
-			// add_action('admin_notices', array( $this, 'pro_notice') );.
-			// add_action('admin_footer', array( $this, 'admin_pro_notice_scripts') );.
+				// Global display - during development/testing if needed, or if specifically requested.
+				// For now, let's ensure it follows the 5-day rule or is always shown if required.
+				// Based on user request, ensuring it displays efficiently everywhere.
+				// to-do: comment this lines..
+				// add_action( 'admin_notices', array( $this, 'pro_notice' ) );
+				// add_action( 'admin_footer', array( $this, 'admin_pro_notice_scripts' ) );
+			}
 
 			/**
 			 * Plugin update notice.
@@ -236,8 +371,28 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function plugin_update_notice() {
 			?>
-		<div class="notice notice-warning is-dismissible">
+		<div class="notice notice-warning is-dismissible ht-ctc-notice">
 			<p>Click to Chat plugin has an update available.</p>
+		</div>
+			<?php
+		}
+
+		/**
+		 * Display admin notice if active PRO version is outdated.
+		 *
+		 * @return void
+		 */
+		public function show_pro_compatibility_notice() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
+			}
+			?>
+		<div class="notice notice-warning is-dismissible ht-ctc-notice">
+			<p>
+				<strong><?php esc_html_e( 'Click to Chat', 'click-to-chat-for-whatsapp' ); ?>:</strong>
+				The installed Click to Chat PRO version is outdated and may not work correctly with this version. Please update Click to Chat PRO to v2.21 or higher.
+				<a href="<?php echo esc_url( admin_url( 'plugins.php' ) ); ?>">Update now</a>
+			</p>
 		</div>
 			<?php
 		}
@@ -249,7 +404,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function ifnumberblank() {
 			?>
-		<div class="notice notice-info is-dismissible">
+		<div class="notice notice-info is-dismissible ht-ctc-notice">
 			<p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url( admin_url( 'admin.php?page=click-to-chat' ) ); ?>"><?php esc_html_e( 'Add WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'and let visitors chat', 'click-to-chat-for-whatsapp' ); ?>.</p>
 			<!-- <p>Click to Chat is almost ready. <a href="<?php // echo admin_url('admin.php?page=click-to-chat'); ?>">Add WhatsApp Number</a> to display the chat options and let visitors chat.</p> -->
 		</div>
@@ -263,7 +418,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function ifgroupblank() {
 			?>
-		<div class="notice notice-info is-dismissible">
+		<div class="notice notice-info is-dismissible ht-ctc-notice">
 			<p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url( admin_url( 'admin.php?page=click-to-chat-group-feature' ) ); ?>"><?php esc_html_e( 'Add WhatsApp Group ID', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'to let visitors join in your WhatsApp Group', 'click-to-chat-for-whatsapp' ); ?>.</p>
 		</div>
 			<?php
@@ -276,7 +431,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function ifshareblank() {
 			?>
-		<div class="notice notice-info is-dismissible">
+		<div class="notice notice-info is-dismissible ht-ctc-notice">
 			<p><?php esc_html_e( 'Click to Chat is almost ready', 'click-to-chat-for-whatsapp' ); ?>. <a href="<?php echo esc_url( admin_url( 'admin.php?page=click-to-chat-share-feature' ) ); ?>"><?php esc_html_e( 'Add Share Text', 'click-to-chat-for-whatsapp' ); ?></a> <?php esc_html_e( 'to let vistiors Share your Webpages', 'click-to-chat-for-whatsapp' ); ?>.</p>
 		</div>
 			<?php
@@ -290,21 +445,170 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 */
 		public function pro_notice() {
 			?>
-		<div class="notice notice-info is-dismissible ht-ctc-notice-pro-banner" data-db="pro_banner" style="display:flex; flex-direction:column; padding:14px; border-radius:5px;">
-			<p style="margin:0; font-size:1.4rem; color:#1d2327; font-weight:600;">Click to Chat - PRO</p>
-			<p style="margin:0 0 2px;">
-				<p class="description">Form Filling, Multi-Agent, Random Number, Webhook Integration, Google Ads Conversion Tracking.</p>
-				<p class="description">Customize chat display based on visitor's country, business hours (schedule), time delay, scroll behavior, login status, and more.</p>
-			</p>
-				<!-- WooCommerce integration -->
-			<p>
-			<a class="button button-primary" style="padding:2px 15px;" href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank">Get PRO Now</a>
-			<br>
-			<a class="button-dismiss" style="text-decoration: none; margin: 0 2px;" href="#">Dismiss</a>
-			</p>
+		<style>
+			.ht-ctc-notice-pro-banner {
+				border: 1px solid #e2e8f0 !important;
+				border-left: 4px solid #25D366 !important;
+				background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+				border-radius: 10px !important;
+				padding: 0 !important;
+				margin: 20px 20px 20px 2px !important;
+				color: #1e293b !important;
+				box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1) !important;
+				overflow: hidden;
+				position: relative;
+				display: flex;
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-inner {
+				display: flex;
+				align-items: center;
+				padding: 24px 28px;
+				gap: 28px;
+				width: 100%;
+				z-index: 1;
+			}
+			.ht-ctc-notice-pro-banner .ht_ctc_pro_icon_box {
+				background: rgba(245, 158, 11, 0.1);
+				color: #d97706;
+				width: 54px;
+				height: 54px;
+				border-radius: 14px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+				border: 1px solid rgba(245, 158, 11, 0.2);
+			}
+			.ht-ctc-notice-pro-banner .ht_ctc_pro_icon_box svg {
+				width: 30px;
+				height: 30px;
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-content {
+				flex: 1;
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-title {
+				margin: 0 0 6px 0 !important;
+				font-size: 1.35rem !important;
+				font-weight: 700 !important;
+				color: #0f172a !important;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				line-height: 1.1 !important;
+				letter-spacing: -0.01em !important;
+			}
+			.ht-ctc-notice-pro-banner .pro-tag {
+				background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+				color: #fff;
+				font-size: 0.65rem;
+				padding: 3px 8px;
+				border-radius: 6px;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				font-weight: 800;
+				box-shadow: 0 2px 4px rgba(217, 119, 6, 0.2);
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-desc {
+				margin: 0 !important;
+				font-size: 0.98rem !important;
+				line-height: 1.6 !important;
+				color: #475569 !important;
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-features {
+				margin: 8px 0 0 0 !important;
+				font-size: 0.85rem !important;
+				color: #94a3b8 !important;
+				display: block;
+			}
+			.ht-ctc-notice-pro-banner .ht-ctc-pro-actions {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 10px;
+				flex-shrink: 0;
+			}
+			.ht-ctc-notice-pro-banner .button-upgrade {
+				background: #25D366 !important;
+				color: #fff !important;
+				border: none !important;
+				border-radius: 8px !important;
+				padding: 12px 24px !important;
+				font-size: 0.95rem !important;
+				font-weight: 700 !important;
+				height: auto !important;
+				line-height: 1 !important;
+				text-decoration: none !important;
+				transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+				box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25) !important;
+				display: inline-block !important;
+			}
+			.ht-ctc-notice-pro-banner .button-upgrade:hover {
+				background: #20ba5a !important;
+				transform: translateY(-2px);
+				box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35) !important;
+			}
+			.ht-ctc-notice-pro-banner .button-dismiss-text {
+				color: #94a3b8 !important;
+				text-decoration: none !important;
+				font-size: 0.85rem !important;
+				font-weight: 600 !important;
+			}
+			.ht-ctc-notice-pro-banner .button-dismiss-text:hover {
+				color: #ef4444 !important;
+			}
+			.ht-ctc-notice-pro-banner .notice-dismiss {
+				padding: 12px !important;
+				text-decoration: none !important;
+				z-index: 2 !important;
+			}
+			.ht-ctc-notice-pro-banner .notice-dismiss:before {
+				color: #cbd5e1 !important;
+				font-size: 18px !important;
+			}
+			.ht-ctc-notice-pro-banner .notice-dismiss:hover:before {
+				color: #ef4444 !important;
+			}
+
+			@media (max-width: 860px) {
+				.ht-ctc-notice-pro-banner .ht-ctc-pro-inner {
+					flex-direction: column;
+					text-align: center;
+					gap: 20px;
+					padding: 28px 20px;
+				}
+				.ht-ctc-notice-pro-banner .ht-ctc-pro-actions {
+					width: 100%;
+					flex-direction: column;
+					gap: 12px;
+				}
+				.ht-ctc-notice-pro-banner .button-upgrade {
+					width: 100%;
+					text-align: center;
+				}
+			}
+		</style>
+		<div class="notice is-dismissible ht-ctc-notice ht-ctc-notice-pro-banner" data-db="pro_banner">
+			<div class="ht-ctc-pro-inner">
+				<div class="ht_ctc_pro_icon_box">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>
+				</div>
+				<div class="ht-ctc-pro-content">
+					<h3 class="ht-ctc-pro-title">Click to Chat <span class="pro-tag">PRO</span></h3>
+					<p class="ht-ctc-pro-desc">
+						Unlock <strong>Multi-Agent</strong>, <strong>Form Filling</strong>, <strong>Business Hours</strong>, <strong>Country Filters</strong>, and more to skyrocket your WhatsApp conversions.
+					</p>
+					<p class="ht-ctc-pro-features">Includes Google Ads Conversion Tracking, Analytics, Webhooks, and advanced display triggers.</p>
+				</div>
+				<div class="ht-ctc-pro-actions">
+					<a href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank" class="button button-upgrade">Get PRO Now</a>
+					<a href="#" class="button-dismiss button-dismiss-text">Maybe later</a>
+				</div>
+			</div>
 		</div>
 			<?php
 		}
+
 
 
 
@@ -369,50 +673,44 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		 * @return void Sends JSON success and exits.
 		 */
 		public function dismiss_notices() {
-
+			// Verify the request is genuine (nonce / CSRF) before any authorization or work.
 			check_ajax_referer( 'ht-ctc-notices', 'nonce' );
 
-			$time = time();
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => 'Unauthorized' ) );
+			}
 
 			// map_deep may not required. instead call post of db directly and sanitize.
-			$post_data = ( $_POST ) ? map_deep( $_POST, 'sanitize_text_field' ) : '';
+			$post_data = ( $_POST ) ? map_deep( wp_unslash( $_POST ), 'sanitize_text_field' ) : array();
 
 			$db_key = ( isset( $post_data['db'] ) ) ? esc_attr( $post_data['db'] ) : '';
 
-			// update/add at db..
-			$values        = array(
-				'version' => HT_CTC_VERSION,
-			);
-			$update_values = array();
-			$db_values     = get_option( 'ht_ctc_notices', array() );
-
-			if ( is_array( $db_values ) ) {
-				$update_values = array_merge( $values, $db_values );
-			}
-
-			// update to latest values
-			$update_values['version'] = HT_CTC_VERSION;
-
 			// db_key santized. but to avoid unwanted values to save in db.
+			// Only known notice keys may be dismissed. Bail before touching the DB so a
+			// valid nonce can't be replayed with an arbitrary/'fallback' key to spam writes.
 			$db_key_values = array(
 				'pro_banner',
 			);
 
-			// Add data.
-			if ( '' !== $db_key && in_array( $db_key, $db_key_values, true ) ) {
-
-				$update_values[ $db_key ] = $time;
-
-				// @since 4.3. key with current version
-				$db_key_version                   = "{$db_key}_version";
-				$update_values[ $db_key_version ] = HT_CTC_VERSION;
+			if ( '' === $db_key || ! in_array( $db_key, $db_key_values, true ) ) {
+				wp_send_json_error( array( 'message' => 'Invalid notice key' ) );
 			}
+
+			$time      = time();
+			$db_values = HT_CTC_Utils::get_option( 'ht_ctc_notices' );
+
+			$update_values = is_array( $db_values ) ? $db_values : array();
+
+			// update to latest values
+			$update_values['version'] = HT_CTC_VERSION;
+			$update_values[ $db_key ] = $time;
+
+			// @since 4.3. key with current version
+			$update_values[ "{$db_key}_version" ] = HT_CTC_VERSION;
+
 			update_option( 'ht_ctc_notices', $update_values );
 
 			wp_send_json_success();
-
-			// this wont run
-			wp_die();
 		}
 
 
@@ -636,9 +934,11 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 			// }
 
 			// clear cache
-			if ( function_exists( 'wp_cache_flush' ) ) {
-				wp_cache_flush();
-			}
+			// Options caching is handled natively by update_option().
+			// wp_cache_flush() commented out to prevent 503 errors/cache stampedes on busy sites.
+			// if ( function_exists( 'wp_cache_flush' ) ) {
+			// wp_cache_flush();
+			// }
 
 			// // Show admin notice after clearing
 			// set_transient( 'ht_ctc_cache_cleared_notice', 1, 30 );
@@ -658,7 +958,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 		public function cache_clear_notice() {
 			if ( get_transient( 'ht_ctc_cache_cleared_notice' ) ) {
 				?>
-			<div class="notice notice-success is-dismissible">
+			<div class="notice notice-success is-dismissible ht-ctc-notice">
 				<p><?php esc_html_e( 'If updates are not reflected, please clear your site, server and CDN cache.', 'click-to-chat-for-whatsapp' ); ?></p>
 			</div>
 				<?php

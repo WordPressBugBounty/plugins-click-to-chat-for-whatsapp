@@ -43,6 +43,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Deactivate_Feedback' ) ) {
 				// Ajax call - data of feedback form will be sent to server.
 				add_action( 'wp_ajax_ht_ctc_deactivate_feedback_details', array( $this, 'ht_ctc_deactivate_feedback_details' ) );
 
+				// TODO: Evaluate whether this approach is best or use server URL.
 				global $pagenow;
 
 				if ( 'plugins.php' !== $pagenow ) {
@@ -107,7 +108,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Deactivate_Feedback' ) ) {
 
 				<div class="ht-ctc-df-button-group">
 					<button class="ht-ctc-df-skip ht-ctc-df-btn">Skip & Deactivate</button>
-					<button class="ht-ctc-df-contact ht-ctc-df-btn" onclick="window.open('https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0', '_blank')">Contact Us</button>
+					<button class="ht-ctc-df-contact ht-ctc-df-btn">Contact Us</button>
 					<button class="ht-ctc-df-send ht-ctc-df-btn">Send & deactivate</button>
 				</div>
 			</div>
@@ -125,16 +126,31 @@ if ( ! class_exists( 'HT_CTC_Admin_Deactivate_Feedback' ) ) {
 
 			check_ajax_referer( 'ht_ctc_admin_deactivate_feedback_nonce', 'nonce' );
 
-			// Sanitize POST data early.
-			$post_data = ( isset( $_POST ) && is_array( $_POST ) ) ? map_deep( $_POST, 'esc_attr' ) : array();
-
-			// Feedback text.
-			$user_feedback = '';
-			if ( isset( $post_data['userFeedback'] ) && ! empty( $post_data['userFeedback'] ) ) {
-				$user_feedback = function_exists( 'sanitize_textarea_field' ) ? sanitize_textarea_field( $post_data['userFeedback'] ) : sanitize_text_field( $post_data['userFeedback'] );
+			// Defense-in-depth: also require manage_options at the handler level
+			// (the only place this AJAX endpoint is hooked is inside a
+			// manage_options gate, but if that gate ever shifts we still want a
+			// hard capability check here).
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( array( 'message' => 'Insufficient permissions.' ), 403 );
 			}
 
-			$user_email = ( isset( $post_data['userEmail'] ) && ! empty( $post_data['userEmail'] ) ) ? sanitize_text_field( $post_data['userEmail'] ) : '';
+			// Sanitize POST values with field-appropriate sanitizers AFTER wp_unslash.
+			// (Previously the map_deep used esc_attr — an output escaper, not an input
+			// sanitizer — and did not unslash.)
+			$user_feedback = '';
+			if ( isset( $_POST['userFeedback'] ) ) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- unslash + sanitize applied below.
+				$raw_feedback = wp_unslash( $_POST['userFeedback'] );
+				// sanitize_textarea_field exists since WP 4.7; we've hit
+				// fatal errors on older sites without this guard.
+				$user_feedback = function_exists( 'sanitize_textarea_field' ) ? sanitize_textarea_field( $raw_feedback ) : sanitize_text_field( $raw_feedback );
+			}
+
+			$user_email = '';
+			if ( isset( $_POST['userEmail'] ) ) {
+				// sanitize_email validates the email format and strips invalid characters.
+				$user_email = sanitize_email( wp_unslash( $_POST['userEmail'] ) );
+			}
 
 			// Plugin and site details.
 			$ctc_version = defined( 'HT_CTC_VERSION' ) ? HT_CTC_VERSION : '';

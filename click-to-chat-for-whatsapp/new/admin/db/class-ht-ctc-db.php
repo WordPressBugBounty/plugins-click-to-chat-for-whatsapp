@@ -86,7 +86,7 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 
 			// new installs.
 			if ( ! isset( $this->os['version'] ) ) {
-				$values['show_effect'] = 'From Corner';
+				$values['show_effect'] = 'corner';
 
 				// $values['google_analytics'] = '1';
 				$values['g_an']            = 'ga4';
@@ -94,64 +94,46 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 
 				// google analytics params
 				$values['g_an_params'] = array(
-					'g_an_param_1',
-					'g_an_param_2',
-					'g_an_param_3',
+					array(
+						'key'   => 'number',
+						'value' => '{number}',
+					),
+					array(
+						'key'   => 'title',
+						'value' => '{title}',
+					),
+					array(
+						'key'   => 'url',
+						'value' => '{url}',
+					),
 				);
-
-				$values['g_an_param_1'] = array(
-					'key'   => 'number',
-					'value' => '{number}',
-				);
-
-				$values['g_an_param_2'] = array(
-					'key'   => 'title',
-					'value' => '{title}',
-				);
-
-				$values['g_an_param_3']     = array(
-					'key'   => 'url',
-					'value' => '{url}',
-				);
-				$values['g_an_param_order'] = '4';
 
 				$values['gtm']            = '1';
 				$values['gtm_event_name'] = 'Click to Chat';
 
 				// gtm params
 				$values['gtm_params'] = array(
-					'gtm_param_1',
-					'gtm_param_2',
-					'gtm_param_3',
-					'gtm_param_4',
-					'gtm_param_5',
+					array(
+						'key'   => 'type',
+						'value' => 'chat',
+					),
+					array(
+						'key'   => 'number',
+						'value' => '{number}',
+					),
+					array(
+						'key'   => 'title',
+						'value' => '{title}',
+					),
+					array(
+						'key'   => 'url',
+						'value' => '{url}',
+					),
+					array(
+						'key'   => 'ref',
+						'value' => 'dataLayer push',
+					),
 				);
-
-				$values['gtm_param_1'] = array(
-					'key'   => 'type',
-					'value' => 'chat',
-				);
-
-				$values['gtm_param_2'] = array(
-					'key'   => 'number',
-					'value' => '{number}',
-				);
-
-				$values['gtm_param_3'] = array(
-					'key'   => 'title',
-					'value' => '{title}',
-				);
-
-				$values['gtm_param_4'] = array(
-					'key'   => 'url',
-					'value' => '{url}',
-				);
-
-				$values['gtm_param_5']     = array(
-					'key'   => 'ref',
-					'value' => 'dataLayer push',
-				);
-				$values['gtm_param_order'] = '6';
 
 				$values['fb_pixel']                  = '1';
 				$values['pixel_event_type']          = 'trackCustom';
@@ -160,32 +142,23 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 
 				// pixel params
 				$values['pixel_params'] = array(
-					'pixel_param_1',
-					'pixel_param_2',
-					'pixel_param_3',
-					'pixel_param_4',
+					array(
+						'key'   => 'Category',
+						'value' => 'Click to Chat for WhatsApp',
+					),
+					array(
+						'key'   => 'ID',
+						'value' => '{number}',
+					),
+					array(
+						'key'   => 'Title',
+						'value' => '{title}',
+					),
+					array(
+						'key'   => 'URL',
+						'value' => '{url}',
+					),
 				);
-
-				$values['pixel_param_1'] = array(
-					'key'   => 'Category',
-					'value' => 'Click to Chat for WhatsApp',
-				);
-
-				$values['pixel_param_2'] = array(
-					'key'   => 'ID',
-					'value' => '{number}',
-				);
-
-				$values['pixel_param_3'] = array(
-					'key'   => 'Title',
-					'value' => '{title}',
-				);
-
-				$values['pixel_param_4']     = array(
-					'key'   => 'URL',
-					'value' => '{url}',
-				);
-				$values['pixel_param_order'] = '5';
 
 			}
 
@@ -304,6 +277,8 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 		 *
 		 * The first_install_time @since v3.7 ( if installed before v3.7 first_install_time will be the first plugin version upgrade time of v3.7 or + )
 		 * v3, v3_2_5, v3_3_3, v3_3_5 - values changed to time @since v3.7.
+		 *
+		 * todo:l merge few of those at here and in class-ht-ctc-update-db.php
 		 */
 		public function ht_ctc_plugin_details() {
 
@@ -328,6 +303,7 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 				'v4_3'               => $time,
 				'v4_34'              => $time,
 				'v4_36'              => $time,
+				'v4_41'              => $time,
 			);
 
 			$db_values = get_option( 'ht_ctc_plugin_details', array() );

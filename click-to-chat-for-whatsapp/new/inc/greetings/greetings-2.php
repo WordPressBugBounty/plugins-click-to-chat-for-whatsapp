@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$g2_options = get_option( 'ht_ctc_greetings_2' );
+$g2_options = HT_CTC_Utils::get_option( 'ht_ctc_greetings_2' );
 $g2_options = apply_filters( 'ht_ctc_fh_g2_options', $g2_options );
-$greetings  = get_option( 'ht_ctc_greetings_options' );
+$greetings  = HT_CTC_Utils::get_option( 'ht_ctc_greetings_options' );
 
 
 // $ht_ctc_greetings['main_content'] = apply_filters( 'the_content', $ht_ctc_greetings['main_content'] );

@@ -129,6 +129,16 @@
 		} );
 	}
 
+	// Contact Us button — opens the support forum in a new tab (replaces an inline onclick for CSP-safety)
+	const contactButton = document.querySelector( '.ht-ctc-df-contact' );
+	if ( contactButton ) {
+		contactButton.addEventListener( 'click', function handleContactClick ( event ) {
+			event.preventDefault();
+
+			window.open( 'https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0', '_blank', 'noopener' );
+		} );
+	}
+
 	// Feedback submission
 	if ( sendFeedbackButton ) {
 		sendFeedbackButton.addEventListener( 'click', function handleSendFeedback ( event ) {

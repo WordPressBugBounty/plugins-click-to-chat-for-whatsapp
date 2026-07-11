@@ -41,10 +41,15 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 		 */
 		public function greetings_dialog() {
 
-			$greetings          = get_option( 'ht_ctc_greetings_options' );
-			$chat               = get_option( 'ht_ctc_chat_options' );
-			$greetings_settings = get_option( 'ht_ctc_greetings_settings' );
-			$g_box_classes      = '';
+			if ( ! class_exists( 'HT_CTC_Utils' ) ) {
+				return;
+			}
+
+			$greetings          = HT_CTC_Utils::get_option( 'ht_ctc_greetings_options' );
+			$chat               = HT_CTC_Utils::get_option( 'ht_ctc_chat_options' );
+			$greetings_settings = HT_CTC_Utils::get_option( 'ht_ctc_greetings_settings' );
+
+			$g_box_classes = '';
 
 			$ht_ctc_greetings = array();
 
@@ -71,7 +76,7 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			$g_position = ( isset( $greetings_settings['g_position'] ) ) ? esc_attr( $greetings_settings['g_position'] ) : 'next';
 
 			// greetings dialog size. s: small, m: mid, l: large
-			$g_size = ( isset( $greetings_settings['g_size'] ) ) ? esc_attr( $greetings_settings['g_size'] ) : 's';
+			$g_size = ( isset( $greetings_settings['g_size'] ) ) ? esc_attr( $greetings_settings['g_size'] ) : 'm';
 
 			$ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings_start', $ht_ctc_greetings );
 

@@ -285,9 +285,12 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			collapsible();
 			updateFrontendStorage();
 			analytics();
+
+			// Clear the 2026 new admin interface cache when switching back/loading the 2019 interface.
+			ctc_admin_2026_utils();
 		} catch ( error ) {
 			console.log( error );
-			console.log( 'cache: wooPage(), collapsible(), updateFrontendStorage()' );
+			console.log( 'cache: wooPage(), collapsible(), updateFrontendStorage(), ctc_admin_2026_utils()' );
 		}
 
 		// jquery ui
@@ -1086,9 +1089,6 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 					countryOrder: pre_countries,
 					separateDialCode: true,
 					containerClass: 'intl_tel_input_container',
-
-					// countrySearch: false,
-
 					utilsScript: ht_ctc_admin_var.utils,
 				};
 
@@ -1202,6 +1202,12 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 		}
 
 		/**
+		 * FLOW:
+		 *   Admin changes badge setting → n_badge = 'admin_start' → reload frontend → badge shows ✓
+		 *   User clicks chat            → n_badge = 'stop'        → badge hidden forever ✓
+		 *   Admin changes setting again → n_badge = 'admin_start' → overrides stop → badge shows ✓
+		 *
+		 * on change of notification settings - update local storage: front.
 		 * on save changes clear stuff - local storage: front.
 		 *  for better user interface - while testing, admin side..
 		 *      for notification badge
@@ -1220,6 +1226,17 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 		 */
 		function analytics () {
 			console.log( 'analytics()' );
+
+			// returns a strictly-increasing, time-based index used as the db key for newly added params.
+			var ctcLastParamIndex = 0;
+			function ctcUniqueParamIndex () {
+				var idx = Date.now();
+				if ( idx <= ctcLastParamIndex ) {
+					idx = ctcLastParamIndex + 1;
+				}
+				ctcLastParamIndex = idx;
+				return idx;
+			}
 
 			// google analytics
 
@@ -1249,47 +1266,20 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			// add value
 			$( document )
 				.on( 'click', '.ctc_add_g_an_param_button', function handleAddGaParamClick () {
-					console.log( 'on click: add g an param button' );
-					console.log( gAnParamSnippet );
-
-					var gAnParamOrder = $( '.g_an_param_order' )
-						.val();
-					gAnParamOrder = parseInt( gAnParamOrder, 10 );
+					// time-based index keeps each new row a stable, unique key in the db.
+					var gAnParamIndex = ctcUniqueParamIndex();
 
 					var gAnParamClone = gAnParamSnippet.clone();
-					console.log( gAnParamClone );
 
-					// filed number for reference
-					$( gAnParamClone )
-						.find( '.g_an_param_order_ref_number' )
-						.attr( 'name', 'ht_ctc_othersettings[g_an_params][]' );
-					$( gAnParamClone )
-						.find( '.g_an_param_order_ref_number' )
-						.val( 'g_an_param_' + gAnParamOrder );
-
-					var analyticsParamKey =
-						'ht_ctc_othersettings[g_an_param_' +
-						gAnParamOrder +
-						'][key]';
-					var analyticsParamValue =
-						'ht_ctc_othersettings[g_an_param_' +
-						gAnParamOrder +
-						'][value]';
 					$( gAnParamClone )
 						.find( '.ht_ctc_g_an_add_param_key' )
-						.attr( 'name', analyticsParamKey );
+						.attr( 'name', 'ht_ctc_othersettings[g_an_params][' + gAnParamIndex + '][key]' );
 					$( gAnParamClone )
 						.find( '.ht_ctc_g_an_add_param_value' )
-						.attr( 'name', analyticsParamValue );
-
-					console.log( $( '.ctc_new_g_an_param' ) );
+						.attr( 'name', 'ht_ctc_othersettings[g_an_params][' + gAnParamIndex + '][value]' );
 
 					$( '.ctc_new_g_an_param' )
 						.append( gAnParamClone );
-
-					gAnParamOrder++;
-					$( '.g_an_param_order' )
-						.val( gAnParamOrder );
 				} );
 
 			// Google Tag Manager
@@ -1319,48 +1309,20 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			// add value
 			$( document )
 				.on( 'click', '.ctc_add_gtm_param_button', function handleAddGtmParamClick () {
-					console.log( 'on click: add gtm param button' );
-					console.log( gtmParamSnippet );
-
-					var gtmParamOrder = $( '.gtm_param_order' )
-						.val();
-					gtmParamOrder = parseInt( gtmParamOrder, 10 );
+					// time-based index keeps each new row a stable, unique key in the db.
+					var gtmParamIndex = ctcUniqueParamIndex();
 
 					var gtmParamClone = gtmParamSnippet.clone();
-					console.log( gtmParamClone );
-					console.log( 'gtmParamOrder', gtmParamOrder );
 
-					// filed number for reference
-					$( gtmParamClone )
-						.find( '.gtm_param_order_ref_number' )
-						.attr( 'name', 'ht_ctc_othersettings[gtm_params][]' );
-					$( gtmParamClone )
-						.find( '.gtm_param_order_ref_number' )
-						.val( 'gtm_param_' + gtmParamOrder );
-
-					var gtmParamKey =
-						'ht_ctc_othersettings[gtm_param_' +
-						gtmParamOrder +
-						'][key]';
-					var gtmParamValue =
-						'ht_ctc_othersettings[gtm_param_' +
-						gtmParamOrder +
-						'][value]';
 					$( gtmParamClone )
 						.find( '.ht_ctc_gtm_add_param_key' )
-						.attr( 'name', gtmParamKey );
+						.attr( 'name', 'ht_ctc_othersettings[gtm_params][' + gtmParamIndex + '][key]' );
 					$( gtmParamClone )
 						.find( '.ht_ctc_gtm_add_param_value' )
-						.attr( 'name', gtmParamValue );
-
-					console.log( $( '.ctc_new_gtm_param' ) );
+						.attr( 'name', 'ht_ctc_othersettings[gtm_params][' + gtmParamIndex + '][value]' );
 
 					$( '.ctc_new_gtm_param' )
 						.append( gtmParamClone );
-
-					gtmParamOrder++;
-					$( '.gtm_param_order' )
-						.val( gtmParamOrder );
 				} );
 
 			// fb pixel
@@ -1421,47 +1383,20 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			// add value
 			$( document )
 				.on( 'click', '.ctc_add_pixel_param_button', function handleAddPixelParamClick () {
-					console.log( 'on click: add g an param button' );
-					console.log( pixelParamSnippet );
-
-					var pixelParamOrder = $( '.pixel_param_order' )
-						.val();
-					pixelParamOrder = parseInt( pixelParamOrder, 10 );
+					// time-based index keeps each new row a stable, unique key in the db.
+					var pixelParamIndex = ctcUniqueParamIndex();
 
 					var pixelParamClone = pixelParamSnippet.clone();
-					console.log( pixelParamClone );
 
-					// filed number for reference
-					$( pixelParamClone )
-						.find( '.pixel_param_order_ref_number' )
-						.attr( 'name', 'ht_ctc_othersettings[pixel_params][]' );
-					$( pixelParamClone )
-						.find( '.pixel_param_order_ref_number' )
-						.val( 'pixel_param_' + pixelParamOrder );
-
-					var pixelParamKey =
-						'ht_ctc_othersettings[pixel_param_' +
-						pixelParamOrder +
-						'][key]';
-					var pixelParamValue =
-						'ht_ctc_othersettings[pixel_param_' +
-						pixelParamOrder +
-						'][value]';
 					$( pixelParamClone )
 						.find( '.ht_ctc_pixel_add_param_key' )
-						.attr( 'name', pixelParamKey );
+						.attr( 'name', 'ht_ctc_othersettings[pixel_params][' + pixelParamIndex + '][key]' );
 					$( pixelParamClone )
 						.find( '.ht_ctc_pixel_add_param_value' )
-						.attr( 'name', pixelParamValue );
-
-					console.log( $( '.ctc_new_pixel_param' ) );
+						.attr( 'name', 'ht_ctc_othersettings[pixel_params][' + pixelParamIndex + '][value]' );
 
 					$( '.ctc_new_pixel_param' )
 						.append( pixelParamClone );
-
-					pixelParamOrder++;
-					$( '.pixel_param_order' )
-						.val( pixelParamOrder );
 				} );
 
 			// Remove params
@@ -1493,5 +1428,68 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 						.text( changeVal );
 				} );
 		}
+
+		/**
+		 * Utilities and maintenance tasks related to the 2026 React-based admin interface.
+		 *
+		 * Clears any cached localStorage keys belonging to the 2026 interface when the user
+		 * switches back to the classic 2019 PHP interface.
+		 * This ensures that when the user switches back to 2026 again, the application
+		 * retrieves fresh field configurations and settings from the REST API/server.
+		 */
+		function ctc_admin_2026_utils () {
+			// Clear all localStorage keys starting with 'ht_ctc_fields_' (which store settings fields)
+			Object.keys( localStorage )
+				.filter( function filterCtcFields ( key ) {
+					return key.startsWith( 'ht_ctc_fields_' );
+				} )
+				.forEach( function removeCtcFields ( key ) {
+					localStorage.removeItem( key );
+				} );
+		}
+
 	} );
 } )( jQuery );
+
+/**
+ * Truncated-save detection (max_input_vars).
+ *
+ * On submit of a Click to Chat settings form (classic Settings API posting
+ * to options.php), prepend a hidden ht_ctc_field_count field holding the
+ * number of fields the browser is submitting. It is inserted as the FIRST
+ * field so it survives server-side truncation; PHP compares it against the
+ * vars actually received and shows an admin notice on mismatch
+ * (see HT_CTC_Admin_Hooks::detect_truncated_save).
+ */
+// document.addEventListener( 'submit', function htCtcCountFields ( event ) {
+// 	try {
+// 		const form = event.target;
+// 		if ( ! form || ! form.action || form.action.indexOf( 'options.php' ) === -1 ) {
+// 			return;
+// 		}
+// 		const optionPage = form.querySelector( 'input[name="option_page"]' );
+// 		if ( ! optionPage || optionPage.value.indexOf( 'ht_ctc_' ) !== 0 ) {
+// 			return;
+// 		}
+
+// 		let counter = form.querySelector( 'input[name="ht_ctc_field_count"]' );
+// 		if ( ! counter ) {
+// 			counter = document.createElement( 'input' );
+// 			counter.type = 'hidden';
+// 			counter.name = 'ht_ctc_field_count';
+// 			form.insertBefore( counter, form.firstChild );
+// 		}
+
+// 		// Count entries the browser will submit (counter field included).
+// 		counter.value = '0';
+// 		let count = 0;
+// 		new FormData( form )
+// 			.forEach( function countEntry () {
+// 				count++;
+// 			} );
+// 		counter.value = String( count );
+// 	} catch ( error ) {
+// 		// Diagnostics only — never block the save.
+// 		console.log( error );
+// 	}
+// }, true );

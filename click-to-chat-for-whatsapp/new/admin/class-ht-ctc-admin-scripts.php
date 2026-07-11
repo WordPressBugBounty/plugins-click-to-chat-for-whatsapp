@@ -81,12 +81,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Scripts' ) ) {
 				}
 
 				wp_enqueue_style( 'wp-color-picker' );
-				wp_enqueue_style( 'ctc_admin_md_css', plugins_url( "new/admin/admin_assets/css/$md_css", HT_CTC_PLUGIN_FILE ), '', HT_CTC_VERSION );
-				wp_enqueue_style( 'ctc_admin_css', plugins_url( "new/admin/admin_assets/css/$css", HT_CTC_PLUGIN_FILE ), '', HT_CTC_VERSION );
+				wp_enqueue_style( 'ctc_admin_md_css', plugins_url( "new/admin/admin_assets/css/$md_css", HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION );
+				wp_enqueue_style( 'ctc_admin_css', plugins_url( "new/admin/admin_assets/css/$css", HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION );
 
 				// intlTelInput. register and enqueue
-				wp_register_style( 'ctc_admin_intl_css', plugins_url( 'new/admin/admin_assets/intl/css/intlTelInput.min.css', HT_CTC_PLUGIN_FILE ), '', HT_CTC_VERSION );
-				wp_register_script( 'ctc_admin_intl_js', plugins_url( 'new/admin/admin_assets/intl/js/intlTelInput.min.js', HT_CTC_PLUGIN_FILE ), '', HT_CTC_VERSION, $load_js_bottom );
+				wp_register_style( 'ctc_admin_intl_css', plugins_url( 'new/admin/admin_assets/intl/css/intlTelInput.min.css', HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION );
+				wp_register_script( 'ctc_admin_intl_js', plugins_url( 'new/admin/admin_assets/intl/js/intlTelInput.min.js', HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION, $load_js_bottom );
 
 				wp_enqueue_script( 'ctc_admin_md_js', plugins_url( 'new/admin/admin_assets/js/materialize.min.js', HT_CTC_PLUGIN_FILE ), array( 'jquery' ), HT_CTC_VERSION, $load_js_bottom );
 
@@ -105,7 +105,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Scripts' ) ) {
 
 				// rtl pages
 				if ( function_exists( 'is_rtl' ) && is_rtl() ) {
-					wp_enqueue_style( 'ctc_admin_rtl_css', plugins_url( "new/admin/admin_assets/css/$rtl_css", HT_CTC_PLUGIN_FILE ), '', HT_CTC_VERSION );
+					wp_enqueue_style( 'ctc_admin_rtl_css', plugins_url( "new/admin/admin_assets/css/$rtl_css", HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION );
 				}
 
 				do_action( 'ht_ctc_ah_admin_scripts_end' );

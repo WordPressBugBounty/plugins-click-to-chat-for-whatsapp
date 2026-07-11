@@ -32,7 +32,7 @@ if ( ! class_exists( 'HT_CTC_Group' ) ) {
 		 */
 		public function group() {
 
-			$options       = get_option( 'ht_ctc_group' );
+			$options       = HT_CTC_Utils::get_option( 'ht_ctc_group' );
 			$othersettings = get_option( 'ht_ctc_othersettings' );
 			$type          = 'group';
 

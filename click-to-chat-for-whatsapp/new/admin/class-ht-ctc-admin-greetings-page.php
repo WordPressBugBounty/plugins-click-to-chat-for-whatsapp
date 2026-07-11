@@ -364,7 +364,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Greetings_Page' ) ) {
 							'title'        => __( 'Initial stage', 'click-to-chat-for-whatsapp' ),
 							'db'           => 'g_init',
 							'template'     => 'select',
-							'description'  => "Preset: On first visit, opens automatically on desktop and stays closed on mobile — further behavior is based on user interaction. <br>Open: Initially visible. If the user closes the dialog, it stays closed until the user reopens it or triggers greeting actions <br> Close: hidden until the user initiates chat or triggers greeting actions - <a target='_blank' href='https://holithemes.com/plugins/click-to-chat/greetings-initial-stage'>more info</a>",
+							'description'  => "<strong>Preset:</strong> Recommended - On first visit, opens automatically on desktop and stays closed on mobile — further behavior is based on user interaction. <br> <strong>Open:</strong> Displays the greetings dialog on page load or when triggered by actions. If the user closes the dialog, it remains closed and will not reopen automatically unless triggered again. <br> <strong>Close:</strong> hidden until the user initiates chat or triggers greeting actions - <a target='_blank' href='https://holithemes.com/plugins/click-to-chat/greetings-initial-stage'>more info</a>",
 							'list'         => array(
 								'default' => 'Preset',
 								'open'    => 'Open',
@@ -398,7 +398,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Greetings_Page' ) ) {
 				$fallback_values = $s['fallback_values'];
 			}
 
-			$options = get_option( $dbrow, $fallback_values );
+			$options = HT_CTC_Utils::get_option( $dbrow );
 
 			if ( isset( $options['fallback_values'] ) ) {
 				$options = $fallback_values;

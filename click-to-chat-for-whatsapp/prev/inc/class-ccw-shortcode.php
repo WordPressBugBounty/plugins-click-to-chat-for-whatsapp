@@ -47,7 +47,6 @@ class CCW_Shortcode {
 
         $prefill_text = isset( $values['initial'] ) ? esc_attr( $values['initial'] ) : '';
 
-
         /**
          * There is an advantage if return here - 
          *  instead of doing this before loading this file.

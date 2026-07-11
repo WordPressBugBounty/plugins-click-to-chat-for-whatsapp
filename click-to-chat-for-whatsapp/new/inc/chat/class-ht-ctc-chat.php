@@ -71,7 +71,7 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 
 			do_action( 'ht_ctc_ah_start_the_chat' );
 
-			$options            = get_option( 'ht_ctc_chat_options', array() );
+			$options            = HT_CTC_Utils::get_option( 'ht_ctc_chat_options' );
 			$othersettings      = get_option( 'ht_ctc_othersettings', array() );
 			$greetings          = get_option( 'ht_ctc_greetings_options', array() );
 			$greetings_settings = get_option( 'ht_ctc_greetings_settings', array() );
@@ -456,11 +456,6 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				$ctc['gtm'] = $othersettings['gtm'];
 			}
 
-			// g_an_gtm
-			if ( isset( $othersettings['g_an_gtm'] ) ) {
-				$ctc['g_an_gtm'] = $othersettings['g_an_gtm'];
-			}
-
 			// ads
 			if ( 'yes' === $ht_ctc_os['ga_ads'] ) {
 				$ctc['ads'] = 'yes';
@@ -548,16 +543,14 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			$ctc = apply_filters( 'ht_ctc_fh_ctc', $ctc );
 
 			// data-attribute - data-settings
-			$ht_ctc_settings = esc_attr( wp_json_encode( $ctc ) );
+			// Raw JSON here; the single esc_attr() at the data-settings output below does the
+			// attribute escaping. Escaping twice would leave literal entities in the value that
+			// the browser only decodes one level of, breaking the JSON.parse() fallback in app.js
+			// (the path used on cached pages where the wp_localize_script global is stripped).
+			$ht_ctc_settings = wp_json_encode( $ctc );
 
 			// localize script - ht_ctc_chat_var
 			wp_localize_script( 'ht_ctc_app_js', 'ht_ctc_chat_var', $ctc );
-
-			$g_an_params  = ( isset( $othersettings['g_an_params'] ) && is_array( $othersettings['g_an_params'] ) ) ? array_map( 'esc_attr', $othersettings['g_an_params'] ) : '';
-			$pixel_params = ( isset( $othersettings['pixel_params'] ) && is_array( $othersettings['pixel_params'] ) ) ? array_map( 'esc_attr', $othersettings['pixel_params'] ) : '';
-			$gtm_params   = ( isset( $othersettings['gtm_params'] ) && is_array( $othersettings['gtm_params'] ) ) ? array_map( 'esc_attr', $othersettings['gtm_params'] ) : '';
-
-			$g_an_value = ( isset( $options['g_an'] ) ) ? esc_attr( $options['g_an'] ) : 'ga4';
 
 			$values = array(
 				'g_an_event_name'  => $g_an_event_name,
@@ -566,56 +559,118 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				'pixel_event_name' => $pixel_event_name,
 			);
 
+			/**
+			 * To avoid cache issue.. update things in a plan.
+			 * 1. g_an_params_v4 to normal name g_an_params and remove deprecated at php side.
+			 *  this can works. because js handle the g_an_params (new: can be object) or v4.40 before way g_an_params (string with key reference)
+			 * 2. after a few more version we can simply remove the js handle of old way
+			 */
+
 			// google analytics params
-			if ( is_array( $g_an_params ) && isset( $g_an_params[0] ) ) {
+			$values['g_an_params_v4'] = array();
+			if ( isset( $othersettings['g_an_params'] ) && is_array( $othersettings['g_an_params'] ) ) {
+				foreach ( $othersettings['g_an_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							$values['g_an_params_v4'][] = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
+					}
+				}
+			}
 
-				foreach ( $g_an_params as $param ) {
-					$param_options = ( isset( $othersettings[ $param ] ) ) ? $othersettings[ $param ] : array();
-					$key           = ( isset( $param_options['key'] ) ) ? esc_attr( $param_options['key'] ) : '';
-					$value         = ( isset( $param_options['value'] ) ) ? esc_attr( $param_options['value'] ) : '';
-
-					if ( ! empty( $key ) && ! empty( $value ) ) {
-						$values['g_an_params'][] = $param;
-						$values[ $param ]        = array(
-							'key'   => $key,
-							'value' => $value,
-						);
+			// @deprecated backward compatibility - google analytics params
+			$values['g_an_params'] = array();
+			if ( isset( $othersettings['g_an_params'] ) && is_array( $othersettings['g_an_params'] ) ) {
+				foreach ( $othersettings['g_an_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							$param_name              = 'g_an_param_' . ( $index + 1 );
+							$values['g_an_params'][] = $param_name;
+							$values[ $param_name ]   = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
 					}
 				}
 			}
 
 			// pixel params
-			if ( is_array( $pixel_params ) && isset( $pixel_params[0] ) ) {
+			$values['pixel_params_v4'] = array();
+			if ( isset( $othersettings['pixel_params'] ) && is_array( $othersettings['pixel_params'] ) ) {
+				foreach ( $othersettings['pixel_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							$values['pixel_params_v4'][] = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
+					}
+				}
+			}
 
-				foreach ( $pixel_params as $param ) {
-					$param_options = ( isset( $othersettings[ $param ] ) ) ? $othersettings[ $param ] : array();
-					$key           = ( isset( $param_options['key'] ) ) ? esc_attr( $param_options['key'] ) : '';
-					$value         = ( isset( $param_options['value'] ) ) ? esc_attr( $param_options['value'] ) : '';
-
-					if ( ! empty( $key ) && ! empty( $value ) ) {
-						$values['pixel_params'][] = $param;
-						$values[ $param ]         = array(
-							'key'   => $key,
-							'value' => $value,
-						);
+			// @deprecated backward compatibility - pixel params
+			$values['pixel_params'] = array();
+			if ( isset( $othersettings['pixel_params'] ) && is_array( $othersettings['pixel_params'] ) ) {
+				foreach ( $othersettings['pixel_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							$param_name               = 'pixel_param_' . ( $index + 1 );
+							$values['pixel_params'][] = $param_name;
+							$values[ $param_name ]    = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
 					}
 				}
 			}
 
 			// gtm params
-			if ( is_array( $gtm_params ) && isset( $gtm_params[0] ) ) {
+			$values['gtm_params_v4'] = array();
+			if ( isset( $othersettings['gtm_params'] ) && is_array( $othersettings['gtm_params'] ) ) {
+				foreach ( $othersettings['gtm_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							// no need to add index in v4. because it is an array of objects. so index is already there.
+							$values['gtm_params_v4'][] = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
+					}
+				}
+			}
 
-				foreach ( $gtm_params as $param ) {
-					$param_options = ( isset( $othersettings[ $param ] ) ) ? $othersettings[ $param ] : array();
-					$key           = ( isset( $param_options['key'] ) ) ? esc_attr( $param_options['key'] ) : '';
-					$value         = ( isset( $param_options['value'] ) ) ? esc_attr( $param_options['value'] ) : '';
-
-					if ( ! empty( $key ) && ! empty( $value ) ) {
-						$values['gtm_params'][] = $param;
-						$values[ $param ]       = array(
-							'key'   => $key,
-							'value' => $value,
-						);
+			// @deprecated backward compatibility - gtm params
+			$values['gtm_params'] = array();
+			if ( isset( $othersettings['gtm_params'] ) && is_array( $othersettings['gtm_params'] ) ) {
+				foreach ( $othersettings['gtm_params'] as $index => $param ) {
+					if ( is_array( $param ) ) {
+						$key   = isset( $param['key'] ) ? esc_attr( $param['key'] ) : '';
+						$value = isset( $param['value'] ) ? esc_attr( $param['value'] ) : '';
+						if ( ! empty( $key ) && ! empty( $value ) ) {
+							$param_name             = 'gtm_param_' . ( $index + 1 );
+							$values['gtm_params'][] = $param_name;
+							$values[ $param_name ]  = array(
+								'key'   => $key,
+								'value' => $value,
+							);
+						}
 					}
 				}
 			}

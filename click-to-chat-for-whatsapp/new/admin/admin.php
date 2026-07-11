@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-$ht_ctc_othersettings = get_option( 'ht_ctc_othersettings' );
+$ht_ctc_othersettings = HT_CTC_Utils::get_option( 'ht_ctc_othersettings' );
 
 
 // Includes

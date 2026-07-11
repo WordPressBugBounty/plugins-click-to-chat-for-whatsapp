@@ -9,16 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// $greetings_fallback_values, .. is set at class-ht-ctc-admin-greetings-page.php -> settings_values. if loading from other pages, where not set then this will be []
-$g1_fallback_values         = isset( $g1_fallback_values ) ? $g1_fallback_values : array();
-$greetings_fallback_values  = isset( $greetings_fallback_values ) ? $greetings_fallback_values : array();
-$g_settings_fallback_values = isset( $g_settings_fallback_values ) ? $g_settings_fallback_values : array();
-
 // Get options with fallback values
-$g1_options         = get_option( 'ht_ctc_greetings_1', $g1_fallback_values );
+$g1_options         = HT_CTC_Utils::get_option( 'ht_ctc_greetings_1' );
 $g1_options         = apply_filters( 'ht_ctc_fh_g1_options', $g1_options );
-$greetings          = get_option( 'ht_ctc_greetings_options', $greetings_fallback_values );
-$greetings_settings = get_option( 'ht_ctc_greetings_settings', $g_settings_fallback_values );
+$greetings          = HT_CTC_Utils::get_option( 'ht_ctc_greetings_options' );
+$greetings_settings = HT_CTC_Utils::get_option( 'ht_ctc_greetings_settings' );
 
 $g_header_image_filename = 'header-image';
 $is_demo_page            = 'no';
@@ -96,7 +91,9 @@ if ( '' !== $message_box_bg_color ) {
 }
 
 // call to action - style
-$cta_style    = ( isset( $g1_options['cta_style'] ) ) ? esc_attr( $g1_options['cta_style'] ) : '7_1';
+// sanitize_file_name() strips path-traversal characters (../ etc.) defense-in-depth;
+// is_file() further bounds the include below to existing files only.
+$cta_style    = ( isset( $g1_options['cta_style'] ) ) ? sanitize_file_name( $g1_options['cta_style'] ) : '7_1';
 $g_cta_path   = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greetings_styles/g-cta-' . $cta_style . '.php';
 $g_optin_path = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/greetings_styles/opt-in.php';
 

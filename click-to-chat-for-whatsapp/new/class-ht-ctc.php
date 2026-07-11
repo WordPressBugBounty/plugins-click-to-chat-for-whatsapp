@@ -52,7 +52,7 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 		 * @since 1.0
 		 */
 		public static function instance() {
-			if ( is_null( self::$instance ) ) {
+			if ( ! self::$instance instanceof self ) {
 				self::$instance = new self();
 			}
 			return self::$instance;
@@ -84,11 +84,32 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 		 * Constructor.
 		 *
 		 * Perform basic setup, include dependencies, and register hooks.
+		 * Protected to enforce singleton usage.
 		 */
-		public function __construct() {
+		protected function __construct() {
+			$this->includes();
+
+			// Foundational guard. HT_CTC_Utils is the shared helper used across the
+			// entire render path (chat, group, share, greetings, styles, scripts).
+			// If it failed to load (corrupt / partial deploy), abort all wiring so the
+			// site renders normally without the widget instead of throwing a fatal.
+			if ( ! class_exists( 'HT_CTC_Utils' ) ) {
+				return;
+			}
+
 			$this->basic();
 			// $this->includes();
 			$this->hooks();
+		}
+
+		/**
+		 * Load core files.
+		 */
+		private function includes() {
+			// Load Admin Utils
+			if ( file_exists( HT_CTC_PLUGIN_DIR . 'new/inc/utils/class-ht-ctc-utils.php' ) ) {
+				require_once HT_CTC_PLUGIN_DIR . 'new/inc/utils/class-ht-ctc-utils.php';
+			}
 		}
 
 		/**
@@ -99,9 +120,10 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 		 * Useful for bootstrapping device-specific or user-specific components.
 		 */
 		private function basic() {
-
-			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-ismobile.php';
-			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-values.php';
+			// Safe loader: silently skips a missing/unreadable file (no PHP warning,
+			// no fatal). Consumers are gated on class_exists before use.
+			HT_CTC_Utils::load_file( 'new/inc/commons/class-ht-ctc-ismobile.php' );
+			HT_CTC_Utils::load_file( 'new/inc/commons/class-ht-ctc-values.php' );
 		}
 
 		/**
@@ -139,30 +161,64 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 
 			do_action( 'ht_ctc_ah_init_before' );
 
+			// Core runtime dependencies. Without them the widget cannot render and
+			// every consumer (`ht_ctc()->values`, device detection) would fatal, so
+			// bail gracefully — the site stays intact, only the widget is absent.
+			if ( ! class_exists( 'HT_CTC_Values' ) || ! class_exists( 'HT_CTC_IsMobile' ) ) {
+				return;
+			}
+
 			$this->values      = new HT_CTC_Values();
 			$this->device_type = new HT_CTC_IsMobile();
 
-			// Stub
-			// Rest api - init
-			// include_once HT_CTC_PLUGIN_DIR .'new/inc/api/class-ht-ctc-rest-api.php';
+			if ( defined( 'HT_CTC_ADMIN_UI' ) && '2026' === HT_CTC_ADMIN_UI ) {
+				// Initialize Core Hooks once for both Admin and API
+				HT_CTC_Utils::load_file( 'new/admin2/handlers/class-ht-ctc-admin-core-hooks.php' );
+				if ( class_exists( 'HT_CTC_Admin_Core_Hooks' ) ) {
+					new HT_CTC_Admin_Core_Hooks();
+				}
+
+				// REST API - init - handles both public and admin endpoints
+				HT_CTC_Utils::load_file( 'new/inc/api/class-ht-ctc-rest-api.php' );
+				if ( class_exists( 'HT_CTC_Rest_API' ) ) {
+					new HT_CTC_Rest_API();
+				}
+			}
 
 			// hooks
-			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-hooks.php';
+			HT_CTC_Utils::load_file( 'new/inc/commons/class-ht-ctc-hooks.php' );
 			// WooCommerce init.
-			include_once HT_CTC_PLUGIN_DIR . 'new/tools/woo/ht-ctc-woo.php';
+			HT_CTC_Utils::load_file( 'new/tools/woo/ht-ctc-woo.php' );
 
 			// Is admin? Include file to admin area : include files to non-admin area.
 			if ( is_admin() ) {
 				// Admin main file.
-				include_once HT_CTC_PLUGIN_DIR . 'new/admin/admin.php';
+				$this->load_admin();
 			} else {
 				// Front - main file - Enable - Chat, Group, Share.
-				include_once HT_CTC_PLUGIN_DIR . 'new/inc/class-ht-ctc-main.php';
+				HT_CTC_Utils::load_file( 'new/inc/class-ht-ctc-main.php' );
 				// Scripts.
-				include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-scripts.php';
+				HT_CTC_Utils::load_file( 'new/inc/commons/class-ht-ctc-scripts.php' );
 			}
 
 			do_action( 'ht_ctc_ah_init_after' );
+		}
+
+
+
+		/**
+		 * Load admin interface based on compatibility and settings.
+		 */
+		private function load_admin() {
+
+			if ( defined( 'HT_CTC_ADMIN_UI' ) && '2026' === HT_CTC_ADMIN_UI ) {
+				HT_CTC_Utils::load_file( 'new/admin2/class-ht-ctc-admin.php' );
+				if ( class_exists( 'HT_CTC_Admin' ) ) {
+					HT_CTC_Admin::instance();
+				}
+			} else {
+				HT_CTC_Utils::load_file( 'new/admin/admin.php' );
+			}
 		}
 	}
 

@@ -1,9 +1,9 @@
 === Click to Chat - HoliThemes ===
-Requires at least: 4.7
+Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.40
+Stable tag: 4.41
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -555,6 +555,11 @@ Thank you for your support!
 — The Click to Chat Team, HoliThemes
 
 == Changelog ==
+= 4.41 =
+* New: Redesigned Admin UI, switch to it anytime from the plugin settings page.
+* Enhancement: Restructured Analytics parameters for Google Analytics, GTM and Meta Pixel.
+* Fix: Pagelevel settings prefilled message multiple lines issue.
+* Fix: Emoji not displaying correctly in the pre-filled message and call-to-action fields.
 
 = 4.40 =
 * Enhancement: Admin UI improvements for better user experience.
@@ -588,8 +593,8 @@ Thank you for your support!
 
 == Upgrade Notice ==
 
+= 4.41 =
+New Admin UI (switch anytime from settings), restructured Analytics parameters, and pre-filled message fixes. Update recommended.
+
 = 4.40 =
 Admin UI improvements and minor bug fixes. Update recommended.
-
-= 4.39 =
-Fixes WooCommerce single product page widget config with multilingual plugins and homepage settings inheritance. Update recommended.

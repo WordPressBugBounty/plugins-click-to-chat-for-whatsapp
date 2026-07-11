@@ -110,21 +110,29 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				if ( isset( $_GET['demo'] ) ) {
 
-					// $nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-					// if ( ! wp_verify_nonce( $nonce, 'ht_ctc_admin_demo' ) ) {
-					// return;
-					// }
-
-					// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-					$demo_action = sanitize_text_field( wp_unslash( $_GET['demo'] ) );
-					if ( 'active' === $demo_action ) {
-						$this->load_demo = 'yes';
-						// add option to db
-						update_option( 'ht_ctc_admin_demo_active', 'yes' );
-					} elseif ( 'deactive' === $demo_action ) {
-						$this->load_demo = 'no';
-						// add option to db
-						update_option( 'ht_ctc_admin_demo_active', 'no' );
+					// Require manage_options + a valid nonce to prevent CSRF on this
+					// state-mutating GET. Without these checks any logged-in visitor
+					// could trick an admin into flipping ht_ctc_admin_demo_active by
+					// loading a crafted URL. Toggle UI must wrap its link in
+					// wp_nonce_url( $url, 'ht_ctc_admin_demo' ).
+					$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+					if ( ! current_user_can( 'manage_options' ) || ! wp_verify_nonce( $nonce, 'ht_ctc_admin_demo' ) ) {
+						// Silently ignore unauthorized toggle attempts; fall back to
+						// the saved state below.
+						if ( 'no' === $demo_active ) {
+							$this->load_demo = 'no';
+						}
+					} else {
+						$demo_action = sanitize_text_field( wp_unslash( $_GET['demo'] ) );
+						if ( 'active' === $demo_action ) {
+							$this->load_demo = 'yes';
+							// add option to db
+							update_option( 'ht_ctc_admin_demo_active', 'yes' );
+						} elseif ( 'deactive' === $demo_action ) {
+							$this->load_demo = 'no';
+							// add option to db
+							update_option( 'ht_ctc_admin_demo_active', 'no' );
+						}
 					}
 				} elseif ( 'no' === $demo_active ) {
 					// not activating or deactivating.. check if admin demo already deactived...
@@ -439,7 +447,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 			// add hook to add more greetings templates
 			$g_templates = apply_filters( 'ht_ctc_fh_admin_demo_greetings_templates', $g_templates );
 
-			$g_size = ( isset( $greetings_settings['g_size'] ) ) ? esc_attr( $greetings_settings['g_size'] ) : 's';
+			$g_size = ( isset( $greetings_settings['g_size'] ) ) ? esc_attr( $greetings_settings['g_size'] ) : 'm';
 
 			$min_width        = '300px';
 			$ctc_m_full_width = '';

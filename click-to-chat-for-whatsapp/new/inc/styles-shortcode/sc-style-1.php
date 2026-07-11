@@ -9,11 +9,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// $s1_options = get_option( 'ht_ctc_s1' );
+// $s1_options = HT_CTC_Utils::get_option( 'ht_ctc_s1' );
 // $s1_img_size = esc_attr( $s1_options['s1_img_size'] );
 
 
-$s1_options = get_option( 'ht_ctc_s1' );
+$s1_options = HT_CTC_Utils::get_option( 'ht_ctc_s1' );
 
 $s1_css        = '';
 $s1_text_color = isset( $s1_options['s1_text_color'] ) ? esc_attr( $s1_options['s1_text_color'] ) : '';

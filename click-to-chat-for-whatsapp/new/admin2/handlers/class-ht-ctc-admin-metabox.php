@@ -294,7 +294,6 @@ if ( ! class_exists( 'HT_CTC_Admin_MetaBox' ) ) {
 				return $post_id;
 			}
 
-			// todo(4.42): finish the page-level metabox for the 2026 UI.
 			// Keep the key allow-list below when reworking — it was lost once already in the
 			// extraction refactor (original hardening: temp/pagelevel df2b98307, re-ported to dev).
 			$editor = array();

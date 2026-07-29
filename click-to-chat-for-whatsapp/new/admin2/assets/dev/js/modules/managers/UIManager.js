@@ -31,7 +31,7 @@ export default class UIManager {
 			events.on( 'settings:saved', ( payload ) => {
 				this.clearSaveErrorState();
 				this.showToast( {
-					title: this.app.config.i18n.saved || 'Settings Saved',
+					title: this.app.config.i18n.saved || 'Settings saved successfully.',
 
 					// SettingsManager passes a "what changed" summary
 					// (field labels); fall back to the generic line.

@@ -3,7 +3,7 @@ Requires at least: 6.5
 Tested up to: 7.0
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.41
+Stable tag: 4.42
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -555,6 +555,12 @@ Thank you for your support!
 — The Click to Chat Team, HoliThemes
 
 == Changelog ==
+
+= 4.42 =
+* New: Click Tracking Compatibility - optionally render the chat and greetings click area as a link or button, so third-party click tracking tools that supports only button or a link can record clicks.
+* Enhancement: Updated the international phone number field library.
+* Enhancement: The phone number field interface is now translated into the admin language.
+
 = 4.41 =
 * New: Redesigned Admin UI, switch to it anytime from the plugin settings page.
 * Enhancement: Restructured Analytics parameters for Google Analytics, GTM and Meta Pixel.
@@ -593,8 +599,9 @@ Thank you for your support!
 
 == Upgrade Notice ==
 
+
+= 4.42 =
+International phone input enhancements, custom click tracking compatibility. Update recommended.
+
 = 4.41 =
 New Admin UI (switch anytime from settings), restructured Analytics parameters, and pre-filled message fixes. Update recommended.
-
-= 4.40 =
-Admin UI improvements and minor bug fixes. Update recommended.

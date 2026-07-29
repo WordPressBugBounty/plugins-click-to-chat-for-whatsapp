@@ -22,30 +22,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 		 */
 		public function __construct() {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			// add_filter( 'wp_resource_hints', array( $this, 'add_resource_hints' ), 10, 2 );
 		}
-
-
-		/**
-		 * Add Resource Hints
-		 * Establish early connections to external origins used dynamically by the React/JS modules.
-		 *
-		 * @param array  $hints URLs to print for resource hints.
-		 * @param string $relation_type The relation type the URLs are printed for, e.g. 'preconnect'.
-		 * @return array
-		 */
-		// public function add_resource_hints( $hints, $relation_type ) {
-		// if ( 'preconnect' === $relation_type ) {
-		// Only add if we are on a plugin page
-		// if ( function_exists( 'get_current_screen' ) ) {
-		// $screen = get_current_screen();
-		// if ( $screen && strpos( $screen->id, 'click-to-chat' ) !== false ) {
-		// $hints[] = 'https://ipinfo.io';
-		// }
-		// }
-		// }
-		// return $hints;
-		// }
 
 
 		/**
@@ -138,7 +115,14 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 
 			$theme = $this->get_admin_theme();
 
-			$intl_tel_input_utils = plugins_url( 'new/admin/admin_assets/intl/js/utils.js', HT_CTC_PLUGIN_FILE );
+			// intl-tel-input assets are resolved via HT_CTC_Phone_Field for consistency across admin UIs.
+			// Dynamic ES module loading is handled by IntlInput.js.
+			if ( ! class_exists( 'HT_CTC_Phone_Field' ) ) {
+				HT_CTC_Utils::load_file( 'new/tools/phone-field/class-ht-ctc-phone-field.php' );
+			}
+
+			$phone_field_assets = HT_CTC_Phone_Field::assets();
+			$phone_field_js     = plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/IntlInput.js", HT_CTC_PLUGIN_FILE );
 
 			// Get all allowed settings.
 			if ( ! class_exists( 'HT_CTC_Settings_Data' ) ) {
@@ -167,11 +151,23 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				'locale'          => get_user_locale(),
 				'initialSettings' => $initial_settings,
 				'paths'           => array(
-					'plugin_url'        => defined( 'HT_CTC_PLUGIN_DIR_URL' ) ? HT_CTC_PLUGIN_DIR_URL : plugin_dir_url( HT_CTC_PLUGIN_FILE ),
-					'front_css'         => plugins_url( 'new/inc/assets/css/' . ( defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev/main.dev.css' : 'main.css' ), HT_CTC_PLUGIN_FILE ),
-					'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-					'intlTelInput'      => plugins_url( 'new/admin/admin_assets/intl/js/intlTelInput.min.js', HT_CTC_PLUGIN_FILE ),
-					'intlTelInputUtils' => $intl_tel_input_utils,
+					'plugin_url' => defined( 'HT_CTC_PLUGIN_DIR_URL' ) ? HT_CTC_PLUGIN_DIR_URL : plugin_dir_url( HT_CTC_PLUGIN_FILE ),
+					'front_css'  => plugins_url( 'new/inc/assets/css/' . ( defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev/main.dev.css' : 'main.css' ), HT_CTC_PLUGIN_FILE ),
+					'ajaxurl'    => admin_url( 'admin-ajax.php' ),
+					'phoneInput' => array(
+						// 'js'                => $phone_field_js,
+						'intlTelInput'      => $phone_field_assets['js'],
+						'intlTelInputUtils' => $phone_field_assets['utils'],
+						// Vendored library version, so JS (and PRO) can branch on it
+						// without parsing the URL.
+						'version'           => $phone_field_assets['version'],
+						// Admin's own language, for the country names — the browser
+						// translates those itself from this tag.
+						'locale'            => get_user_locale(),
+						// The library's own chrome for that same language, inlined —
+						// empty for English/unknown, where its own defaults stand.
+						'uiStrings'         => HT_CTC_Phone_Field::locale_strings( get_user_locale() ),
+					),
 				),
 				'api'             => array(
 					'settings' => array(
@@ -182,7 +178,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				'wprest_nonce'    => wp_create_nonce( 'wp_rest' ),
 				'nonce'           => wp_create_nonce( 'ht_ctc_admin_nonce' ),
 				// localization. i18n
-				// todo(4.42): i18n and have to update the content and at js file
+				// todo(4.43): i18n and have to update the content and at js file
 				'i18n'            => array(
 					'save'          => 'Save',
 					'saved'         => 'Settings saved successfully.',
@@ -216,7 +212,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				 *             features kept out of the initial bundle (e.g. preview).
 				 *   • on-demand → no trigger here; loaded explicitly by key from JS
 				 *             when needed (e.g. App.loadAndInitIntlInput reads
-				 *             modulesPath.intlInput directly). Use for rare/contextual loads.
+				 *             modulesPath.phoneInput directly). Use for rare/contextual loads.
 				 *
 				 * PER-ENTRY KEYS:
 				 *   path      — URL of the JS module to import() (required).
@@ -230,8 +226,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				 *   rendererId— register module.default as a field renderer.
 				 */
 				'modulesPath'     => array(
-					'intlInput'       => array(
-						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/IntlInput.js", HT_CTC_PLUGIN_FILE ),
+					'phoneInput'      => array(
+						'path'   => $phone_field_js,
 						// 'tabs'   => array( 'general-settings', 'greetings-settings' ),
 						'method' => 'initIntlInput',
 						'arg'    => 'intl_number',
@@ -303,25 +299,46 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 		}
 
 		/**
-		 * Register and enqueue the intl-tel-input phone library.
+		 * Enqueue the intl-tel-input stylesheet.
 		 *
-		 * Registered on every allowed admin hook so that other pages can use it as a
-		 * dependency, but only enqueued on the main SPA page.
+		 * Only the stylesheet is enqueued: a stylesheet cannot be an ES module
+		 * import, whereas the library itself IS one — IntlInput.js imports it
+		 * dynamically from the URL passed as paths.intlTelInput, so there is no
+		 * script to register here and no `intlTelInput` global on the page.
+		 *
+		 * The library is the shared vendored copy in new/tools/phone-field/intl-tel-input/ (29.x). The
+		 * 2019 admin keeps its own bundled 24.5.0 under new/admin/admin_assets/ —
+		 * the two admin trees no longer share intl assets.
+		 *
+		 * The stylesheet is enqueued (not injected from JS) so the number field
+		 * paints correctly on first render instead of flashing unstyled.
 		 *
 		 * @param string $hook Current admin page hook.
 		 * @return void
 		 */
 		private function enqueue_intl_tel_input( $hook ) {
 
-			wp_register_style( 'ctc_admin_intl_css', plugins_url( 'new/admin/admin_assets/intl/css/intlTelInput.min.css', HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION );
-			wp_register_script( 'ctc_admin_intl_js', plugins_url( 'new/admin/admin_assets/intl/js/intlTelInput.min.js', HT_CTC_PLUGIN_FILE ), array(), HT_CTC_VERSION, $this->script_strategy( 'defer' ) );
+			// This UI registers its own handle; HT_CTC_Phone_Field only says where
+			// the file is and which version it is (it resolves .min vs source from
+			// HT_CTC_DEBUG_MODE). Every consumer owns its handle the same way — PRO
+			// registers its own on the front end — so the vendored copy stays a
+			// plain locator with no assets of its own.
+			//
+			// Vendored upstream layout: the stylesheet resolves its flag sprites
+			// as url(../img/flags.webp), so both variants live at the vendored path
+			// (the .min is emitted next to its source by `npm run build`).
+			// Cache-buster is HT_CTC_VERSION, not the library version: every other
+			// plugin asset busts on release, and a release can change what this
+			// stylesheet has to work with (scoping edits, the .min rebuild) without
+			// the library version moving.
+			$phone_field_assets = HT_CTC_Phone_Field::assets();
+			wp_register_style( 'ctc_admin_intl_css', $phone_field_assets['css'], array(), HT_CTC_VERSION );
 
 			if ( 'toplevel_page_click-to-chat' !== $hook ) {
 				return;
 			}
 
 			wp_enqueue_style( 'ctc_admin_intl_css' );
-			wp_enqueue_script( 'ctc_admin_intl_js' );
 		}
 
 		/**
@@ -405,11 +422,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 
 			$js_url = plugins_url( "new/admin2/assets/$js", HT_CTC_PLUGIN_FILE );
 
-			// Per-page JS dependencies. Only pages that enqueue intl above need it as a dep.
+			// Per-page JS dependencies.
+			//
+			// intl-tel-input is deliberately NOT a dependency: it is an ES module
+			// that IntlInput.js imports on demand, not an enqueued script, so the
+			// main bundle no longer has to wait on it.
 			$ctc_admin_js_dependencies = array();
-			if ( 'toplevel_page_click-to-chat' === $hook ) {
-				$ctc_admin_js_dependencies[] = 'ctc_admin_intl_js';
-			}
 
 			/**
 			 * Allow extensions to add JS dependencies for the main admin bundle on a per-hook basis.

@@ -479,6 +479,31 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 						'default'      => 'all',
 						'help'         => '<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/analytics-count/">Analytics Count</a>',
 					),
+					array(
+						'field_type'  => 'block_feature_box',
+						'class_pr'    => 'custom-tracking',
+						'icon'        => 'dashicons-chart-line',
+						'label'       => 'Custom Click Tracking',
+						'badge'       => 'Info',
+						'badge_class' => 'interaction',
+						'link'        => array(
+							'url'   => 'https://holithemes.com/plugins/click-to-chat/analytics/',
+							'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
+						),
+						'content'     => '<p class="ctc-feature-text">'
+							. sprintf(
+								'To track clicks using third-party analytics or custom tracking scripts, target the class name %1$s (added to all click surfaces) or the parent container %2$s.',
+								'<code class="ctc-feature-code">ctc-analytics</code>',
+								'<code class="ctc-feature-code">ht-ctc-chat</code>'
+							)
+							. '</p>'
+							. '<p class="ctc-feature-text">'
+							. sprintf(
+								'Some analytics tools record clicks only on link or button elements. If your tool works that way, you can change the element used for the main click surfaces at %1$s.',
+								'<a href="#advanced-settings">' . __( 'Advanced', 'click-to-chat-for-whatsapp' ) . ' > Debug, Troubleshoot > <b>Click Tracking Compatibility</b></a>'
+							)
+							. '</p>',
+					),
 				),
 			);
 			$values = apply_filters( 'ht_ctc_fh_settings_fields_analytics_settings', $values );
@@ -504,30 +529,39 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 					'{url}'    => 'Page URL',
 					'{number}' => 'Admin number',
 				),
-				'note'           => 'These replace the page\'s title, URL, and the admin number assigned to the widget.',
 				'data_watch'     => $watch,
 				'data_show_when' => $show_when,
 			);
 		}
 
 		/**
-		 * PRO dynamic variables reference (Webhooks) — informational teaser tiles.
+		 * Webhooks dynamic variables reference block.
+		 *
+		 * Provides the block_variables field definition for webhooks.
+		 * Displays PRO teaser variables.
 		 *
 		 * @return array block_variables field definition.
 		 */
 		private static function webhooks_variables_reference() {
-			return array(
+			$values = array(
 				'field_type' => 'block_variables',
-				'title'      => 'Dynamic Variables',
-				'badge'      => __( 'PRO', 'click-to-chat-for-whatsapp' ),
-				'pro'        => true,
-				'variables'  => array(
+				'title'      => 'Variables',
+				'variables'  => array(),
+			);
+
+			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+				$values['badge']         = __( 'PRO', 'click-to-chat-for-whatsapp' );
+				$values['pro_variables'] = array(
 					'{number}' => 'Admin number',
 					'{url}'    => 'Page URL',
 					'{time}'   => 'Click time',
 					'{title}'  => 'Page title',
-				),
-			);
+				);
+			}
+
+			$values = apply_filters( 'ht_ctc_fh_webhooks_variables_reference', $values );
+
+			return $values;
 		}
 
 		/**

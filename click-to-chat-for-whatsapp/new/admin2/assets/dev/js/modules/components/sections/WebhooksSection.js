@@ -10,13 +10,13 @@ export const createWebhookParamRow = ( value, index, dbRow = 'ht_ctc_othersettin
 	// eslint-disable-next-line no-unsanitized/property -- Contains static HTML/Safely escaped dynamic values using Utils.escapeHTML
 	row.innerHTML = `
         <div class="input-field">
+			<label for="${escapeAttr( inputId )}">Value${index + 1}</label>
             <input 
                 name="${escapeAttr( dbRow )}[hook_v][]"
                 id="${escapeAttr( inputId )}"
                 type="text" 
                 class="ht_ctc_hook_v_param_value input-margin"
             >
-            <label for="${escapeAttr( inputId )}">Value${index + 1}</label>
         </div>
         <div class="input-field">
             <span 

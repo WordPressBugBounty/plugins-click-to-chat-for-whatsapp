@@ -1,4 +1,4 @@
-/* global intlTelInput, tinyMCE */
+/* global tinyMCE */
 
 /**
  * Settings Manager
@@ -722,6 +722,7 @@ export default class SettingsManager {
 							}
 						} );
 					} else if ( input.type !== 'file' && input.type !== 'submit' && input.tagName !== 'BUTTON' ) {
+						// All other fields. Skip file inputs, submit buttons, and other non-value fields (e.g., buttons) since they don't have a meaningful value to update.
 						let targetValue = newValue;
 
 						if ( input.type === 'time' ) {
@@ -733,27 +734,29 @@ export default class SettingsManager {
 							}
 						}
 
-						// For intl input: update the visible field alongside the hidden one.
-						if ( input.classList.contains( 'intl_number_hidden' ) ) {
-							const container = input.closest( '.intl_tel_input_container' );
-							if ( container ) {
-								const sibling = container.querySelector( '.intl_number' );
-								if ( sibling ) {
-									if ( typeof intlTelInput !== 'undefined' ) {
-										const formattedValue = targetValue && ! targetValue.startsWith( '+' ) ? `+${targetValue}` : targetValue;
-										const instance = intlTelInput.getInstance( sibling );
-										instance.setNumber( formattedValue );
-										targetValue = instance.getNumber();
-									} else {
-										sibling.value = targetValue;
+						if ( input.value !== targetValue ) {
+							input.value = decodeHTML( targetValue );
+
+							// For intl input: update the visible field alongside the hidden one.
+							if ( input.classList.contains( 'intl_number_hidden' ) ) {
+								const container = input.closest( '.ctc_intl_container' );
+								if ( container ) {
+									const sibling = container.querySelector( '.intl_number' );
+									if ( sibling ) {
+										// The intl-tel-input instance is stashed on the element by
+										// IntlInput.js (no global — the library is an ES module).
+										const instance = sibling._ctcIti;
+										if ( instance ) {
+											const formattedValue = targetValue && ! targetValue.startsWith( '+' ) ? `+${targetValue}` : targetValue;
+											delete sibling.dataset.userInteracted;
+											instance.setNumber( formattedValue );
+											sibling.dataset.userInteracted = 'true'; // Add "userInteracted" flag here or remove from IntlInput.js [ 'focus', 'click', 'keydown' ] once: true
+										} else {
+											sibling.value = targetValue;
+										}
 									}
 								}
 							}
-						}
-
-						if ( input.value !== targetValue ) {
-							input.value = targetValue;
-							input.dataset.changed = 'false';
 
 							// Update custom editor if mounted on this textarea.
 							if ( input._ctcEditorInstance ) {
@@ -773,6 +776,8 @@ export default class SettingsManager {
 									}, 'updateFormValues' );
 								}
 							}
+
+							input.dataset.changed = 'false';
 						}
 					}
 				}

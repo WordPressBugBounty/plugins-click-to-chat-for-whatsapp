@@ -29,7 +29,7 @@ if ( ! class_exists( 'HT_CTC_Fields_Handler' ) ) {
 
 			// todo no i18n as now..
 			if ( ! current_user_can( 'manage_options' ) ) {
-				return HT_CTC_API_Responses::error( 'forbidden', __( 'You do not have permission.', 'click-to-chat-for-whatsapp' ), 403 );
+				return HT_CTC_API_Responses::error( 'forbidden', 'You do not have permission.', 403 );
 			}
 
 			// click-to-chat-for-whatsapp/v1/get-fields/?group=greetings-settings&v=4.40

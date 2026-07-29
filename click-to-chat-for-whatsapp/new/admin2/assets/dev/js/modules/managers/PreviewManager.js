@@ -226,6 +226,17 @@ export default class PreviewManager {
 		// widget previews now that the templates are available. Independent of
 		// the floating preview's on/off state.
 		this.enhanceStyleGrids();
+
+		// Re-render style picker previews on tab changes to ensure grid cells
+		// mounting dynamically after initial load get their live template HTML.
+		if ( this.app.events ) {
+			this.app.events.on( 'tab:changed', ( tabId ) => {
+				const styleTabs = [ 'general-settings' ];
+				if ( styleTabs.includes( tabId ) ) {
+					this.enhanceStyleGrids();
+				}
+			} );
+		}
 	}
 
 	/**
@@ -931,6 +942,8 @@ export default class PreviewManager {
 			return;
 		}
 
+		// if ( cell._lastRenderedHtml === html ) { return; }
+
 		const stage = document.createElement( 'div' );
 		stage.className = 'ht_ctc_style ht_ctc_chat_style';
 		// eslint-disable-next-line no-unsanitized/property -- Templates escape all dynamic values (escapeHTML/escapeAttr/escapeCssValue)
@@ -950,6 +963,8 @@ export default class PreviewManager {
 		uniquifySvgIds( stage, `-cg${++this.gridUidCounter}` );
 
 		cell.replaceChildren( stage );
+
+		// cell._lastRenderedHtml = html;
 		cell.classList.add( 'has-live-preview' );
 	}
 

@@ -553,6 +553,46 @@ export const safeRun = ( fn, context = 'Feature' ) => {
 };
 
 /**
+ * Applies an arbitrary map of data attributes declared in PHP.
+ *
+ * PHP side:
+ *   'attributes' => array( 'data-action-onchange' => 'updateNotificationBadgeLS' ),
+ *
+ * Called from applyConditionalAttributes(), these land on the field *wrapper* — so they
+ * suit anything that applies to the field as a whole: watch conditions, or a change action
+ * covering every field inside a card.
+ *
+ * Components may also call this directly to target an inner element, in which case the
+ * PHP key is named for that element — see `button_attributes` in Button.js. Click actions
+ * belong there: on the wrapper they would also fire on the label or help text.
+ *
+ * Only `data-*` names are accepted — PHP field configs must never be able to set
+ * `onclick`, `href`, `src`, `style`, etc. New behaviour = a new entry in the relevant
+ * registry (Actions.js / Conditions.js) + the attribute in PHP. Never a new branch here.
+ *
+ * @param {HTMLElement} element - The DOM element to apply attributes to.
+ * @param {Object} attributes - Map of attribute name → value.
+ */
+export const applyDataAttributes = ( element, attributes ) => {
+	if ( ! element || ! attributes || typeof attributes !== 'object' ) {
+		return;
+	}
+
+	for ( const [ name, value ] of Object.entries( attributes ) ) {
+		if ( ! /^data-[a-z0-9-]+$/.test( name ) ) {
+			console.warn( `CTC: applyDataAttributes: ignored non data-* attribute "${name}"` );
+			continue;
+		}
+
+		if ( value === null || value === undefined || value === false ) {
+			continue;
+		}
+
+		element.setAttribute( name, String( value ) );
+	}
+};
+
+/**
  * Applies conditional display attributes to a DOM element based on field configuration.
  *
  * @param {HTMLElement} element - The DOM element to apply attributes to.
@@ -582,20 +622,8 @@ export const applyConditionalAttributes = ( element, field ) => {
 		}
 	}
 
-	// Action on change (handles from Actions.js)
-	if ( field.action_onchange ) {
-		element.setAttribute( 'data-action-onchange', field.action_onchange );
-	}
-
-	// Action on click (handles from Actions.js)
-	if ( field.action_onclick ) {
-		element.setAttribute( 'data-action-onclick', field.action_onclick );
-	}
-
-	// // Validation
-	// if ( field.validation ) {
-	// 	element.setAttribute( 'data-validation', field.validation );
-	// }
+	// Arbitrary data-* attributes declared in PHP — no JS change needed to add one.
+	applyDataAttributes( element, field.attributes );
 };
 
 /**

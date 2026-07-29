@@ -1,23 +1,19 @@
 import { applyConditionalAttributes, escapeHTML, copyToClipboard } from '../../core/Utils.js';
 
 /**
- * field_type: block_variables
+ * Layout Component: Block Variables (field_type: block_variables)
  *
- * Renders a reference of template variables as a responsive grid of tiles —
- * token chip on top, description below — matching the feature-box design.
+ * Renders template variables in a grid of click-to-copy tiles.
  *
- * Free tiles are click-to-copy. PRO tiles are informational teasers (crown
- * badge, not copyable) for variables that only work in the PRO version.
- *
- * Field config:
- *   title     - optional heading (default: 'Variables')
- *   badge     - optional badge shown next to the title (e.g. 'PRO')
- *   note      - optional muted line under the grid
- *   pro       - when true, every tile defaults to the PRO (non-copyable) style
- *   variables - object map of token => description, where the value is either
- *               a string, or an object { desc, pro } to override per token.
- *               e.g. { '{product}': 'Product name' }
- *                    { '{time}': { desc: 'Click time', pro: true } }
+ * Field Configuration:
+ *   title         - Optional heading (default: 'Variables').
+ *   badge         - Optional badge next to title (e.g. 'PRO').
+ *   note          - Optional note line under the grid.
+ *   pro           - When true, tiles default to PRO (crown-badged) styling.
+ *   variables     - Object map of token => description (string or { desc, pro }).
+ *                   e.g. { '{title}': 'Page title', '{url}': 'Page URL' }
+ *   pro_variables - Optional object map of token => description for PRO-only tiles.
+ *                   e.g. { '{time}': 'Click time' }
  */
 export const createBlockVariables = ( field ) => {
 	const el = document.createElement( 'div' );
@@ -32,33 +28,38 @@ export const createBlockVariables = ( field ) => {
 	const crownIcon = icon( 'crown', 'variable-pro-icon' );
 
 	const proDefault = !! field.pro;
+
+	// Build a single tile button. `forcePro` (or a per-token flag) adds the
+	// crown badge and PRO styling.
+	const tile = ( token, value, forcePro ) => {
+		const isObj = value && typeof value === 'object';
+		const label = isObj ? ( value.desc || '' ) : value;
+		const isPro = forcePro ||
+			( ( isObj && value.pro !== undefined ) ? !! value.pro : proDefault );
+		const safeToken = escapeHTML( token );
+		const safeLabel = escapeHTML( label );
+
+		const proClass = isPro ? ' is-pro' : '';
+		const proCue = isPro ? crownIcon : '';
+		const proLabel = isPro ? ` — ${safeLabel} (PRO feature)` : '';
+		const tip = 'Click to copy';
+
+		return `<button type="button" class="variable-tile${proClass}"` +
+			` data-token="${safeToken}" data-tip="${tip}"` +
+			( isPro ? ` aria-label="${safeToken}${proLabel}"` : '' ) + '>' +
+			`<code>${safeToken}</code>` +
+			`<span class="variable-desc">${safeLabel}</span>` +
+			`<span class="variable-tile-cue">${proCue}${copyIcon}${checkIcon}</span>` +
+			'</button>';
+	};
+
 	const variables = field.variables || {};
+	const proVariables = field.pro_variables || {};
 
 	const items = Object.entries( variables )
-		.map( ( [ token, value ] ) => {
-			const isObj = value && typeof value === 'object';
-			const label = isObj ? ( value.desc || '' ) : value;
-			const isPro = ( isObj && value.pro !== undefined ) ? !! value.pro : proDefault;
-			const safeToken = escapeHTML( token );
-			const safeLabel = escapeHTML( label );
-
-			if ( isPro ) {
-				// Informational teaser — not a copy target.
-				return '<div class="variable-tile is-pro" data-tip="PRO feature"' +
-					` aria-label="${safeToken} — ${safeLabel} (PRO feature)">` +
-					`<code>${safeToken}</code>` +
-					`<span class="variable-desc">${safeLabel}</span>` +
-					`<span class="variable-tile-cue">${crownIcon}</span>` +
-					'</div>';
-			}
-
-			return `<button type="button" class="variable-tile" data-token="${safeToken}"` +
-				' data-tip="Click to copy">' +
-				`<code>${safeToken}</code>` +
-				`<span class="variable-desc">${safeLabel}</span>` +
-				`<span class="variable-tile-cue">${copyIcon}${checkIcon}</span>` +
-				'</button>';
-		} )
+		.map( ( [ token, value ] ) => tile( token, value, false ) )
+		.concat( Object.entries( proVariables )
+			.map( ( [ token, value ] ) => tile( token, value, true ) ) )
 		.join( '' );
 
 	const title = field.title || 'Variables';
@@ -83,7 +84,7 @@ export const createBlockVariables = ( field ) => {
 
 	const liveRegion = el.querySelector( '[aria-live]' );
 
-	// Click a free tile to copy its token; PRO teaser tiles have no data-token.
+	// Click any tile to copy its token.
 	el.addEventListener( 'click', ( event ) => {
 		const tile = event.target.closest( '.variable-tile' );
 		if ( ! tile || ! tile.dataset.token ) { return; }

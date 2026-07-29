@@ -1,4 +1,4 @@
-/* global M, intlTelInput */
+/* global M */
 // Click to Chat
 document.addEventListener( 'DOMContentLoaded', function initializeMaterializeComponents () {
 	// md
@@ -992,119 +992,413 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			console.log( 'intl_input() className: ' + className );
 
 			var $inputs = $( '.' + className );
-			if ( $inputs.length ) {
-				console.log( className + ' class name exists' );
 
-				if ( typeof intlTelInput !== 'undefined' ) {
+			if ( ! $inputs.length ) {
+				return;
+			}
+
+			console.log( className + ' class name exists' );
+
+			intlLibrary()
+				.then( function handleIntlLibrary ( lib ) {
+					if ( ! lib ) {
+						throw new Error( 'intlTelInput not loaded..' );
+					}
 
 					$inputs.each( function initializeIntlInputInstance () {
-						console.log( 'each: calling intl_init()..' + this );
 						intl_init( this );
 					} );
 
-					console.log( 'calling intl_onchange() from intl_input()' );
 					intl_onchange();
-				} else {
-					// throw error..
-					console.log( 'intlTelInput not loaded..' );
-					throw new Error( 'intlTelInput not loaded..' );
-				}
-
-				// // all intl inputs
-				// console.log('all_intl_instances');
-				// console.log(all_intl_instances);
-			}
+				} );
 		}
 
-		// intl: - init
-		function intl_init ( phoneInputElement ) {
-			console.log( 'intl_init()' );
-			console.log( phoneInputElement );
+		/**
+		 * Load the vendored intl-tel-input, once per page.
+		 *
+		 * v29 ships as an ES module — there is no `intlTelInput` global to wait
+		 * for any more, so it is import()ed from the URL PHP localizes. Callers
+		 * (including PRO, via the ht_ctc_fn_all event) get a promise; intl_init()
+		 * awaits it internally so their call sites do not have to change.
+		 */
+		var intlLib = null;
+		var intlLibPromise = null;
 
-			var attr_value = $( phoneInputElement )
-				.attr( 'value' );
-			console.log( 'attr_value: ' + attr_value );
-
-			var hidden_input = $( phoneInputElement )
-				.attr( 'data-name' ) ?
-				$( phoneInputElement )
-					.attr( 'data-name' ) :
-				'ht_ctc_chat_options[number]';
-			console.log( hidden_input );
-
-			$( phoneInputElement )
-				.removeAttr( 'name' );
-			var pre_countries = [];
-			var country_code_date = new Date()
-				.toDateString();
-			var country_code =
-				ctc_getItem( 'country_code_date' ) === country_code_date ?
-					ctc_getItem( 'country_code' ) :
-					'';
-			console.log( 'country_code: ' + country_code );
-
-			if ( '' === country_code ) {
-				console.log( 'getting country code..' );
-
-				// fall back..
-				country_code = 'us';
-
-				$.ajax( {
-					url: 'https://ipinfo.io',
-					dataType: 'jsonp',
-				} )
-					.always( function handleGeoLookupResponse ( resp ) {
-						country_code = resp && resp.country ? resp.country : 'us';
-						ctc_setItem( 'country_code', country_code );
-						ctc_setItem( 'country_code_date', country_code_date );
-						add_prefer_countrys( country_code );
-						call_intl();
-					} );
-			} else {
-				call_intl();
+		function intlLibrary () {
+			if ( intlLibPromise ) {
+				return intlLibPromise;
 			}
 
-			var intl = '';
-			function call_intl () {
-				var storedPreCountries = ctc_getItem( 'pre_countries' );
-				pre_countries = storedPreCountries ? storedPreCountries : [];
-				console.log( pre_countries );
+			var url = ht_ctc_admin_var.intl;
 
-				var values = {
-					autoHideDialCode: false,
-					initialCountry: 'auto',
-					geoIpLookup: function geoIpLookupCallback ( success, failure ) {
-						success( country_code );
-					},
-					dropdownContainer: document.body,
-					hiddenInput: function buildHiddenInputFields () {
-						return {
-							phone: hidden_input,
-							country: 'ht_ctc_chat_options[intl_country]',
-						};
-					},
-					nationalMode: false,
+			if ( ! url ) {
+				intlLibPromise = Promise.resolve( null );
+				return intlLibPromise;
+			}
 
-					// autoPlaceholder: "polite",
-					countryOrder: pre_countries,
-					separateDialCode: true,
-					containerClass: 'intl_tel_input_container',
-					utilsScript: ht_ctc_admin_var.utils,
-				};
+			intlLibPromise =
+				// eslint-disable-next-line no-unsanitized/method -- URL comes from HT_CTC_Phone_Field::assets(), localized by PHP.
+				import( /* webpackIgnore: true */ url )
+					.then( function handleIntlModule ( module ) {
+						intlLib = module.default || null;
 
-				intl = intlTelInput( phoneInputElement, values );
+						/*
+						 * Expose on window for admin-side compatibility.
+						 * Kept for backward compatibility with scripts expecting window.intlTelInput.
+						 * Can be removed later.
+						 */
+						if ( intlLib && 'undefined' === typeof window.intlTelInput ) {
+							window.intlTelInput = intlLib;
+						}
 
-				// all_intl_instances.push(intl);
+						return intlLib;
+					} )
+					.catch( function handleIntlModuleError ( error ) {
+						console.log( 'failed to load intl-tel-input', error );
+						intlLibPromise = null;
+						return null;
+					} );
 
-				// Fix: Input display issue – auto-parsing fails for certain numbers
-				// (value is saved and retrieved correctly from DB)
-				if ( attr_value && attr_value.length > 8 ) {
-					console.log( 'set number: ' + attr_value );
-					intl.setNumber( attr_value );
-				}
+			return intlLibPromise;
+		}
+
+		/**
+		 * Rebuild the library's `uiTranslations` from the strings PHP inlined.
+
+			 * PHP sends the chosen language's strings — no request, no import.
+			 *
+			 * `searchSummaryAria` arrives as a plural TEMPLATE map rather than a string.
+			 * Upstream ships a separate hardcoded function for each of the 48 languages;
+			 * this is the one shared implementation of that logic, selecting the template
+			 * with Intl.PluralRules (which the browser already has) and substituting %d.
+			 * `exact` wins for the counts upstream words specially — Lithuanian says
+			 * "Rastas 1" but "Rasti 21", and both are CLDR `one`.
+			 *
+			 * Empty means English, where the library's own defaults already apply.
+		 *
+		 * @param {Object} source Strings from PHP.
+		 * @param {string} locale Language tag driving plural selection.
+		 * @returns {Object} uiTranslations for the library.
+		 */
+		function buildUiTranslations ( source, locale ) {
+			if ( ! source || 'object' !== typeof source ) {
+				return {};
+			}
+
+			var ui = {};
+
+			Object.keys( source )
+				.forEach( function copyKey ( key ) {
+					// eslint-disable-next-line security/detect-object-injection -- keys come from our own generated data.
+					ui[ key ] = source[ key ];
+				} );
+			var aria = ui.searchSummaryAria;
+
+			if ( ! aria || 'object' !== typeof aria ) {
+				return ui;
+			}
+
+			var exact = aria.exact || {};
+			var plural = aria.plural || {};
+			var rules = null;
+
+			try {
+				rules = new Intl.PluralRules( locale );
+			} catch {
+				rules = null;
+			}
+
+			ui.searchSummaryAria = function searchSummaryAria ( count ) {
+				/* eslint-disable security/detect-object-injection -- `count` is a number from the library; keys are our own generated data. */
+				var template = ( count <= 1 && undefined !== exact[ count ] ) ?
+					exact[ count ] :
+					plural[ rules ? rules.select( count ) : 'other' ] || plural.other;
+				/* eslint-enable security/detect-object-injection */
+
+				return undefined === template ?
+					String( count ) :
+					template.split( '%d' )
+						.join( String( count ) );
+			};
+
+			return ui;
+		}
+
+		/**
+		 * intl: - init
+		 *
+		 * Awaits the library, so PRO can keep calling this synchronously for
+		 * number fields it adds after page load.
+		 */
+		function intl_init ( phoneInputElement ) {
+			console.log( 'intl_init()' );
+
+			return intlLibrary()
+				.then( function handleIntlReady ( intlTelInputFn ) {
+					var uiTranslations = buildUiTranslations(
+						ht_ctc_admin_var.intl_ui,
+						( ht_ctc_admin_var.intl_lang || 'en' ).replace( '_', '-' ),
+					);
+
+					if ( ! intlTelInputFn || phoneInputElement.dataset.ctcIntlBound === 'true' ) {
+						return null;
+					}
+
+					phoneInputElement.dataset.ctcIntlBound = 'true';
+
+					return intlConstruct( phoneInputElement, intlTelInputFn, uiTranslations );
+				} );
+		}
+
+		/**
+		 * Build one instance and the hidden input that actually saves.
+		 *
+		 * The visible field's `name` is removed and a hidden input carrying it is
+		 * created here. v24 had the library do that via `hiddenInput`; v29's
+		 * `hiddenInputs` only writes on a native form submit, and the value is
+		 * also read before that (the demo preview, the valid-number event), so we
+		 * own it and keep it in step on every change.
+		 *
+		 * `ht_ctc_chat_options[intl_country]` is deliberately not recreated — v24
+		 * emitted it, but no PHP has ever read it.
+		 */
+		function intlConstruct ( phoneInputElement, intlTelInputFn, uiTranslations ) {
+			var $el = $( phoneInputElement );
+			var attr_value = $el.attr( 'value' );
+			var hidden_input_name = $el.attr( 'data-name' ) ?
+				$el.attr( 'data-name' ) :
+				'ht_ctc_chat_options[number]';
+
+			$el.removeAttr( 'name' );
+
+			var stored_pre_countries = ctc_getItem( 'pre_countries' );
+
+			var values = {
+				// v29: replaces initialCountry:'auto' + geoIpLookup.
+				initialCountry: '',
+				initialCountryLookup: intlCountryLookup,
+
+				// v29: was dropdownContainer.
+				dropdownParent: document.body,
+
+				// v29: was nationalMode:false.
+				numberDisplayFormat: 'INTERNATIONAL',
+				separateDialCode: true,
+
+				// Don't block keystrokes or cap length — accept what is typed.
+				strictMode: false,
+
+				countryOrder: stored_pre_countries ? stored_pre_countries : [],
+
+				// ctc_intl_container is REQUIRED: the vendored stylesheet is
+				// scoped to it, so without it the field renders unstyled.
+				containerClass: 'ctc_intl_container intl_tel_input_container',
+
+				// We are adding this so to avoid the conflict from material css..
+				searchInputClass: 'browser-default',
+
+				// We manage the hidden input below.
+				hiddenInputs: null,
+
+				// v29: was utilsScript (an eager URL).
+				loadUtils: ht_ctc_admin_var.utils ?
+					function loadIntlUtils () {
+						// eslint-disable-next-line no-unsanitized/method -- URL comes from HT_CTC_Phone_Field::assets(), localized by PHP.
+						return import( /* webpackIgnore: true */ ht_ctc_admin_var.utils );
+					} :
+					null,
+
+				// Country names from the browser, in the admin's language.
+				countryNameLocale: ( ht_ctc_admin_var.intl_lang || 'en' ).replace( '_', '-' ),
+			};
+
+			if ( uiTranslations ) {
+				values.uiTranslations = uiTranslations;
+			}
+
+			var intl = intlTelInputFn( phoneInputElement, values );
+
+			// v29 removed intlTelInput.getInstance(); the change handlers read
+			// this instead.
+			phoneInputElement._ctcIti = intl;
+
+			intlKeepDropdownInSync( phoneInputElement );
+
+			var hidden = document.createElement( 'input' );
+
+			hidden.type = 'hidden';
+			hidden.className = 'ctc_intl_number_hidden';
+			hidden.setAttribute( 'name', hidden_input_name );
+
+			/*
+			 * Seeded with the value already stored, NOT with getNumber().
+			 *
+			 * This input is what the form posts, so it must never be empty while a
+			 * number is saved. getNumber() throws until the lazy utils module
+			 * resolves, so calling it here would leave '' behind and wipe the
+			 * setting on the next save. The real value is written below once the
+			 * instance reports ready, and on every change after that.
+			 */
+			hidden.value = attr_value ? attr_value : '';
+			phoneInputElement.parentNode.insertBefore( hidden, phoneInputElement.nextSibling );
+
+			// Fix: Input display issue – auto-parsing fails for certain numbers
+			// (value is saved and retrieved correctly from DB)
+			if ( attr_value && attr_value.length > 8 ) {
+				intl.setNumber( attr_value );
+			}
+
+			if ( intl.promise && 'function' === typeof intl.promise.then ) {
+				intl.promise.then( function handleIntlReadyValue () {
+					// utils is ready now: replace the seed / best-effort value with
+					// the canonical formatted number.
+					var readyNumber = intlNumber( intl, phoneInputElement );
+
+					if ( readyNumber ) {
+						hidden.value = readyNumber;
+					}
+				} )
+					.catch( function handleIntlPromiseError () {
+						// keep the stored value
+					} );
 			}
 
 			return intl;
+		}
+
+		/**
+		 * A saveable number that never throws and never loses what was typed.
+		 *
+		 * getNumber() needs the lazily-loaded utils module and throws until it
+		 * arrives — on a slow network that can be several seconds, during which a
+		 * naive sync would leave the hidden field empty and SAVE AN EMPTY NUMBER.
+		 *
+		 * So: use getNumber() when utils is ready (canonical, formatted), and
+		 * otherwise reconstruct a best-effort E.164 from the raw input plus the
+		 * selected dial code — getSelectedCountry() needs no utils. Once utils
+		 * loads, intl.promise / the change handler overwrite this with the
+		 * canonical value, so the fallback only ever stands in for the loading
+		 * window and is corrected the moment it can be.
+		 *
+		 * @param {Object}  intl    The intlTelInput instance.
+		 * @param {Element} element The visible input.
+		 * @returns {string}
+		 */
+		function intlNumber ( intl, element ) {
+			try {
+				var formatted = intl.getNumber();
+
+				if ( formatted ) {
+					return formatted;
+				}
+			} catch {
+				// utils not ready — fall through to the raw reconstruction.
+			}
+
+			var raw = element && element.value ?
+				String( element.value )
+					.trim() :
+				'';
+
+			if ( '' === raw ) {
+				return '';
+			}
+
+			// Already a full international number (separateDialCode off, or pasted).
+			if ( '+' === raw.charAt( 0 ) ) {
+				return raw;
+			}
+
+			try {
+				var country = intl.getSelectedCountry();
+
+				if ( country && country.dialCode ) {
+					return '+' + country.dialCode + raw.replace( /\D/g, '' );
+				}
+			} catch {
+				// no country data — return the raw digits rather than nothing.
+			}
+
+			return raw;
+		}
+
+		/**
+		 * Country for `initialCountryLookup` (v29), cached for the day.
+		 */
+		function intlCountryLookup () {
+			var country_code_date = new Date()
+				.toDateString();
+			var cached = ctc_getItem( 'country_code_date' ) === country_code_date ?
+				ctc_getItem( 'country_code' ) :
+				'';
+
+			if ( cached ) {
+				return Promise.resolve( String( cached )
+					.toLowerCase() );
+			}
+
+			return fetch( 'https://ipinfo.io/json', { mode: 'cors', credentials: 'omit' } )
+				.then( function handleGeoResponse ( response ) {
+					return response.json();
+				} )
+				.then( function handleGeoJson ( resp ) {
+					var code = resp && resp.country && /^[A-Za-z]{2}$/.test( resp.country ) ?
+						resp.country :
+						'US';
+
+					ctc_setItem( 'country_code', code );
+					ctc_setItem( 'country_code_date', country_code_date );
+					add_prefer_countrys( code );
+
+					return code.toLowerCase();
+				} )
+				.catch( function handleGeoError () {
+					return 'us';
+				} );
+		}
+
+		/**
+		 * Size the detached dropdown, on every open.
+		 *
+		 * Both fixes are required by the vendored stylesheet's scoping — the
+		 * height one is not cosmetic: the library measures the panel inside a
+		 * wrapper that does not carry .ctc_intl_container, so it measures
+		 * unstyled and pins roughly 4700px.
+		 */
+		function intlKeepDropdownInSync ( element ) {
+			var wrapper = element.closest( '.iti' );
+
+			if ( ! wrapper ) {
+				return;
+			}
+
+			element.addEventListener( 'open:countryselector', function handleSelectorOpen () {
+				try {
+					var button = wrapper.querySelector( '.iti__selected-country' );
+					var panelId = button && button.getAttribute( 'aria-controls' );
+					var panel = panelId ? document.getElementById( panelId ) : null;
+
+					if ( ! panel || panel.closest( '.iti--fullscreen-popup' ) ) {
+						return;
+					}
+
+					var width = wrapper.offsetWidth;
+
+					if ( width > 0 ) {
+						panel.style.width = width + 'px';
+					}
+
+					panel.style.height = '';
+
+					var height = panel.offsetHeight;
+
+					if ( height > 0 ) {
+						panel.style.height = height + 'px';
+					}
+				} catch {
+					// a mis-sized dropdown is not worth breaking the page over
+				}
+			} );
 		}
 
 		// intl: on change
@@ -1112,67 +1406,65 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 			console.log( 'intl_onchange()' );
 
 			$( '.intl_number' )
-				.on( 'input countrychange', function handleIntlInputChange ( event ) {
+				.on( 'input countrychange', function handleIntlInputChange () {
 					// if blank also it may triggers.. as if countrycode changes.
-					console.log( 'on change - intl_number - input, countrychange' );
-					console.log( this );
-					console.log( intlTelInput );
+					// v29 removed intlTelInput.getInstance(); intlConstruct()
+					// stashes the instance on the element instead.
+					var changed = this._ctcIti;
 
-					// var changed = intlTelInputGlobals.getInstance(this);
-					// var changed = window.intlTelInput.getInstance(this);
-					// var changed = intlTelInput(this);
-					var changed = intlTelInput.getInstance( this );
-
-					console.log( changed );
-					console.log( changed.getNumber() );
-
-					// add value to next sibbling hidden input field.
-					$( this )
-						.next( 'input[type="hidden"]' )
-						.val( changed.getNumber() );
-
-					if ( window.ht_ctc_admin_demo_var ) {
-						console.log( 'for demo: update number' );
-						window.ht_ctc_admin_demo_var.number = changed.getNumber();
-						console.log( window.ht_ctc_admin_demo_var );
+					if ( ! changed ) {
+						return;
 					}
 
-					if ( changed.isValidNumber() ) {
-						// to display in format
-						console.log( 'valid number: ' + changed.getNumber() );
+					// intlNumber() is best-effort: it mirrors the raw input when utils
+					// has not loaded, so the hidden field always tracks what the
+					// user typed and a save during the loading window keeps it.
+					var number = intlNumber( changed, this );
 
-						// issue here.. setNumber ~ uses for for formating..
-						// console.log(changed.getNumber());
+					// the hidden input created in intlConstruct() is what saves.
+					$( this )
+						.next( 'input[type="hidden"]' )
+						.val( number );
 
-						var numberDetails = {
-							number: changed.getNumber(),
-						};
+					if ( window.ht_ctc_admin_demo_var ) {
+						window.ht_ctc_admin_demo_var.number = number;
+					}
+
+					// isValidNumber() also needs utils and throws without it.
+					var isValid = false;
+
+					try {
+						isValid = changed.isValidNumber();
+					} catch {
+						isValid = false;
+					}
+
+					if ( isValid ) {
+						var numberDetails = { number: number };
 
 						// @used at admin demo
 						document.dispatchEvent( new CustomEvent(
 							'ht_ctc_admin_event_valid_number',
 							{ detail: { data: numberDetails } },
 						) );
-					} else {
-						console.log( 'invalid number: ' + changed.getNumber() );
 					}
 				} );
 
 			// intl: only countrycode changes.
 			$( '.intl_number' )
-				.on( 'countrychange', function handleIntlCountryChange ( event ) {
-					console.log( 'on change - intl_number - countrychange' );
+				.on( 'countrychange', function handleIntlCountryChange () {
+					var changed = this._ctcIti;
 
-					// var changed = intlTelInputGlobals.getInstance(this);
-					// var changed = window.intlTelInput.getInstance(this);
-					// var changed = window.intlTelInput(this);
-					var changed = intlTelInput.getInstance( this );
+					if ( ! changed ) {
+						return;
+					}
 
-					console.log( changed );
+					// v29: was getSelectedCountryData().
+					var country = changed.getSelectedCountry();
 
-					console.log( changed.getSelectedCountryData().iso2 );
-					console.log( 'calling add_prefer_countrys()' );
-					add_prefer_countrys( changed.getSelectedCountryData().iso2 );
+					if ( country && country.iso2 ) {
+						add_prefer_countrys( country.iso2 );
+					}
 				} );
 		}
 
@@ -1450,46 +1742,3 @@ document.addEventListener( 'DOMContentLoaded', function initializeMaterializeCom
 
 	} );
 } )( jQuery );
-
-/**
- * Truncated-save detection (max_input_vars).
- *
- * On submit of a Click to Chat settings form (classic Settings API posting
- * to options.php), prepend a hidden ht_ctc_field_count field holding the
- * number of fields the browser is submitting. It is inserted as the FIRST
- * field so it survives server-side truncation; PHP compares it against the
- * vars actually received and shows an admin notice on mismatch
- * (see HT_CTC_Admin_Hooks::detect_truncated_save).
- */
-// document.addEventListener( 'submit', function htCtcCountFields ( event ) {
-// 	try {
-// 		const form = event.target;
-// 		if ( ! form || ! form.action || form.action.indexOf( 'options.php' ) === -1 ) {
-// 			return;
-// 		}
-// 		const optionPage = form.querySelector( 'input[name="option_page"]' );
-// 		if ( ! optionPage || optionPage.value.indexOf( 'ht_ctc_' ) !== 0 ) {
-// 			return;
-// 		}
-
-// 		let counter = form.querySelector( 'input[name="ht_ctc_field_count"]' );
-// 		if ( ! counter ) {
-// 			counter = document.createElement( 'input' );
-// 			counter.type = 'hidden';
-// 			counter.name = 'ht_ctc_field_count';
-// 			form.insertBefore( counter, form.firstChild );
-// 		}
-
-// 		// Count entries the browser will submit (counter field included).
-// 		counter.value = '0';
-// 		let count = 0;
-// 		new FormData( form )
-// 			.forEach( function countEntry () {
-// 				count++;
-// 			} );
-// 		counter.value = String( count );
-// 	} catch ( error ) {
-// 		// Diagnostics only — never block the save.
-// 		console.log( error );
-// 	}
-// }, true );

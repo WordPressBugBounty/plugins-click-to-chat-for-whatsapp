@@ -28,12 +28,12 @@ if ( ! class_exists( 'HT_CTC_API_Permissions' ) ) {
 
 			// Only allow users with 'manage_options' capability to access these endpoints.
 			if ( ! current_user_can( 'manage_options' ) ) {
-				return HT_CTC_API_Responses::error( 'forbidden', __( 'You do not have permission.', 'click-to-chat-for-whatsapp' ), 403 );
+				return HT_CTC_API_Responses::error( 'forbidden', 'You do not have permission.', 403 );
 			}
 
 			$nonce = $request->get_header( 'X-WP-Nonce' );
 			if ( ! $nonce || ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
-				return HT_CTC_API_Responses::error( 'invalid_nonce', __( 'Invalid or missing nonce.', 'click-to-chat-for-whatsapp' ), 403 );
+				return HT_CTC_API_Responses::error( 'invalid_nonce', 'Invalid or missing nonce.', 403 );
 			}
 
 			return true;

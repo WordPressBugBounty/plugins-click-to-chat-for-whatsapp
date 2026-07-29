@@ -34,13 +34,13 @@ $othersettings = get_option( 'ht_ctc_othersettings' );
 				<p style="margin: 0 0 16px; font-size: 13.5px; color: #64748b; line-height: 1.6; position: relative; z-index: 1;">Experience our most advanced, lightning-fast dashboard yet. Built for the future of Click to Chat.</p>
 				<div style="margin: 0 0 28px; display: flex; flex-direction: column; gap: 8px; align-items: center; position: relative; z-index: 1;">
 					<div style="font-size: 12px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 6px;">
-						<span style="color: #6366f1; font-weight: 800;">✓</span> <?php esc_html_e( 'Switch back easily', 'click-to-chat-for-whatsapp' ); ?>
+						<span style="color: #6366f1; font-weight: 800;">✓</span> Switch back easily
 					</div>
 					<div style="font-size: 12px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 6px;">
-						<span style="color: #6366f1; font-weight: 800;">✓</span> <?php esc_html_e( 'No settings will be lost', 'click-to-chat-for-whatsapp' ); ?>
+						<span style="color: #6366f1; font-weight: 800;">✓</span> No settings will be lost
 					</div>
 				</div>
-				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=click-to-chat&admin_ui=2026' ), 'ht_ctc_switch_ui', '_htnonce' ) ); ?>" class="button" style="width: 100%; justify-content: center; height: 44px; line-height: 44px; font-size: 14px; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 1; letter-spacing: 0.01em; margin: 0;"><?php esc_html_e( 'Switch to 2026 UI', 'click-to-chat-for-whatsapp' ); ?></a>
+				<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=click-to-chat&admin_ui=2026' ), 'ht_ctc_switch_ui', '_htnonce' ) ); ?>" class="button" style="width: 100%; justify-content: center; height: 44px; line-height: 44px; font-size: 14px; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: #fff; border: none; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 1; letter-spacing: 0.01em; margin: 0;">Switch to 2026 UI</a>
 			</div>
 		<?php } else { ?>
 			<div style="background: #f5f3ff; padding: 30px 20px; border: 1px solid #ddd6fe; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1); margin-bottom: 30px; text-align: center; position: relative; overflow: hidden;">

@@ -61,10 +61,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 				// Admin notices.
 			$this->admin_notice();
 
-				// Detect settings saves truncated by the server (max_input_vars).
-			// add_action( 'admin_init', array( $this, 'detect_truncated_save' ) );
-			// add_action( 'admin_notices', array( $this, 'truncated_save_notice' ) );
-
 				// ht_ctc_ah_admin.
 			add_action( 'ht_ctc_ah_admin_after_sanitize', array( $this, 'after_sanitize' ) );
 
@@ -108,124 +104,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 			if ( ! isset( $s1['s1_text_color'] ) ) {
 				include_once HT_CTC_PLUGIN_DIR . '/new/admin/db/class-ht-ctc-db2.php';
 			}
-		}
-
-		/**
-		 * Detect a settings-save POST that the server truncated (max_input_vars).
-		 *
-		 * Admin JS prepends a hidden ht_ctc_field_count field (first in the form,
-		 * so it survives truncation) holding the number of fields the browser
-		 * submitted. If PHP received fewer input vars than that, the server
-		 * dropped fields (typically the nonce and later settings), so the save
-		 * fails or loses data. Store the counts for an admin notice.
-		 *
-		 * Runs on admin_init, before options.php verifies the nonce — the nonce
-		 * field itself may be one of the dropped fields, so this check cannot
-		 * rely on nonce verification. It only reads counts and writes a
-		 * per-user transient; it does not touch settings.
-		 *
-		 * @return void
-		 */
-		public function detect_truncated_save() {
-
-			// phpcs:disable WordPress.Security.NonceVerification.Missing -- diagnostic only; truncation may have dropped the nonce field itself.
-			if ( ! isset( $_POST['ht_ctc_field_count'], $_POST['option_page'] ) ) {
-				return;
-			}
-
-			$option_page = sanitize_text_field( wp_unslash( $_POST['option_page'] ) );
-
-			// Only Click to Chat settings groups.
-			if ( 0 !== strpos( $option_page, 'ht_ctc_' ) ) {
-				return;
-			}
-
-			$expected = absint( wp_unslash( $_POST['ht_ctc_field_count'] ) );
-			$received = $this->count_post_leaves( $_POST );
-			// phpcs:enable WordPress.Security.NonceVerification.Missing
-
-			if ( $expected > 0 && $received < $expected ) {
-				set_transient(
-					'ht_ctc_truncated_save_' . get_current_user_id(),
-					array(
-						'expected'       => $expected,
-						'received'       => $received,
-						'max_input_vars' => (int) ini_get( 'max_input_vars' ),
-					),
-					5 * MINUTE_IN_SECONDS
-				);
-			}
-		}
-
-		/**
-		 * Count scalar leaf values in a (possibly nested) request array.
-		 *
-		 * Matches how PHP counts input vars for max_input_vars: each scalar
-		 * value is one var, array fields count per entry.
-		 *
-		 * @param array $data Request data.
-		 * @return int
-		 */
-		private function count_post_leaves( $data ) {
-
-			$count = 0;
-
-			foreach ( $data as $value ) {
-				if ( is_array( $value ) ) {
-					$count += $this->count_post_leaves( $value );
-				} else {
-					++$count;
-				}
-			}
-
-			return $count;
-		}
-
-		/**
-		 * Warn the admin that the last settings save was truncated by the server.
-		 *
-		 * @return void
-		 */
-		public function truncated_save_notice() {
-
-			if ( ! current_user_can( 'manage_options' ) ) {
-				return;
-			}
-
-			$key  = 'ht_ctc_truncated_save_' . get_current_user_id();
-			$data = get_transient( $key );
-
-			if ( ! is_array( $data ) ) {
-				return;
-			}
-
-			delete_transient( $key );
-
-			$expected       = isset( $data['expected'] ) ? absint( $data['expected'] ) : 0;
-			$received       = isset( $data['received'] ) ? absint( $data['received'] ) : 0;
-			$max_input_vars = isset( $data['max_input_vars'] ) ? absint( $data['max_input_vars'] ) : 0;
-
-			?>
-			<div class="notice notice-error">
-				<p>
-					<strong><?php esc_html_e( 'Click to Chat: settings may not have saved completely.', 'click-to-chat-for-whatsapp' ); ?></strong>
-				</p>
-				<p>
-					<?php
-					printf(
-						/* translators: 1: fields submitted by the browser, 2: fields received by the server, 3: current max_input_vars value */
-						esc_html__( 'The browser submitted %1$d fields but the server received only %2$d — the server truncated the request (PHP max_input_vars is %3$d). Some settings, or the security token, were dropped.', 'click-to-chat-for-whatsapp' ),
-						absint( $expected ),
-						absint( $received ),
-						absint( $max_input_vars )
-					);
-					?>
-				</p>
-				<p>
-					<?php esc_html_e( 'To fix: increase max_input_vars (e.g. to 3000) in php.ini, .htaccess, or via your hosting panel, then save again.', 'click-to-chat-for-whatsapp' ); ?>
-				</p>
-			</div>
-			<?php
 		}
 
 		// Clear cache marker is updated after sanitize on plugin admin pages.
@@ -297,7 +175,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 
 			// PRO compatibility check notice.
 			// Note: This check is added in both class-ht-ctc-admin-hooks.php (for 2019 UI) and class-ht-ctc-admin-notices.php (for 2026 UI).
-			// todo(4.42): enable this PRO < 2.21 notice.
+			// todo(4.43): enable this PRO < 2.21 notice.
 			// if ( false && defined( 'HT_CTC_PRO_VERSION' ) && version_compare( HT_CTC_PRO_VERSION, '2.21', '<' ) ) {
 			// add_action( 'admin_notices', array( $this, 'show_pro_compatibility_notice' ) );
 			// }

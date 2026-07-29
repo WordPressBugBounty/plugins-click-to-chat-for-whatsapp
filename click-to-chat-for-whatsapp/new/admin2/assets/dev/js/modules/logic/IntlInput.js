@@ -1,55 +1,146 @@
-/* global intlTelInput */
-// Provided by intl-tel-input library (loaded at class-ht-ctc-admin-scripts.php).
-
 /**
- * International Phone Input Logic
+ * International Phone Input Logic.
+ *
+ * Handles international phone input initialization, dynamic loading of the vendored
+ * intl-tel-input ES module, country lookup, hidden input synchronization, and translations.
+ *
+ * The library is dynamically imported as an ES module using the URL localized by PHP.
+ * The instance is stored directly on the input element (`_ctcIti`) for modular access.
  */
 
 import { getCtcStorageItem, setCtcStorageItem } from '../core/Storage.js';
-import { log } from '../core/Utils.js';
+import { log, importWithRetry } from '../core/Utils.js';
+
+/**
+ * Resolve the vendored library, once per page.
+ *
+ * @returns {Promise<Object|null>} the intlTelInput constructor, or null.
+ */
+let libPromise = null;
+
+const loadLibrary = () => {
+	if ( libPromise ) {
+		return libPromise;
+	}
+
+	const paths = ( window.ht_ctc_admin_var && window.ht_ctc_admin_var.paths ) || {};
+
+	if ( ! paths.phoneInput || ! paths.phoneInput.intlTelInput ) {
+		log( 'IntlInput', 'intlTelInput path not provided' );
+		return Promise.resolve( null );
+	}
+
+	libPromise = importWithRetry( () =>
+		// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
+		import( /* webpackIgnore: true */ paths.phoneInput.intlTelInput ) )
+		.then( ( module ) => module.default || null )
+		.catch( ( error ) => {
+			log( 'IntlInput', 'failed to load intl-tel-input', error );
+			libPromise = null; // allow a later retry
+			return null;
+		} );
+
+	return libPromise;
+};
+
+/**
+ * Build library `uiTranslations` using strings localized by PHP.
+ * Uses Intl.PluralRules for client-side plural selection on `searchSummaryAria`.
+ *
+ * @param {Object} source Strings from PHP.
+ * @param {string} locale Language tag driving plural selection.
+ * @returns {Object} uiTranslations for the library.
+ */
+const buildUiTranslations = ( source, locale ) => {
+	if ( ! source || 'object' !== typeof source ) {
+		return {};
+	}
+
+	const ui = { ...source };
+	const aria = ui.searchSummaryAria;
+
+	if ( ! aria || 'object' !== typeof aria ) {
+		return ui;
+	}
+
+	const exact = aria.exact || {};
+	const plural = aria.plural || {};
+	let rules = null;
+
+	try {
+		rules = new Intl.PluralRules( locale );
+	} catch {
+		rules = null;
+	}
+
+	ui.searchSummaryAria = ( count ) => {
+		/* eslint-disable security/detect-object-injection -- `count` is a number from the library; keys are our own generated data. */
+		const template = ( count <= 1 && undefined !== exact[ count ] ) ?
+			exact[ count ] :
+			plural[ rules ? rules.select( count ) : 'other' ] || plural.other;
+		/* eslint-enable security/detect-object-injection */
+
+		return undefined === template ?
+			String( count ) :
+			template.split( '%d' )
+				.join( String( count ) );
+	};
+
+	return ui;
+};
 
 /**
  * Initialize Intl Input
- * - calling intl_init('intl_number')
- * - calling intl_onchange(context)
  *
- * @param {Object} app
- * @returns {void}
+ * @param {string}      className Visible input class to initialise.
+ * @param {Document|Element} context Scope to search within.
+ * @param {Object}      app       App instance (event bus).
+ * @returns {Promise<void>}
  */
-export const initIntlInput = ( className = 'intl_number', context = document, app = null ) => {
+export const initIntlInput = async ( className = 'intl_number', context = document, app = null ) => {
 	const currentApp = app || window.HTCtcAdminApp;
+
 	try {
 		if ( ! context || typeof context.querySelector !== 'function' ) {
 			return;
 		}
 
-		if ( context.querySelector( '.' + className ) ) {
-			if ( typeof intlTelInput !== 'undefined' ) {
-				// Initialize each element
-				const elements = context.querySelectorAll( '.' + className );
-
-				elements.forEach( ( element ) => {
-					intl_init( element );
-				} );
-
-				// Attach change handlers
-				intl_onchange( context, currentApp );
-			} else {
-				log( 'IntlInput', 'intlTelInput not loaded' );
-			}
+		if ( ! context.querySelector( '.' + className ) ) {
+			return;
 		}
+
+		const intlTelInput = await loadLibrary();
+
+		if ( ! intlTelInput ) {
+			return;
+		}
+
+		// Inlined by PHP — no request, nothing to await.
+		const adminVar = window.ht_ctc_admin_var || {};
+		const phoneInput = adminVar.paths && adminVar.paths.phoneInput;
+		const localeTag = ( ( phoneInput && phoneInput.locale ) || 'en' ).replace( '_', '-' );
+		const uiTranslations = buildUiTranslations(
+			( phoneInput && phoneInput.uiStrings ) || null,
+			localeTag,
+		);
+
+		context.querySelectorAll( '.' + className )
+			.forEach( ( element ) => {
+				intl_init( element, intlTelInput, uiTranslations );
+			} );
+
+		intl_onchange( context, currentApp );
 	} catch ( error ) {
 		log( 'IntlInput', 'initIntlInput error:', error );
 	}
 };
 
 // Helper to initialize a single element
-const intl_init = ( element ) => {
+const intl_init = ( element, intlTelInput, uiTranslations = null ) => {
 	try {
-		if ( ! element || ! ( element instanceof Element ) ) { return; }
+		if ( ! element || ! ( element instanceof Element ) ) { return null; }
 
 		// Prevent Double Initialization
-		// Check if the element already has the 'iti-loaded' class or an existing instance.
 		if ( element.classList.contains( 'iti-loaded' ) ) {
 			try {
 				const existingInstance = intlTelInput.getInstance( element );
@@ -60,20 +151,14 @@ const intl_init = ( element ) => {
 				// If no instance but has class, remove class to allow re-init
 				element.classList.remove( 'iti-loaded' );
 			} catch {
-				// getInstance failed, remove marker and continue
 				element.classList.remove( 'iti-loaded' );
 			}
 		}
 
 		element.classList.add( 'iti-loaded' );
 
-		let intl = null;
-
-		// ... (rest of logic)
-
 		// 1. Get current value
 		// Fix the literal DOM attribute so the library's internal detection sees the '+' prefix.
-		// const attr_value = element.getAttribute( 'value' ) || '';
 		let attr_value = ( element.hasAttribute( 'value' ) ? element.getAttribute( 'value' ) : element.value ) || '';
 
 		if ( attr_value ) {
@@ -93,136 +178,89 @@ const intl_init = ( element ) => {
 		// Real dirty tracking flows through the hidden input via triggerAutoSave (guarded by userInteracted).
 		element.dataset.ctcNoTrack = 'true';
 
-		// 3. Determine Country Code
-		// Priority: Cached -> Date Checked -> Fallback
-		const country_code_date = new Date()
-			.toDateString();
-		let country_code = '';
+		// 3. Configuration
+		//
+		// Every option the field's behaviour depends on is set EXPLICITLY, so a
+		// change of library default in a future update cannot silently alter it.
+		const adminVar = window.ht_ctc_admin_var || {};
+		const phoneInputPaths = ( adminVar.paths && adminVar.paths.phoneInput ) || {};
+		const utilsUrl = phoneInputPaths.intlTelInputUtils || '';
 
-		try {
-			const storedDate = getCtcStorageItem( 'country_code_date' );
-			if ( storedDate === country_code_date ) {
-				country_code = getCtcStorageItem( 'country_code' );
-			}
-		} catch { country_code = ''; }
+		const values = {
+			/*
+			 * Dropdown mode configuration:
+			 * Uses FULLSCREEN for narrow/coarse viewports, otherwise DROPDOWN attached to body.
+			 */
+			countrySelectorMode: prefersFullscreenSelector() ? 'FULLSCREEN' : 'DROPDOWN',
+			dropdownParent: document.body,
 
-		// 4. Initialize Plugin
-		const call_intl = () => {
-			try {
-				// Get Preferred Countries (Recent selections)
-				let pre_countries = [];
-				try {
-					const storedPre = getCtcStorageItem( 'pre_countries' );
-					if ( Array.isArray( storedPre ) ) { pre_countries = storedPre; }
-				} catch { pre_countries = []; }
+			initialCountry: '',
+			initialCountryLookup: countryLookup,
 
-				// Configuration
-				const configUtilsPath = ( window.ht_ctc_admin_var && window.ht_ctc_admin_var.paths && window.ht_ctc_admin_var.paths.intlTelInputUtils ) || '';
+			// Match dropdown width to input field width.
+			matchDropdownWidth: true,
 
-				const values = {
-					autoHideDialCode: false,
-					initialCountry: 'auto',
-					geoIpLookup: ( success, failure ) => {
-						try {
-							success( country_code || 'us' );
-						} catch { if ( typeof failure === 'function' ) { failure(); } }
-					},
-					dropdownContainer: document.body,
-					hiddenInput: () => {
-						return {
-							phone: hidden_input_name,
+			// Recently used countries, most recent first.
+			countryOrder: getPreferredCountries(),
 
-							// country: 'ht_ctc_chat_options[intl_country]',
-						};
-					},
-					nationalMode: false,
+			numberDisplayFormat: 'INTERNATIONAL',
+			separateDialCode: true,
 
-					// autoPlaceholder: 'polite',
-					countryOrder: pre_countries,
-					separateDialCode: true,
-					containerClass: 'intl_tel_input_container',
-					utilsScript: configUtilsPath,
-				};
+			// Don't block keystrokes or cap length — accept what is typed.
+			strictMode: false,
 
-				intl = intlTelInput( element, values );
+			containerClass: 'ctc_intl_container',
 
-				// Fix: Input display issue – auto-parsing fails for certain numbers
-				// (value is saved and retrieved correctly from DB)
-				if ( attr_value && attr_value.length > 8 ) {
-					intl.setNumber( attr_value );
-				}
+			// Country names in admin language via browser Intl.DisplayNames.
+			countryNameLocale: ( phoneInputPaths.locale || 'en' ).replace( '_', '-' ),
 
-				// Get the hidden input and add intl_number_hidden class to it (after save, we will use this class to update the form value both hidden and visible intl input)
-				const hiddenInput = intl.hiddenInput || element.closest( '.intl_tel_input_container' )
-					.querySelector( 'input[type="hidden"]' );
+			// Managed hidden input handles saved values.
+			hiddenInputs: null,
 
-				// const hiddenInput = element.closest('.intl_tel_input_container').querySelector('input[type="hidden"]');
-				hiddenInput.classList.add( 'intl_number_hidden' );
-
-				// Set the value of the hidden input. (as most/save logic runs on js. will update hidden input value)
-				intl.promise.then( () => {
-					const value = intl.getNumber();
-
-					if ( hiddenInput && value ) {
-						hiddenInput.value = value;
-					}
-				} )
-					.catch( ( err ) => {
-						log( 'IntlInput', 'Error resolving intl.promise', err );
-					} );
-			} catch ( err ) {
-				log( 'IntlInput', 'Error inside call_intl', err );
-			}
+			// Load utils module at init to format saved numbers and placeholders.
+			loadUtils: utilsUrl ?
+				() =>
+					// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
+					import( /* webpackIgnore: true */ utilsUrl ) :
+				null,
 		};
 
-		// 5. Fetch IP Info if Country Unknown (First run / Expired cache)
-		if ( ! country_code ) {
-			country_code = 'us'; // Default fallback
-
-			try {
-				const controller = new AbortController();
-				const timeoutId = setTimeout( () => controller.abort(), 2000 );
-
-				fetch( 'https://ipinfo.io/json', {
-					signal: controller.signal,
-					mode: 'cors',
-					credentials: 'omit',
-				} )
-					.then( response => {
-						if ( ! response.ok ) {
-							return Promise.reject( 'HTTP error' );
-						}
-						return response.json();
-					} )
-					.then( resp => {
-						// Validate country code format (2 letter ISO code)
-						if ( resp && resp.country && /^[A-Z]{2}$/i.test( resp.country ) ) {
-							country_code = resp.country;
-						} else {
-							country_code = 'us';
-						}
-					} )
-					.catch( ( err ) => {
-						// Surface silent country-detection failures to dev/QA via the browser console; production users never see this.
-						console.warn( '[ht_ctc] IntlInput: country detection failed, defaulting to US', err );
-						country_code = 'us';
-					} )
-					.finally( () => {
-						try {
-							clearTimeout( timeoutId );
-							setCtcStorageItem( 'country_code', country_code );
-							setCtcStorageItem( 'country_code_date', country_code_date );
-							add_prefer_countrys( country_code );
-							call_intl();
-						} catch { call_intl(); }
-					} );
-			} catch {
-				country_code = 'us';
-				call_intl();
-			}
-		} else {
-			call_intl();
+		if ( uiTranslations ) {
+			values.uiTranslations = uiTranslations;
 		}
+
+		const intl = intlTelInput( element, values );
+
+		element._ctcIti = intl;
+
+		keepDropdownWidthInSync( element, intl );
+
+		if ( attr_value && attr_value.length > 8 ) {
+			intl.setNumber( attr_value );
+		}
+
+		// Our own hidden input: this is what the save payload reads.
+		const hiddenInput = createHiddenInput( element, hidden_input_name );
+
+		if ( hiddenInput ) {
+			const seed = intlBestEffortNumber( intl, element );
+
+			if ( seed ) {
+				hiddenInput.value = seed;
+			}
+		}
+
+		intl.promise
+			.then( () => {
+				const value = intlBestEffortNumber( intl, element );
+
+				if ( hiddenInput && value ) {
+					hiddenInput.value = value;
+				}
+			} )
+			.catch( ( err ) => {
+				log( 'IntlInput', 'Error resolving intl.promise', err );
+			} );
 
 		return intl;
 
@@ -230,6 +268,170 @@ const intl_init = ( element ) => {
 		log( 'IntlInput', 'intl_init global error', error );
 		return null;
 	}
+};
+
+/**
+ * Determine if mobile/narrow viewport prefers fullscreen country selector.
+ *
+ * @returns {boolean}
+ */
+const prefersFullscreenSelector = () => {
+	try {
+		if ( typeof window === 'undefined' || typeof window.matchMedia !== 'function' ) {
+			return false;
+		}
+
+		return window.matchMedia( '(max-width: 500px)' ).matches ||
+			window.matchMedia( '(pointer: coarse)' ).matches ||
+			window.matchMedia( '(max-height: 600px)' ).matches;
+	} catch {
+		return false;
+	}
+};
+
+/**
+ * Keep dropdown width and height in sync with the input container on open.
+ *
+ * @param {Element} element Visible input.
+ * @returns {void}
+ */
+const keepDropdownWidthInSync = ( element ) => {
+	try {
+		const wrapper = element.closest( '.iti' );
+
+		if ( ! wrapper ) { return; }
+
+		element.addEventListener( 'open:countryselector', () => {
+			try {
+				const button = wrapper.querySelector( '.iti__selected-country' );
+				const panelId = button && button.getAttribute( 'aria-controls' );
+				const panel = panelId ? document.getElementById( panelId ) : null;
+
+				if ( ! panel || panel.closest( '.iti--fullscreen-popup' ) ) {
+					return;
+				}
+
+				const width = wrapper.offsetWidth;
+
+				if ( width > 0 ) {
+					panel.style.width = `${width}px`;
+				}
+
+				panel.style.height = '';
+				const height = panel.offsetHeight;
+
+				if ( height > 0 ) {
+					panel.style.height = `${height}px`;
+				}
+			} catch ( error ) {
+				log( 'IntlInput', 'dropdown width sync failed', error );
+			}
+		} );
+	} catch ( error ) {
+		log( 'IntlInput', 'keepDropdownWidthInSync error', error );
+	}
+};
+
+/**
+ * Create (or reuse) the hidden input that carries the real value.
+ *
+ * Checks both the .ctc_intl_container wrapper and parent node for existing hidden inputs,
+ * ensuring the target form name attribute is synchronized if an existing input is reused.
+ *
+ * @param {Element} element          Visible input.
+ * @param {string}  hidden_input_name Form name for the hidden input.
+ * @returns {Element|null}
+ */
+const createHiddenInput = ( element, hidden_input_name ) => {
+	try {
+		const container = element.closest( '.ctc_intl_container' ) || element.parentNode;
+
+		if ( ! container ) { return null; }
+
+		const existing = container.querySelector( 'input.intl_number_hidden' ) ||
+			( element.parentNode && element.parentNode.querySelector( 'input.intl_number_hidden' ) );
+
+		if ( existing ) {
+			if ( hidden_input_name ) {
+				existing.name = hidden_input_name;
+			}
+			return existing;
+		}
+
+		const hiddenInput = document.createElement( 'input' );
+		hiddenInput.type = 'hidden';
+		if ( hidden_input_name ) {
+			hiddenInput.name = hidden_input_name;
+		}
+		hiddenInput.classList.add( 'intl_number_hidden' );
+
+		container.appendChild( hiddenInput );
+
+		return hiddenInput;
+	} catch ( error ) {
+		log( 'IntlInput', 'createHiddenInput error', error );
+		return null;
+	}
+};
+
+/**
+ * Reconstruct a best-effort E.164 phone number from input and country dial code.
+ * Falls back safely if the utils module is still loading.
+ *
+ * @param {Object}  intl    intlTelInput instance.
+ * @param {Element} element Visible input.
+ * @returns {string}
+ */
+const intlBestEffortNumber = ( intl, element ) => {
+	try {
+		const formatted = intl.getNumber();
+
+		if ( formatted ) {
+			return formatted;
+		}
+	} catch {
+		// utils not ready — fall through to raw reconstruction.
+	}
+
+	const raw = element && element.value ?
+		String( element.value )
+			.trim() :
+		'';
+
+	if ( '' === raw ) {
+		return '';
+	}
+
+	if ( '+' === raw.charAt( 0 ) ) {
+		return raw;
+	}
+
+	try {
+		const country = intl.getSelectedCountry();
+
+		if ( country && country.dialCode ) {
+			const digits = raw.replace( /\D/g, '' )
+				.replace( /^0/, '' );
+
+			return `+${ country.dialCode }${ digits }`;
+		}
+	} catch {
+		// no country data — return raw digits rather than nothing.
+	}
+
+	return raw;
+};
+
+/**
+ * Resolve the hidden input paired with a visible intl field.
+ *
+ * @param {Element} element Visible input.
+ * @returns {Element|null}
+ */
+const getHiddenInput = ( element ) => {
+	const container = element.closest( '.ctc_intl_container' ) || element.parentNode;
+
+	return container ? container.querySelector( 'input.intl_number_hidden' ) : null;
 };
 
 const intl_onchange = ( context = document, currentApp ) => {
@@ -242,34 +444,32 @@ const intl_onchange = ( context = document, currentApp ) => {
 
 		intlInputs.forEach( ( input ) => {
 
-			// // todo: maybe multiple event Listeners can be added here check once...
+			// Guard against binding twice if the section is re-rendered.
+			if ( input.dataset.ctcIntlBound === 'true' ) {
+				return;
+			}
+			input.dataset.ctcIntlBound = 'true';
 
 			// Mark as user-interacted on first real interaction
 			[ 'focus', 'click', 'keydown' ].forEach( ( evt ) => {
 				input.addEventListener( evt, function markInteracted () {
-					// console.log(evt);
 					this.dataset.userInteracted = 'true';
 				}, { once: true } );
 			} );
 
 			[ 'input', 'countrychange' ].forEach( ( evtName ) => {
-				input.addEventListener( evtName, function handleIntlChange ( event ) {
+				input.addEventListener( evtName, function handleIntlChange () {
 					try {
-						if ( typeof intlTelInput === 'undefined' ) {
-							return;
-						}
-
-						const changed = intlTelInput.getInstance( this );
+						const changed = this._ctcIti;
 
 						if ( ! changed ) {
 							return;
 						}
 
-						const hiddenInput = changed.hiddenInput || this.closest( '.intl_tel_input_container' )
-							.querySelector( 'input[type="hidden"]' );
+						const hiddenInput = getHiddenInput( this );
 
 						if ( hiddenInput ) {
-							hiddenInput.value = changed.getNumber();
+							hiddenInput.value = intlBestEffortNumber( changed, this );
 
 							if ( this.dataset.userInteracted ) {
 								hiddenInput.dataset.changed = 'true';
@@ -278,48 +478,21 @@ const intl_onchange = ( context = document, currentApp ) => {
 								currentApp?.events?.emit( 'field:dirty', hiddenInput );
 							}
 						}
-
-						// ctcNoTrack the visible elements in DOM
-						// if ( this.dataset.userInteracted ) {
-						// 	this.dataset.changed = 'true';
-						// }
-
-						// // Update demo object if present
-						// if ( window.ht_ctc_admin_demo_var ) {
-						// 	try {
-						// 		window.ht_ctc_admin_demo_var.number = changed.getNumber();
-						// 	} catch {
-						// 		// ignore
-						// 	}
-						// }
-
-						// // Fire custom event for valid number
-						// try {
-						// 	if ( changed.isValidNumber() ) {
-						// 		const numberDetails = { number: changed.getNumber() };
-						// 		document.dispatchEvent( new CustomEvent( 'ht_ctc_admin_event_valid_number', { detail: { data: numberDetails } } ) );
-						// 	}
-						// } catch {
-						// 	// ignore validation error
-						// }
-
 					} catch {
 						// Silently skip if something goes wrong in the event handler
-						// console.warn('Ctc: intl event error', mainErr);
 					}
 				} );
 			} );
 
 			// Track country changes separately
-			input.addEventListener( 'countrychange', function handleCountryChange ( event ) {
-				// console.log(event);
+			input.addEventListener( 'countrychange', function handleCountryChange () {
 				try {
-					if ( typeof intlTelInput === 'undefined' ) {
-						return;
-					}
-					const changed = intlTelInput.getInstance( this );
+					const changed = this._ctcIti;
+
 					if ( changed ) {
-						const countryData = changed.getSelectedCountryData();
+						// v29: was getSelectedCountryData() in v24.
+						const countryData = changed.getSelectedCountry();
+
 						if ( countryData && countryData.iso2 ) {
 							add_prefer_countrys( countryData.iso2 );
 						}
@@ -334,6 +507,82 @@ const intl_onchange = ( context = document, currentApp ) => {
 	}
 };
 
+/**
+ * Detect user country via ipinfo API with daily local storage caching.
+ *
+ * @returns {Promise<string>} lowercase ISO2 country code.
+ */
+const countryLookup = () => {
+	const country_code_date = new Date()
+		.toDateString();
+
+	try {
+		const storedDate = getCtcStorageItem( 'country_code_date' );
+		const stored = getCtcStorageItem( 'country_code' );
+
+		if ( storedDate === country_code_date && stored ) {
+			return Promise.resolve( String( stored )
+				.toLowerCase() );
+		}
+	} catch {
+		// fall through to the network lookup
+	}
+
+	const controller = new AbortController();
+	const timeoutId = setTimeout( () => controller.abort(), 2000 );
+
+	return fetch( 'https://ipinfo.io/json', {
+		signal: controller.signal,
+		mode: 'cors',
+		credentials: 'omit',
+	} )
+		.then( ( response ) => {
+			if ( ! response.ok ) {
+				return Promise.reject( new Error( 'HTTP error' ) );
+			}
+			return response.json();
+		} )
+		.then( ( resp ) => {
+			// Validate country code format (2 letter ISO code)
+			const code = ( resp && resp.country && /^[A-Z]{2}$/i.test( resp.country ) ) ? resp.country : 'us';
+
+			try {
+				setCtcStorageItem( 'country_code', code );
+				setCtcStorageItem( 'country_code_date', country_code_date );
+				add_prefer_countrys( code );
+			} catch {
+				// ignore storage error
+			}
+
+			return code.toLowerCase();
+		} )
+		.catch( ( err ) => {
+			// Surface silent country-detection failures to dev/QA via the browser console; production users never see this.
+			console.warn( '[ht_ctc] IntlInput: country detection failed, defaulting to US', err );
+			return 'us';
+		} )
+		.finally( () => {
+			clearTimeout( timeoutId );
+		} );
+};
+
+/**
+ * Recently selected countries, newest first.
+ *
+ * @returns {Array} validated ISO2 codes.
+ */
+const getPreferredCountries = () => {
+	try {
+		const stored = getCtcStorageItem( 'pre_countries' );
+
+		if ( ! Array.isArray( stored ) ) { return []; }
+
+		return stored.filter( ( code ) => typeof code === 'string' && /^[A-Z]{2}$/i.test( code ) );
+	} catch {
+		return [];
+	}
+};
+
 const add_prefer_countrys = ( country_code ) => {
 	try {
 		// Validate and sanitize country code
@@ -343,17 +592,9 @@ const add_prefer_countrys = ( country_code ) => {
 			country_code = country_code.toUpperCase();
 		}
 
-		let pre_countries = getCtcStorageItem( 'pre_countries' );
+		let pre_countries = getPreferredCountries();
 
-		if ( ! Array.isArray( pre_countries ) ) {
-			pre_countries = [];
-		}
-
-		// Validate all existing country codes
-		pre_countries = pre_countries.filter( code =>
-			typeof code === 'string' && /^[A-Z]{2}$/i.test( code ) );
-
-		pre_countries = pre_countries.filter( code => code !== country_code );
+		pre_countries = pre_countries.filter( ( code ) => code.toUpperCase() !== country_code );
 		pre_countries.unshift( country_code );
 
 		if ( pre_countries.length > 3 ) {

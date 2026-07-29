@@ -189,6 +189,10 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 			HT_CTC_Utils::load_file( 'new/inc/commons/class-ht-ctc-hooks.php' );
 			// WooCommerce init.
 			HT_CTC_Utils::load_file( 'new/tools/woo/ht-ctc-woo.php' );
+			// Phone field (intl-tel-input) locator. Defines nothing but constants and
+			// static methods — no hooks, no assets — so it is safe to load always.
+			// PRO reads it on the front end; both admin UIs read it in wp-admin.
+			HT_CTC_Utils::load_file( 'new/tools/phone-field/class-ht-ctc-phone-field.php' );
 
 			// Is admin? Include file to admin area : include files to non-admin area.
 			if ( is_admin() ) {

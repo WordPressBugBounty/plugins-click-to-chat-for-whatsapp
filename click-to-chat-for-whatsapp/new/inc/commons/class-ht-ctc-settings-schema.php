@@ -127,6 +127,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					'analytics',
 					'aria',
 					'chat_load_hook',
+					'chat_wrapper_tag',
 					'delete_options',
 					'disable_page_level_settings',
 					'disable_tinymce',

@@ -1,4 +1,4 @@
-import { applyVariables, escapeHTML, escapeAttr } from '../../core/Utils.js';
+import { applyVariables, escapeHTML, escapeAttr, decodeHTML } from '../../core/Utils.js';
 import { createBaseWrapper, appendHelpText } from './BaseField.js';
 
 export const renderInput = ( field, config ) => {
@@ -25,7 +25,8 @@ export const renderInput = ( field, config ) => {
 
 	const textInput = wrapper.querySelector( 'input' );
 	if ( textInput ) {
-		textInput.value = value;
+		textInput.value = decodeHTML( value );
+		textInput.placeholder = decodeHTML( placeholder );
 	}
 
 	appendHelpText( wrapper, field );

@@ -57,7 +57,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Handler' ) ) {
 			// Nonce and capability are already verified by check_admin_settings_access (permission_callback -  $request object is unchanged since then)
 			// before this handler runs. The capability check below is defense-in-depth only —
 			if ( ! current_user_can( 'manage_options' ) ) {
-				return HT_CTC_API_Responses::error( 'forbidden', __( 'You do not have permission.', 'click-to-chat-for-whatsapp' ), 403 );
+				return HT_CTC_API_Responses::error( 'forbidden', 'You do not have permission.', 403 );
 			}
 
 			$raw_settings = $request->get_param( 'settings' );

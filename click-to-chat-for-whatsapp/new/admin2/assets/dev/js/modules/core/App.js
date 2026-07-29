@@ -496,7 +496,7 @@ export default class App {
 
 	// Public method to load and init IntlInput on demand
 	async loadAndInitIntlInput ( containerClass = 'intl_number', context = document ) {
-		const intlConf = this.config.modulesPath?.intlInput;
+		const intlConf = this.config.modulesPath?.phoneInput;
 		if ( intlConf && intlConf.path ) {
 			try {
 				const module = await Utils.importWithRetry( () =>

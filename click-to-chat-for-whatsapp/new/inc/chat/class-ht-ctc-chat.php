@@ -759,6 +759,29 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				<?php
 			}
 
+			/**
+			 * Render the widget's click surface as a real interactive element (<a>/<button>) so
+			 * code-free click trackers (e.g. Independent Analytics) — which only hook
+			 * a/button/input — can record WhatsApp clicks. A plain <div> is not trackable.
+			 *
+			 * Controlled by the "Click Tracking Compatibility" admin setting (Advanced > Debug,
+			 * Troubleshoot); default 'div' keeps the historical markup unchanged. Styles 1 (theme
+			 * <button>) and 6 (text <a>) already expose their own interactive element, so they
+			 * stay <div>-wrapped to avoid nesting interactive elements.
+			 */
+			$chat_wrapper_tag = ( isset( $othersettings['chat_wrapper_tag'] ) && in_array( $othersettings['chat_wrapper_tag'], array( 'a', 'button' ), true ) ) ? $othersettings['chat_wrapper_tag'] : 'div';
+			// Styles 1 (theme <button>) and 6 (text <a>) already expose their own interactive element.
+			if ( in_array( (string) $style, array( '1', '6' ), true ) ) {
+				$chat_wrapper_tag = 'div';
+			}
+			$chat_aria_label = ( '' !== $call_to_action ) ? $call_to_action : 'WhatsApp';
+			// Inline reset keeps the interactive wrapper visually identical to the <div>; being
+			// inline it beats non-important theme a/button rules without needing !important.
+			$chat_wrapper_reset = 'display:block;text-decoration:none;color:inherit;cursor:pointer;';
+			if ( 'button' === $chat_wrapper_tag ) {
+				$chat_wrapper_reset = 'display:block;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;line-height:inherit;text-align:inherit;letter-spacing:inherit;min-width:0;box-shadow:none;-webkit-appearance:none;appearance:none;cursor:pointer;';
+			}
+
 			// load style
 			if ( is_file( $path ) ) {
 				do_action( 'ht_ctc_ah_before_fixed_position' );
@@ -769,7 +792,13 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				// add greetings dialog
 				do_action( 'ht_ctc_ah_in_fixed_position' );
 				?>
+				<?php if ( 'button' === $chat_wrapper_tag ) { ?>
+				<button type="button" class="ht_ctc_style ht_ctc_chat_style ctc-analytics" aria-label="<?php echo esc_attr( $chat_aria_label ); ?>" style="<?php echo esc_attr( $chat_wrapper_reset ); ?>">
+				<?php } elseif ( 'a' === $chat_wrapper_tag ) { ?>
+				<a class="ht_ctc_style ht_ctc_chat_style ctc-analytics" aria-label="<?php echo esc_attr( $chat_aria_label ); ?>" style="<?php echo esc_attr( $chat_wrapper_reset ); ?>">
+				<?php } else { ?>
 				<div class="ht_ctc_style ht_ctc_chat_style">
+				<?php } ?>
 				<?php
 				// notification badge.
 				if ( 'show' === $ht_ctc_chat['notification_badge'] ) {
@@ -789,7 +818,13 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 					include $path;
 				}
 				?>
+				<?php if ( 'button' === $chat_wrapper_tag ) { ?>
+				</button>
+				<?php } elseif ( 'a' === $chat_wrapper_tag ) { ?>
+				</a>
+				<?php } else { ?>
 				</div>
+				<?php } ?>
 			</div>
 				<?php
 				do_action( 'ht_ctc_ah_after_fixed_position' );

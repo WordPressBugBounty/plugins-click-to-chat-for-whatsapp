@@ -338,16 +338,11 @@ html[data-theme="dark"] .infobox-alert.error .info-box-icon {
     display: inline;
 }
 
-/* PRO teaser tiles: informational (not copyable), crown cue, amber accent */
-.variable-tile.is-pro {
-    cursor: default;
-    border-style: dashed;
-}
-
+/* PRO tiles: copyable like the rest, marked by an amber accent + crown badge.
+   The crown labels the token as a PRO feature; it does not lock the copy. */
 .variable-tile.is-pro:hover {
-    transform: none;
     border-color: var(--pro-color);
-    box-shadow: none;
+    box-shadow: 0 6px 16px -8px rgba(245, 158, 11, 0.5);
 }
 
 .variable-tile.is-pro code {
@@ -359,5 +354,28 @@ html[data-theme="dark"] .infobox-alert.error .info-box-icon {
 .variable-tile.is-pro .variable-tile-cue {
     color: var(--pro-color);
     opacity: 0.9;
+}
+
+/* Cue slot on PRO tiles: crown by default → copy on hover → check when copied.
+   (Base rules already handle copy→check for the copied state.) */
+.variable-tile.is-pro .variable-copy-icon {
+    display: none;
+}
+
+.variable-tile.is-pro:hover:not(.copied) .variable-pro-icon {
+    display: none;
+}
+
+.variable-tile.is-pro:hover:not(.copied) .variable-copy-icon {
+    display: inline;
+}
+
+.variable-tile.is-pro:hover .variable-tile-cue {
+    /* color: var(--primary-readable); */
+    opacity: 1;
+}
+
+.variable-tile.is-pro.copied .variable-pro-icon {
+    display: none;
 }
 

@@ -744,13 +744,13 @@ export default class SettingsManager {
 									const sibling = container.querySelector( '.intl_number' );
 									if ( sibling ) {
 										// The intl-tel-input instance is stashed on the element by
-										// IntlInput.js (no global — the library is an ES module).
+										// PhoneInput.js (no global — the library is an ES module).
 										const instance = sibling._ctcIti;
 										if ( instance ) {
 											const formattedValue = targetValue && ! targetValue.startsWith( '+' ) ? `+${targetValue}` : targetValue;
 											delete sibling.dataset.userInteracted;
 											instance.setNumber( formattedValue );
-											sibling.dataset.userInteracted = 'true'; // Add "userInteracted" flag here or remove from IntlInput.js [ 'focus', 'click', 'keydown' ] once: true
+											sibling.dataset.userInteracted = 'true'; // Add "userInteracted" flag here or remove from PhoneInput.js [ 'focus', 'click', 'keydown' ] once: true
 										} else {
 											sibling.value = targetValue;
 										}

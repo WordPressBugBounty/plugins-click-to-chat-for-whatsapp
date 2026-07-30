@@ -266,15 +266,21 @@ export default class PreviewManager {
 			return;
 		}
 
+		// Cache-buster: templatesBasePath is a directory, so PHP cannot append
+		// ?ver= as it does for module URLs. See module_url() in class-ht-ctc-admin-page-scripts.php.
+		const ver = this.app.config?.version ?
+			`?ver=${encodeURIComponent( this.app.config.version )}` :
+			'';
+
 		FREE_TEMPLATES.forEach( ( id ) => {
-			const url = `${base}style-${id}.js`;
+			const url = `${base}style-${id}.js${ver}`;
 			this.registry.registerStyle( id, () =>
 				// eslint-disable-next-line no-unsanitized/method -- URL is built from trusted plugin configuration localized by PHP
 				import( /* webpackIgnore: true */ url ) );
 		} );
 
 		FREE_GREETINGS.forEach( ( id ) => {
-			const url = `${base}${id}.js`;
+			const url = `${base}${id}.js${ver}`;
 			this.registry.registerGreeting( id, () =>
 				// eslint-disable-next-line no-unsanitized/method -- URL is built from trusted plugin configuration localized by PHP
 				import( /* webpackIgnore: true */ url ) );

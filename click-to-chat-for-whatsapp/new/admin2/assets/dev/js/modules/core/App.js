@@ -494,19 +494,28 @@ export default class App {
 		} );
 	}
 
-	// Public method to load and init IntlInput on demand
+	/**
+	 * Load and init the phone input on demand (modulesPath.phoneInput).
+	 *
+	 * Public API method for dynamic phone input initialisation.
+	 * Do not rename without maintaining a delegating alias for backwards compatibility.
+	 *
+	 * @param {string}           containerClass Visible input class to initialise.
+	 * @param {Document|Element} context        Scope to search within.
+	 * @returns {Promise<void>}
+	 */
 	async loadAndInitIntlInput ( containerClass = 'intl_number', context = document ) {
-		const intlConf = this.config.modulesPath?.phoneInput;
-		if ( intlConf && intlConf.path ) {
+		const phoneConf = this.config.modulesPath?.phoneInput;
+		if ( phoneConf && phoneConf.path ) {
 			try {
 				const module = await Utils.importWithRetry( () =>
 					// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
-					import( /* webpackIgnore: true */ intlConf.path ) );
-				if ( module && typeof module.initIntlInput === 'function' ) {
-					module.initIntlInput( containerClass, context, this );
+					import( /* webpackIgnore: true */ phoneConf.path ) );
+				if ( module && typeof module.initPhoneInput === 'function' ) {
+					module.initPhoneInput( containerClass, context, this );
 				}
 			} catch ( error ) {
-				console.warn( 'CtC: Error loading IntlInput module dynamically', error );
+				console.warn( 'CtC: Error loading PhoneInput module dynamically', error );
 			}
 		}
 	}

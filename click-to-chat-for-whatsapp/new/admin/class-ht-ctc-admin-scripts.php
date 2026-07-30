@@ -142,9 +142,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Scripts' ) ) {
 				 * - 'intl': ES module URL for intlTelInput imported by admin.js.
 				 * - 'utils': Lazy formatting module URL.
 				 * - 'intl_lang' / 'intl_ui': Admin user locale and translated UI strings.
+				 *
+				 * ?ver=: assets() returns bare paths; these are import()ed, not
+				 * enqueued, so the cache-buster must be appended here.
 				 */
-				'intl'       => $phone_field_assets['js'],
-				'utils'      => $phone_field_assets['utils'],
+				'intl'       => $phone_field_assets['js'] . '?ver=' . HT_CTC_VERSION,
+				'utils'      => $phone_field_assets['utils'] . '?ver=' . HT_CTC_VERSION,
 				'intl_lang'  => get_user_locale(),
 				'intl_ui'    => HT_CTC_Phone_Field::locale_strings( get_user_locale() ),
 				'tz'         => esc_attr( get_option( 'gmt_offset' ) ),

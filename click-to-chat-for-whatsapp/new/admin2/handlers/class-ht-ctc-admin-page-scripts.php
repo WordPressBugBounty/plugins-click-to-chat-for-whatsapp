@@ -113,16 +113,19 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 
 			$assets_dir = defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev' : 'min';
 
+			// Cache-buster query string for dynamic import() URLs.
+			$ver = '?ver=' . HT_CTC_VERSION;
+
 			$theme = $this->get_admin_theme();
 
 			// intl-tel-input assets are resolved via HT_CTC_Phone_Field for consistency across admin UIs.
-			// Dynamic ES module loading is handled by IntlInput.js.
+			// Dynamic ES module loading is handled by PhoneInput.js.
 			if ( ! class_exists( 'HT_CTC_Phone_Field' ) ) {
 				HT_CTC_Utils::load_file( 'new/tools/phone-field/class-ht-ctc-phone-field.php' );
 			}
 
 			$phone_field_assets = HT_CTC_Phone_Field::assets();
-			$phone_field_js     = plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/IntlInput.js", HT_CTC_PLUGIN_FILE );
+			$phone_field_js     = plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/PhoneInput.js", HT_CTC_PLUGIN_FILE ) . $ver;
 
 			// Get all allowed settings.
 			if ( ! class_exists( 'HT_CTC_Settings_Data' ) ) {
@@ -152,13 +155,19 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				'initialSettings' => $initial_settings,
 				'paths'           => array(
 					'plugin_url' => defined( 'HT_CTC_PLUGIN_DIR_URL' ) ? HT_CTC_PLUGIN_DIR_URL : plugin_dir_url( HT_CTC_PLUGIN_FILE ),
-					'front_css'  => plugins_url( 'new/inc/assets/css/' . ( defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev/main.dev.css' : 'main.css' ), HT_CTC_PLUGIN_FILE ),
+					// $ver: the preview injects this as a raw <link> (PreviewManager
+					// injectFrontCss), so it never passes through wp_enqueue_style and
+					// nothing else would stamp a version on it.
+					'front_css'  => plugins_url( 'new/inc/assets/css/' . ( defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev/main.dev.css' : 'main.css' ), HT_CTC_PLUGIN_FILE ) . $ver,
 					'ajaxurl'    => admin_url( 'admin-ajax.php' ),
 					'phoneInput' => array(
 						// 'js'                => $phone_field_js,
-						'intlTelInput'      => $phone_field_assets['js'],
-						'intlTelInputUtils' => $phone_field_assets['utils'],
-						// Vendored library version, so JS (and PRO) can branch on it
+						// $ver: assets() returns bare paths; these two are import()ed
+						// by PhoneInput.js, so nothing else stamps them. The files are
+						// this plugin's vendored copies, so HT_CTC_VERSION is right.
+						'intlTelInput'      => $phone_field_assets['js'] . $ver,
+						'intlTelInputUtils' => $phone_field_assets['utils'] . $ver,
+						// Vendored library version, so JS can can branch on it
 						// without parsing the URL.
 						'version'           => $phone_field_assets['version'],
 						// Admin's own language, for the country names — the browser
@@ -177,7 +186,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				),
 				'wprest_nonce'    => wp_create_nonce( 'wp_rest' ),
 				'nonce'           => wp_create_nonce( 'ht_ctc_admin_nonce' ),
-				// localization. i18n
+				// i18n UI strings
 				// todo(4.43): i18n and have to update the content and at js file
 				'i18n'            => array(
 					'save'          => 'Save',
@@ -189,6 +198,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				),
 				'theme'           => $theme,
 				'preview'         => array(
+					// Base directory path for preview templates (PreviewManager.js appends filename + ?ver= using config.version).
 					'templatesBasePath' => plugins_url( "new/admin2/assets/$assets_dir/js/modules/preview/templates/", HT_CTC_PLUGIN_FILE ),
 					// Used by greetings preview templates to substitute the {site} variable.
 					'site'              => get_bloginfo( 'name' ),
@@ -215,7 +225,11 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				 *             modulesPath.phoneInput directly). Use for rare/contextual loads.
 				 *
 				 * PER-ENTRY KEYS:
-				 *   path      — URL of the JS module to import() (required).
+				 *   path      — URL of the JS module to import() (required). End it with
+				 *               . $ver — see where $ver is defined for why a bare
+				 *               plugins_url() breaks on update. Extensions registering
+				 *               an entry via the filter below must stamp their own
+				 *               version the same way; nothing does it for them.
 				 *   tabs      — tab ids that trigger loading (see above).
 				 *   delay     — ms after boot to load (see above).
 				 *   method    — export name called after load: method(arg|context, context, app).
@@ -229,21 +243,21 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 					'phoneInput'      => array(
 						'path'   => $phone_field_js,
 						// 'tabs'   => array( 'general-settings', 'greetings-settings' ),
-						'method' => 'initIntlInput',
+						'method' => 'initPhoneInput',
 						'arg'    => 'intl_number',
 					),
 					'displaySettings' => array(
-						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/DisplaySettings.js", HT_CTC_PLUGIN_FILE ),
+						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/DisplaySettings.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'   => array( 'display-settings', 'group-settings', 'share-settings' ),
 						'method' => 'initDisplaySettings',
 					),
 					'repeater'        => array(
-						'path'      => plugins_url( "new/admin2/assets/$assets_dir/js/modules/managers/RepeaterManager.js", HT_CTC_PLUGIN_FILE ),
+						'path'      => plugins_url( "new/admin2/assets/$assets_dir/js/modules/managers/RepeaterManager.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'      => array( 'general-settings', 'greetings-settings', 'display-settings', 'analytics-settings' ),
 						'managerId' => 'repeater',
 					),
 					'actions'         => array(
-						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/Actions.js", HT_CTC_PLUGIN_FILE ),
+						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/Actions.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'   => array( 'advanced-settings' ),
 						'method' => 'initActions',
 					),
@@ -252,13 +266,13 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 					// initial bundle. registerManager('preview', …) lets PRO hook in
 					// via the ctc_manager_registered_preview event.
 					'preview'         => array(
-						'path'      => plugins_url( "new/admin2/assets/$assets_dir/js/modules/managers/PreviewManager.js", HT_CTC_PLUGIN_FILE ),
+						'path'      => plugins_url( "new/admin2/assets/$assets_dir/js/modules/managers/PreviewManager.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'managerId' => 'preview',
 						'delay'     => 1000,
 					),
 					'editor'          => array(
 						// $editor_module_filename is either BlockEditor.js or BlockEditorTinymce.js depending on the greetings_editor setting.
-						'path'       => plugins_url( "new/admin2/assets/$assets_dir/js/modules/components/layouts/BlockEditorTinymce.js", HT_CTC_PLUGIN_FILE ),
+						'path'       => plugins_url( "new/admin2/assets/$assets_dir/js/modules/components/layouts/BlockEditorTinymce.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'       => array( 'greetings-settings', 'woo-overwrite-settings' ),
 						// same as the php array key config (block_editor|block_editor_tinymce)
 						'rendererId' => 'block_editor_tinymce',
@@ -302,7 +316,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 		 * Enqueue the intl-tel-input stylesheet.
 		 *
 		 * Only the stylesheet is enqueued: a stylesheet cannot be an ES module
-		 * import, whereas the library itself IS one — IntlInput.js imports it
+		 * import, whereas the library itself IS one — PhoneInput.js imports it
 		 * dynamically from the URL passed as paths.intlTelInput, so there is no
 		 * script to register here and no `intlTelInput` global on the page.
 		 *
@@ -425,7 +439,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 			// Per-page JS dependencies.
 			//
 			// intl-tel-input is deliberately NOT a dependency: it is an ES module
-			// that IntlInput.js imports on demand, not an enqueued script, so the
+			// that PhoneInput.js imports on demand, not an enqueued script, so the
 			// main bundle no longer has to wait on it.
 			$ctc_admin_js_dependencies = array();
 

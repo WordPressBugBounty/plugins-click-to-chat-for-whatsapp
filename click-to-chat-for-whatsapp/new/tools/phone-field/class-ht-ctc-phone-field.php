@@ -79,6 +79,12 @@ if ( ! class_exists( 'HT_CTC_Phone_Field' ) ) {
 		 *     @type string $img      Flag-sprite directory URL (referenced by the CSS).
 		 *     @type string $dir_url  Base URL of the vendored directory.
 		 * }
+		 *
+		 * Every URL is a BARE path — no `?ver=`. The consumer that puts a file on
+		 * the page adds the cache-buster: enqueue it and WP stamps it; import() it
+		 * or build a raw <link> and you must append `?ver=` . HT_CTC_VERSION
+		 * yourself (these files change on plugin releases — a bare URL leaves the
+		 * browser serving the previous release's copy).
 		 */
 		public static function assets() {
 
@@ -90,6 +96,7 @@ if ( ! class_exists( 'HT_CTC_Phone_Field' ) ) {
 				'version' => self::VERSION,
 				'api'     => self::API,
 				'min'     => ( '' !== $min ),
+
 				'js'      => $dir_url . "js/intlTelInput.esm{$min}.js",
 
 				// utils.js is shipped pre-compiled by upstream; no .min variant needed.

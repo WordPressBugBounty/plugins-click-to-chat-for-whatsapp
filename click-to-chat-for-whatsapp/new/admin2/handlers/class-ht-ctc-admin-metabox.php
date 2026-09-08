@@ -223,7 +223,7 @@ if ( ! class_exists( 'HT_CTC_Admin_MetaBox' ) ) {
 
 			<?php if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) { ?>
 				<p class="ht-ctc-meta-description">
-					<a href="https://holithemes.com/plugins/click-to-chat/docs/custom-url/" target="_blank">Custom Link</a> (PRO)
+					<a href="<?php echo esc_url( HT_CTC_Utils::pro_url( 'inline', 'page_custom_link', 'https://holithemes.com/plugins/click-to-chat/docs/custom-url/' ) ); ?>" target="_blank" rel="noopener">Custom Link</a> (PRO)
 				</p>
 			<?php } ?>
 

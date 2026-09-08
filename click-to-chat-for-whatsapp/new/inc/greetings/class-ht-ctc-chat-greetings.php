@@ -33,7 +33,6 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			add_action( 'ht_ctc_ah_in_fixed_position', array( $this, 'greetings_dialog' ) );
 		}
 
-
 		/**
 		 * Render the greetings dialog markup when enabled.
 		 *
@@ -328,7 +327,6 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			}
 		}
 	}
-
 
 	new HT_CTC_Chat_Greetings();
 

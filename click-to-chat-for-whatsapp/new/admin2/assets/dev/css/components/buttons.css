@@ -110,14 +110,20 @@
     background-color: rgba(245, 158, 11, 0.05);
 }
 
-.pro-feature-btn span {
+/* Dashicons ship a fixed 20px box; at 0.75rem the glyph sat top-left inside it
+   and rode ~4px above the label. Let the box follow the glyph instead. */
+.pro-feature-btn .dashicons {
     margin-inline-start: 0.5rem;
     font-size: 0.75rem;
+    width: auto;
+    height: auto;
+    line-height: 1;
     transition: transform 0.2s ease;
 }
 
-.pro-feature-btn:hover span {
-    transform: translateX(4px);
+/* The mark is the external-link arrow, so the nudge follows it: out and up. */
+.pro-feature-btn:hover .dashicons {
+    transform: translate(2px, -2px);
 }
 
 

@@ -97,7 +97,7 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			$active_plugins = (array) get_option( 'active_plugins', array() );
 
 			// Support for Multisite network-activated plugins.
-			// if ( is_multisite() ) {
+			// if ( function_exists( 'is_multisite' ) && is_multisite() ) {
 			// $network_plugins = array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) );
 			// $active_plugins  = array_merge( $active_plugins, $network_plugins );
 			// }
@@ -125,7 +125,6 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			return true;
 		}
 
-
 		/**
 		 * Determine whether to load the new or legacy interface.
 		 */
@@ -141,7 +140,7 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			// can leave the class present but missing a method the plugin calls, which
 			// would fatal with "call to undefined method" mid-render. If any required
 			// method is absent, bail so the site renders normally without the widget.
-			foreach ( array( 'get_request_var', 'get_option', 'load_file', 'load_class', 'debug_log' ) as $required_util_method ) {
+			foreach ( array( 'get_request_var', 'get_option', 'load_file', 'load_class', 'debug_log', 'pro_url' ) as $required_util_method ) {
 				if ( ! method_exists( 'HT_CTC_Utils', $required_util_method ) ) {
 					return;
 				}
@@ -170,9 +169,6 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				$is_new = 'yes';
 			}
 
-			$get_page     = HT_CTC_Utils::get_request_var( 'page' );
-			$get_admin_ui = HT_CTC_Utils::get_request_var( 'admin_ui' );
-
 			// Previous user and if switched.
 			if ( 'prev' === $user ) {
 
@@ -183,7 +179,8 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				}
 			}
 
-			// while testing
+			// (for testing) forces the new interface. Keep it commented -
+			// if you uncomment the line below, add a 'todo(release):' so it cannot ship enabled.
 			// $is_new = 'yes';
 
 			// Define HT_CTC_IS_NEW.
@@ -198,59 +195,44 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				$admin_settings = get_option( 'ht_ctc_admin_settings', array() );
 				$admin_settings = is_array( $admin_settings ) ? $admin_settings : array();
 
-				// Determine Admin UI Version (2026 or 2019)
+				// Default admin UI version (2019)
 				$admin_ui = isset( $admin_settings['admin_ui'] ) ? sanitize_text_field( $admin_settings['admin_ui'] ) : '2019';
 
 				if ( ! in_array( $admin_ui, array( '2019', '2026' ), true ) ) {
 					$admin_ui = '2019';
 				}
 
-				// if admin and url parms 'page' have 'click-to-chat' and 'admin_ui' parameter then update admin ui.
-				if ( is_admin() && false !== strpos( $get_page, 'click-to-chat' ) && '' !== $get_admin_ui ) {
+				// URL-based switching (?page=click-to-chat&admin_ui=2026 or 2019).
+				if ( is_admin() ) {
+					$get_page = HT_CTC_Utils::get_request_var( 'page' );
 
-					$current_ui = $admin_ui;
+					if ( false !== strpos( $get_page, 'click-to-chat' ) ) {
+						$get_admin_ui = HT_CTC_Utils::get_request_var( 'admin_ui' );
 
-					/**
-					 * PRO compatibility
-					 * Free → allowed
-					 * PRO < 2.21 → block new UI
-					 */
-					$is_pro_compatible = $this->is_pro_compatible();
+						if ( in_array( $get_admin_ui, array( '2019', '2026' ), true ) ) {
+							$admin_ui = $get_admin_ui;
 
-					// URL-based switching (Temporary for this request)
-					$requested_ui = $get_admin_ui;
+							if ( '2026' === $get_admin_ui && ! $this->is_pro_compatible() ) {
+								add_action(
+									'admin_notices',
+									function () {
+										echo '<div class="notice notice-error is-dismissible">
+											<p><strong>Click to Chat:</strong> New Admin UI requires PRO version 2.21+.</p>
+										</div>';
+									}
+								);
+							}
 
-					if ( ! in_array( $requested_ui, array( '2019', '2026' ), true ) ) {
-						$requested_ui = '';
-					}
-
-					if ( '2026' === $requested_ui ) {
-						if ( $is_pro_compatible ) {
-							$current_ui = '2026';
-						} else {
-							add_action(
-								'admin_notices',
-								function () {
-									echo '<div class="notice notice-error is-dismissible">
-										<p><strong>Click to Chat:</strong> New Admin UI requires PRO version 2.21+.</p>
-									</div>';
-								}
-							);
+							// Hook to save preference safely.
+							// 'admin_init' is used because user capabilities (current_user_can)
+							// may not yet available this early in the plugin load sequence.
+							add_action( 'admin_init', array( $this, 'save_admin_ui_preference' ) );
 						}
-					} elseif ( '2019' === $requested_ui ) {
-						$current_ui = '2019';
 					}
+				}
 
-					// Hook to save preference safely.
-					// 'admin_init' is used because user capabilities (current_user_can)
-					// may not yet available this early in the plugin load sequence.
-					add_action( 'admin_init', array( $this, 'save_admin_ui_preference' ) );
-
-					if ( '2026' === $current_ui && $is_pro_compatible ) {
-						$admin_ui = '2026';
-					} else {
-						$admin_ui = '2019';
-					}
+				if ( '2026' === $admin_ui && ! $this->is_pro_compatible() ) {
+					$admin_ui = '2019';
 				}
 
 				if ( ! defined( 'HT_CTC_ADMIN_UI' ) ) {
@@ -320,7 +302,11 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				return;
 			}
 
-			check_admin_referer( 'ht_ctc_switch_ui', '_htnonce' );
+			$nonce = HT_CTC_Utils::get_request_var( '_htnonce' );
+
+			if ( ! is_string( $nonce ) || ! wp_verify_nonce( $nonce, 'ht_ctc_switch_ui' ) ) {
+				return;
+			}
 
 			$requested_ui   = $get_admin_ui;
 			$admin_settings = get_option( 'ht_ctc_admin_settings', array() );

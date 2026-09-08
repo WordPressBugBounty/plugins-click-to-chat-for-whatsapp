@@ -212,10 +212,9 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 					add_action( 'admin_footer', array( $this, 'admin_pro_notice_scripts' ) );
 				}
 
-				// Global display - during development/testing if needed, or if specifically requested.
-				// For now, let's ensure it follows the 5-day rule or is always shown if required.
-				// Based on user request, ensuring it displays efficiently everywhere.
-				// to-do: comment this lines..
+				// (for testing) shows the pro notice on every admin screen, bypassing the
+				// not-yet-installed / dismissed / 5-day conditions above. Keep them commented -
+				// if you uncomment the lines below, add a 'todo(release):' so they cannot ship enabled.
 				// add_action( 'admin_notices', array( $this, 'pro_notice' ) );
 				// add_action( 'admin_footer', array( $this, 'admin_pro_notice_scripts' ) );
 			}

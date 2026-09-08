@@ -81,7 +81,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checking which admin page is being loaded.
 			if ( isset( $_GET ) && isset( $_GET['page'] ) ) {
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: sanitize current admin page slug.
 				$this->get_page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
 			} else {
 				return;
@@ -107,7 +107,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Demo' ) ) {
 				$demo_active = get_option( 'ht_ctc_admin_demo_active' );
 
 				// check if demo is activating or deactivating..
-				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking for demo trigger; actual state change verified below with nonce.
 				if ( isset( $_GET['demo'] ) ) {
 
 					// Require manage_options + a valid nonce to prevent CSRF on this

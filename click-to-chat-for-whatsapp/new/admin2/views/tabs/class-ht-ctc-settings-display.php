@@ -159,7 +159,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 					self::device_display_field( 'Mobile Display', 'display_mobile' ),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_display_devices', $values );
 			return $values;
 		}
 
@@ -262,7 +261,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 				'data_show_when' => 'single',
 				'fields'         => $pages_fields,
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_display_pages', $values );
 			return $values;
 		}
 
@@ -280,22 +278,38 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 			);
 
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+
+				$hours_url = 'https://holithemes.com/plugins/click-to-chat/docs/business-hours-online-offline/';
+
+				// Section anchor on that page. An id the page does not carry
+				// yet is ignored by the browser, so the link lands at the top
+				// meanwhile instead of breaking.
+				$offline_url = $hours_url . '#hide-when-offline';
+
 				$values['fields'] = array(
-					// array(
-					// 'field_type' => 'block_infobox_alert',
-					// 'type'       => 'warning',
-					// 'icon'       => 'dashicons dashicons-warning',
-					// 'content'    => 'Business Hours are available in the Pro version',
-					// ),
 					array(
 						'field_type'  => 'block_pro_feature',
+						'icon'        => 'dashicons dashicons-clock',
 						'title'       => __( 'Business Hours', 'click-to-chat-for-whatsapp' ),
 						'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
-						'description' => 'Show chat button only during specific hours',
-						'control'     => array(
-							'type'     => 'switch',
-							'disabled' => true,
-						),
+						'description' => 'Set several time slots a day, in your site\'s timezone — the chat widget goes online and offline on its own.',
+						'button_text' => 'Learn more',
+						'url'         => HT_CTC_Utils::pro_url( 'teaser', 'business_hours', $hours_url ),
+					),
+					array(
+						'field_type'  => 'block_pro_feature',
+						'icon'        => 'dashicons dashicons-hidden',
+						'title'       => 'Offline Behaviour',
+						'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
+						'description' => 'Outside those hours, hide the widget — or keep it and answer on a different number, with a different call to action.',
+						'button_text' => 'Learn more',
+						'url'         => HT_CTC_Utils::pro_url( 'teaser', 'business_hours_offline', $offline_url ),
+					),
+					// Single closing CTA for the tab: Business Hours is the last
+					// card, so the pitch ends here instead of after every teaser.
+					array(
+						'field_type' => 'block_raw_html',
+						'content'    => '<a href="' . esc_url( HT_CTC_Utils::pro_url( 'teaser', 'display' ) ) . '" target="_blank" rel="noopener" class="ctc-pro-btn ctc-pro-btn-primary ctc-pro-teaser-cta">Upgrade to PRO <span class="dashicons dashicons-external"></span><span class="screen-reader-text">(opens in a new tab)</span></a>',
 					),
 				);
 			}
@@ -311,39 +325,49 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 			$values = array(
 				'field_type'     => 'card',
 				'title'          => 'Targeting',
-				'description'    => 'Advanced targeting options',
+				'description'    => 'Control who sees the chat widget, and when it appears',
 				'data_watch'     => '#connection_type',
 				'data_show_when' => 'single',
 				'fields'         => array(),
 			);
 
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+				/*
+				 * One teaser per capability PRO actually adds to THIS card
+				 * (country, login status, delay triggers). The ids and copy
+				 * follow the PRO tab catalogue in views/panels/pro-features.php,
+				 * so the same feature is described the same way wherever it is
+				 * promoted.
+				 */
+				$display_url = 'https://holithemes.com/plugins/click-to-chat/display/';
+
 				$values['fields'] = array(
-					// array(
-					// 'field_type' => 'block_infobox_alert',
-					// 'type'       => 'warning',
-					// 'icon'       => 'dashicons dashicons-warning',
-					// 'content'    => 'Advanced targeting options are available in the Pro version',
-					// ),
 					array(
 						'field_type'  => 'block_pro_feature',
+						'icon'        => 'dashicons dashicons-admin-site-alt3',
 						'title'       => 'Country-Based Display',
 						'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
-						'description' => 'Show chat button only to visitors from specific countries',
-						'control'     => array(
-							'type'     => 'switch',
-							'disabled' => true,
-						),
+						'description' => 'Pick from 249 countries — each visitor\'s country is detected automatically, with nothing to set up.',
+						'button_text' => 'Learn more',
+						'url'         => HT_CTC_Utils::pro_url( 'teaser', 'country_display', $display_url ),
 					),
 					array(
 						'field_type'  => 'block_pro_feature',
-						'title'       => 'Time-Based Display',
+						'icon'        => 'dashicons dashicons-admin-users',
+						'title'       => 'Login-Status Display',
 						'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
-						'description' => 'Show chat button only during specific hours',
-						'control'     => array(
-							'type'     => 'switch',
-							'disabled' => true,
-						),
+						'description' => 'Show the chat widget to everyone, only to logged-in users, or only to logged-out users.',
+						'button_text' => 'Learn more',
+						'url'         => HT_CTC_Utils::pro_url( 'teaser', 'login_status_display', $display_url ),
+					),
+					array(
+						'field_type'  => 'block_pro_feature',
+						'icon'        => 'dashicons dashicons-controls-play',
+						'title'       => 'Time & Scroll Delay',
+						'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
+						'description' => 'Hold the chat widget back a set number of seconds, or until the visitor has scrolled a set percentage of the page.',
+						'button_text' => 'Learn more',
+						'url'         => HT_CTC_Utils::pro_url( 'teaser', 'display_delay', $display_url ),
 					),
 				);
 			}

@@ -207,7 +207,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				/*
 				 * i18n UI strings.
 				 *
-				 * todo(4.44): wrap these in __() and settle the wording. Held back
+				 * wrap these in __() and settle the wording. Held back
 				 * deliberately: admin2's copy is still moving, and a string wrapped
 				 * now is a translation asked for and then thrown away. Do it once
 				 * the strings stop changing, alongside the JS that consumes them.
@@ -230,6 +230,13 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 					// get_option('gmt_offset')); used by the PRO multi-agent preview
 					// to compute business-hours online/offline against WP "now".
 					'wpTzOffset'        => get_option( 'gmt_offset' ),
+					// Front page loaded in the "on my site" view (PreviewManager
+					// .bindSiteView). Normally same origin as the admin, which is what
+					// lets the view reach into the frame and hide the live widget. If
+					// home_url() resolves to another origin the frame still renders the
+					// page — only the reach-in fails, and the view says so rather than
+					// silently showing two widgets.
+					'homeUrl'           => home_url( '/' ),
 				),
 
 				/*
@@ -252,6 +259,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/DisplaySettings.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'   => array( 'display-settings', 'group-settings', 'share-settings' ),
 						'method' => 'initDisplaySettings',
+						'delay'  => 5000,
 					),
 					'repeater'        => array(
 						'path'      => plugins_url( "new/admin2/assets/$assets_dir/js/modules/managers/RepeaterManager.js", HT_CTC_PLUGIN_FILE ) . $ver,
@@ -267,6 +275,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 						'path'   => plugins_url( "new/admin2/assets/$assets_dir/js/modules/logic/Actions.js", HT_CTC_PLUGIN_FILE ) . $ver,
 						'tabs'   => array( 'advanced-settings' ),
 						'method' => 'initActions',
+						'delay'  => 5000,
 					),
 					// Live preview: global (not tab-bound). Loaded `delay` ms after
 					// boot by App.loadDelayedModules(), so it stays out of the
@@ -291,6 +300,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 			// if ( defined( 'HT_CTC_PRO_VERSION' ) ) {
 			// $ctc['pro_version'] = HT_CTC_PRO_VERSION;
 			// }
+
+			// Campaign-tagged upgrade link for PRO calls-to-action that JS renders
+			// itself (the PRO toast). Free installs only - PRO has nothing to sell.
+			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+				$ctc['proUrl'] = HT_CTC_Utils::pro_url( 'toast' );
+			}
 
 			$ctc = apply_filters( 'ht_ctc_fh_admin_var', $ctc );
 
@@ -466,7 +481,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 
 				// Enqueue script dependencies manually since modules don't depend on scripts.
 				foreach ( $ctc_admin_js_dependencies as $dep ) {
-					// todo: either register before this or here.
+					// Classic handles cannot go in the module's $deps - that resolves against
+					// the script-module registry only. Registered by whoever adds the handle.
 					wp_enqueue_script( $dep );
 				}
 

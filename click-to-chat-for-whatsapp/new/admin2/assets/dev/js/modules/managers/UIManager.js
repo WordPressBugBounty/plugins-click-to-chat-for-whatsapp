@@ -661,7 +661,10 @@ export default class UIManager {
 						duration: 6000,
 						action: {
 							text: 'Upgrade to PRO',
-							url: 'https://holithemes.com/plugins/click-to-chat/pricing/',
+
+							// Campaign-tagged by PHP so this click is attributable; the bare
+							// pricing page is the fallback if the config key is absent.
+							url: window.ht_ctc_admin_var?.proUrl || 'https://holithemes.com/plugins/click-to-chat/pricing/',
 						},
 					} );
 				}

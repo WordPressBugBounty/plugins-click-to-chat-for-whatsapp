@@ -59,6 +59,21 @@ html[data-theme="dark"] .iti__selected-country {
    ========================================================================== */
 
 /*
+ * Prevent layout reflow during initialization by applying a consistent max-width
+ * to both the input and the intl-tel-input wrapper.
+ */
+.ctc-admin-dashboard .ctc_intl_container {
+    display: block;
+    width: 100%;
+}
+
+.ctc-admin-dashboard .intl_number,
+.ctc-admin-dashboard .ctc_intl_container {
+    /* max-width: 20rem; */
+    max-width: 15rem;
+}
+
+/*
  * Stacking & Z-Index.
  * Ensures detached country selector container clears admin cards and stays below modals.
  */

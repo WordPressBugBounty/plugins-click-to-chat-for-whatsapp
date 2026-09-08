@@ -719,7 +719,7 @@ if ( ! class_exists( 'HT_CTC_Sanitizer' ) ) {
 		 * When enabled, accepts: '', hex (#rgb / #rgba / #rrggbb / #rrggbbaa),
 		 * rgb()/rgba()/hsl()/hsla(), and CSS named colors. Anything else -> ''.
 		 *
-		 * TODO (gradient picker): also accept linear-gradient()/radial-gradient()/
+		 * Note (gradient picker): also accept linear-gradient()/radial-gradient()/
 		 * conic-gradient() syntax before wiring this in (else gradients get dropped).
 		 *
 		 * @param mixed  $value The color value to sanitize.
@@ -755,7 +755,7 @@ if ( ! class_exists( 'HT_CTC_Sanitizer' ) ) {
 		// return strtolower( $value );
 		// }
 		//
-		// // TODO (gradient picker): accept *-gradient(...) here before enabling.
+		// // Note (gradient picker): accept *-gradient(...) here before enabling.
 		//
 		// return '';
 		// }

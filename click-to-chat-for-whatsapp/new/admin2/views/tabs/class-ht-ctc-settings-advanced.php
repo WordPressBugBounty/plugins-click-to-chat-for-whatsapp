@@ -111,7 +111,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_animations', $values );
 			return $values;
 		}
 
@@ -199,7 +198,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 					array(
 						'field_type'     => 'block_group',
-						// todo: it seems block_rows is not using id.
 						'id'             => 'notification_badge_greetings_wrap',
 						'class_pr'       => ( $show_warning ) ? '' : 'ctc_init_display_none',
 						'data_watch'     => '#notification_badge',
@@ -231,7 +229,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_notification_badge', $values );
 			return $values;
 		}
 
@@ -260,7 +257,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_custom_css', $values );
 			return $values;
 		}
 
@@ -297,7 +293,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_advanced_settings', $values );
 			return $values;
 		}
 
@@ -334,7 +329,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_group_share_features', $values );
 			return $values;
 		}
 
@@ -344,6 +338,8 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 		private static function card_debug_troubleshoot() {
 			$fields = array();
 
+			// Note: Tab field definitions are cached in browser localStorage. Enabling or
+			// disabling the AMP plugin will only reflect in the admin UI once localStorage is cleared.
 			if ( function_exists( 'amp_is_request' ) ) {
 				$fields[] = array(
 					'field_type'   => 'field_checkbox',
@@ -434,7 +430,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 				'help'              => 'Clears the locally stored field configurations and refreshes the page to load fresh settings. Use this if you change settings like Disable TinyMCE or Disable Intl Input and the changes are not reflecting.',
 			);
 
-			// todo: add proper description
 			$fields[] = array(
 				'field_type'   => 'field_checkbox',
 				'id'           => 'delete_options',
@@ -456,12 +451,10 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 				'field_type' => 'card',
 				'title'      => __( 'Debug, Troubleshoot, ..', 'click-to-chat-for-whatsapp' ),
 				// 'title'       => 'Debug & Troubleshooting',
-				// todo: update description
 				// 'description' => 'Tools for resolving technical issues and managing compatibility.',
 				'id'         => 'debug_troubleshoot',
 				'fields'     => $fields,
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_advanced_debug_troubleshoot', $values );
 			return $values;
 		}
 	}

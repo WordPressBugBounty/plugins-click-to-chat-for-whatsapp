@@ -105,10 +105,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				$values['allowed_keys'][] = $cpt;
 			}
 
-			// ht_ctc_fh (filter hook) _settings_schema (settings schema) _chat_options (option group)
-			// PRO / add-ons: uncomment + update at a later stage to extend this group's schema.
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_chat_options', $values );
-
 			return $values;
 		}
 
@@ -178,8 +174,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_othersettings', $values );
-
 			return $values;
 		}
 
@@ -198,8 +192,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					'custom_css' => 'ctc_sanitize_custom_css',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_code_blocks', $values );
 
 			return $values;
 		}
@@ -240,8 +232,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_greetings_options', $values );
-
 			return $values;
 		}
 
@@ -269,8 +259,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_greetings_1', $values );
-
 			return $values;
 		}
 
@@ -291,8 +279,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					// 'bg_color' => 'ctc_sanitize_color',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_greetings_2', $values );
 
 			return $values;
 		}
@@ -319,8 +305,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_greetings_settings', $values );
-
 			return $values;
 		}
 
@@ -339,8 +323,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				'allowed_keys_patterns'  => array(),
 				'sanitization_callbacks' => array(),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_admin_settings', $values );
 
 			return $values;
 		}
@@ -371,8 +353,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s1', $values );
-
 			return $values;
 		}
 
@@ -401,8 +381,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s2', $values );
-
 			return $values;
 		}
 
@@ -430,8 +408,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					// 'cta_bgcolor'   => 'ctc_sanitize_color',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s3', $values );
 
 			return $values;
 		}
@@ -469,8 +445,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s3_1', $values );
-
 			return $values;
 		}
 
@@ -500,8 +474,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					// 's4_bg_color'   => 'ctc_sanitize_color',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s4', $values );
 
 			return $values;
 		}
@@ -545,8 +517,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s5', $values );
-
 			return $values;
 		}
 
@@ -571,8 +541,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					// 's6_txt_color_on_hover' => 'ctc_sanitize_color',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s6', $values );
 
 			return $values;
 		}
@@ -614,8 +582,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s7', $values );
-
 			return $values;
 		}
 
@@ -649,8 +615,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					// 's7_bgcolor_hover'    => 'ctc_sanitize_color',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s7_1', $values );
 
 			return $values;
 		}
@@ -690,8 +654,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s8', $values );
-
 			return $values;
 		}
 
@@ -724,8 +686,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				),
 			);
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_s99', $values );
-
 			return $values;
 		}
 
@@ -743,8 +703,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				'allowed_keys_patterns'  => array(),
 				'sanitization_callbacks' => array(),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_cs_options', $values );
 
 			return $values;
 		}
@@ -795,8 +753,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 					'woo_shop_margin_right'    => 'ctc_sanitize_normalize_css_suffix',
 				),
 			);
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_woo_options', $values );
 
 			return $values;
 		}
@@ -862,8 +818,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 				$values['allowed_keys'][] = $cpt;
 			}
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_group', $values );
-
 			return $values;
 		}
 
@@ -927,8 +881,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Schema' ) ) {
 			foreach ( $this->get_display_custom_post_type_keys() as $cpt ) {
 				$values['allowed_keys'][] = $cpt;
 			}
-
-			// $values = apply_filters( 'ht_ctc_fh_settings_schema_share', $values );
 
 			return $values;
 		}

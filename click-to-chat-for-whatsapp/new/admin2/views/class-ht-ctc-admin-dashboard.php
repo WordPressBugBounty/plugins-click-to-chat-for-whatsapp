@@ -16,10 +16,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 	/**
 	 * Admin Dashboard Class.
 	 *
-	 * Renders the Admin2 shell (left sidebar nav + main panels + right sidebar widgets).
-	 * `display()` is the only method called from outside this class; the build_* and
-	 * render_* helpers keep config separate from HTML so adding a tab or tweaking a
-	 * widget only touches one method.
+	 * Renders the Admin 2026 shell, including the left sidebar navigation,
+	 * settings panels, and right sidebar widgets.
 	 */
 	class HT_CTC_Admin_Dashboard {
 
@@ -35,15 +33,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 
 			HT_CTC_Utils::load_file( 'new/admin2/views/class-ht-ctc-admin-settings-fields.php' );
 
-			// Initially only load general settings fields. Others will be loaded via REST API or JSON.
+			// Initially load general settings fields. Remaining tabs load dynamically via REST API.
 			$general_settings_fields = HT_CTC_Admin_Settings_Fields::general_settings();
-
-			// We skip others here to speed up initial load as per the new plan
-			// $greetings_settings_fields    = HT_CTC_Admin_Settings_Fields::greetings_settings();
-			// $analytics_settings_fields    = HT_CTC_Admin_Settings_Fields::analytics_settings();
-			// $advanced_settings_fields     = HT_CTC_Admin_Settings_Fields::advanced_settings();
-			// $customize_settings_fields    = HT_CTC_Admin_Settings_Fields::customize_settings();
-			// $woo_settings_fields          = HT_CTC_Admin_Settings_Fields::woo_settings();
 
 			$main_nav_items  = self::build_main_nav_items();
 			$settings_panels = self::build_settings_panels();
@@ -95,38 +86,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 				);
 			}
 
-			/*
-			 * Customize is gone from the menu: its settings now open inline, at the style
-			 * picker, through the Contextual Settings Panel.
-			 *
-			 * Unregistered rather than deleted — HT_CTC_Settings_Customize and its map
-			 * entry are still there (see HT_CTC_Admin_Settings_Fields::customize_settings),
-			 * so the tab can be brought back with these two blocks alone while the inline
-			 * route finishes rolling out.
-			 *
-			 * $main_nav_items[] = array(
-			 *     'tab'   => 'customize-settings',
-			 *     'icon'  => 'dashicons-art',
-			 *     'label' => 'Customize',
-			 * );
-			 */
-
-			// WooCommerce is now handled via a drill-down menu.
+			// WooCommerce is handled via a drill-down menu.
 			$main_nav_items[] = array(
 				'tab'   => 'advanced-settings',
 				'icon'  => 'dashicons-admin-settings',
 				'label' => 'Advanced',
 			);
-
-			// todo(4.44): will do it after initial release as planing to add dynamic way of identifying issues
-
-			/*
-			$main_nav_items[] = array(
-				'tab'   => 'support-settings',
-				'icon'  => 'dashicons-sos',
-				'label' => __( 'Support', 'click-to-chat-for-whatsapp' ),
-			);
-			*/
 
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 				$main_nav_items[] = array(
@@ -144,9 +109,17 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 		/**
 		 * Build the settings-panel definitions rendered in the main content area.
 		 *
-		 * Each panel is a `<section>` whose fields are hydrated by the React app
-		 * either from the inline `ht_ctc_fields_general_settings` payload or via
-		 * the REST `get-fields` route on tab activation.
+		 * Each panel is rendered as a `<section class="settings-panel">` container.
+		 * Field definitions are dynamically rendered by App.js either from the inline
+		 * general settings payload or fetched on demand/preloaded via REST API.
+		 *
+		 * Array keys:
+		 *   'id'     - Section element ID (e.g. 'general-settings').
+		 *   'group'  - Primary settings group (renders as data-group).
+		 *   'groups' - (Optional) Comma-separated auxiliary/contextual groups to preload (data-groups).
+		 *   'title'  - Heading text.
+		 *   'desc'   - Description text.
+		 *   'active' - (Optional) Set true if panel is active on initial load.
 		 *
 		 * @return array
 		 */
@@ -155,15 +128,17 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 				array(
 					'id'     => 'general-settings',
 					'group'  => 'general_settings',
+					'groups' => 'contextual_styles',
 					'title'  => 'General ' . __( 'Settings', 'click-to-chat-for-whatsapp' ),
 					'desc'   => 'Your ' . __( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ) . ' and ' . __( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ),
 					'active' => true,
 				),
 				array(
-					'id'    => 'greetings-settings',
-					'group' => 'greetings_settings',
-					'title' => 'Greetings ' . __( 'Settings', 'click-to-chat-for-whatsapp' ),
-					'desc'  => 'Add a popup dialog that engages visitors before they start chatting',
+					'id'     => 'greetings-settings',
+					'group'  => 'greetings_settings',
+					'groups' => 'contextual_greetings,contextual_styles',
+					'title'  => 'Greetings ' . __( 'Settings', 'click-to-chat-for-whatsapp' ),
+					'desc'   => 'Add a popup dialog that engages visitors before they start chatting',
 				),
 				array(
 					'id'    => 'display-settings',
@@ -175,40 +150,26 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 					'id'    => 'analytics-settings',
 					'group' => 'analytics_settings',
 					'title' => sprintf( '%1$s %2$s', __( 'Analytics', 'click-to-chat-for-whatsapp' ), __( 'Settings', 'click-to-chat-for-whatsapp' ) ),
-					'desc'  => 'Track chat interactions in Google Analytics and Facebook Pixel',
+					'desc'  => 'Track chat interactions in Google Analytics and Meta Pixel',
 				),
 			);
 
 			if ( class_exists( 'WooCommerce' ) ) {
 				$settings_panels[] = array(
-					'id'    => 'woo-overwrite-settings',
-					'group' => 'woo_overwrite_settings',
-					'title' => 'WooCommerce Overwrite Settings',
-					'desc'  => 'Overwrite Settings for WooCommerce Pages',
+					'id'     => 'woo-add-whatsapp-settings',
+					'group'  => 'woo_add_whatsapp_settings',
+					'groups' => 'contextual_styles',
+					'title'  => __( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ),
+					'desc'   => 'Add WhatsApp in WooCommerce Pages (single product, Shop)',
 				);
 				$settings_panels[] = array(
-					'id'    => 'woo-add-whatsapp-settings',
-					'group' => 'woo_add_whatsapp_settings',
-					'title' => __( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ),
-					'desc'  => 'Add WhatsApp in WooCommerce Pages (single product, Shop)',
+					'id'     => 'woo-overwrite-settings',
+					'group'  => 'woo_overwrite_settings',
+					'groups' => 'contextual_styles',
+					'title'  => 'WooCommerce Overwrite Settings',
+					'desc'   => 'Overwrite Settings for WooCommerce Pages',
 				);
 			}
-
-			/*
-			 * Paired with the nav item above — see the note there.
-			 *
-			 * The panel has to go too, not just the menu entry. preloadBackgroundTabs()
-			 * walks `.settings-panel` and prefetches each one's group, so leaving the panel
-			 * behind would keep firing a request for a group whose method is commented out:
-			 * a 400 in the console on every admin page load, for a tab nothing can reach.
-			 *
-			 * $settings_panels[] = array(
-			 *     'id'    => 'customize-settings',
-			 *     'group' => 'customize_settings',
-			 *     'title' => __( 'Customize Styles', 'click-to-chat-for-whatsapp' ),
-			 *     'desc'  => 'Set custom colors, icon size, and mobile display behavior',
-			 * );
-			 */
 
 			$settings_panels[] = array(
 				'id'    => 'advanced-settings',
@@ -263,11 +224,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 						<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
 					</button>
 				</div>
-				<?php
-				/**
-				 * If data-tab="general" will look for id="general-settings" and display it.
-				 */
-				?>
+				<?php // Navigation items map via data-tab to matching section IDs. ?>
 				<nav class="sidebar-nav">
 					<div class="sidebar-menus-container">
 						<div id="main-menu" class="sidebar-menu active">
@@ -334,15 +291,15 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 							</button>
 							<ul>
 								<li>
-									<button type="button" class="nav-item" data-tab="woo-overwrite-settings" title="Overwrite settings">
-										<span class="dashicons dashicons-edit"></span>
-										<span>Overwrite settings</span>
-									</button>
-								</li>
-								<li>
 									<button type="button" class="nav-item" data-tab="woo-add-whatsapp-settings" title="<?php esc_attr_e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?>">
 										<span class="dashicons dashicons-plus"></span>
 										<span><?php esc_html_e( 'Add WhatsApp', 'click-to-chat-for-whatsapp' ); ?></span>
+									</button>
+								</li>
+								<li>
+									<button type="button" class="nav-item" data-tab="woo-overwrite-settings" title="Overwrite settings">
+										<span class="dashicons dashicons-edit"></span>
+										<span>Overwrite settings</span>
 									</button>
 								</li>
 							</ul>
@@ -403,7 +360,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 			<main class="main-content">
 
 				<?php
-				// todo
 				settings_errors();
 				?>
 
@@ -412,18 +368,14 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 				</script>
 
 				<?php
-				/**
-				 * Other settings panels, ... would be loaded dynamically.
-				 *
-				 * On click of nav menu and from active tab: call the function loadTabSettings(group(e.g. greetings)). in that get id {group}-settings.
-				 * and check for cached data. ht_ctc_fields_${group}_${config.version}
-				 * or get from server using resturl getFields.
-				 */
-
+				// Remaining panels are hydrated dynamically by App.loadTabSettings().
 				foreach ( $settings_panels as $panel ) {
 					$active_class = ! empty( $panel['active'] ) ? ' active' : '';
+
+					// Comma-separated auxiliary / contextual field groups to preload alongside the tab.
+					$extra_groups = ! empty( $panel['groups'] ) ? (string) $panel['groups'] : '';
 					?>
-					<section id="<?php echo esc_attr( $panel['id'] ); ?>" class="settings-panel<?php echo esc_attr( $active_class ); ?>" data-group="<?php echo esc_attr( $panel['group'] ); ?>" data-loaded="false">
+					<section id="<?php echo esc_attr( $panel['id'] ); ?>" class="settings-panel<?php echo esc_attr( $active_class ); ?>" data-group="<?php echo esc_attr( $panel['group'] ); ?>" data-groups="<?php echo esc_attr( $extra_groups ); ?>" data-loaded="false">
 						<div class="panel-header">
 							<div class="panel-title"><?php echo esc_html( $panel['title'] ); ?></div>
 							<p><?php echo esc_html( $panel['desc'] ); ?></p>
@@ -509,116 +461,134 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 						<div class="sidebar-widget feature-widget ctc-pro-promo">
 							<div class="widget-header">
 								<span class="dashicons dashicons-star-filled ctc-pro-icon"></span>
-								<h3 class="ctc-pro-title">PRO Features</h3>
+								<h3 class="ctc-pro-title">More in PRO</h3>
 							</div>
 							<div class="widget-body">
 								<?php
-								/*
-								 * Contextual feature items: `tabs` lists the nav tab ids
-								 * (the `*-settings` panel ids passed to Interface.js
-								 * updateProWidget) where an item is relevant. The widget
-								 * shows the items matching the active tab, or the `default`
-								 * ones when no item matches. Non-default items start hidden
-								 * so the pre-JS render shows the default pair.
-								 */
+								// Features promoted in the sidebar PRO widget, filtered by active tab.
 								$pro_features = array(
-									// Broadly relevant — also the fallback shown when a tab
-									// has no dedicated item (General, Customize, Group, Share).
 									array(
 										'tabs'  => 'default general-settings',
 										'icon'  => 'dashicons-groups',
 										'title' => 'Multi-Agent Support',
-										'desc'  => 'Add multiple agents, each with their own number, avatar and availability.',
+										'desc'  => 'Agents with a photo, a role, their own number and their own weekly hours.',
+										'key'   => 'multi_agent',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/multi-agent/',
 									),
 									array(
-										'tabs'  => 'default general-settings',
+										'tabs'  => 'default display-settings woo-add-whatsapp-settings woo-overwrite-settings',
 										'icon'  => 'dashicons-clock',
 										'title' => __( 'Business Hours', 'click-to-chat-for-whatsapp' ),
-										'desc'  => 'Online/offline scheduling with an offline number and call to action.',
+										'desc'  => 'Several time slots a day. When you close, switch to an offline number.',
+										'key'   => 'business_hours',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/docs/business-hours-online-offline/',
 									),
-									// Greetings.
 									array(
 										'tabs'  => 'greetings-settings',
 										'icon'  => 'dashicons-forms',
 										'title' => 'Form Filling',
-										'desc'  => 'Capture name, email and phone before the chat opens — 8 field types.',
+										'desc'  => 'Name, email or phone before the chat opens — 8 field types.',
+										'key'   => 'greetings_form',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/greetings-form/',
+									),
+									array(
+										'tabs'  => 'greetings-settings',
+										'icon'  => 'dashicons-calendar-alt',
+										'title' => 'Date & Time Picker',
+										'desc'  => 'A field in the greetings form — visitors pick a date and time that suits them.',
+										'key'   => 'greetings_scheduler',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/docs/greetings-form/',
 									),
 									array(
 										'tabs'  => 'greetings-settings',
 										'icon'  => 'dashicons-controls-play',
 										'title' => 'Auto-Open Triggers',
-										'desc'  => 'Open the greeting by time delay, scroll depth, viewport or click.',
+										'desc'  => 'Open the greeting after a delay, or at a scroll percentage.',
+										'key'   => 'greetings_actions',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/greetings-actions/',
 									),
-									// Display & targeting.
 									array(
 										'tabs'  => 'display-settings',
 										'icon'  => 'dashicons-admin-site-alt3',
 										'title' => 'Country-Based Display',
-										'desc'  => 'Show or hide the chat button based on the visitor’s country.',
+										'desc'  => 'Show or hide the chat widget by each visitor\'s country.',
+										'key'   => 'country_display',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/display-based-on-country/',
 									),
 									array(
 										'tabs'  => 'display-settings',
-										'icon'  => 'dashicons-calendar-alt',
-										'title' => 'Schedule & Rules',
-										'desc'  => 'Target by day, time, login status, scroll depth or a time delay.',
+										'icon'  => 'dashicons-admin-users',
+										'title' => 'Visitor Targeting & Delays',
+										'desc'  => 'Choose who sees it by login status, and delay it by seconds or by scroll depth.',
+										'key'   => 'schedule_triggers',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/display/',
 									),
-									// Analytics & tracking.
 									array(
 										'tabs'  => 'analytics-settings',
 										'icon'  => 'dashicons-chart-line',
-										'title' => 'Google Ads & Meta Tracking',
-										'desc'  => 'Fire conversions and send server-side Meta events on chat click.',
+										'title' => 'Google Ads Conversion',
+										'desc'  => 'Send a conversion with your conversion ID and label whenever someone clicks to chat.',
+										'key'   => 'google_ads',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/google-ads-conversion/',
+									),
+									array(
+										'tabs'  => 'analytics-settings',
+										'icon'  => 'dashicons-facebook',
+										'title' => 'Meta Conversions API',
+										'desc'  => 'Send click events from your server, so a blocked browser pixel does not lose the conversion.',
+										'key'   => 'meta_capi',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/pricing/',
 									),
 									array(
 										'tabs'  => 'analytics-settings advanced-settings',
 										'icon'  => 'dashicons-cloud',
-										'title' => __( 'Webhooks', 'click-to-chat-for-whatsapp' ),
-										'desc'  => 'Send chat events with dynamic {url}, cookie values and UTM parameters.',
+										'title' => 'Dynamic Values',
+										'desc'  => 'Any URL parameter or cookie — [gclid], [utm_source] — in your webhook and events.',
+										'key'   => 'webhooks',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/webhooks/',
 									),
-									// Advanced.
 									array(
-										'tabs'  => 'advanced-settings',
+										'tabs'  => 'advanced-settings woo-add-whatsapp-settings woo-overwrite-settings',
 										'icon'  => 'dashicons-admin-page',
-										'title' => 'Page-Level Settings',
-										'desc'  => 'Override the style, number or greeting on a per-page basis.',
+										'title' => 'Page-Level Overrides',
+										'desc'  => 'One page with its own style, greeting, custom link or delay.',
+										'key'   => 'page_level',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/',
 									),
-									// array(
-									// 'tabs'  => 'advanced-settings',
-									// 'icon'  => 'dashicons-admin-links',
-									// 'title' => 'Custom URL',
-									// 'desc'  => 'Send the click to any custom destination instead of WhatsApp.',
-									// ),
-
-									// array(
-									// 'tabs'  => 'general-settings',
-									// 'icon'  => 'dashicons-randomize',
-									// 'title' => 'Random & Sequential Numbers',
-									// 'desc'  => 'Distribute chats across multiple numbers to balance the load.',
-									// ),
-									// WooCommerce.
-									// array(
-									// 'tabs'  => 'woo-overwrite-settings woo-add-whatsapp-settings',
-									// 'icon'  => 'dashicons-cart',
-									// 'title' => 'WooCommerce',
-									// 'desc'  => 'Product- and cart-aware chat with pre-filled messages for your store.',
-									// ),
+									array(
+										'tabs'  => 'general-settings',
+										'icon'  => 'dashicons-randomize',
+										'title' => 'Random & Sequential Numbers',
+										'desc'  => 'Spread chats over several numbers, at random or in rotation.',
+										'key'   => 'random_number',
+										'url'   => 'https://holithemes.com/plugins/click-to-chat/random-number/',
+									),
 								);
 								?>
 								<ul class="ctc-pro-feature-list">
-									<?php foreach ( $pro_features as $pro_feature ) { ?>
-									<li data-tabs="<?php echo esc_attr( $pro_feature['tabs'] ); ?>" <?php echo false === strpos( $pro_feature['tabs'], 'default' ) ? 'hidden' : ''; ?>>
+									<?php
+									// Initial render shows General tab features prior to client-side tab activation.
+									foreach ( $pro_features as $pro_feature ) {
+										$ctc_pro_show = in_array( 'general-settings', explode( ' ', $pro_feature['tabs'] ), true );
+										$ctc_pro_link = HT_CTC_Utils::pro_url( 'sidebar', $pro_feature['key'], $pro_feature['url'] );
+										?>
+									<li data-tabs="<?php echo esc_attr( $pro_feature['tabs'] ); ?>" <?php echo ( $ctc_pro_show ) ? '' : 'hidden'; ?>>
 										<div class="ctc-pro-feature-header">
-											<span class="dashicons <?php echo esc_attr( $pro_feature['icon'] ); ?> ctc-pro-icon-small"></span>
-											<strong><?php echo esc_html( $pro_feature['title'] ); ?></strong>
+											<span class="dashicons <?php echo esc_attr( $pro_feature['icon'] ); ?> ctc-pro-icon-small" aria-hidden="true"></span>
+											<a href="<?php echo esc_url( $ctc_pro_link ); ?>" target="_blank" rel="noopener" class="ctc-pro-feature-link">
+												<strong><?php echo esc_html( $pro_feature['title'] ); ?></strong>
+												<span class="dashicons dashicons-external" aria-hidden="true"></span>
+												<span class="screen-reader-text">(opens in a new tab)</span>
+											</a>
 										</div>
 										<p class="ctc-pro-feature-desc"><?php echo esc_html( $pro_feature['desc'] ); ?></p>
 									</li>
-									<?php } ?>
+										<?php } ?>
 								</ul>
 								<?php
-								$upgrade_url = 'https://holithemes.com/plugins/click-to-chat/pricing/';
+								$upgrade_url = HT_CTC_Utils::pro_url( 'sidebar' );
 								?>
-								<a href="<?php echo esc_url( $upgrade_url ); ?>" target="_blank" class="widget-btn widget-btn-primary ctc-btn-gold">Upgrade to PRO</a>
+								<a href="<?php echo esc_url( $upgrade_url ); ?>" target="_blank" rel="noopener" class="widget-btn widget-btn-primary ctc-btn-gold">Upgrade to PRO <span class="dashicons dashicons-external" aria-hidden="true"></span><span class="screen-reader-text">(opens in a new tab)</span></a>
 								<a href="#pro-features" class="ctc-pro-see-all">See all PRO features <span class="dashicons dashicons-arrow-right-alt2" aria-hidden="true"></span></a>
 							</div>
 						</div>
@@ -649,23 +619,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 
 					<!-- Preview Tab -->
 					<div id="sidebar-tab-preview" class="sidebar-tab-content" role="tabpanel" aria-labelledby="sidebar-tabbtn-preview" tabindex="0">
-						<?php
-						/*
-						 * Compact on purpose: the floating preview shares the viewport's
-						 * right edge with this panel, so the shorter this card is, the
-						 * less the widget (and an open greetings dialog) overlaps it.
-						 * The on/off switch lives in the header row and the description
-						 * is a single hint line below the controls.
-						 *
-						 * No Desktop/Mobile switch: the preview is desktop-only. Only a
-						 * few settings are mobile-specific (style_mobile, mobile
-						 * position) and they apply on real mobile devices — editing one
-						 * surfaces a note saying so (see preview/notes.js FIELD_NOTES).
-						 *
-						 * Preview controls are interface state, not WordPress settings.
-						 * SettingsManager skips controls marked with data-ctc-no-track.
-						 */
-						?>
 						<div class="sidebar-widget feature-widget preview-widget">
 							<div class="widget-header">
 								<span class="dashicons dashicons-visibility" aria-hidden="true"></span>
@@ -678,6 +631,10 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 							<div class="widget-body">
 								<p id="ctc-preview-note" class="help-text" aria-live="polite"></p>
 								<p class="help-text preview-hint">Shows the widget at its configured position — updates as you edit, before saving.</p>
+								<button type="button" id="ctc-preview-site-view" class="widget-btn widget-btn-outline" data-ctc-no-track="true">
+									<span class="dashicons dashicons-admin-site-alt3" aria-hidden="true"></span>
+									View on my site
+								</button>
 							</div>
 						</div>
 					</div>

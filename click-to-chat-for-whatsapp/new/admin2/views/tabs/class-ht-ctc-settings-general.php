@@ -226,8 +226,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 				),
 			);
-			// ht_ctc_fh (filter hook) _settings_fields (settings fields) _general (file/tab) _connection_type (feature/function)
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_connection_type', $values );
 			return $values;
 		}
 
@@ -458,7 +456,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_omni_channel_settings', $values );
 			return $values;
 		}
 
@@ -486,7 +483,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_cloud_base', $values );
 			return $values;
 		}
 
@@ -543,14 +539,42 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 				);
 			}
 
-			if ( ! $no_intl && '' === $number && $save_count > 5 ) {
-				$number_fields[] = array(
-					'field_type' => 'block_infobox_alert',
-					'type'       => 'info',
-					'content'    => 'If WhatsApp number is not saved at admin side, please <a href="#advanced-settings/no-intl" class="ctc-shortcut-link">Disable Intl input library <span class="dashicons dashicons-arrow-right-alt2"></span></a> and add WhatsApp number.',
-					// 'content'    => 'If the WhatsApp number is not saving correctly on this page, please <a href="#advanced-settings/no-intl" class="ctc-shortcut-link">Disable the International Input library <span class="dashicons dashicons-arrow-right-alt2"></span></a> and then enter the number.',
-				);
-			}
+			/*
+			 * The one PRO line on this tab, and it sits here rather than in a
+			 * teaser card at the bottom: "I need a second number" is the most
+			 * common reason someone upgrades, and the moment they wonder is
+			 * while they are looking at the single number field. One quiet line
+			 * after the field - not a card, which would repeat what the PRO
+			 * widget in the sidebar already shows on this tab.
+			 * todo: improve the content, links
+			 */
+			// if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+			// $number_fields[] = array(
+			// 'field_type' => 'block_content',
+			// 'class_pr'   => 'ctc-inline-pro-note',
+			// BlockContent applies `margin: 0 10px` unless a style is given;
+			// the extra top margin separates this from the field's own help
+			// text, which it would otherwise read as a continuation of.
+			// 'style'      => 'margin: 12px 10px 0;',
+			// 'content'    => sprintf(
+			// '<p class="description">%1$s <a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external" aria-hidden="true"></span><span class="screen-reader-text">%4$s</span></a></p>',
+			// 'Need more than one number? PRO adds multi-agent, and random or sequential numbers.',
+			// esc_url( HT_CTC_Utils::pro_url( 'inline', 'general_number', 'https://holithemes.com/plugins/click-to-chat/multi-agent/' ) ),
+			// 'See how it works',
+			// '(opens in a new tab)'
+			// ),
+			// );
+			// }
+
+			// not included as now. if any issue related to the intl library reported then will enable this.
+			// if ( ! $no_intl && '' === $number && $save_count > 5 ) {
+			// $number_fields[] = array(
+			// 'field_type' => 'block_infobox_alert',
+			// 'type'       => 'info',
+			// 'content'    => 'If WhatsApp number is not saved at admin side, please <a href="#advanced-settings/no-intl" class="ctc-shortcut-link">Disable Intl input library <span class="dashicons dashicons-arrow-right-alt2"></span></a> and add WhatsApp number.',
+			// 'content'    => 'If the WhatsApp number is not saving correctly on this page, please <a href="#advanced-settings/no-intl" class="ctc-shortcut-link">Disable the International Input library <span class="dashicons dashicons-arrow-right-alt2"></span></a> and then enter the number.',
+			// );
+			// }
 
 			$values = array(
 				'field_type'     => 'card',
@@ -602,7 +626,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 				);
 			}
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_prefilled_message', $values );
 			return $values;
 		}
 
@@ -643,7 +666,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 				);
 			}
 
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_call_to_action', $values );
 			return $values;
 		}
 
@@ -659,10 +681,10 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 			$position_type_help = array(
 				__( 'Fixed: Position relative to the screen, stays at the same place even after page scroll', 'click-to-chat-for-whatsapp' ),
 				vsprintf(
-					'%1$s (PRO)<br><a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
+					'%1$s (PRO)<br><a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 					array(
 						__( 'Absolute: Position relative to the content (body tag) and moves with page scroll', 'click-to-chat-for-whatsapp' ),
-						'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block',
+						HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ),
 						__( 'more info', 'click-to-chat-for-whatsapp' ),
 					)
 				),
@@ -761,7 +783,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 											),
 										),
 										'help'         => vsprintf(
-											'%1$s <a href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
+											'%1$s <a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											array(
 												__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
 												'https://holithemes.com/plugins/click-to-chat/position-to-place/',
@@ -874,7 +896,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 											),
 										),
 										'help'           => vsprintf(
-											'%1$s <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
+											'%1$s <a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											array(
 												__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
 												'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block',
@@ -909,7 +931,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_widget_style_position', $values );
 			return $values;
 		}
 
@@ -1023,7 +1044,6 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 				),
 
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_general_url_structure', $values );
 			return $values;
 		}
 		/**

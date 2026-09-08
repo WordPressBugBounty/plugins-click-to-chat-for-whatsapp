@@ -9,7 +9,7 @@
  */
 
 import { getCtcStorageItem, setCtcStorageItem } from '../core/Storage.js';
-import { log, importWithRetry } from '../core/Utils.js';
+import { log, importWithRetry, retryUrl } from '../core/Utils.js';
 
 /**
  * Resolve the vendored library, once per page.
@@ -30,9 +30,9 @@ const loadLibrary = () => {
 		return Promise.resolve( null );
 	}
 
-	libPromise = importWithRetry( () =>
+	libPromise = importWithRetry( ( attempt ) =>
 		// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
-		import( /* webpackIgnore: true */ paths.phoneInput.intlTelInput ) )
+		import( /* webpackIgnore: true */ retryUrl( paths.phoneInput.intlTelInput, attempt ) ) )
 		.then( ( module ) => module.default || null )
 		.catch( ( error ) => {
 			log( 'PhoneInput', 'failed to load intl-tel-input', error );
@@ -240,11 +240,37 @@ const intl_init = ( element, intlTelInput, uiTranslations = null ) => {
 			// Managed hidden input handles saved values.
 			hiddenInputs: null,
 
-			// Load utils module at init to format saved numbers and placeholders.
+			/*
+			 * Load utils shortly AFTER init rather than during it.
+			 *
+			 * utils.js is libphonenumber — 268 KB (61 KB gzipped) fetched ~600ms into every
+			 * admin page view, competing with the SPA's own modules for the tail of boot.
+			 * All of it goes on formatting the saved number and supplying an example
+			 * placeholder, and nothing on screen is waiting for either.
+			 *
+			 * Idle-then-timeout, the same shape as the deferred boot work in admin.dev.js:
+			 * the timeout caps the wait, so a busy main thread delays this but cannot
+			 * cancel it. The library does the rest — it re-formats each field when this
+			 * resolves, and leaves the focused one alone.
+			 * importWithRetry guards against transient network drops.
+			 */
 			loadUtils: utilsUrl ?
-				() =>
-					// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
-					import( /* webpackIgnore: true */ utilsUrl ) :
+				() => new Promise( ( resolve, reject ) => {
+					const load = () => {
+						importWithRetry( ( attempt ) =>
+							// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
+							import( /* webpackIgnore: true */ retryUrl( utilsUrl, attempt ) ) )
+							.then( resolve )
+							.catch( reject );
+					};
+
+					if ( 'requestIdleCallback' in window ) {
+						window.requestIdleCallback( load, { timeout: 1500 } );
+						return;
+					}
+
+					setTimeout( load, 1500 );
+				} ) :
 				null,
 		};
 
@@ -321,7 +347,7 @@ const intl_init = ( element, intlTelInput, uiTranslations = null ) => {
 			intl.setNumber( attr_value );
 		}
 
-		if ( hiddenInput ) {
+		if ( hiddenInput && ! attr_value ) {
 			const seed = intlBestEffortNumber( intl, element );
 
 			if ( seed ) {
@@ -352,10 +378,12 @@ const intl_init = ( element, intlTelInput, uiTranslations = null ) => {
 					intl.setNumber( attr_value );
 				}
 
-				const value = intlBestEffortNumber( intl, element );
+				if ( hiddenInput && ( ! isIdle || ! attr_value ) ) {
+					const value = intlBestEffortNumber( intl, element );
 
-				if ( hiddenInput && value ) {
-					hiddenInput.value = value;
+					if ( value ) {
+						hiddenInput.value = value;
+					}
 				}
 			} )
 			.catch( ( err ) => {
@@ -590,7 +618,29 @@ const intl_onchange = ( context = document, currentApp ) => {
 						const hiddenInput = getHiddenInput( this );
 
 						if ( hiddenInput ) {
-							hiddenInput.value = intlBestEffortNumber( changed, this );
+							/*
+							 * One rule, applied at all three places that write this input:
+							 * while the field is untouched, hand back the STORED string
+							 * rather than rebuilding one.
+							 *
+							 * Rebuilding is not free of consequence — intlBestEffortNumber()
+							 * strips a leading zero, which is right for a trunk prefix
+							 * someone typed (UK 07911… -> +447911…) and wrong for Italy,
+							 * where the zero belongs to the number (+390612345678 came back
+							 * +39612345678, a different phone number).
+							 *
+							 * This site matters most, and is the one that looks like it
+							 * should not: setNumber() on the geo-IP settle pass fires
+							 * `countrychange`, so this handler runs and overwrites what the
+							 * two guarded writes just got right.
+							 */
+							const stored = this.getAttribute( 'value' ) || '';
+							const isIdle = ! this.dataset.userInteracted &&
+								document.activeElement !== this;
+
+							hiddenInput.value = ( isIdle && stored ) ?
+								stored :
+								intlBestEffortNumber( changed, this );
 
 							if ( this.dataset.userInteracted ) {
 								hiddenInput.dataset.changed = 'true';

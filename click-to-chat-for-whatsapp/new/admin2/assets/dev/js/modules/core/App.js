@@ -2,70 +2,37 @@
  * Main App Orchestrator
  *
  * Central class that manages the application lifecycle.
- * - Initializes core systems (API, Storage, Events)
- * - Registers Managers (Settings, Repeater, etc.)
- * - Loads and transforms Settings Fields
  */
 import Events from './Events.js';
 import API from './API.js';
 import * as Utils from './Utils.js';
 import { log } from './Utils.js';
 import * as Storage from './Storage.js';
-
-// Logic modules can be imported here
-// Feature-specific logic files.
-// For example, Conditional.js handles showing/hiding fields based on user input.
 import { initConditionalFieldLogic } from '../logic/Conditional.js';
-
-// import { initSortable } from '../logic/Sortable.js';
 
 export default class App {
 
 	/**
 	 * Setup the application.
-	 * @param {Object} config - global javascript variables from PHP
+	 *
+	 * @param {Object} config Global configuration from PHP.
 	 */
 	constructor ( config ) {
 		this.config = config;
 
-		// Initialize Core Helpers
-		this.api = new API( config ); // AJAX wrapper
-
-		this._events = new Events(); // Pub/Sub system
-
+		this.api = new API( config );
+		this._events = new Events();
 		this.utils = { ...Utils, initConditionalFieldLogic };
-
-		// like localstorage, ..
 		this.storage = Storage;
 
-		// Prepare specific registries
 		this.renderers = {};
 		this.managers = {};
 
-		/*
-		 * group -> the fetch already in flight for it.
-		 *
-		 * The field cache is only written once a response arrives, so without this every
-		 * caller that asks during that window misses the cache and starts its own request.
-		 * A tab avoids that with a `data-loading` flag on its panel, but anything else
-		 * calling getFieldsForGroup() had no equivalent — on a slow connection, five clicks
-		 * on a Customize trigger meant five identical requests.
-		 *
-		 * Sharing the promise is better than dropping the extra calls: every caller gets
-		 * the data, and only one request is made.
-		 */
+		// In-flight field fetch requests keyed by group to avoid duplicate calls.
 		this.pendingFieldFetches = new Map();
 
-		/*
-		 * Cache-key suffix for the per-tab field definitions in localStorage:
-		 * plugin version + PRO version + admin locale. Any of these changing
-		 * must invalidate cached fields — fields carry translated strings and
-		 * PRO-dependent markup. Single source of truth for getFieldsForGroup()
-		 * and clearOldCaches().
-		 */
+		// Cache-key suffix for localStorage field definitions (version + pro version + locale).
 		const proSuffix = config.pro_version ? `_pro${config.pro_version}` : '';
-
-		// en_US (the WP default) gets no suffix — keeps keys short for the common case.
 		const localeSuffix = config.locale && 'en_US' !== config.locale ? `_${config.locale}` : '';
 		this.fieldsCacheSuffix = `_${config.version}${proSuffix}${localeSuffix}`;
 
@@ -73,7 +40,7 @@ export default class App {
 	}
 
 	/**
-	 * Garbage collection for old version caches in localStorage to prevent buildup.
+	 * Garbage collection for old version caches in localStorage.
 	 */
 	clearOldCaches () {
 		try {
@@ -85,8 +52,6 @@ export default class App {
 			for ( let i = 0; i < localStorage.length; i++ ) {
 				const key = localStorage.key( i );
 				if ( key && key.startsWith( currentPrefix ) ) {
-					// If the key doesn't end with the exact version combo, it's stale.
-					// This handles main updates, pro updates, and pro activation/deactivation.
 					if ( ! key.endsWith( expectedSuffix ) ) {
 						keysToRemove.push( key );
 					}
@@ -100,15 +65,9 @@ export default class App {
 	}
 
 	/**
-	 * Invalidate cached fields for one or more settings groups.
+	 * Invalidate cached fields for one or more settings groups in localStorage and window.
 	 *
-	 * Field HTML is cached in localStorage (`ht_ctc_fields_<group>_<version>[_pro<version>]`)
-	 * and, when preloaded by PHP, as a `window.ht_ctc_fields_<group>` global. Those caches
-	 * normally only refresh on a version change (see `clearOldCaches`). When an action changes
-	 * a tab's server-rendered HTML within the same version — e.g. Pro license activate/deactivate
-	 * flips the active/inactive markup — call this so the next load re-fetches fresh fields.
-	 *
-	 * @param {string|string[]} groups - Group id(s), e.g. 'license_settings'.
+	 * @param {string|string[]} groups Group identifier or array of group identifiers.
 	 */
 	clearFieldsCache ( groups ) {
 		const list = Array.isArray( groups ) ? groups : [ groups ];
@@ -119,7 +78,7 @@ export default class App {
 			try {
 				const prefix = `ht_ctc_fields_${group}`;
 
-				// Drop every version-suffixed localStorage entry for this group.
+				// Drop localStorage entries for this group.
 				for ( let i = localStorage.length - 1; i >= 0; i-- ) {
 					const key = localStorage.key( i );
 					if ( key && key.startsWith( prefix ) ) {
@@ -127,7 +86,7 @@ export default class App {
 					}
 				}
 
-				// Drop the PHP-preloaded window copy so an in-session re-render can't reuse it.
+				// Drop PHP-preloaded window global copy.
 				Utils.setSafeProperty( window, prefix, undefined );
 			} catch ( error ) {
 				log( 'App', `Error clearing fields cache for ${group}`, error );
@@ -137,82 +96,64 @@ export default class App {
 
 	/**
 	 * Register a Manager (feature module).
-	 * Managers handle logic for specific areas like Settings, Themes, etc.
 	 *
-	 * @param {string} name
-	 * @param {Object|Class} ManagerClass
+	 * @param {string}       name         Manager name.
+	 * @param {Object|Class} ManagerClass Manager class or object with init method.
 	 */
-	// 1. Static Classes: initialized immediately via `init(app)`
-	// 2. Instantiable Classes: `new Manager(app)` -> `init()`
 	registerManager ( name, ManagerClass ) {
-		// Initialize the manager and store it
 		log( 'App', `Registering manager: ${name}` );
 		if ( typeof ManagerClass.init === 'function' ) {
-			// Static object pattern:
-			// If the manager has a static init() method, we call it directly.
-			// This is useful for simple managers that don't need to maintain instance state.
 			const isSuccess = this.utils.safeRun( () => ManagerClass.init( this ), name );
 
 			if ( isSuccess ) {
-				// this.managers[ name ] = ManagerClass;
 				Utils.setSafeProperty( this.managers, name, ManagerClass );
 			} else {
-				return; // Abort registration if init fails
+				return;
 			}
 		} else {
-			// Class pattern:
-			// If the manager needs to be instantiated (using 'new'), we create an instance
-			// and then call its init() method.
-
 			let managerInstance;
 			try {
 				managerInstance = new ManagerClass( this );
 			} catch ( error ) {
 				console.error( `CTC: Manager instantiation failed for ${name}:`, error );
-				return; // Abort registration
+				return;
 			}
 
 			if ( typeof managerInstance.init === 'function' ) {
 				const isSuccess = this.utils.safeRun( () => managerInstance.init(), name );
 				if ( ! isSuccess ) {
-					return; // Abort registration if init fails
+					return;
 				}
 			}
 
-			// this.managers[ name ] = new ManagerClass( this );
 			Utils.setSafeProperty( this.managers, name, managerInstance );
 		}
 
-		// Dispatch custom event for external plugins (like Pro) to hook into lazy-loaded managers
+		// Dispatch custom event for external extensions to hook into registered manager.
 		document.dispatchEvent( new CustomEvent( `ctc_manager_registered_${name}`, {
-			// detail: { manager: this.managers[ name ], app: this },
 			detail: { manager: Utils.getSafeProperty( this.managers, name ), app: this },
 		} ) );
 	}
 
 	/**
 	 * Register a Field Renderer.
-	 * Maps a field type (e.g. 'text') to a function that creates its HTML.
+	 *
+	 * @param {string}   type       Field type.
+	 * @param {Function} rendererFn Renderer function generating HTML.
 	 */
 	registerRenderer ( type, rendererFn ) {
-		// Store renderer
-		// this.renderers[ type ] = rendererFn;
 		Utils.setSafeProperty( this.renderers, type, rendererFn );
 	}
 
 	/**
-	 * Create HTML for a specific field.
-	 * Uses the registered renderers.
+	 * Create HTML element for a specific field using registered renderers.
 	 *
-	 * e.g. field = todo
+	 * @param {Object}           field   Field configuration.
+	 * @param {Document|Element} context Parent context.
+	 * @returns {HTMLElement} Rendered field element or error element.
 	 */
 	createFieldElement ( field, context = document ) {
-		// 1. Get renderer by field.field_type
-		// 2. Call renderer(field) to generate the HTML
-		// 3. Return the element (or an error placeholder if the renderer is missing)
 		const fieldType = field.field_type;
-
-		// const renderer = this.renderers[ fieldType ];
 		const renderer = Utils.getSafeProperty( this.renderers, fieldType );
 
 		if ( typeof renderer === 'function' ) {
@@ -240,12 +181,10 @@ export default class App {
 	}
 
 	/**
-	 * Retrieve field schema for a given settings group — orchestrates cache → network.
+	 * Retrieve field schema for a given settings group.
 	 *
-	 * Cache tiers (in order):
-	 *   1. Window global (preloaded by PHP — fastest)
-	 *   2. LocalStorage (SPA-cached — fast)
-	 *   3. REST API (network fallback — slowest)
+	 * @param {string} group Settings group identifier.
+	 * @returns {Promise<Array|Object>} Field schema.
 	 */
 	async getFieldsForGroup ( group ) {
 		const cacheKey = `ht_ctc_fields_${group}${this.fieldsCacheSuffix}`;
@@ -254,15 +193,10 @@ export default class App {
 		const cached = this.getCachedFields( cacheKey, windowKey );
 		if ( cached ) { return cached; }
 
-		// Already being fetched — hand back the same promise rather than asking again.
 		const inFlight = this.pendingFieldFetches.get( group );
 		if ( inFlight ) { return inFlight; }
 
-		/*
-		 * Cleared on settle, not just on success: a failed fetch must not leave a rejected
-		 * promise cached, or every later attempt would replay the same failure instead of
-		 * retrying.
-		 */
+		// Clear pending fetch on settle so retries are possible.
 		const request = this.fetchFieldsFromAPI( group, cacheKey )
 			.finally( () => this.pendingFieldFetches.delete( group ) );
 
@@ -273,10 +207,9 @@ export default class App {
 
 	/**
 	 * Look up cached fields from window global or LocalStorage.
-	 * Self-heals on corrupted LocalStorage JSON.
 	 *
-	 * @param {string} cacheKey  - LocalStorage key.
-	 * @param {string} windowKey - Property name to read off `window`.
+	 * @param {string} cacheKey  LocalStorage key.
+	 * @param {string} windowKey Property name to read off `window`.
 	 * @returns {Array|Object|null} Cached fields, or null on miss.
 	 */
 	getCachedFields ( cacheKey, windowKey ) {
@@ -289,19 +222,17 @@ export default class App {
 		try {
 			return JSON.parse( cached );
 		} catch {
-			// Corrupted/invalid JSON — drop the entry so we don't keep retrying it.
 			localStorage.removeItem( cacheKey );
 			return null;
 		}
 	}
 
 	/**
-	 * Fetch fields from REST API; caches the response on success.
+	 * Fetch fields from REST API and cache the response.
 	 *
-	 * @param {string} group    - Settings group identifier.
-	 * @param {string} cacheKey - LocalStorage key to write the response under.
+	 * @param {string} group    Settings group identifier.
+	 * @param {string} cacheKey LocalStorage key to cache under.
 	 * @returns {Promise<Array|Object>}
-	 * @throws {Error} If the API response indicates failure.
 	 */
 	async fetchFieldsFromAPI ( group, cacheKey ) {
 		const apiGroup = group.replace( /_/g, '-' );
@@ -317,21 +248,64 @@ export default class App {
 	}
 
 	/**
-	 * Load settings for a tab.
-	 * 1. Retrieve Fields (Cache or API)
-	 * 2. Invoke Renderers
+	 * Fetch multiple field groups in a single batch request and cache each.
+	 *
+	 * @param {string[]} groups Settings group identifiers.
+	 * @returns {Promise<Object>} Map of group to fields for resolved groups.
+	 */
+	fetchFieldsBatch ( groups ) {
+		const apiGroups = groups.map( group => group.replace( /_/g, '-' ) )
+			.join( ',' );
+		const url = `${this.api.endpoints.GET_FIELDS}?groups=${apiGroups}&v=${this.config.version}`;
+
+		const request = ( async () => {
+			const result = await this.api.request( url );
+
+			if ( ! result.success || ! result.groups ) {
+				throw new Error( result.message || 'Failed to retrieve settings from server.' );
+			}
+
+			Object.entries( result.groups )
+				.forEach( ( [ group, fields ] ) => {
+					const cacheKey = `ht_ctc_fields_${group}${this.fieldsCacheSuffix}`;
+					this.storage.setItem( cacheKey, JSON.stringify( fields ), false );
+				} );
+
+			return result.groups;
+		} )();
+
+		groups.forEach( group => {
+			const forGroup = request
+				.then( all => {
+					const fields = Utils.getSafeProperty( all, group );
+					if ( ! fields ) {
+						const msg = `Settings fields for "${ group }" were not returned by server.`;
+						throw new Error( msg );
+					}
+					return fields;
+				} )
+				.finally( () => this.pendingFieldFetches.delete( group ) );
+
+			// eslint-disable-next-line no-empty-function -- Prevent unhandled rejection if no caller joins.
+			forGroup.catch( () => {} );
+
+			this.pendingFieldFetches.set( group, forGroup );
+		} );
+
+		return request;
+	}
+
+	/**
+	 * Load and render settings for a tab.
+	 *
+	 * @param {string} tabId          Tab element ID.
+	 * @param {string} containerClass Target container class name.
 	 */
 	async loadTabSettings ( tabId, containerClass = '' ) {
-		// Logic to fetch fields JSON and call renderTabFields
 		const panel = document.getElementById( tabId );
 
-		// Prevent redundant loads:
-		// - If panel is missing, abort.
-		// - If already loaded, abort.
-		// - If currently loading, abort.
 		if ( ! panel || panel.dataset.loaded === 'true' || panel.dataset.loading === 'true' ) { return; }
 
-		// Set loading lock
 		panel.dataset.loading = 'true';
 
 		const targetClass = containerClass || 'fields-container';
@@ -340,46 +314,33 @@ export default class App {
 			.find( child => child.classList.contains( targetClass ) );
 
 		if ( ! container ) {
-			// panel.dataset.loading = 'false'; // Release lock so retry is possible
 			return;
 		}
 
-		// Determine the settings group (e.g., 'general_settings').
-		// This is used for caching and API requests.
 		const group = ( panel.getAttribute( 'data-group' ) || tabId ).replace( /-/g, '_' );
 
 		try {
-			// Fetch cached or network fields via unified helper
 			const fields = await this.getFieldsForGroup( group );
 
-			// if fields, then render
 			if ( fields ) {
-
-				// Dynamic Module Loading (Phase 1: Fetch and Register System Modules)
-				// Load any modules defined by PHP that are assigned to this tab concurrently.
+				// Concurrently load modules assigned to this tab.
 				if ( this.config.modulesPath ) {
-					// 1. Filter out modules that apply to the current tabId.
 					const modulesToLoad = Object.entries( this.config.modulesPath )
 						.filter( ( [ , moduleConf ] ) =>
 							moduleConf.tabs && moduleConf.tabs.includes( tabId ) );
 
 					if ( modulesToLoad.length > 0 ) {
-						// 2. Fetch + register them all concurrently (shared loader).
 						await Promise.allSettled( modulesToLoad.map( ( [ key, moduleConf ] ) =>
 							this.loadModule( key, moduleConf ) ) );
 					}
 				}
 
-				// RENDER: Convert JSON configuration -> HTML Elements
-				// Ensure renderers registered above are now used explicitly
 				await this.renderTabFields( fields, container );
 				panel.dataset.loaded = 'true';
 
-				// Post-render initialization:
-				// 1. Setup conditional logic (show/hide fields based on values - e.g., using 'data-watch' attributes).
 				initConditionalFieldLogic( document );
 
-				// Dynamic Module Loading (Phase 2: Execute Post-Render Initialization Methods)
+				// Run post-render module methods.
 				if ( this.config.modulesPath ) {
 					Object.entries( this.config.modulesPath )
 						.filter( ( [ , moduleConf ] ) =>
@@ -395,18 +356,12 @@ export default class App {
 							) );
 				}
 
-				// Dynamic Module Loading (Phase 3: DOM-driven).
-				// Modules needed because of what the panel CONTAINS rather than
-				// which tab it is. Has to run after render — the markup it
-				// matches against does not exist before that.
+				// Load DOM-driven modules based on rendered panel content.
 				await this.loadModulesForPanel( panel );
 			}
 		} catch ( error ) {
 			console.error( `Error loading ${tabId}:`, error );
 
-			// Translate technical JS/Server errors into "Human-Friendly" hints
-			// (shared mapping — see Utils.friendlyErrorMessage), while still showing
-			// the raw technical detail below for developers.
 			const friendlyMessage = Utils.friendlyErrorMessage( error );
 
 			const errorWrapper = document.createElement( 'div' );
@@ -443,26 +398,24 @@ export default class App {
 			}
 
 			errorWrapper.appendChild( retryBtn );
-			container.innerHTML = ''; // Clear loading spinner
+			container.innerHTML = '';
 			container.appendChild( errorWrapper );
 		} finally {
-			// Release loading lock
 			panel.dataset.loading = 'false';
 		}
-
 	}
 
 	/**
-	 * Render the list of fields into the container sequentially to improve rendering performance.
+	 * Renders fields into a container using batched requestAnimationFrame chunks.
+	 *
+	 * @param {Array|Object} fields    Field configurations.
+	 * @param {HTMLElement}  container Container element.
+	 * @returns {Promise<void>}
 	 */
 	renderTabFields ( fields, container ) {
 		return new Promise( ( resolve ) => {
-			// Clear existing content to avoid duplicates or stale data
 			container.innerHTML = '';
 
-			// Normalize fields structure:
-			// - Logic supports both Array (simple list) and Object (grouped fields).
-			// - If Object: values are flattened into a single array to simplify rendering.
 			let fieldsToRender = [];
 			if ( Array.isArray( fields ) ) {
 				fieldsToRender = fields;
@@ -477,8 +430,6 @@ export default class App {
 				return;
 			}
 
-			// Optimization: Batch DOM Updates using requestAnimationFrame
-			// This prevents long tasks from blocking the main thread when rendering many fields.
 			const chunkSize = 20;
 			let index = 0;
 
@@ -487,14 +438,9 @@ export default class App {
 				const max = Math.min( index + chunkSize, totalFields );
 
 				for ( ; index < max; index++ ) {
-					// String( index ): getSafeProperty guards an own-property lookup,
-					// and array indices are string keys.
 					const field = Utils.getSafeProperty( fieldsToRender, String( index ) );
-
-					// Transform the field config object into a DOM element
 					const el = this.createFieldElement( field );
 
-					// Append result to the fragment
 					if ( el ) { fragment.appendChild( el ); }
 				}
 
@@ -512,10 +458,7 @@ export default class App {
 	}
 
 	/**
-	 * Load and init the phone input on demand (modulesPath.phoneInput).
-	 *
-	 * Public API method for dynamic phone input initialization.
-	 * Do not rename without maintaining a delegating alias for backwards compatibility.
+	 * Load and initialize phone input on demand.
 	 *
 	 * @param {string}           containerClass Visible input class to initialize.
 	 * @param {Document|Element} context        Scope to search within.
@@ -525,9 +468,9 @@ export default class App {
 		const phoneConf = this.config.modulesPath?.phoneInput;
 		if ( phoneConf && phoneConf.path ) {
 			try {
-				const module = await Utils.importWithRetry( () =>
+				const module = await Utils.importWithRetry( ( attempt ) =>
 					// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
-					import( /* webpackIgnore: true */ phoneConf.path ) );
+					import( /* webpackIgnore: true */ Utils.retryUrl( phoneConf.path, attempt ) ) );
 				if ( module && typeof module.initPhoneInput === 'function' ) {
 					module.initPhoneInput( containerClass, context, this );
 				}
@@ -540,41 +483,22 @@ export default class App {
 	/**
 	 * Dynamic-import a single modulesPath entry and register what it exposes.
 	 *
-	 * `modulesPath` is declared in PHP (class-ht-ctc-admin-page-scripts.php),
-	 * which documents the per-entry keys and the three load triggers:
-	 *   • tabs  → loadTabSettings()      (on tab open)
-	 *   • delay → loadDelayedModules()   (once, after boot)
-	 *   • by key → e.g. loadAndInitIntlInput() (explicit on-demand)
-	 * This method is the shared loader all three routes funnel through.
-	 *
-	 * Single source of truth for "load a module declared in PHP". Errors are
-	 * logged, never thrown.
-	 *
-	 * Registers:
-	 *   - managerId:  module.default as a Manager (new + init()).
-	 *   - rendererId: module.default as a field renderer (field, context, config).
-	 * Caches the module on the config (`_loadedModule`) for a later
-	 * runModuleMethod() call.
-	 *
-	 * @param {string} key        Module key (for error logs).
+	 * @param {string} key        Module key.
 	 * @param {Object} moduleConf Module config from config.modulesPath.
 	 * @returns {Promise<Object|null>} The imported module, or null on failure.
 	 */
 	async loadModule ( key, moduleConf ) {
 		try {
-			const module = await Utils.importWithRetry( () =>
+			const module = await Utils.importWithRetry( ( attempt ) =>
 				// eslint-disable-next-line no-unsanitized/method -- Path is from trusted plugin configuration localized by PHP
-				import( /* webpackIgnore: true */ moduleConf.path ) );
+				import( /* webpackIgnore: true */ Utils.retryUrl( moduleConf.path, attempt ) ) );
 
-			// Cache for a later post-render / post-load method init.
 			moduleConf._loadedModule = module;
 
-			// a. Manager class (e.g. RepeaterManager, PreviewManager).
 			if ( moduleConf.managerId && module.default ) {
 				this.registerManager( moduleConf.managerId, module.default );
 			}
 
-			// b. Renderer fn receiving (field, context, config).
 			if ( moduleConf.rendererId && typeof module.default === 'function' ) {
 				this.registerRenderer(
 					moduleConf.rendererId,
@@ -590,20 +514,9 @@ export default class App {
 	}
 
 	/**
-	 * Load the modules a rendered panel needs, decided by its own markup.
+	 * Load modules required by selectors found within the rendered panel.
 	 *
-	 * An entry declaring `selector` loads when the panel contains something
-	 * matching it. This exists because the `tabs` trigger couples a control to a
-	 * list kept in a different file: a tab that renders a repeater button but is
-	 * missing from RepeaterManager's `tabs` gets a button that does nothing, with
-	 * no error anywhere — the control is present, its behavior silently is not.
-	 * A selector cannot drift the same way, because the thing that needs the
-	 * module is the thing being matched.
-	 *
-	 * Load-once: `loadModule` caches the import on the entry, so a module already
-	 * loaded by another tab is skipped rather than re-imported and re-inited.
-	 *
-	 * @param {HTMLElement} panel Rendered tab panel.
+	 * @param {HTMLElement} panel Rendered tab panel element.
 	 */
 	async loadModulesForPanel ( panel ) {
 		if ( ! panel || ! this.config.modulesPath ) { return; }
@@ -623,12 +536,12 @@ export default class App {
 	}
 
 	/**
-	 * Invoke a module's post-load init method, if it declares one.
+	 * Invoke a module's post-load init method, if declared.
 	 *
-	 * @param {Object|null} moduleObj  Imported module (or null — no-op).
-	 * @param {Object}      moduleConf Module config (method, arg).
-	 * @param {*}           context    2nd arg + fallback 1st arg (tab panel | null).
-	 * @param {string}      key        Module key (for error logs).
+	 * @param {Object|null} moduleObj  Imported module.
+	 * @param {Object}      moduleConf Module config.
+	 * @param {*}           context    Context (panel element or document).
+	 * @param {string}      key        Module key.
 	 */
 	runModuleMethod ( moduleObj, moduleConf, context, key ) {
 		if ( ! moduleObj || ! moduleConf.method ) { return; }
@@ -643,13 +556,7 @@ export default class App {
 	}
 
 	/**
-	 * Load "delayed" modules — entries in config.modulesPath that carry a
-	 * `delay` (ms) and are NOT tied to a tab. Used for global features (e.g.
-	 * the live Preview) we want kept out of the initial bundle but loaded
-	 * automatically a short time after boot.
-	 *
-	 * Reuses loadModule()/runModuleMethod(), firing once per module via
-	 * setTimeout instead of on tab activation.
+	 * Load delayed modules that are scheduled to initialize after boot.
 	 */
 	loadDelayedModules () {
 		if ( ! this.config.modulesPath ) { return; }
@@ -659,7 +566,7 @@ export default class App {
 			.forEach( ( [ key, moduleConf ] ) => {
 				setTimeout( async () => {
 					const module = await this.loadModule( key, moduleConf );
-					this.runModuleMethod( module, moduleConf, null, key );
+					this.runModuleMethod( module, moduleConf, document, key );
 				}, moduleConf.delay );
 			} );
 	}
@@ -667,53 +574,43 @@ export default class App {
 	// Getters for core systems
 	get events () { return this._events; }
 
-	// get api instance
 	getApi () { return this.api; }
 
 	/**
-	 * Pre-fetches settings for all inactive tabs in the background.
-	 * Ensures 0ms latency when switching to new tabs on slow connections.
+	 * Pre-fetches settings fields for inactive tabs and contextual groups in the background.
 	 */
 	async preloadBackgroundTabs () {
-		// 'contextual_styles': instead of directly adding similar like nav tabs make things are dynamically understood and load.
+		const wanted = [];
 
-		/*
-		 * Contextual groups FIRST, ahead of the tabs.
-		 *
-		 * The style grid is on General — the tab already on screen — so its Customize
-		 * trigger is clickable within a second of load, before any tab preload could
-		 * matter. Queued last it arrived after ~nine tabs and their 500ms spacing, which
-		 * is several seconds of a click that has to wait on the network.
-		 */
+		document.querySelectorAll( '.settings-panel' )
+			.forEach( panel => {
+				const group = ( panel.getAttribute( 'data-group' ) || panel.id ).replace( /-/g, '_' );
+				if ( group && group !== 'general_settings' ) { wanted.push( group ); }
+
+				const extraGroups = panel.getAttribute( 'data-groups' );
+				if ( extraGroups ) {
+					extraGroups.split( ',' )
+						.forEach( extra => {
+							const clean = extra.trim()
+								.replace( /-/g, '_' );
+							if ( clean ) { wanted.push( clean ); }
+						} );
+				}
+			} );
+
+		// Skip groups that are already cached or currently in flight.
+		const missing = [ ...new Set( wanted ) ].filter( group => {
+			if ( this.pendingFieldFetches.has( group ) ) { return false; }
+			const cacheKey = `ht_ctc_fields_${group}${this.fieldsCacheSuffix}`;
+			return ! this.getCachedFields( cacheKey, `ht_ctc_fields_${group}` );
+		} );
+
+		if ( ! missing.length ) { return; }
+
 		try {
-			await this.getFieldsForGroup( 'contextual_styles' );
+			await this.fetchFieldsBatch( missing );
 		} catch ( error ) {
-			log( 'App', 'Preload failed for contextual_styles', error );
-		}
-		try {
-			await this.getFieldsForGroup( 'contextual_greetings' );
-		} catch ( error ) {
-			log( 'App', 'Preload failed for contextual_greetings', error );
-		}
-
-		const panels = document.querySelectorAll( '.settings-panel' );
-
-		for ( const panel of panels ) {
-			const group = ( panel.getAttribute( 'data-group' ) || panel.id ).replace( /-/g, '_' );
-			if ( ! group || group === 'general_settings' ) { continue; } // general is already loaded
-
-			try {
-				// We don't need to do checking here; the helper method handles cache verification automatically
-				// eslint-disable-next-line no-await-in-loop -- Sequential preloading is intentional to avoid network congestion
-				await this.getFieldsForGroup( group );
-			} catch ( error ) {
-				// Silently fail prefetching so it naturally falls back to normal fetch on user click
-				log( 'App', `Preload failed for ${group}`, error );
-			}
-
-			// Yield small delay to avoid browser congestion on 3G devices
-			// eslint-disable-next-line no-await-in-loop -- Intentional throttling between preloads
-			await new Promise( resolve => setTimeout( resolve, 500 ) );
+			log( 'App', 'Preload batch failed', error );
 		}
 	}
 }

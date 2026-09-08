@@ -661,11 +661,3 @@ input:disabled+.slider {
         outline-offset: 2px;
     }
 }
-
-/* Native customizable <select> (appearance: base-select, ::picker, ::checkmark)
-   was styled here in 318a73b1 and disabled a day later in a8c49c38. Removed
-   rather than left commented — `git show 318a73b1` has the working version if
-   this is picked up again. Note that the select markup has moved on since
-   (contextual panels, per-option data attributes), so it would need rewriting
-   against the current renderer rather than restoring wholesale. */
-

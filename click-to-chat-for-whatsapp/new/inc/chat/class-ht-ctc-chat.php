@@ -17,7 +17,6 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 	 */
 	class HT_CTC_Chat {
 
-
 		/**
 		 * Constructor.
 		 *
@@ -44,7 +43,6 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			add_action( "$chat_load_hook", array( $this, 'chat' ) );
 		}
 
-
 		/**
 		 * Validate HTTP/HTTPS URL.
 		 *
@@ -56,7 +54,6 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 			filter_var( $url, FILTER_VALIDATE_URL ) &&
 			in_array( wp_parse_url( $url, PHP_URL_SCHEME ), array( 'http', 'https' ), true );
 		}
-
 
 		/**
 		 * Chat

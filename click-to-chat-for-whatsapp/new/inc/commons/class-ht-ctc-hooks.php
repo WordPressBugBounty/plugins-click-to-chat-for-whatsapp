@@ -82,7 +82,7 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 			$entry = ( isset( $othersettings['show_effect'] ) ) ? esc_attr( $othersettings['show_effect'] ) : '';
 
 			// if greetings dialog is modal, then dont add animations. its causing position issue i.e. due to animation-fill-mode: both;
-			// todo:l fix this. even if modal is added, animations have to work perfeclty
+			// fix this. even if modal is added, animations have to work perfeclty
 			$is_greetings_modal = 'no';
 			if ( isset( $greetings_settings['g_position'] ) && 'modal' === $greetings_settings['g_position'] ) {
 				$is_greetings_modal = 'yes';
@@ -125,7 +125,7 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 		/**
 		 * Print a marker comment identifying plugin output.
 		 *
-		 * phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		 * phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML comment marker; version is escaped via esc_attr
 		 *
 		 * @return void
 		 */

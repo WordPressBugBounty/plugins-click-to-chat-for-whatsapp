@@ -67,7 +67,7 @@ export const createBlockFeatureBox = ( field ) => {
 	if ( field.content || field.description ) {
 		const descDiv = document.createElement( 'div' );
 		descDiv.className = 'ctc-feature-desc';
-		// eslint-disable-next-line no-unsanitized/property
+		// eslint-disable-next-line no-unsanitized/property -- Safe HTML from PHP configuration / static description
 		descDiv.innerHTML = field.content || field.description || '';
 		el.appendChild( descDiv );
 	}

@@ -231,7 +231,6 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			}
 		}
 
-
 		/**
 		 * Render styles when viewing WooCommerce single product pages.
 		 * Checks if the current page is a single product page before displaying the widget.
@@ -391,8 +390,6 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 				<?php
 			}
 		}
-
-
 
 		/**
 		 * Filter WooCommerce chat configuration for product context.

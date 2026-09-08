@@ -17,8 +17,6 @@
 }
 
 html[data-theme="dark"] .pro-feature-box {
-    /* Background and border follow --pro-surface/--pro-border tokens (theme-aware);
-       only the shadow needs a darker value in dark mode. */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
@@ -55,10 +53,14 @@ html[data-theme="dark"] .pro-feature-box {
 .pro-feature-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 0.5rem;
     flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+.pro-feature-header .pro-badge {
+    margin-inline-start: 0;
 }
 
 .pro-feature-title {
@@ -97,55 +99,8 @@ html[data-theme="dark"] .pro-feature-box {
     height: auto;
 }
 
-.pro-feature-item {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 1rem;
-    text-decoration: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: var(--transition);
-}
-
-.pro-feature-item:hover {
-    border-color: var(--pro-color);
-    background-color: var(--pro-surface);
-}
-
-.pro-feature-item h4 {
-    color: var(--text);
-    margin-bottom: 0;
-}
-
-.pro-feature-item .dashicons-arrow-right-alt {
-    color: var(--text-secondary);
-    transition: var(--transition);
-    font-size: 14px;
-    margin-top: 0.25rem;
-}
-
-.pro-feature-item:hover .dashicons-arrow-right-alt {
-    color: var(--pro-color);
-    transform: translateX(4px);
-}
-
-.feature-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-}
-
-.pro-features-list {
-    opacity: 0.6;
-}
-
 /* ==========================================================================
-   PRO FEATURES HUB (the "PRO Features" tab — views/panels/pro-features.php)
-   Scoped under .ctc-pro so it never clashes with the inline teaser styles
-   above. Uses theme tokens throughout so it follows light/dark automatically.
+   PRO FEATURES HUB
    ========================================================================== */
 .ctc-pro {
     max-width: 1080px;
@@ -205,20 +160,12 @@ html[data-theme="dark"] .pro-feature-box {
     color: var(--text-secondary);
 }
 
-.ctc-pro-hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
 .ctc-pro-trust {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem 1.5rem;
-    margin: 0;
+    margin: 1rem 0 0;
     padding: 0;
     list-style: none;
 }
@@ -230,6 +177,14 @@ html[data-theme="dark"] .pro-feature-box {
     margin: 0;
     font-size: 0.82rem;
     color: var(--text-secondary);
+}
+
+.ctc-pro-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 
 .ctc-pro-trust .dashicons {
@@ -255,9 +210,10 @@ html[data-theme="dark"] .pro-feature-box {
 }
 
 .ctc-pro-btn .dashicons {
-    font-size: 1.05rem;
+    font-size: 0.85rem;
     width: auto;
     height: auto;
+    line-height: 1;
 }
 
 .ctc-pro-btn-primary {
@@ -285,79 +241,6 @@ html[data-theme="dark"] .pro-feature-box {
     background: var(--pro-surface);
 }
 
-/* ---- Featured flagships ---- */
-.ctc-pro-featured {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.ctc-pro-highlight {
-    display: flex;
-    gap: 1rem;
-    padding: 1.4rem;
-    border-radius: var(--radius-sm);
-    text-decoration: none;
-    border: 1px solid var(--pro-border);
-    background:
-        radial-gradient(120% 160% at 0% 0%, var(--pro-surface) 0%, transparent 55%),
-        var(--bg-card);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.ctc-pro-highlight:hover {
-    transform: translateY(-2px);
-    border-color: var(--pro-color);
-    box-shadow: 0 14px 26px -14px rgba(217, 119, 6, 0.45);
-}
-
-.ctc-pro-highlight-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 0.8rem;
-    background: var(--pro-gradient);
-    color: #fff;
-    box-shadow: 0 6px 14px -4px rgba(217, 119, 6, 0.5);
-}
-
-.ctc-pro-highlight-icon .dashicons {
-    font-size: 1.5rem;
-    width: auto;
-    height: auto;
-}
-
-.ctc-pro-highlight-body {
-    display: block;
-    min-width: 0;
-}
-
-.ctc-pro-highlight-title {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 0.35rem;
-}
-
-.ctc-pro-highlight:hover .ctc-pro-card-arrow {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.ctc-pro-highlight-desc {
-    display: block;
-    font-size: 0.87rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-}
-
 /* ---- Feature sections ---- */
 .ctc-pro-section {
     margin-bottom: 2rem;
@@ -380,21 +263,35 @@ html[data-theme="dark"] .pro-feature-box {
     height: auto;
 }
 
+.ctc-pro-section {
+    container-type: inline-size;
+}
+
 .ctc-pro-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
 }
 
 .ctc-pro-card {
     display: flex;
-    gap: 0.85rem;
+    flex: 1 1 240px;
+    max-width: 280px;
+    flex-direction: column;
+    gap: 0.7rem;
     padding: 1.15rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     background: var(--bg-card);
     text-decoration: none;
     transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+@container (max-width: 560px) {
+    .ctc-pro-card {
+        max-width: none;
+    }
 }
 
 .ctc-pro-card:hover {
@@ -408,8 +305,8 @@ html[data-theme="dark"] .pro-feature-box {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 0.7rem;
     background: var(--pro-gradient);
     color: #fff;
@@ -434,22 +331,22 @@ html[data-theme="dark"] .pro-feature-box {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.35rem;
 }
 
 .ctc-pro-card-arrow {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     width: auto;
     height: auto;
     color: var(--pro-color);
     opacity: 0;
-    transform: translateX(-4px);
+    transform: translate(-2px, 2px);
     transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .ctc-pro-card:hover .ctc-pro-card-arrow {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate(0, 0);
 }
 
 .ctc-pro-card-desc {
@@ -463,7 +360,8 @@ html[data-theme="dark"] .pro-feature-box {
 .ctc-pro-compare-wrap {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .ctc-pro-compare {
@@ -508,7 +406,26 @@ html[data-theme="dark"] .pro-feature-box {
     height: auto;
 }
 
-.ctc-pro-compare tbody tr:last-child td {
+.ctc-pro-compare .ctc-pro-compare-group th {
+    text-align: start;
+    padding: 0.7rem 1rem 0.4rem;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ctc-pro-compare tbody:not(:first-of-type) .ctc-pro-compare-group th {
+    border-top: 1px solid var(--border-color);
+}
+
+.ctc-pro-compare .ctc-pro-compare-group:hover th {
+    background: var(--bg-secondary);
+}
+
+.ctc-pro-compare tbody:last-of-type tr:last-child td {
     border-bottom: none;
 }
 
@@ -517,7 +434,6 @@ html[data-theme="dark"] .pro-feature-box {
 }
 
 .ctc-pro-yes {
-    /* Text-weight green (see toast: --success itself is a fill colour). */
     color: var(--success-strong);
     font-weight: 700;
 }
@@ -529,6 +445,23 @@ html[data-theme="dark"] .pro-feature-box {
 .ctc-pro-no {
     color: var(--text-secondary);
     opacity: 0.4;
+}
+
+.ctc-pro-compare .ctc-pro-compare-pro-cell,
+.ctc-pro-compare thead .ctc-pro-compare-pro {
+    text-align: start;
+}
+
+.ctc-pro-compare .ctc-pro-compare-pro-cell {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.ctc-pro-compare-detail {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.45;
 }
 
 .ctc-pro-compare-note {
@@ -589,8 +522,7 @@ html[data-theme="dark"] .pro-feature-box {
     text-decoration: underline;
 }
 
-/* Inline greetings PRO teaser: the "See all PRO features" button sits below
-   the stacked pro-feature-box teasers inside a normal settings card. */
+/* Inline PRO teaser CTA */
 .ctc-pro-teaser-cta {
     margin-top: 0.25rem;
 }
@@ -609,8 +541,8 @@ html[data-theme="dark"] .pro-feature-box {
         width: 100%;
     }
 
-    .ctc-pro-grid {
-        grid-template-columns: 1fr;
+    .ctc-pro-card {
+        max-width: none;
     }
 
     .ctc-pro-cta-band {
@@ -621,6 +553,16 @@ html[data-theme="dark"] .pro-feature-box {
 
     .ctc-pro-cta-actions {
         justify-content: center;
+    }
+
+    .ctc-pro-compare th,
+    .ctc-pro-compare td {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.82rem;
+    }
+
+    .ctc-pro-compare .ctc-pro-compare-group th {
+        padding-inline: 0.5rem;
     }
 }
 

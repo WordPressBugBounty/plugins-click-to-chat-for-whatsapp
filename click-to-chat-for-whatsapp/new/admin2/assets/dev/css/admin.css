@@ -2,11 +2,6 @@
    ADMIN CSS - CLICK TO CHAT FOR WHATSAPP
    ========================================================================== */
 
-/* todo */
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
 /* Base Styles */
 @import "./base/variables.css";
 @import "./base/reset.css";
@@ -41,6 +36,7 @@
 @import "./components/block-feature-box.css";
 @import "./components/skeleton.css";
 @import "./components/contextual-panel.css";
+@import "./components/preview-site-view.css";
 
 /* Modules */
 @import "./modules/omni-channel.css";

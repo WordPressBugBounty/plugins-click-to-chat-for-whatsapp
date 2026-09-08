@@ -7,6 +7,9 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+
+    /* Clip horizontal overflow without breaking sticky positioning. */
+    overflow-x: clip;
 }
 
 .dashboard-content {

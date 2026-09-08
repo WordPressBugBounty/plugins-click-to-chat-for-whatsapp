@@ -39,17 +39,30 @@ if ( ! class_exists( 'HT_CTC_Admin_Upgrade_Notice' ) ) {
 		public function __construct() {
 			add_action( 'wp_ajax_ht_ctc_admin_dismiss_notices', array( $this, 'dismiss_notices' ) );
 
+			// Admin screens only. This class is constructed from HT_CTC::init(), outside
+			// is_admin() — its siblings have to be, because the REST save path fires
+			// 'ht_ctc_ah_admin_after_save_settings' and REST requests are not admin
+			// requests. Without this guard, should_show() charged every public page view
+			// two DB queries (ht_ctc_pro_plugin_details / ht_ctc_notices are absent on
+			// most installs, and an absent option costs a query) for a banner only
+			// wp-admin can render. Ajax is excluded too: none of the hooks below fire
+			// there, and the dismiss handler above is registered either way.
+			if ( ! is_admin() || wp_doing_ajax() ) {
+				return;
+			}
+
 			if ( $this->should_show() ) {
 				add_action( 'admin_notices', array( $this, 'upgrade_notice' ) );
 				add_action( 'admin_footer', array( $this, 'admin_upgrade_notice_scripts' ) );
 				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_notice_styles' ) );
 			}
 
-			// // Development / testing only — uncomment to force-display the banner
-			// // on every admin page load (bypasses the 5-day wait and the dismissed check).
-			// // DO NOT enable in production: all admins see the banner on every page.
-			// add_action( 'admin_notices', array( $this, 'pro_notice' ) );
-			// add_action( 'admin_footer', array( $this, 'admin_pro_notice_scripts' ) );
+			// (for testing) shows the upgrade notice on every admin screen, bypassing the
+			// not-yet-installed / dismissed / 5-day conditions above. Keep them commented -
+			// if you uncomment the lines below, add a 'todo(release):' so they cannot ship enabled.
+			// add_action( 'admin_notices', array( $this, 'upgrade_notice' ) );
+			// add_action( 'admin_footer', array( $this, 'admin_upgrade_notice_scripts' ) );
+			// add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_upgrade_notice_styles' ) );
 		}
 
 		/**
@@ -76,11 +89,34 @@ if ( ! class_exists( 'HT_CTC_Admin_Upgrade_Notice' ) ) {
 		}
 
 		/**
+		 * Whether the current user is someone this banner should be shown to.
+		 *
+		 * The admin_notices hook fires for anyone who can reach an admin screen, so
+		 * without this an editor or a shop manager gets a PRO pitch they cannot act on -
+		 * and cannot get rid of either, because dismiss_notices() requires this
+		 * same capability. Kept identical to the one that handler checks: a banner
+		 * someone can see but never dismiss is worse than no banner.
+		 *
+		 * Checked here in the render callbacks rather than in should_show(), which
+		 * runs at plugin load - too early for capabilities to be resolved.
+		 *
+		 * @return bool
+		 */
+		private function user_can_see() {
+			return current_user_can( 'manage_options' );
+		}
+
+		/**
 		 * Enqueue the upgrade to PRO notice stylesheet (only when the banner is shown).
 		 *
 		 * @return void
 		 */
 		public function enqueue_upgrade_notice_styles() {
+
+			if ( ! $this->user_can_see() ) {
+				return;
+			}
+
 			$css = defined( 'HT_CTC_DEBUG_MODE' ) ? 'dev/admin-notice/upgrade-banner.css' : 'min/admin-notice/upgrade-banner.css';
 
 			wp_enqueue_style(
@@ -94,33 +130,70 @@ if ( ! class_exists( 'HT_CTC_Admin_Upgrade_Notice' ) ) {
 		/**
 		 * Render the PRO upsell banner.
 		 *
+		 * One specific promise, the features that back it up, and two ways
+		 * forward: the pricing page, or the PRO tab inside this admin for anyone not
+		 * ready to leave the site yet. The tab link carries ?tab= rather than a hash
+		 * because Interface.initNavigation() gives the query parameter priority.
+		 *
 		 * @return void
 		 */
 		public function upgrade_notice() {
+
+			if ( ! $this->user_can_see() ) {
+				return;
+			}
+
+			// Tagged so this banner shows up in campaign reports like every other
+			// PRO call to action. See HT_CTC_Utils::pro_url().
+			$upgrade_url = HT_CTC_Utils::pro_url( 'banner' );
+
+			/*
+			 * Chips, so each one has to earn its two or three words: the noun
+			 * alone ("Multi-Agent") tells someone who already has the free
+			 * plugin nothing they can weigh. Every one is PRO-only - checked
+			 * against the PRO plugin, not against a feature name.
+			 */
+			$features = array(
+				'Multi-agent routing',
+				'Lead capture forms',
+				'Date & time picker',
+				'Business hours',
+				'Conversion tracking',
+			);
 			?>
 		<div class="notice is-dismissible ht-ctc-notice ht-ctc-notice-pro-banner" data-db="pro_banner">
 			<div class="ht-ctc-pro-inner">
-				<div class="ht_ctc_pro_icon_box">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+				<div class="ht_ctc_pro_icon_box" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
 				</div>
 				<div class="ht-ctc-pro-content">
-					<h3 class="ht-ctc-pro-title">Skyrocket Your Conversions <span class="pro-badge">PRO</span></h3>
-					<p class="ht-ctc-pro-desc">
-						Power up your chat widget. Unlock <strong>Multi-Agent</strong>, <strong>Form Filling</strong>, <strong>Business Hours</strong>, and <strong>Country Filters</strong>.
+					<p class="ht-ctc-pro-eyebrow">
+						<span class="ht-ctc-pro-plugin">Click to Chat</span>
+						<span class="pro-badge"><?php esc_html_e( 'PRO', 'click-to-chat-for-whatsapp' ); ?></span>
 					</p>
-					<div class="ht-ctc-pro-features">
-						<span class="feature-tag">✨ Google Ads Tracking</span>
-						<span class="feature-tag">📊 Analytics</span>
-						<span class="feature-tag">🪝 Webhooks</span>
-						<span class="feature-tag">🎯 Advanced Triggers</span>
-					</div>
+					<p class="ht-ctc-pro-title">
+						Do more with every chat
+					</p>
+					<p class="ht-ctc-pro-desc">
+						Route visitors to the right agent, capture visitors details before the chat opens, and see which campaigns actually produce conversations.
+					</p>
+					<ul class="ht-ctc-pro-features">
+						<?php
+						foreach ( $features as $ctc_feature ) {
+							printf( '<li>%s</li>', esc_html( $ctc_feature ) );
+						}
+						?>
+					</ul>
 				</div>
 				<div class="ht-ctc-pro-actions">
-					<a href="https://holithemes.com/plugins/click-to-chat/pricing/" target="_blank" class="button button-upgrade">
-						Get PRO Now
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+					<a href="<?php echo esc_url( $upgrade_url ); ?>" target="_blank" rel="noopener" class="button button-upgrade">
+						Upgrade to PRO
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 					</a>
-					<a href="#" class="button-dismiss button-dismiss-text">Maybe later</a>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=click-to-chat&tab=pro-features' ) ); ?>" class="ht-ctc-pro-secondary">
+						See all PRO features
+					</a>
+					<button type="button" class="button-dismiss button-dismiss-text">Maybe later</button>
 				</div>
 			</div>
 		</div>
@@ -133,6 +206,10 @@ if ( ! class_exists( 'HT_CTC_Admin_Upgrade_Notice' ) ) {
 		 * @return void
 		 */
 		public function admin_upgrade_notice_scripts() {
+
+			if ( ! $this->user_can_see() ) {
+				return;
+			}
 			?>
 		<script>
 			(function () {

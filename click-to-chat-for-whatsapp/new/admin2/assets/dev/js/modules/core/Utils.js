@@ -2,33 +2,14 @@
  * Core Utilities
  */
 
-/**
- * Debug Logger with Module Filtering
- *
- * Usage in code:
- *   log( 'App', 'Loading tab:', tabId );
- *   log( 'Settings', 'Save result:', data );
- *
- * Filter from browser console (on the fly, no code changes):
- *   ctcDebug('App')            → show only App logs
- *   ctcDebug('App,Settings')   → show App + Settings logs
- *   ctcDebug('*')              → show all logs (default)
- *   ctcDebug('')               → mute all logs
- *
- * Filter persists in sessionStorage (survives reload, clears on tab close).
- *
- * Production: __DEV__ is replaced with `false` by webpack DefinePlugin,
- * making all debug code dead code that Terser removes entirely.
- * Dev Mode: __DEV__ is undefined, so logging is active by default.
- */
 /* global __DEV__ */
 let _debugFilter = '*';
 
-// Initialize debug infrastructure only in dev mode
+// Initialize debug filter in dev mode
 if ( typeof __DEV__ !== 'undefined' && __DEV__ ) {
 	_debugFilter = sessionStorage.getItem( 'ctc_debug' ) || '*';
 
-	// Expose filter control to browser console
+	// Expose filter control to browser console: ctcDebug('App') or ctcDebug('*')
 	window.ctcDebug = ( filter ) => {
 		_debugFilter = ( typeof filter === 'string' ) ? filter : '*';
 		sessionStorage.setItem( 'ctc_debug', _debugFilter );
@@ -37,22 +18,10 @@ if ( typeof __DEV__ !== 'undefined' && __DEV__ ) {
 }
 
 /**
- * Debug log — fully eliminated in production builds.
+ * Development debug logger with module filtering.
  *
- * Usage:   log( 'App', 'Loading tab:', tabId );
- *
- * In dev mode: __DEV__ is true (defined via PHP inline script) → logs are active.
- * In production: Terser's pure_funcs removes all log() call sites,
- *                and __DEV__ = false makes the function a no-op.
- *
- * Filter from browser console:
- *   ctcDebug('App')           → show only App logs
- *   ctcDebug('App,Settings')  → show App + Settings logs
- *   ctcDebug('*')             → show all (default)
- *   ctcDebug('')              → mute all
- *
- * @param {string} module - Module name for filtering (e.g. 'App', 'Settings')
- * @param {...*} args - Values to log
+ * @param {string} module - Module name for filtering (e.g. 'App', 'Settings').
+ * @param {...*} args - Values to log.
  */
 export const log = ( typeof __DEV__ !== 'undefined' && __DEV__ ) ?
 	( module, ...args ) => {
@@ -74,6 +43,12 @@ const unsafeKeys = [
 	'__lookupSetter__',
 ];
 
+/**
+ * Validates whether a key is safe against prototype pollution.
+ *
+ * @param {string} key - Object key to test.
+ * @returns {boolean} True if the key is safe.
+ */
 export const isSafeObjectKey = ( key ) => {
 	return (
 		typeof key === 'string' &&
@@ -83,6 +58,14 @@ export const isSafeObjectKey = ( key ) => {
 	);
 };
 
+/**
+ * Safely accesses an object's own property, guarded against prototype pollution.
+ *
+ * @param {Object} obj - Target object.
+ * @param {string} key - Property key.
+ * @param {*} [fallback=undefined] - Fallback value if property is absent or invalid.
+ * @returns {*} Property value or fallback.
+ */
 export const getSafeProperty = ( obj, key, fallback = undefined ) => {
 	if (
 		obj &&
@@ -90,8 +73,6 @@ export const getSafeProperty = ( obj, key, fallback = undefined ) => {
 		isSafeObjectKey( key ) &&
 		Object.prototype.hasOwnProperty.call( obj, key )
 	) {
-		// todo: Reasearch on Reflect usage
-		// return Reflect.get( obj, key );
 		// eslint-disable-next-line security/detect-object-injection -- Key is validated by isSafeObjectKey above to prevent prototype pollution
 		return obj[ key ];
 	}
@@ -100,8 +81,9 @@ export const getSafeProperty = ( obj, key, fallback = undefined ) => {
 
 /**
  * Escapes characters that can trigger XSS.
- * @param {string} str - The string to escape
- * @returns {string} The escaped string
+ *
+ * @param {string} str - The string to escape.
+ * @returns {string} The escaped string.
  */
 const _escapeDiv = typeof document !== 'undefined' ? document.createElement( 'div' ) : null;
 
@@ -125,26 +107,17 @@ export const escapeHTML = ( str ) => {
 };
 
 /**
- * Whether the async Clipboard API is usable in this context.
+ * Checks whether the Clipboard API is usable in the current context.
  *
- * navigator.clipboard only exists in a secure context (https, localhost) — it is
- * undefined on plain-http admin pages (including *.local dev sites). Internal
- * helper used by copyToClipboard to decide between the async API and the
- * execCommand fallback.
- *
- * @returns {boolean}
+ * @returns {boolean} True if navigator.clipboard.writeText is available.
  */
 const canCopyToClipboard = () => !! ( navigator.clipboard && navigator.clipboard.writeText );
 
 /**
- * Copy text to the clipboard, returning a Promise.
- *
- * Prefers the async Clipboard API (secure contexts). Falls back to a hidden
- * textarea + execCommand for non-secure http contexts (e.g. *.local dev sites)
- * where navigator.clipboard is undefined, so copy still works there.
+ * Copies text to the clipboard with fallback for non-secure contexts.
  *
  * @param {string} text - Text to copy.
- * @returns {Promise<void>} Resolves on success, rejects if copying failed.
+ * @returns {Promise<void>} Resolves on success, rejects on failure.
  */
 export const copyToClipboard = ( text ) => {
 	if ( canCopyToClipboard() ) {
@@ -169,14 +142,12 @@ export const copyToClipboard = ( text ) => {
 };
 
 /**
- * Returns a URL safe to drop into an href/src attribute.
+ * Returns a sanitized URL safe for href and src attributes.
  *
- * Restricts to http(s), mailto, tel, anchor (#…), and relative (/…) targets so a
- * stray `javascript:` or `data:` value from a misconfigured field cannot execute.
- * Non-strings, blanks, and disallowed schemes collapse to '#'.
+ * Restricts to http(s), mailto, tel, anchors (#), and relative paths.
  *
  * @param {*} url - Candidate URL.
- * @returns {string} The original URL, or '#' if unsafe.
+ * @returns {string} Safe URL or '#' if invalid.
  */
 export const safeUrl = ( url ) => {
 	if ( typeof url !== 'string' ) { return '#'; }
@@ -187,10 +158,10 @@ export const safeUrl = ( url ) => {
 };
 
 /**
- * Escapes characters for use within HTML attributes (like value="", class="", etc).
- * Similar to WordPress's esc_attr() function.
- * @param {string} str - The string to escape
- * @returns {string} The escaped string
+ * Escapes characters for use within HTML attributes.
+ *
+ * @param {string} str - The string to escape.
+ * @returns {string} The escaped string.
  */
 export const escapeAttr = ( str ) => {
 	if ( typeof str !== 'string' ) {
@@ -210,17 +181,12 @@ export const escapeAttr = ( str ) => {
 };
 
 /**
- * Safely decodes HTML entities (like &#x1f60a; or &amp;) into pure text.
+ * Decodes HTML entities into plain text.
  *
- * WARNING: Never use the output with .innerHTML — XSS risk.
- * Only use with .value or .textContent.
+ * Note: Output should be assigned to .value or .textContent, not .innerHTML.
  *
- * Uses WP's htmlEntities if available, then DOMParser (RCDATA mode) as fallback.
- * <textarea> RCDATA mode decodes entities but treats <script>/<img> as plain text,
- * so only `</textarea>` itself needs escaping to prevent breakout.
- *
- * @param {string} str - The string containing HTML entities to decode
- * @returns {string} The decoded text string
+ * @param {string} str - String containing HTML entities to decode.
+ * @returns {string} Decoded plain text.
  */
 const _domParser = typeof DOMParser !== 'undefined' ? new DOMParser() : null;
 const _decodeTextArea = typeof document !== 'undefined' ? document.createElement( 'textarea' ) : null;
@@ -255,8 +221,6 @@ export const decodeHTML = ( str ) => {
 /**
  * Minimal wpautop: wraps double-newline separated chunks in <p>.
  *
- * Prefer WP's built-in if available (wp-includes/js/dist/autop.min.js).
- *
  * @param {string} str - The string to format.
  * @returns {string} The formatted string.
  */
@@ -284,6 +248,14 @@ export const autop = ( str ) => {
 		.join( '' );
 };
 
+/**
+ * Safely sets an object property, guarded against prototype pollution.
+ *
+ * @param {Object} obj - Target object.
+ * @param {string} key - Property key.
+ * @param {*} value - Value to assign.
+ * @returns {boolean} True if successfully assigned.
+ */
 export const setSafeProperty = ( obj, key, value ) => {
 	if (
 		obj &&
@@ -294,8 +266,6 @@ export const setSafeProperty = ( obj, key, value ) => {
 			! ( key in obj )
 		)
 	) {
-		// todo: Reasearch on Reflect usage
-		// Reflect.set( obj, key, value );
 		// eslint-disable-next-line security/detect-object-injection -- Key is validated by isSafeObjectKey above
 		obj[ key ] = value;
 		return true;
@@ -306,9 +276,9 @@ export const setSafeProperty = ( obj, key, value ) => {
 /**
  * Debounce a function to optimize rapid firing events.
  *
- * @param {Function} func The function to debounce
- * @param {number} wait Delay in milliseconds
- * @returns {Function} Debounced function
+ * @param {Function} func - The function to debounce.
+ * @param {number} [wait=100] - Delay in milliseconds.
+ * @returns {Function} Debounced function.
  */
 export const debounce = ( func, wait = 100 ) => {
 	let timeout;
@@ -319,32 +289,12 @@ export const debounce = ( func, wait = 100 ) => {
 };
 
 /**
- * Retrieves a nested value from a configuration object based on WordPress option names.
+ * Retrieves a nested property value from an object using an option group and bracketed field ID path.
  *
- * Problem: WordPress stores settings in flat variables (like `ht_ctc_chat_options`)
- * but represents deep structures in HTML names (like `ht_ctc_chat_options[group][field]`).
- * To get the value of `field` from a JS object, we need to parse that string path.
- *
- * This helper constructs the full path string and then splits it to traverse the object.
- *
- * Example 1 (Simple):
- * - obj: { ht_ctc_chat_options: { number: '123' } }
- * - optionGroup: 'ht_ctc_chat_options'
- * - fieldId: 'number'
- * -> constructs: 'ht_ctc_chat_options[number]' -> keys: ['ht_ctc_chat_options', 'number'] -> returns '123'
- *
- * Example 2 (Complex/Nested):
- * - obj: { ht_ctc_chat_options: { style: { mobile: 'show' } } }
- * - optionGroup: 'ht_ctc_chat_options'
- * - fieldId: 'style][mobile' (This is how WP stores deep keys in field IDs)
- * -> constructs: 'ht_ctc_chat_options[style][mobile]'
- * -> keys: ['ht_ctc_chat_options', 'style', 'mobile']
- * -> returns 'show'
- *
- * @param {object} obj: e.g. config.initialSettings i.e. ht_ctc_admin_var.initialSettings
- * @param {string} optionGroup: e.g. ht_ctc_chat_options
- * @param {string} fieldId: e.g. number,  ~channels][whatsapp][val
- * @returns {~string} value of the field
+ * @param {Object} obj - Settings object.
+ * @param {string} optionGroup - Option group name (e.g. 'ht_ctc_chat_options').
+ * @param {string} fieldId - Field identifier or sub-path (e.g. 'number' or 'style][mobile').
+ * @returns {*} Value of the field, or empty string if not found.
  */
 export const getNestedValue = ( obj, optionGroup, fieldId ) => {
 	if ( ! obj || ! optionGroup ) { return ''; }
@@ -388,64 +338,19 @@ export const setNestedValue = ( obj, keys, value ) => {
 };
 
 /**
- * Replace {placeholders} inside a content string.
+ * Replaces `{placeholder}` tokens in a content string.
  *
- * This utility replaces tokens formatted as `{key}` using either:
- * - Field-level variables
- * - Global runtime configuration (`window.ht_ctc_admin_var`)
+ * Resolves placeholders from custom variables or global runtime configuration.
  *
- * @param {string} content
- *        A string containing placeholders like `{wpTime}` or `{option_group}`.
- *
- * @param {Object|Array|string|boolean} [variables=true]
- *        Controls how placeholders are resolved.
- *
- *        Supported formats:
- *
- *        • true
- *          Allow all runtime config keys.
- *          Example:
- *              content:  "Time: {wpTime}"
- *              variables: true
- *              → resolves using config.wpTime
- *
- *        • Object (placeholder → value OR configKey)
- *          Example (literal override):
- *              variables: { first_name: "Click to Chat" }
- *              → {first_name} → "Click to Chat"
- *
- *          Example (mapping to config key):
- *              variables: { site_time: "wpTime" }
- *              → {site_time} → config.wpTime
- *
- *        • Array of config keys
- *          Example:
- *              variables: ["wpTime", "version"]
- *              → Only those placeholders resolve from config
- *
- *        • String (single config key)
- *          Example:
- *              variables: "wpTime"
- *              → Only {wpTime} resolves from config
- *
- * Resolution Order:
- *   1. Field literal override (object value)
- *   2. Field mapping to config key (object value referencing config)
- *   3. variables === true (allow all config keys)
- *   4. Selected config keys (array/string)
- *   5. Leave placeholder unchanged if no match found
- *
- * @returns {string}
- *          The content string with placeholders replaced.
+ * @param {string} content - Template string containing `{key}` placeholders.
+ * @param {Object|boolean} [variables=true] - Variable map or boolean indicating whether to resolve from runtime config.
+ * @returns {string} String with placeholders replaced.
  */
-
 const runtime = {
 	...( window.ht_ctc_admin_var || {} ),
 	...( window.ht_ctc_admin_var?.initialSettings?.ht_ctc_chat_options || {} ),
-
-	// ...future sources go here
-	// ...anotherConfigObject
 };
+
 export const applyVariables = ( content, variables = true ) => {
 	if ( ! content || typeof content !== 'string' ) {
 		return content;
@@ -453,7 +358,7 @@ export const applyVariables = ( content, variables = true ) => {
 
 	let result = content;
 
-	// 1. Process custom variables if provided as object
+	// 1. Process custom variables if provided as an object
 	if ( variables && typeof variables === 'object' && ! Array.isArray( variables ) ) {
 		Object.entries( variables )
 			.forEach( ( [ key, value ] ) => {
@@ -463,11 +368,8 @@ export const applyVariables = ( content, variables = true ) => {
 			} );
 	}
 
-	// 2. Preset global variables
+	// 2. Resolve global runtime variables
 	if ( variables ) {
-		// match: {wpCurrentTime}, key: wpCurrentTime, {wpCurrentTime} replaced with 2026-03-04 11:58:41
-		// match: {wpTimeZone}, key: wpTimeZone, {wpTimeZone} replaced with +05:30
-		// match: {abc}, key: abc, {abc} not found in runTime to replace
 		result = result.replace( /\{(\w+)\}/g, ( match, key ) => {
 			const val = getSafeProperty( runtime, key );
 			log( 'Utils', 'applyVariables()', '\n', `match: ${match}, key: ${key}, ${val ? `${match} replaced with ${val}` : `${match} not found in runTime to replace`}` );
@@ -479,65 +381,55 @@ export const applyVariables = ( content, variables = true ) => {
 };
 
 /**
- * Translate a technical fetch/REST error into a short, human-friendly hint.
+ * Translates a network or REST error into a user-friendly message.
  *
- * Single source of truth for the network/API error copy shown by both the
- * field-load failure UI (App.loadTabSettings) and the save-error toast
- * (UIManager 'settings:error'), so every API failure surfaces consistent
- * guidance. Matches on the error message text produced by API.request()
- * (status-tagged `[4xx]`, our `timed out` abort, JSON-parse failures) and the
- * browser's native fetch errors. Falls back to the raw message when nothing
- * matches — callers that also show a separate "technical detail" line can keep
- * doing so.
- *
- * @param {Error|string} error - The caught error (or its message).
- * @returns {string} A user-facing message.
+ * @param {Error|string} error - The caught error or error message.
+ * @returns {string} User-facing message.
  */
 export const friendlyErrorMessage = ( error ) => {
 	const message = ( error && error.message ) ? error.message : String( error || '' );
 
 	if ( ! message ) { return 'An unknown error occurred.'; }
 
-	// Network is down or the site is unreachable.
+	// Unreachable server / offline
 	if ( message.includes( 'Failed to fetch' ) || message.includes( 'NetworkError' ) ) {
 		return 'Unable to connect to the server. Please check your internet connection or if the site is reachable.';
 	}
 
-	// Our own per-attempt timeout (see API.request) — server too slow / unresponsive.
+	// Request timeout
 	if ( message.includes( 'timed out' ) ) {
 		return 'The server took too long to respond. Please try again in a moment.';
 	}
 
-	// Expired WP REST nonce (session expired). Never reload automatically —
-	// tell the user to reload so it stays their call.
+	// Expired REST nonce
 	if ( message.includes( 'rest_cookie_invalid_nonce' ) || message.includes( 'rest_nonce' ) ) {
 		return 'Your session has expired. Please reload this page and save again (reloading will discard unsaved changes on this screen).';
 	}
 
-	// 401/403 where the error body wasn't WordPress JSON — the request was
-	// blocked before reaching WordPress (hosting firewall / ModSecurity / WAF).
+	// Server firewall / WAF block before WordPress
 	if ( ( message.includes( '[403]' ) || message.includes( '[401]' ) ) && message.includes( 'Non-JSON error response' ) ) {
 		return 'The server blocked this request before it reached WordPress — usually a hosting firewall or security module (ModSecurity/WAF), often triggered by URLs or code in the settings. Please contact your hosting support with the details below.';
 	}
 
-	// Other WordPress-side 401/403 (capability / security plugin denial).
+	// Permission or nonce denial
 	if ( message.includes( '[403]' ) || message.includes( '[401]' ) ) {
 		return 'Security verification failed. Please reload the page and try again. If it keeps happening, a security plugin or user-role restriction may be blocking the request.';
 	}
 
-	// Server returned HTML / non-JSON (PHP error or conflict with another plugin).
+	// Invalid JSON response (e.g. PHP error or output conflict)
 	if ( message.includes( 'Unexpected token' ) || message.includes( 'Invalid or empty JSON' ) ) {
 		return 'The server returned an invalid response. This is often caused by a PHP error or conflict with another plugin.';
 	}
 
-	// Fallback: surface the raw message.
 	return message;
 };
 
 /**
  * Wrapper to safely execute a function and catch errors without crashing the app.
- * @param {Function} fn - Function to execute
- * @param {string} context - Name of the feature/context for logging
+ *
+ * @param {Function} fn - Function to execute.
+ * @param {string} [context='Feature'] - Context name for error reporting.
+ * @returns {boolean} True if executed successfully, false if an error was caught.
  */
 export const safeRun = ( fn, context = 'Feature' ) => {
 	try {
@@ -553,25 +445,10 @@ export const safeRun = ( fn, context = 'Feature' ) => {
 };
 
 /**
- * Applies an arbitrary map of data attributes declared in PHP.
+ * Applies data-* attributes from a configuration map to an element.
  *
- * PHP side:
- *   'attributes' => array( 'data-action-onchange' => 'updateNotificationBadgeLS' ),
- *
- * Called from applyConditionalAttributes(), these land on the field *wrapper* — so they
- * suit anything that applies to the field as a whole: watch conditions, or a change action
- * covering every field inside a card.
- *
- * Components may also call this directly to target an inner element, in which case the
- * PHP key is named for that element — see `button_attributes` in Button.js. Click actions
- * belong there: on the wrapper they would also fire on the label or help text.
- *
- * Only `data-*` names are accepted — PHP field configs must never be able to set
- * `onclick`, `href`, `src`, `style`, etc. New behavior = a new entry in the relevant
- * registry (Actions.js / Conditions.js) + the attribute in PHP. Never a new branch here.
- *
- * @param {HTMLElement} element - The DOM element to apply attributes to.
- * @param {Object} attributes - Map of attribute name → value.
+ * @param {HTMLElement} element - Target DOM element.
+ * @param {Object} attributes - Map of attribute names to values.
  */
 export const applyDataAttributes = ( element, attributes ) => {
 	if ( ! element || ! attributes || typeof attributes !== 'object' ) {
@@ -592,28 +469,13 @@ export const applyDataAttributes = ( element, attributes ) => {
 	}
 };
 
-/*
- * SELECTORS THAT CAME FROM A FIELD DECLARATION.
- *
- * `data-watch` and `data-contextual-watch` hold CSS selectors written by hand in
- * PHP — ours or an extension's — so unlike a selector literal in this file, they
- * are not guaranteed to parse. An invalid one throws SyntaxError out of
- * querySelector()/matches(), and it throws at the CALLER, which is the damage:
- * initConditionalFieldLogic() loops every `[data-watch]` on a tab, so one bad
- * selector takes down conditional logic for the whole tab, not just its own
- * field. The two wrappers below degrade to "no match" instead.
- *
- * Use them for any selector that arrives from PHP. Selectors written here stay
- * on the plain DOM methods — a typo in one is a bug to fix, not to swallow.
- */
-
 /**
- * querySelector that answers null for an unparseable selector.
+ * Safely queries a selector, catching syntax errors for unparseable selectors.
  *
- * @param {Element|Document} root     Where to look.
- * @param {string}           selector Selector from a field declaration.
- * @param {string}           source   Attribute it came from, for the log line.
- * @returns {Element|null} First match, or null.
+ * @param {Element|Document} root - Search root.
+ * @param {string} selector - CSS selector string.
+ * @param {string} [source='selector'] - Origin identifier for warnings.
+ * @returns {Element|null} Matching element or null.
  */
 export const safeQuery = ( root, selector, source = 'selector' ) => {
 	try {
@@ -625,12 +487,12 @@ export const safeQuery = ( root, selector, source = 'selector' ) => {
 };
 
 /**
- * Element.matches that answers false for an unparseable selector.
+ * Safely tests Element.matches, catching syntax errors for unparseable selectors.
  *
- * @param {Element} element  Element to test.
- * @param {string}  selector Selector from a field declaration.
- * @param {string}  source   Attribute it came from, for the log line.
- * @returns {boolean} True on a match.
+ * @param {Element} element - Target element.
+ * @param {string} selector - CSS selector string.
+ * @param {string} [source='selector'] - Origin identifier for warnings.
+ * @returns {boolean} True if element matches selector.
  */
 export const safeMatches = ( element, selector, source = 'selector' ) => {
 	try {
@@ -644,15 +506,15 @@ export const safeMatches = ( element, selector, source = 'selector' ) => {
 /**
  * Applies conditional display attributes to a DOM element based on field configuration.
  *
- * @param {HTMLElement} element - The DOM element to apply attributes to.
- * @param {Object} field - The field configuration object containing data_watch, etc.
+ * @param {HTMLElement} element - Target DOM element.
+ * @param {Object} field - Field configuration object.
  */
 export const applyConditionalAttributes = ( element, field ) => {
 	if ( ! element || ! field ) {
 		return;
 	}
 
-	// data-watch attributes. (handles from Conditions.js)
+	// data-watch attributes (handled by Conditions.js)
 	if ( field.data_watch ) {
 		element.setAttribute( 'data-watch', field.data_watch );
 
@@ -671,153 +533,100 @@ export const applyConditionalAttributes = ( element, field ) => {
 		}
 	}
 
-	// Arbitrary data-* attributes declared in PHP — no JS change needed to add one.
+	// Arbitrary data-* attributes declared in configuration
 	applyDataAttributes( element, field.attributes );
 };
 
 /**
+ * Append a cache-busting query parameter for module import retries.
+ *
+ * @param {string} url - Module URL.
+ * @param {number} [attempt=0] - Attempt count.
+ * @returns {string} Updated URL.
+ */
+export const retryUrl = ( url, attempt = 0 ) => {
+	if ( ! attempt || typeof url !== 'string' ) {
+		return url;
+	}
+
+	return `${ url }${ url.includes( '?' ) ? '&' : '?' }ctc_retry=${ attempt }`;
+};
+
+/**
+ * Shared offline handler that displays a single notification while network connectivity is lost
+ * and resolves once connection is restored.
+ *
+ * @returns {Promise<void>} Resolves when connection returns.
+ */
+let offlineWait = null;
+
+const waitForOnline = () => {
+	if ( offlineWait ) {
+		return offlineWait;
+	}
+
+	log( 'Utils', 'Network offline. Waiting for connection to resume for module import...' );
+
+	document.dispatchEvent( new CustomEvent( 'ht_ctc_show_toast', {
+		detail: {
+			title: 'Network Offline',
+			description: 'Waiting for connection to resume...',
+			iconClass: 'dashicons dashicons-warning',
+			iconColor: '#f56e28',
+			duration: 60000,
+		},
+	} ) );
+
+	offlineWait = new Promise( resolve => {
+		const onOnline = () => {
+			window.removeEventListener( 'online', onOnline );
+
+			offlineWait = null;
+
+			log( 'Utils', 'Network restored. Retrying module import immediately...' );
+
+			document.dispatchEvent( new CustomEvent( 'ht_ctc_show_toast', {
+				detail: {
+					title: 'Network Restored',
+					description: 'Resuming operations...',
+					iconClass: 'dashicons dashicons-saved',
+					iconColor: '#46b450',
+					duration: 3000,
+				},
+			} ) );
+
+			resolve();
+		};
+
+		window.addEventListener( 'online', onOnline );
+	} );
+
+	return offlineWait;
+};
+
+/**
  * Dynamically import a module with retry logic.
- * @param {Function} importFn - A function returning a dynamic import promise.
- * @param {number} retries - Number of retries left.
- * @param {number} delay - Delay between retries in milliseconds.
+ *
+ * @param {Function} importFn - Function returning a dynamic import promise.
+ * @param {number} [retries=3] - Number of retries left.
+ * @param {number} [delay=1000] - Delay between retries in milliseconds.
+ * @param {number} [attempt=0] - Current attempt count.
  * @returns {Promise<any>}
  */
-export const importWithRetry = async ( importFn, retries = 3, delay = 1000 ) => {
+export const importWithRetry = async ( importFn, retries = 3, delay = 1000, attempt = 0 ) => {
 	try {
-		return await importFn();
+		return await importFn( attempt );
 	} catch ( error ) {
 		if ( retries > 0 ) {
 			if ( ! navigator.onLine ) {
-				log( 'Utils', 'Network offline. Waiting for connection to resume for module import...' );
-
-				document.dispatchEvent( new CustomEvent( 'ht_ctc_show_toast', {
-					detail: {
-						title: 'Network Offline',
-						description: 'Waiting for connection to resume...',
-						iconClass: 'dashicons dashicons-warning',
-						iconColor: '#f56e28',
-						duration: 60000,
-					},
-				} ) );
-
-				await new Promise( resolve => {
-					const onOnline = () => {
-						window.removeEventListener( 'online', onOnline );
-						resolve();
-					};
-					window.addEventListener( 'online', onOnline );
-				} );
-				log( 'Utils', 'Network restored. Retrying module import immediately...' );
-
-				document.dispatchEvent( new CustomEvent( 'ht_ctc_show_toast', {
-					detail: {
-						title: 'Network Restored',
-						description: 'Resuming operations...',
-						iconClass: 'dashicons dashicons-saved',
-						iconColor: '#46b450',
-						duration: 3000,
-					},
-				} ) );
-
-				// Retry without consuming retry count
-				return importWithRetry( importFn, retries, delay );
+				await waitForOnline();
+				return importWithRetry( importFn, retries, delay, attempt + 1 );
 			}
 
 			log( 'Utils', `Module import failed, retrying in ${delay}ms... (${retries} retries left)`, error );
 			await new Promise( resolve => setTimeout( resolve, delay ) );
-			return importWithRetry( importFn, retries - 1, delay * 1.5 );
+			return importWithRetry( importFn, retries - 1, delay * 1.5, attempt + 1 );
 		}
 		throw error;
 	}
 };
-
-/*
-// Future WP/Web API Fallback Helpers - Uncomment when needed:
-
-/**
- * Accessible Screen Reader Announcements.
- *
- * @param {string} message - The message to announce.
- * @param {string} [ariaLive='polite'] - Announcement priority.
- * /
-export const speak = ( message, ariaLive = 'polite' ) => {
-	if ( window.wp?.a11y?.speak ) {
-		window.wp.a11y.speak( message, ariaLive );
-	}
-};
-
-/**
- * Extensible Filter Hooks.
- *
- * @param {string} hookName - The name of the filter hook.
- * @param {*} value - The value to filter.
- * @param {...*} args - Additional arguments passed to the callback.
- * @returns {*} The filtered value.
- * /
-export const applyFilters = ( hookName, value, ...args ) => {
-	if ( window.wp?.hooks?.applyFilters ) {
-		return window.wp.hooks.applyFilters( hookName, value, ...args );
-	}
-	return value;
-};
-
-/**
- * Clean URL parameter appending with fallback.
- *
- * @param {string} url - Base URL.
- * @param {Object} args - Key-value map of query parameters to add.
- * @returns {string} The formatted URL.
- * /
-export const addQueryArg = ( url, args ) => {
-	if ( window.wp?.url?.addQueryArgs ) {
-		return window.wp.url.addQueryArgs( url, args );
-	}
-	try {
-		const urlObj = new URL( url, window.location.origin );
-		Object.entries( args ).forEach( ( [ key, val ] ) => urlObj.searchParams.set( key, val ) );
-		return url.startsWith( '/' ) ? urlObj.pathname + urlObj.search : urlObj.toString();
-	} catch {
-		return url;
-	}
-};
-
-/**
- * Safe HTML Stripping with DOM/Regex fallbacks.
- *
- * @param {string} html - HTML content.
- * @returns {string} Stripped plain text.
- * /
-export const stripHTML = ( html ) => {
-	if ( typeof html !== 'string' ) {
-		return html;
-	}
-	if ( window.wp?.sanitize?.stripHTML ) {
-		return window.wp.sanitize.stripHTML( html );
-	}
-	if ( typeof document !== 'undefined' ) {
-		const doc = new DOMParser().parseFromString( html, 'text/html' );
-		return doc.body.textContent || '';
-	}
-	return html.replace( /<\/?[^>]+(>|$)/g, '' );
-};
-
-/**
- * Keyboard navigation key check.
- *
- * @param {KeyboardEvent} event - Keydown event.
- * @param {string} keyName - Name of the key (e.g. 'ESCAPE', 'ENTER').
- * @returns {boolean} True if matches.
- * /
-export const isKeyboardKey = ( event, keyName ) => {
-	if ( window.wp?.keycodes?.isKeyboardEvent ) {
-		return window.wp.keycodes.isKeyboardEvent( event, keyName );
-	}
-	const mapping = {
-		ESCAPE: 'Escape',
-		ENTER: 'Enter',
-		SPACE: ' ',
-	};
-	const normalizedKey = mapping[ keyName ] || keyName;
-	return event.key === normalizedKey;
-};
-*/

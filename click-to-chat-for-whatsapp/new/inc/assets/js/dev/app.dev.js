@@ -6,7 +6,8 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 
 ( function htCtcAppModule ( window, document, ctcJq ) {
 
-	// todo: for testing. remove this. line..
+	// (for testing) forces the no-jQuery path. Keep it commented - if you uncomment
+	// the line below, add a 'todo(release):' so it cannot ship enabled.
 	// ctcJq = false;
 
 	function nojQueryCompatibility () {
@@ -129,7 +130,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 			if ( ! obj || typeof obj !== 'object' || ! isSafeObjectKey( key ) ) {
 				return fallback;
 			}
-			// eslint-disable-next-line security/detect-object-injection
+			// eslint-disable-next-line security/detect-object-injection -- Key is validated by isSafeObjectKey above to prevent prototype pollution
 			return Object.prototype.hasOwnProperty.call( obj, key ) ? obj[ key ] : fallback;
 		}
 
@@ -144,7 +145,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 		 */
 		function setSafeProperty ( obj, key, value ) {
 			if ( obj && typeof obj === 'object' && isSafeObjectKey( key ) ) {
-				// eslint-disable-next-line security/detect-object-injection
+				// eslint-disable-next-line security/detect-object-injection -- Key is validated by isSafeObjectKey above to prevent prototype pollution
 				obj[ key ] = value;
 				return true;
 			}

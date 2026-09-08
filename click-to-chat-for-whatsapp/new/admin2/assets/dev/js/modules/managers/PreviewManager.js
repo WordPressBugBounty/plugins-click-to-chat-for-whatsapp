@@ -2,38 +2,45 @@
  * Preview Manager
  *
  * Live preview of the chat widget inside the admin SPA.
- *
- * Approach: templates are pure render functions (modules/preview/templates/)
- * lazy-loaded through PreviewRegistry. On every relevant form change the whole
- * widget is re-rendered from the current (unsaved) form values — no DOM
- * mutation maps, so structural changes (different style, conditional elements)
- * are just data.
- *
- * The preview floats at the configured widget position (fixed), mirroring how
- * the widget will look on the site. Toggled from the right sidebar "Preview"
- * tab; the on/off state persists in the shared CtC storage object.
- *
- * PRO / extensions: after registration the App dispatches the
- * `ctc_manager_registered_preview` CustomEvent — use `detail.manager.registry`
- * to register additional style templates.
+ * Renders widget styles and greetings templates based on current form values.
  */
-import { log, debounce, escapeHTML, escapeAttr } from '../core/Utils.js';
+import { log, debounce, escapeHTML, escapeAttr, retryUrl } from '../core/Utils.js';
 import PreviewRegistry from '../preview/PreviewRegistry.js';
 import FormValues from '../preview/form-values.js';
 import { escapeCssValue } from '../preview/css.js';
 import { singleColorIcon, logoIcon, squareIcon } from '../preview/icons.js';
 import * as greetingsParts from '../preview/greetings-parts.js';
 import { initialState, nextState, eventForField, stateFromStorage, storageFromState } from '../preview/visibility-state.js';
-import { noteForField, noteForTransition, NOTES } from '../preview/notes.js';
+import { noteForField, noteForTransition, hasUnresolvedVariable, NOTES } from '../preview/notes.js';
 import { buildWhatsAppUrl } from '../preview/wa-url.js';
 import { resolveClickAction } from '../preview/click-action.js';
 import { notificationBadgeHtml, applyBadgeOffset } from '../preview/notification-badge.js';
 import { uniquifySvgIds } from '../preview/svg-ids.js';
+import SiteView from '../preview/site-view.js';
+import {
+	DESKTOP,
+	MOBILE,
+	autoOpensGreetings,
+	greetingsAppliesTo,
+	greetingsFullWidthOn,
+	widgetFullWidthOn,
+	isMobile,
+	normalizeDevice,
+	resolvePosition,
+	styleKeyFor,
+	widgetShowsOn,
+} from '../preview/device.js';
 
 const STORAGE_KEY = 'admin-preview';
 
+// Tabs whose "Select Style" grid this preview updates.
+const STYLE_GRID_TABS = [ 'general-settings' ];
+
 // Free styles shipped with template files in modules/preview/templates/.
 const FREE_TEMPLATES = [ '1', '2', '3', '3_1', '4', '5', '6', '7', '7_1', '8', '99' ];
+
+// Matches a valid CSS length value (e.g., 10px, 1.5rem, 5%).
+const CSS_LENGTH = /^-?(?:\d{1,6}(?:\.\d{1,3})?|\.\d{1,3})(px|%|em|rem|vh|vw)?$/;
 
 // Free greetings dialog templates.
 const FREE_GREETINGS = [ 'greetings-1', 'greetings-2' ];
@@ -48,84 +55,33 @@ export default class PreviewManager {
 		this.stage = null;
 		this.toggle = null;
 		this.note = null;
+		this.sidebar = null;
 		this.enabled = false;
-
-		// Reveal-on-first-edit: true when the preview starts hidden with no
-		// explicit user preference, so the first edit of the session reveals it
-		// (once). Set in init() from stored state; cleared by maybeAutoReveal or a
-		// manual toggle. See maybeAutoReveal().
+		this.siteView = null;
 		this.autoRevealPending = false;
-
-		// Which style the preview renders: flips to 'mobile' while the admin
-		// picks a mobile style and back on a desktop pick (see bindFormEvents).
-		// Style only — position always previews the desktop values. Also passed
-		// to templates as ctx.device.
-		this.device = 'desktop';
-
-		// Guards setNote's switch-to-Preview-tab dispatch: notes that surface
-		// during the initial page-load render must not steal the sidebar tab —
-		// only notes triggered by the admin's own edits/interactions do.
+		this.device = DESKTOP;
+		this.deviceInputs = [];
+		this.lastSiteViewDevice = DESKTOP;
 		this.initialRenderDone = false;
-
-		// Badge / greetings visibility intent — see preview/visibility-state.js.
-		// Visibility is DERIVED from this (plus whether greetings is enabled) and
-		// reflected as CSS classes on the container, so showing/hiding the badge
-		// or CTA never needs a re-render and the badge can't be injected twice.
 		this.uiState = initialState();
-
-		// Whether the greetings dialog is actually on screen (intent AND a
-		// renderable template). Set by renderGreetings(); feeds the hide classes.
 		this.greetingVisible = false;
-
-		// A SINGLE contextual preview note, set by the latest interaction (a
-		// no-demo setting edit, a badge/opt-in change, or a navigate result).
-		// Shown one at a time — never concatenated. A render-blocking note (no
-		// preview for the style/greeting) takes precedence over it in render().
 		this.transientNote = '';
-
-		// Opt-in gate (in-memory, per session — NOT persisted; the accepted
-		// state IS persisted as optinDone/g_optin). Like the live site, the
-		// opt-in stays hidden until a greetings-CTA click reveals it (or the
-		// admin is editing an opt-in setting), and only while not yet accepted.
 		this.optinGateActive = false;
-
-		// Sticky CTA hard-hide (preview-only). On the live site greetings_open()
-		// REMOVES the base-widget call-to-action; the preview can't remove it (the
-		// admin may still be editing CTA settings), so instead it adds a class
-		// that fully hides the CTA — and keeps it hidden through later open/close
-		// (it won't even reveal on hover). Any settings edit clears it, restoring
-		// the CTA to its normal behavior. Set when the greeting opens (init +
-		// click-to-open), cleared in bindFormEvents.
 		this.ctaHardHidden = false;
-
-		// True while a toast is on screen — the preview shares the bottom corner
-		// and stays hidden so it never pops over the toast (see bindToastEvents).
 		this.toastVisible = false;
 		this.renderDebounced = debounce( () => this.render(), 120 );
-
-		// Monotonic counter to make SVG ids unique across swapped grid cells.
 		this.gridUidCounter = 0;
 
-		// Number providers for click-to-navigate. Extensions (e.g. PRO Random
-		// Numbers) push `(manager) => number|''` functions; the first non-empty
-		// result wins over the WhatsApp Number field — mirroring the frontend,
-		// where ht_ctc_event_number lets PRO override ctc.number. Neutral hook
-		// only: the free plugin knows nothing about PRO option shapes.
+		// Extensible providers.
 		this.numberProviders = [];
-
-		// Pre-filled prefix providers. Extensions (e.g. PRO greetings form) push
-		// `(manager) => string|''` functions; the first non-empty result becomes
-		// the pre-filled prefix — mirroring the frontend's ctc.prefix_pre_filled
-		// (which the free app.js already prepends). Lets the form inject typed
-		// field values into the message without the free plugin knowing the form.
 		this.preFilledPrefixProviders = [];
+		this.noteProviders = [];
 	}
 
 	/**
-	 * The number used when the preview navigates to WhatsApp: the first
-	 * non-empty provider result, else the WhatsApp Number field.
+	 * Resolves WhatsApp number from providers or settings.
 	 *
-	 * @returns {string}
+	 * @returns {string} Phone number.
 	 */
 	resolveNumber () {
 		for ( const provider of this.numberProviders ) {
@@ -137,11 +93,9 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * The pre-filled prefix (frontend ctc.prefix_pre_filled): the first
-	 * non-empty provider result, else ''. Providers already fold in the global
-	 * pre-filled setting, so a non-empty result IS the full message base.
+	 * Resolves pre-filled message prefix from providers.
 	 *
-	 * @returns {string}
+	 * @returns {string} Message prefix or empty string.
 	 */
 	resolvePreFilledPrefix () {
 		for ( const provider of this.preFilledPrefixProviders ) {
@@ -152,14 +106,31 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Substitute the message variables the admin can actually resolve. The
-	 * frontend replaces {site}/{url}/{title} server-side per page; in the admin
-	 * only {site} (the blog name) is known, so {url}/{title} stay literal —
-	 * consistent with the greeting-content helper (greetings-parts.js) and the
-	 * note the admin sees. Product variables need page context and are left too.
+	 * Resolves contextual note for a changed field.
 	 *
-	 * @param {string} text
-	 * @returns {string}
+	 * @param {string} name Field name.
+	 * @returns {string} Contextual note or empty string.
+	 */
+	resolveFieldNote ( name ) {
+		for ( const provider of this.noteProviders ) {
+			const note = String( provider( name, this ) || '' )
+				.trim();
+			if ( note !== '' ) { return note; }
+		}
+
+		const fieldNote = noteForField( name )?.text || '';
+		if ( fieldNote ) { return fieldNote; }
+
+		// Show note if value contains dynamic page variables.
+		const input = this.form.querySelector( `[name="${name}"]` );
+		return hasUnresolvedVariable( input?.value ) ? NOTES.variables : '';
+	}
+
+	/**
+	 * Replaces supported message variables (e.g. {site}) in text.
+	 *
+	 * @param {string} text Message text.
+	 * @returns {string} Text with replaced variables.
 	 */
 	applyMessageVariables ( text ) {
 		const site = this.app.config?.preview?.site || '';
@@ -172,77 +143,49 @@ export default class PreviewManager {
 		this.form = document.getElementById( 'ctc-settings-form' );
 		if ( ! this.form ) { return; }
 
-		// Reads option values from the form (unsaved edits win) with saved
-		// settings as fallback. See preview/form-values.js.
 		this.values = new FormValues( this.form, this.app.config?.initialSettings );
-
-		// Sync initial toast visibility state in case a toast was already active on load.
-		// this.toastVisible = ! ! document.getElementById( 'toast' )?.classList.contains( 'show' );
 
 		this.registerFreeTemplates();
 		this.buildContainer();
 		this.injectFrontCss();
 		this.bindToggle();
+		this.bindDevice();
+		this.bindSiteView();
 		this.bindFormEvents();
 		this.bindToastEvents();
 
-		// Re-render on resize: the fit-to-bounds scale depends on the viewport,
-		// so a resized window needs a fresh measure/scale pass.
 		window.addEventListener( 'resize', () => {
 			if ( this.enabled ) { this.renderDebounced(); }
 		} );
 
-		// Restore persisted visibility from the shared ht_ctc_storage so a closed
-		// dialog stays closed, a dismissed badge stays dismissed, and a completed
-		// opt-in stays gone across reloads (paired with persistState()). Seeded
-		// before the first render so it takes effect immediately.
 		this.uiState = stateFromStorage( ( key ) => this.app.storage.getCtcStorageItem( key ) );
-
-		// If the greeting is already open on load (and actually configured), the
-		// CTA starts hard-hidden — mirrors the live widget where the auto-opened
-		// dialog removes the CTA. Stays hidden until the admin edits a setting.
 		this.ctaHardHidden = this.uiState.greetingOpen && this.greetingEnabled();
 
-		// Default hidden on first run: with no explicit toggle choice the floating
-		// preview stays hidden until the first edit reveals it (maybeAutoReveal).
-		// An explicit choice ('on'/'off') is always honored and disables the
-		// auto-reveal, so a pinned-on or pinned-off preview keeps that state.
 		const storedPref = this.app.storage.getCtcStorageItem( STORAGE_KEY );
 		const hasExplicitPref = storedPref === 'on' || storedPref === 'off';
 		this.enabled = storedPref === 'on';
 		this.autoRevealPending = ! hasExplicitPref;
 		if ( this.toggle ) { this.toggle.checked = this.enabled; }
 		if ( this.enabled ) {
-			// Notes set during this first render (e.g. a style/greeting caveat
-			// for the saved settings) must not steal the sidebar tab on load —
-			// arm setNote's tab-switch only after the initial render settles.
 			this.render()
 				.finally( () => { this.initialRenderDone = true; } );
 		} else {
 			this.initialRenderDone = true;
 		}
 
-		// Replace the CSS placeholders in the "Select Style" grids with the real
-		// widget previews now that the templates are available. Independent of
-		// the floating preview's on/off state.
-		this.enhanceStyleGrids();
+		document.addEventListener(
+			'ctc_manager_registered_preview',
+			() => this.enhanceStyleGrids(),
+			{ once: true },
+		);
 
-		// Re-render style picker previews on tab changes to ensure grid cells
-		// mounting dynamically after initial load get their live template HTML.
-		if ( this.app.events ) {
-			this.app.events.on( 'tab:changed', ( tabId ) => {
-				const styleTabs = [ 'general-settings' ];
-				if ( styleTabs.includes( tabId ) ) {
-					this.enhanceStyleGrids();
-				}
-			} );
-		}
+		this.app.events?.on( 'tab:changed', ( tabId ) => {
+			if ( STYLE_GRID_TABS.includes( tabId ) ) { this.enhanceStyleGrids(); }
+		} );
 	}
 
 	/**
-	 * Inject the front-end CSS into the document head once so greetings preview
-	 * templates can rely on front-end classes (badge positioning, image wrapper, etc.)
-	 * without duplicating styles inline.
+	 * Injects front-end stylesheet for preview styling.
 	 */
 	injectFrontCss () {
 		const url = this.app.config?.paths?.front_css;
@@ -255,9 +198,40 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Register lazy loaders for the free style templates.
-	 * Template modules live next to the admin bundle, dev or min path is
-	 * resolved by PHP into config.preview.templatesBasePath.
+	 * Gets the target container element for mounting the preview.
+	 *
+	 * @returns {HTMLElement|null}
+	 */
+	mountTarget () {
+		if ( this.siteView?.isOpen && this.siteView.viewport ) {
+			return this.siteView.viewport;
+		}
+		return document.body;
+	}
+
+	/**
+	 * Moves the preview container to the current mount target.
+	 */
+	mountPreview () {
+		if ( ! this.container ) { return; }
+
+		const target = this.mountTarget();
+		if ( ! target ) { return; }
+
+		if ( this.container.parentElement !== target ) {
+			target.appendChild( this.container );
+		}
+
+		this.container.classList.toggle(
+			'ctc-in-site-view',
+			Boolean( this.siteView?.isOpen ),
+		);
+
+		this.injectFrontCss();
+	}
+
+	/**
+	 * Registers lazy loaders for free style and greetings templates.
 	 */
 	registerFreeTemplates () {
 		const base = this.app.config?.preview?.templatesBasePath;
@@ -266,31 +240,27 @@ export default class PreviewManager {
 			return;
 		}
 
-		// Cache-buster: templatesBasePath is a directory, so PHP cannot append
-		// ?ver= as it does for module URLs. See module_url() in class-ht-ctc-admin-page-scripts.php.
 		const ver = this.app.config?.version ?
 			`?ver=${encodeURIComponent( this.app.config.version )}` :
 			'';
 
 		FREE_TEMPLATES.forEach( ( id ) => {
 			const url = `${base}style-${id}.js${ver}`;
-			this.registry.registerStyle( id, () =>
+			this.registry.registerStyle( id, ( attempt ) =>
 				// eslint-disable-next-line no-unsanitized/method -- URL is built from trusted plugin configuration localized by PHP
-				import( /* webpackIgnore: true */ url ) );
+				import( /* webpackIgnore: true */ retryUrl( url, attempt ) ) );
 		} );
 
 		FREE_GREETINGS.forEach( ( id ) => {
 			const url = `${base}${id}.js${ver}`;
-			this.registry.registerGreeting( id, () =>
+			this.registry.registerGreeting( id, ( attempt ) =>
 				// eslint-disable-next-line no-unsanitized/method -- URL is built from trusted plugin configuration localized by PHP
-				import( /* webpackIgnore: true */ url ) );
+				import( /* webpackIgnore: true */ retryUrl( url, attempt ) ) );
 		} );
 	}
 
 	/**
-	 * Floating fixed container appended to body.
-	 * `ht-ctc` class scopes the per-style <style> blocks (hover rules) the same
-	 * way the frontend wrapper does.
+	 * Builds and configures the floating preview DOM container.
 	 */
 	buildContainer () {
 		this.container = document.createElement( 'div' );
@@ -299,47 +269,47 @@ export default class PreviewManager {
 		this.container.style.cssText = 'position:fixed;display:none;z-index:99999;cursor:pointer;';
 		this.container.title = 'Click to Chat — preview';
 
-		// Master state rules: badge/CTA visibility is driven by classes on the
-		// container (toggled in syncStateClasses) rather than by mutating the
-		// rendered markup — so a re-render is never needed just to hide them, and
-		// the badge can't be injected twice. The #id prefix raises specificity
-		// above the templates' :hover reveal rule.
-		// Opt-in is hidden until the gate reveals it (greetings-CTA click /
-		// editing an opt-in setting); mirrors the live site.
+		this.container.setAttribute( 'role', 'region' );
+		this.container.setAttribute( 'aria-label', 'Live preview of your chat widget' );
+
 		const stateCss = document.createElement( 'style' );
 		stateCss.textContent =
 			'#ht-ctc-admin-preview.ctc-state-badge-hidden .ht_ctc_notification{display:none !important;}' +
 			'#ht-ctc-admin-preview.ctc-state-greeting-open .ctc_cta_stick,' +
 			'#ht-ctc-admin-preview.ctc-state-greeting-open .ht-ctc-cta-hover{display:none !important;}' +
-
-			// Sticky CTA hard-hide (set once the greeting opens; cleared on a
-			// settings edit). Fully hides the CTA and overrides the templates'
-			// :hover reveal, so it stays gone through later open/close — not just
-			// while the dialog is open. The #id prefix raises specificity above
-			// the `.ctc_s_*:hover .ht-ctc-cta-hover` reveal rule.
 			'#ht-ctc-admin-preview.ctc-cta-hidden .ctc_cta_stick,' +
 			'#ht-ctc-admin-preview.ctc-cta-hidden .ht-ctc-cta-hover{display:none !important;}' +
 			'#ht-ctc-admin-preview .ctc_opt_in{display:none !important;}' +
-			'#ht-ctc-admin-preview.ctc-state-optin-show .ctc_opt_in{display:block !important;}';
+			'#ht-ctc-admin-preview.ctc-state-optin-show .ctc_opt_in{display:block !important;}' +
+			'#ht-ctc-admin-preview{--ctc-preview-vw:390px;}' +
+			'#ht-ctc-admin-preview.ctc-in-site-view{--ctc-preview-vw:100%;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-g-fullwidth .ht_ctc_chat_greetings_box{' +
+			'position:fixed !important;top:auto !important;' +
+			'bottom:0 !important;margin:7px !important;' +
+			'min-width:0 !important;max-width:none !important;' +
+			'width:calc(var(--ctc-preview-vw) - 14px) !important;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-g-fullwidth.ctc-g-side-left .ht_ctc_chat_greetings_box{' +
+			'right:auto !important;left:0 !important;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-g-fullwidth.ctc-g-side-right .ht_ctc_chat_greetings_box{' +
+			'left:auto !important;right:0 !important;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-g-fullwidth .ctc_g_message_box_width{max-width:85% !important;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-w-fullwidth{' +
+			'width:var(--ctc-preview-vw) !important;left:auto !important;right:0 !important;}' +
+			'#ht-ctc-admin-preview.ctc-mobile-w-fullwidth .s1_btn,' +
+			'#ht-ctc-admin-preview.ctc-mobile-w-fullwidth .ht-ctc-style-8,' +
+			'#ht-ctc-admin-preview.ctc-mobile-w-fullwidth .ht-ctc-style-8 .s_8{width:100% !important;}';
 		this.container.appendChild( stateCss );
 
-		// Greetings dialog box sits above the widget (same wrapper structure
-		// as the frontend: ht_ctc_chat_greetings_box > _layout > template).
 		this.greetingsBox = document.createElement( 'div' );
 		this.greetingsBox.className = 'ht_ctc_chat_greetings_box';
-		this.greetingsBox.style.cssText = 'display:none;position:absolute;bottom:calc(100% + 12px);max-width:420px;cursor:auto;';
+		this.greetingsBox.style.cssText = 'display:none;position:absolute;bottom:calc(100% + 12px);max-width:420px;cursor:auto;z-index:9;';
 		this.container.appendChild( this.greetingsBox );
 
 		this.stage = document.createElement( 'div' );
 		this.stage.className = 'ht_ctc_style ht_ctc_chat_style';
 		this.container.appendChild( this.stage );
 
-		// Routing is decided by the pure resolveClickAction(); this handler only
-		// does the DOM matching and runs the resulting action (see runClickAction).
 		this.container.addEventListener( 'click', ( event ) => {
-			// Chat triggers with their own number — the same generic
-			// .ctc_chat[data-number] contract the frontend's ht_ctc_link honors
-			// (extensions render such elements, e.g. inside the dialog).
 			const numberedChat = event.target.closest( '.ctc_chat[data-number]' );
 			const action = resolveClickAction( {
 				optin: Boolean( event.target.closest( '.ctc_opt_in' ) ),
@@ -354,27 +324,20 @@ export default class PreviewManager {
 			} );
 			this.runClickAction( action, {
 				number: numberedChat?.dataset.number || '',
-
-				// Only a PRESENT data-pre_filled overrides the global message
-				// (mirrors ht_ctc_link's hasAttribute check — '' is a valid
-				// override meaning "no message").
 				preFilled: numberedChat?.hasAttribute( 'data-pre_filled' ) ?
 					numberedChat.dataset.pre_filled || '' :
 					undefined,
 			} );
 		} );
 
-		document.body.appendChild( this.container );
+		this.mountPreview();
 	}
 
 	/**
-	 * Run an action from resolveClickAction() — the side-effecting half of the
-	 * click router (state transitions / navigation / the opt-in gate reveal).
+	 * Executes the resolved preview click action.
 	 *
-	 * @param {string|null} action
-	 * @param {{ number?: string, preFilled?: string }} [payload] Extra click
-	 *   context for 'numbered_navigate' — the clicked element's data-number and
-	 *   (when the attribute is present) its data-pre_filled override.
+	 * @param {string|null} action Action name.
+	 * @param {Object}      [payload] Action payload.
 	 */
 	runClickAction ( action, payload = {} ) {
 		switch ( action ) {
@@ -385,7 +348,6 @@ export default class PreviewManager {
 				this.applyEvent( 'greeting_close' );
 				break;
 			case 'optin_reveal':
-				// First CTA click reveals the opt-in (gate); no navigation yet.
 				this.optinGateActive = true;
 				this.syncStateClasses();
 				break;
@@ -397,10 +359,6 @@ export default class PreviewManager {
 				break;
 			case 'greeting_toggle':
 				this.applyEvent( 'greeting_toggle' );
-
-				// Opening the dialog hard-hides the CTA (mirrors live greetings_open
-				// removing it); it then stays hidden through later close/open until a
-				// settings edit. A toggle that CLOSES leaves the flag untouched.
 				if ( this.uiState.greetingOpen ) {
 					this.ctaHardHidden = true;
 					this.syncStateClasses();
@@ -416,31 +374,18 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Advance the visibility state machine for an event and reflect it.
+	 * Advances preview visibility state based on user interaction or setting changes.
 	 *
-	 * Badge/CTA visibility is pure CSS (syncStateClasses), so it updates
-	 * instantly; the dialog is (re)built by render(). Closing hides the dialog
-	 * immediately so it doesn't linger through the render debounce.
-	 *
-	 * @param {string} event widget_click | greeting_toggle | greeting_close |
-	 *   notification_change | greeting_change | optin_change | optin_click
+	 * @param {string} event Event name.
 	 */
 	applyEvent ( event ) {
 		const prev = this.uiState;
 		this.uiState = nextState( prev, event );
 		this.persistState();
 
-		// Opt-in gate: only an opt-in-setting edit (re)shows the opt-in via an
-		// event; every other transition clears the gate. The greetings-CTA
-		// click sets it directly (outside applyEvent).
 		this.optinGateActive = ( event === 'optin_change' );
-
-		// One contextual note for what THIS interaction changed (replaces any
-		// previous note; '' clears it — so a stale navigate note can't linger
-		// onto a greeting toggle).
 		this.transientNote = noteForTransition( prev, this.uiState );
 
-		// Closing: hide the dialog now; render() would only catch up after the debounce.
 		if ( prev.greetingOpen && ! this.uiState.greetingOpen ) {
 			this.greetingsBox.style.display = 'none';
 			this.greetingVisible = false;
@@ -451,9 +396,7 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Persist the current badge/dialog state to the shared ht_ctc_storage keys
-	 * (n_badge / g_user_action) so it survives a reload and stays consistent
-	 * with the live widget on the same browser.
+	 * Persists preview state to storage.
 	 */
 	persistState () {
 		storageFromState( this.uiState )
@@ -461,49 +404,38 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Whether a greetings dialog is configured (template set, not 'no'). When
-	 * true, click-to-navigate lives on the dialog's CTA, not the base widget.
+	 * Checks whether greetings dialog is configured for the active device.
 	 *
-	 * @returns {boolean}
+	 * @returns {boolean} True if greetings dialog is enabled.
 	 */
 	greetingEnabled () {
 		const templateId = String( this.values.get( 'ht_ctc_greetings_options', 'greetings_template' ) || '' );
-		return templateId !== '' && templateId !== 'no';
+		if ( templateId === '' || templateId === 'no' ) { return false; }
+
+		const gDevice = String( this.values.get( 'ht_ctc_greetings_settings', 'g_device' ) || 'all' );
+		return greetingsAppliesTo( this.device, gDevice );
 	}
 
 	/**
-	 * Whether the opt-in is enabled (is_opt_in set). When on, the greetings CTA
-	 * reveals the opt-in before navigating (the opt-in gate).
+	 * Checks whether greetings opt-in is enabled.
 	 *
-	 * @returns {boolean}
+	 * @returns {boolean} True if opt-in is enabled.
 	 */
 	optinEnabled () {
 		return ( this.values.get( 'ht_ctc_greetings_settings', 'is_opt_in' ) || '' ) !== '';
 	}
 
 	/**
-	 * Open WhatsApp like the frontend link: URL from the desktop URL-structure
-	 * setting (wa.me / web.whatsapp / custom URL) with the number + pre-filled
-	 * message. Mobile is ignored for now. Two cases show a note instead of
-	 * navigating: same-tab (url_target_d = _self) can't be demoed here, and a
-	 * missing number (with no custom URL) prompts the admin to add one. The
-	 * note surfaces through render(), so refresh it.
+	 * Opens WhatsApp URL based on configured settings.
 	 *
-	 * @param {string} [overrideNumber] Number that wins over providers/settings
-	 *   (a clicked element's own data-number).
-	 * @param {string} [overridePreFilled] Message that replaces the pre-filled
-	 *   setting (a clicked element's own data-pre_filled; '' is a valid
-	 *   override, so only undefined falls back). The pre-filled prefix is still
-	 *   prepended, mirroring the frontend's `prefix_pre_filled + data-pre_filled`.
+	 * @param {string} [overrideNumber] Optional phone number override.
+	 * @param {string} [overridePreFilled] Optional pre-filled text override.
 	 */
 	openWhatsApp ( overrideNumber = '', overridePreFilled = undefined ) {
 		const target = this.values.get( 'ht_ctc_chat_options', 'url_target_d' ) || '_blank';
 		if ( target === '_self' ) {
 			this.transientNote = NOTES.sameTab;
 		} else {
-			// Mirror ht_ctc_link: an element with its own data-pre_filled gets
-			// prefix + own message; otherwise the prefix (which already folds in
-			// the global pre-filled) is the message, else the raw global setting.
 			const prefix = this.resolvePreFilledPrefix();
 			const preFilled = overridePreFilled !== undefined ?
 				prefix + overridePreFilled :
@@ -517,8 +449,6 @@ export default class PreviewManager {
 			if ( url ) {
 				this.transientNote = '';
 
-				// Mirror the frontend: a 'popup' target opens a sized popup
-				// window; any other target (_blank) opens a new tab.
 				const features = ( target === 'popup' ) ?
 					'scrollbars=no,resizable=no,status=no,location=no,' +
 						'toolbar=no,menubar=no,width=788,height=514,left=100,top=100' :
@@ -532,8 +462,7 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Reflect the derived badge/CTA visibility on the container via CSS state
-	 * classes. Idempotent — safe to call on every render.
+	 * Synchronizes container CSS state classes with current UI state.
 	 */
 	syncStateClasses () {
 		if ( ! this.container ) { return; }
@@ -547,46 +476,184 @@ export default class PreviewManager {
 	bindToggle () {
 		this.toggle = document.getElementById( 'ctc-preview-toggle' );
 		this.note = document.getElementById( 'ctc-preview-note' );
+		this.sidebar = document.querySelector( '.right-sidebar' );
 
 		if ( ! this.toggle ) { return; }
 
-		this.toggle.addEventListener( 'change', () => {
-			this.enabled = this.toggle.checked;
-
-			// A manual toggle IS the explicit preference — persist it and stop the
-			// first-edit auto-reveal from overriding an off choice made pre-edit.
-			this.autoRevealPending = false;
-			this.app.storage.setCtcStorageItem( STORAGE_KEY, this.enabled ? 'on' : 'off' );
-			if ( this.enabled ) {
-				this.render();
-			} else {
-				this.container.style.display = 'none';
-			}
-		} );
-
+		this.toggle.addEventListener( 'change', () => this.setEnabled( this.toggle.checked ) );
+		this.bindDismiss();
 	}
 
 	/**
-	 * First-edit reveal (once per session).
+	 * Checks whether an active toast notification covers the preview.
 	 *
-	 * When the preview started hidden with no explicit user preference, the first
-	 * meaningful edit reveals the floating preview and focuses the sidebar's
-	 * Preview tab — so the admin sees the effect of the change they just made. A
-	 * manual toggle choice clears autoRevealPending, so this never fights a
-	 * pinned-on/off preview. The reveal is session-only and NOT persisted: each
-	 * load starts hidden until the first edit, unless the toggle is pinned.
+	 * @returns {boolean} True if toast overlaps the preview.
+	 */
+	toastCoversPreview () {
+		return this.toastVisible && ! this.siteView?.isOpen;
+	}
+
+	/**
+	 * Toggles the preview on or off and persists preference.
 	 *
-	 * enabled is flipped here; the caller (onFieldChange) then renders through its
-	 * normal path now that the preview is on.
+	 * @param {boolean} enabled Whether preview is enabled.
+	 */
+	setEnabled ( enabled ) {
+		this.enabled = enabled;
+		this.autoRevealPending = false;
+		if ( this.toggle ) { this.toggle.checked = enabled; }
+		this.app.storage.setCtcStorageItem( STORAGE_KEY, enabled ? 'on' : 'off' );
+
+		if ( enabled ) {
+			this.render();
+		} else {
+			this.container.style.display = 'none';
+		}
+	}
+
+	/**
+	 * Checks whether right sidebar preview controls are reachable.
+	 *
+	 * @returns {boolean}
+	 */
+	controlsReachable () {
+		return Boolean( this.sidebar?.offsetParent );
+	}
+
+	/**
+	 * Binds Escape key to close the preview when sidebar controls are unreachable.
+	 */
+	bindDismiss () {
+		document.addEventListener( 'keydown', ( event ) => {
+			if ( 'Escape' !== event.key ) { return; }
+			if ( ! this.enabled || this.siteView?.isOpen ) { return; }
+			if ( this.controlsReachable() ) { return; }
+
+			this.setEnabled( false );
+		} );
+	}
+
+	/**
+	 * Binds desktop / mobile device switch controls.
+	 */
+	bindDevice () {
+		this.deviceInputs = Array.from( document.querySelectorAll( 'input[data-ctc-device]' ) );
+		this.syncDeviceInputs();
+
+		this.deviceInputs.forEach( ( input ) => {
+			input.addEventListener( 'change', () => {
+				if ( input.checked ) { this.setDevice( input.value ); }
+			} );
+		} );
+	}
+
+	/**
+	 * Registers additional device switch inputs (e.g. from site view toolbar).
+	 *
+	 * @param {HTMLElement} scope Element containing input[data-ctc-device].
+	 */
+	adoptDeviceInputs ( scope ) {
+		if ( ! scope ) { return; }
+
+		Array.from( scope.querySelectorAll( 'input[data-ctc-device]' ) )
+			.filter( ( input ) => ! this.deviceInputs.includes( input ) )
+			.forEach( ( input ) => {
+				this.deviceInputs.push( input );
+				input.addEventListener( 'change', () => {
+					if ( input.checked ) { this.setDevice( input.value ); }
+				} );
+			} );
+
+		this.syncDeviceInputs();
+	}
+
+	syncDeviceInputs () {
+		this.deviceInputs.forEach( ( input ) => {
+			input.checked = normalizeDevice( input.value ) === this.device;
+		} );
+	}
+
+	/**
+	 * Switches the previewed device (desktop or mobile).
+	 *
+	 * @param {string} device 'desktop' | 'mobile'
+	 */
+	setDevice ( device ) {
+		const next = normalizeDevice( device );
+		if ( next === this.device ) { return; }
+
+		this.device = next;
+		this.syncDeviceInputs();
+
+		const gInit = String( this.values.get( 'ht_ctc_greetings_settings', 'g_init' ) || '' );
+		this.transientNote = '';
+
+		if ( gInit === 'default' ) {
+			const opens = autoOpensGreetings( next, gInit );
+			this.uiState = { ...this.uiState, greetingOpen: opens };
+
+			if ( ! opens && this.greetingEnabled() ) {
+				this.transientNote = 'On mobile, "Open by default" greetings stay closed until the visitor taps the widget.';
+			}
+		}
+
+		this.ctaHardHidden = false;
+		this.siteView?.setDevice( next );
+
+		if ( this.enabled ) { this.render(); }
+	}
+
+	/**
+	 * Initializes the "View on my site" overlay integration.
+	 */
+	bindSiteView () {
+		const button = document.getElementById( 'ctc-preview-site-view' );
+		const url = this.app.config?.preview?.homeUrl || '';
+
+		if ( ! button || ! url ) {
+			button?.remove();
+			return;
+		}
+
+		this.siteView = new SiteView( {
+			url,
+			onOpen: () => {
+				this.mountPreview();
+				this.adoptDeviceInputs( this.siteView?.root );
+				this.setDevice( this.lastSiteViewDevice );
+				this.siteView?.setDevice( this.device );
+				this.syncDeviceInputs();
+
+				if ( ! this.enabled ) {
+					this.enabled = true;
+					if ( this.toggle ) { this.toggle.checked = true; }
+					this.autoRevealPending = false;
+				}
+				this.render();
+			},
+
+			onClose: () => {
+				this.lastSiteViewDevice = this.device;
+				this.mountPreview();
+				this.setDevice( DESKTOP );
+				if ( this.enabled ) { this.render(); }
+			},
+		} );
+
+		button.addEventListener( 'click', () => this.siteView.open() );
+	}
+
+	/**
+	 * Reveals preview on first edit if not explicitly toggled off.
 	 */
 	maybeAutoReveal () {
 		if ( ! this.autoRevealPending ) { return; }
+		if ( ! this.controlsReachable() ) { return; }
+
 		this.autoRevealPending = false;
 		this.enabled = true;
 		if ( this.toggle ) { this.toggle.checked = true; }
 
-		// Same channel setNote uses to surface the preview; activateTab no-ops if
-		// Preview is already the active sidebar tab.
 		document.dispatchEvent( new CustomEvent( 'ctc_open_sidebar_tab', {
 			detail: { tab: 'preview' },
 		} ) );
@@ -594,42 +661,26 @@ export default class PreviewManager {
 
 	bindFormEvents () {
 		const onFieldChange = ( name ) => {
-			// First meaningful edit reveals a first-run-hidden preview (once).
 			this.maybeAutoReveal();
 
-			const fieldNote = noteForField( name );
+			const fieldNote = this.resolveFieldNote( name );
 
-			// Style selection drives which style the preview renders: picking a
-			// mobile style previews it (just like a desktop pick), and the next
-			// desktop-style pick switches back. Only style fields flip this —
-			// position and everything else always previews the desktop values.
 			if ( name.includes( 'style_mobile' ) ) {
-				this.device = 'mobile';
+				this.setDevice( MOBILE );
 			} else if ( name.includes( 'style_desktop' ) ) {
-				this.device = 'desktop';
+				this.setDevice( DESKTOP );
 			}
 
-			// Any settings edit restores the CTA to normal: clear the sticky
-			// hard-hide that an opened greeting set. Cleared before the re-render
-			// below (applyEvent / renderDebounced both call syncStateClasses), and
-			// not re-set by render(), so even an edit that reopens the greeting
-			// leaves the CTA restored.
 			this.ctaHardHidden = false;
 
-			// Editing a badge or greetings setting resets that element's
-			// visibility (applyEvent) so the admin sees the change they made.
 			const stateEvent = eventForField( name );
 			if ( stateEvent ) {
 				this.applyEvent( stateEvent );
-
-				// A no-demo field (e.g. g_position) note wins over the
-				// transition's note for that edit; applyEvent already re-renders.
-				if ( fieldNote ) { this.transientNote = fieldNote.text; }
+				if ( fieldNote ) { this.transientNote = fieldNote; }
 				return;
 			}
 
-			// Other edits: show this field's note, or clear a stale one.
-			this.transientNote = fieldNote ? fieldNote.text : '';
+			this.transientNote = fieldNote;
 			if ( this.enabled ) { this.renderDebounced(); }
 		};
 
@@ -642,17 +693,13 @@ export default class PreviewManager {
 		this.form.addEventListener( 'input', onFormEvent );
 		this.form.addEventListener( 'change', onFormEvent );
 
-		// Programmatic changes (intl number input, repeaters, …) flow through the bus.
 		this.app.events?.on( 'field:dirty', ( payload ) => {
 			onFieldChange( payload?.name || payload?.target?.name || '' );
 		} );
 	}
 
 	/**
-	 * Hide the floating preview while a toast is visible (they share the
-	 * bottom-corner space) and bring it back once the toast clears. The
-	 * re-show goes through render(), so it only reappears if the preview is
-	 * still enabled and renders cleanly — a failed render stays hidden.
+	 * Binds toast show/hide events to temporarily hide preview if overlapping.
 	 */
 	bindToastEvents () {
 		const events = this.app.events;
@@ -660,7 +707,7 @@ export default class PreviewManager {
 
 		events.on( 'toast:show', () => {
 			this.toastVisible = true;
-			if ( this.enabled && this.container ) {
+			if ( this.enabled && this.container && this.toastCoversPreview() ) {
 				this.container.style.display = 'none';
 			}
 		} );
@@ -672,32 +719,32 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Validate a CSS length from the position fields. Falls back rather than
-	 * injecting arbitrary strings into inline styles.
+	 * Validates and formats a CSS length value.
 	 *
-	 * @param {string} value
-	 * @param {string} fallback
-	 * @returns {string}
+	 * @param {string} value    Input value.
+	 * @param {string} fallback Fallback value.
+	 * @returns {string} Validated length string.
 	 */
 	cssLength ( value, fallback = '15px' ) {
 		const length = String( value ?? '' )
 			.trim();
-		const isValid = ( /^-?[\d.]{1,10}(px|%|em|rem|vh|vw)?$/ ).test( length );
-		return isValid ? length : fallback;
+
+		return CSS_LENGTH.test( length ) ? length : fallback;
 	}
 
 	/**
-	 * Apply the configured desktop position (side_1/side_2) to the container.
+	 * Applies positioning styles to the preview container based on active device settings.
 	 *
-	 * The preview is desktop-only: mobile-specific settings (style_mobile,
-	 * mobile_side_*) are not previewed — they apply on real mobile devices
-	 * (see the FIELD_NOTES entries in preview/notes.js).
+	 * @returns {{ side1: string, side2: string }} Position sides.
 	 */
 	applyPosition () {
-		const side1 = this.values.get( 'ht_ctc_chat_options', 'side_1' ) === 'top' ? 'top' : 'bottom';
-		const side2 = this.values.get( 'ht_ctc_chat_options', 'side_2' ) === 'left' ? 'left' : 'right';
-		const side1Value = this.cssLength( this.values.get( 'ht_ctc_chat_options', 'side_1_value' ) );
-		const side2Value = this.cssLength( this.values.get( 'ht_ctc_chat_options', 'side_2_value' ) );
+		const read = ( key ) => this.values.get( 'ht_ctc_chat_options', key );
+		const pos = resolvePosition( this.device, read, this.sameSettings() );
+
+		const side1 = pos.side1 === 'top' ? 'top' : 'bottom';
+		const side2 = pos.side2 === 'left' ? 'left' : 'right';
+		const side1Value = this.cssLength( pos.side1Value );
+		const side2Value = this.cssLength( pos.side2Value );
 
 		const style = this.container.style;
 		style.top = '';
@@ -705,33 +752,30 @@ export default class PreviewManager {
 		style.left = '';
 		style.right = '';
 
-		// side1/side2 are constrained above to top|bottom / left|right.
 		style.setProperty( side1, side1Value );
 		style.setProperty( side2, side2Value );
 
-		// Anchor any fit-to-bounds scaling (see fitToBounds) to the pinned
-		// corner, and drop a previous render's scale so the next measure is of
-		// the natural, unscaled size.
 		style.transformOrigin = `${side1} ${side2}`;
 		style.transform = '';
 
-		return side2;
+		return { side1, side2 };
 	}
 
+	/**
+	 * Sets the contextual preview note.
+	 *
+	 * @param {string} message Note message text.
+	 */
 	setNote ( message ) {
+		const text = message || '';
+
+		this.siteView?.setPreviewNote( text );
+
 		if ( ! this.note ) { return; }
 
-		const text = message || '';
 		const changed = this.note.textContent !== text;
 		this.note.textContent = text;
 
-		// A newly surfaced note is feedback the admin should see — bring the
-		// right sidebar's Preview tab forward (Interface.initRightSidebar
-		// listens; no-op when it's already showing). Only on a CHANGED note:
-		// re-renders re-set the same note constantly, and re-dispatching would
-		// keep forcing the tab open after the admin deliberately closed it.
-		// Suppressed during the initial page-load render (initialRenderDone) so
-		// a pre-existing caveat doesn't steal the tab before any interaction.
 		if ( text && changed && this.initialRenderDone ) {
 			document.dispatchEvent( new CustomEvent( 'ctc_open_sidebar_tab', {
 				detail: { tab: 'preview' },
@@ -740,37 +784,57 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Resolve which style id to preview: the mobile style while the admin is
-	 * picking one (device flips on style edits — see bindFormEvents),
-	 * otherwise the desktop style.
+	 * Checks whether shared desktop/mobile settings are enabled.
 	 *
-	 * @returns {string}
+	 * @returns {boolean}
+	 */
+	sameSettings () {
+		return Boolean( this.values.get( 'ht_ctc_chat_options', 'same_settings' ) );
+	}
+
+	/**
+	 * Resolves active style ID for the previewed device.
+	 *
+	 * @returns {string} Style ID.
 	 */
 	currentStyleId () {
 		const desktop = String( this.values.get( 'ht_ctc_chat_options', 'style_desktop' ) || '4' );
-		if ( 'mobile' === this.device ) {
-			return String( this.values.get( 'ht_ctc_chat_options', 'style_mobile' ) || desktop );
-		}
-		return desktop;
+		const key = styleKeyFor( this.device, this.sameSettings() );
+		if ( key === 'style_desktop' ) { return desktop; }
+
+		return String( this.values.get( 'ht_ctc_chat_options', key ) || desktop );
 	}
 
+	/**
+	 * Renders the preview widget and greetings dialog.
+	 */
 	async render () {
 		if ( ! this.container ) { return; }
 
 		const styleId = this.currentStyleId();
+
+		const read = ( group, key ) => this.values.get( group, key );
+		this.container.classList.toggle(
+			'ctc-mobile-w-fullwidth',
+			widgetFullWidthOn( this.device, styleId, read ),
+		);
+
 		const renderFn = await this.registry.getStyleRenderer( styleId );
 
-		// Guard against race: a slower import finishing after the user toggled off.
 		if ( ! this.enabled ) { return; }
 
-		const side2 = this.applyPosition();
-
+		const { side1, side2 } = this.applyPosition();
 		const ctx = this.buildContext( side2 );
-
 		const notes = [];
 
-		if ( ! renderFn ) {
+		// Check device visibility setting and note if hidden.
+		if ( ! widgetShowsOn( this.device, ( key ) => this.values.get( 'ht_ctc_chat_options', key ) ) ) {
+			notes.push( isMobile( this.device ) ?
+				'Hidden on mobile on your live site — Display settings have "Display on mobile" set to hide.' :
+				'Hidden on desktop on your live site — Display settings have "Display on desktop" set to hide.' );
+		}
 
+		if ( ! renderFn ) {
 			const fallbackStyle = 'background:#fff;border:1px solid #dcdcde;' +
 				'border-radius:6px;padding:8px 12px;font-size:12px;color:#50575e;' +
 				'box-shadow:0 1px 4px rgba(0,0,0,.12);';
@@ -780,8 +844,6 @@ export default class PreviewManager {
 			notes.push( `Live preview is not yet available for Style ${styleId}.` );
 		} else {
 			try {
-				// Templates return an html string, or { html, note } when the
-				// preview needs a caveat (e.g. style 1 depends on the theme).
 				const rendered = renderFn( ctx );
 				const html = ( typeof rendered === 'string' ) ? rendered : rendered.html;
 				const note = ( typeof rendered === 'string' ) ? '' : ( rendered.note || '' );
@@ -797,70 +859,58 @@ export default class PreviewManager {
 			}
 		}
 
-		const greetingsNote = await this.renderGreetings( ctx, side2 );
+		const greetingsNote = await this.renderGreetings( ctx, side2, side1 );
 		if ( greetingsNote ) { notes.push( greetingsNote ); }
 
-		// Mirror the frontend: an open greetings dialog dismisses the badge for
-		// good (greetings_open() calls stop_notification_badge()), so it won't
-		// reappear when the dialog is closed — only when a badge setting changes.
-		if ( this.greetingVisible ) { this.uiState.badgeStopped = true; }
+		// Open greetings dialog dismisses the notification badge.
+		if ( this.greetingVisible && ! this.uiState.badgeStopped ) {
+			this.uiState.badgeStopped = true;
+			this.persistState();
+		}
 
-		// renderGreetings() has set greetingVisible — reflect badge/CTA hide
-		// classes (covers styles re-rendered while the dialog is open).
 		this.syncStateClasses();
 
-		// Show ONE note: a render-blocking note (no preview for this style /
-		// greeting) wins; otherwise the latest interaction's contextual note.
 		const renderNote = notes.join( ' ' );
 		this.setNote( renderNote || this.transientNote );
 
-		// Don't pop back over a visible toast — they share the bottom corner.
-		// The toast:hidden handler re-renders once it clears.
-		this.container.style.display = this.toastVisible ? 'none' : 'block';
+		this.container.style.display = this.toastCoversPreview() ? 'none' : 'block';
 
-		// Preview-only safety: an oversized setting (e.g. a 5000px Style 2 image
-		// size) must not let the preview take over the admin screen. Scale the
-		// rendered widget down to fit a sane box. This is purely visual — the
-		// saved value is left exactly as the user typed it.
+		this.container.title = this.controlsReachable() ?
+			'Click to Chat — preview' :
+			'Click to Chat — preview (press Esc to hide)';
+
 		if ( this.container.style.display === 'block' ) {
 			this.fitToBounds();
 		}
 
-		// Generic post-render hook for extensions (e.g. PRO's date scheduler,
-		// which re-inits its calendar modal on the freshly rendered stage). The
-		// stage's innerHTML was just replaced, so listeners bound to its children
-		// are gone — consumers should re-bind here. Mirrors the document-event
-		// convention used for `ctc_manager_registered_*`.
+		// Dispatch post-render hook for extensions.
 		document.dispatchEvent( new CustomEvent( 'ctc_preview_rendered', {
 			detail: { stage: this.stage, container: this.container },
 		} ) );
 	}
 
 	/**
-	 * Keep the floating preview from overflowing the admin screen.
-	 *
-	 * Real widgets are small (~50–70px), but Image Size / dimension fields are
-	 * free text, so a typo like `5000px` can make the rendered widget cover the
-	 * whole viewport and feel impossible to recover from. This scales the
-	 * container down toward its pinned corner (transform-origin set in
-	 * applyPosition) so it never exceeds a safe box. Style-agnostic: it caps any
-	 * style and any oversized dimension. Purely a preview cap — the saved value
-	 * is never touched, so the live widget renders whatever the user chose.
+	 * Scales container down if it exceeds the viewport bounds.
 	 */
 	fitToBounds () {
 		const el = this.container;
 		if ( ! el ) { return; }
 
-		// Measure the natural size (applyPosition already cleared any prior
-		// transform for this render).
+		if ( el.classList.contains( 'ctc-mobile-w-fullwidth' ) ) {
+			el.style.transform = '';
+			return;
+		}
+
 		const naturalWidth = el.offsetWidth;
 		const naturalHeight = el.offsetHeight;
 		if ( ! naturalWidth || ! naturalHeight ) { return; }
 
-		// Generous enough that normal widgets never scale; small enough that a
-		// runaway value can't dominate the screen.
-		const maxWidth = Math.min( window.innerWidth * 0.45, 360 );
-		const maxHeight = Math.min( window.innerHeight * 0.55, 360 );
+		const bounds = ( this.siteView?.isOpen && this.siteView.viewport ) ?
+			this.siteView.viewport.getBoundingClientRect() :
+			{ width: window.innerWidth, height: window.innerHeight };
+
+		const maxWidth = Math.min( bounds.width * 0.45, 360 );
+		const maxHeight = Math.min( bounds.height * 0.55, 360 );
 
 		const scale = Math.min( 1, maxWidth / naturalWidth, maxHeight / naturalHeight );
 		if ( scale < 1 ) {
@@ -869,13 +919,9 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Build the render context shared by every style/greetings template.
+	 * Builds template render context.
 	 *
-	 * Templates read settings only through `value`/`groupValue` (per option
-	 * group), so the same context renders any style correctly — the floating
-	 * preview passes the selected style, the style grid reuses it per cell.
-	 *
-	 * @param {string} side2 'left' | 'right' — which side the widget hugs.
+	 * @param {string} side2 'left' | 'right' side anchor.
 	 * @returns {Object} Template render context.
 	 */
 	buildContext ( side2 ) {
@@ -885,48 +931,36 @@ export default class PreviewManager {
 			isRtl: document.documentElement.dir === 'rtl',
 			device: this.device,
 			site: this.app.config?.preview?.site || '',
-
-			// WP timezone offset (hours) for business-hours-aware previews (PRO
-			// multi-agent). Mirrors the front end's ctc.tz = gmt_offset.
 			wpTzOffset: Number( this.app.config?.preview?.wpTzOffset ) || 0,
 			pluginUrl: this.app.config?.paths?.plugin_url || '',
 			proPluginUrl: this.app.config?.paths?.pro_plugin_url || '',
 			value: ( group, key ) => this.values.get( group, key ),
 			groupValue: ( group ) => this.values.groupValues( group ),
-
-			// Shared helpers so external templates (PRO) need no cross-plugin imports.
 			esc: { attr: escapeAttr, html: escapeHTML, css: escapeCssValue },
 			parts: { ...greetingsParts, singleColorIcon, logoIcon, squareIcon },
 		};
 	}
 
 	/**
-	 * Swap the CSS placeholder in each "Select Style" grid cell for the real
-	 * widget, rendered from the same templates the floating preview uses.
-	 *
-	 * Runs once when the preview module loads. The grid is a static picker, so
-	 * cells are NOT re-rendered on later edits — the floating preview is the live
-	 * one. Each cell previews its own style id (from `data-style-id`) with that
-	 * style's saved settings; cells whose style has no registered template keep
-	 * their CSS placeholder, so this degrades gracefully (e.g. PRO styles before
-	 * PRO registers, or if templates fail to load).
+	 * Renders live style previews in style picker grid cells.
 	 *
 	 * @returns {Promise<void>}
 	 */
 	async enhanceStyleGrids () {
-		const cells = document.querySelectorAll( '.grid-widget-preview[data-style-id]' );
+		const selector = '.grid-widget-preview[data-style-id]';
+		const cells = STYLE_GRID_TABS
+			.map( ( tabId ) => document.getElementById( tabId ) )
+			.filter( Boolean )
+			.flatMap( ( panel ) => Array.from( panel.querySelectorAll( selector ) ) );
+
 		if ( ! cells.length ) { return; }
 
-		// Neutral 'right' side keeps CTA ordering consistent without touching the
-		// floating preview's configured position.
 		const ctx = this.buildContext( 'right' );
-
-		await Promise.all( Array.from( cells )
-			.map( ( cell ) => this.renderStyleGridCell( cell, ctx ) ) );
+		await Promise.all( cells.map( ( cell ) => this.renderStyleGridCell( cell, ctx ) ) );
 	}
 
 	/**
-	 * Render one style template into a single grid cell.
+	 * Renders a single style template into a grid cell.
 	 *
 	 * @param {HTMLElement} cell The `.grid-widget-preview` element.
 	 * @param {Object}      ctx  Shared template render context.
@@ -948,47 +982,88 @@ export default class PreviewManager {
 			return;
 		}
 
-		// if ( cell._lastRenderedHtml === html ) { return; }
-
 		const stage = document.createElement( 'div' );
 		stage.className = 'ht_ctc_style ht_ctc_chat_style';
 		// eslint-disable-next-line no-unsanitized/property -- Templates escape all dynamic values (escapeHTML/escapeAttr/escapeCssValue)
 		stage.innerHTML = html;
 
-		// Keep the templates' <style> blocks (some, e.g. Style 5, set the resting
-		// state there), but drop their ids so the same style across cells/grids
-		// doesn't create duplicate element ids. Their rules are class-scoped and
-		// hover-only rules never fire here (cells are pointer-events:none).
+		// Remove style block IDs to avoid duplicate element IDs.
 		stage.querySelectorAll( 'style[id]' )
 			.forEach( ( node ) => node.removeAttribute( 'id' ) );
 
-		// The icon SVGs use fixed ids (e.g. gradient "htwaicona-chat"). The same
-		// icon rendered in several cells (and the floating preview) would then
-		// share ids, so `url(#id)` fills resolve to the wrong element and render
-		// blank in some engines. Localise every id to this cell.
+		// Ensure SVG IDs are unique per grid cell.
 		uniquifySvgIds( stage, `-cg${++this.gridUidCounter}` );
 
 		cell.replaceChildren( stage );
-
-		// cell._lastRenderedHtml = html;
 		cell.classList.add( 'has-live-preview' );
 	}
 
 	/**
-	 * Render the greetings dialog above the widget when a greetings template
-	 * is selected. Returns an optional note for the sidebar.
+	 * Scales a rendered grid cell to fit within its container.
 	 *
-	 * @param {Object} ctx   Render context shared with the style template.
-	 * @param {string} side2 'left' | 'right' — which side the widget hugs.
-	 * @returns {Promise<string>} Note text ('' when none).
+	 * @param {HTMLElement} cell The `.grid-widget-preview` element.
 	 */
-	async renderGreetings ( ctx, side2 ) {
-		const templateId = String( this.values.get( 'ht_ctc_greetings_options', 'greetings_template' ) || '' );
+	fitGridCell ( cell ) {
+		const stage = cell.firstElementChild;
+		if ( ! stage ) { return; }
 
-		// '' and 'no' both mean greetings is disabled.
-		if ( templateId === '' || templateId === 'no' || ! this.uiState.greetingOpen ) {
+		const availableWidth = cell.clientWidth - 4;
+		const availableHeight = cell.clientHeight - 4;
+		if ( availableWidth <= 0 || availableHeight <= 0 ) { return; }
+
+		stage.style.transform = '';
+		const naturalWidth = stage.offsetWidth;
+		const naturalHeight = stage.offsetHeight;
+		if ( ! naturalWidth || ! naturalHeight ) { return; }
+
+		const scale = Math.min( 1, availableWidth / naturalWidth, availableHeight / naturalHeight );
+		if ( scale < 1 ) {
+			stage.style.transform = `scale(${scale})`;
+		}
+	}
+
+	/**
+	 * Observes a grid cell container for resize events to re-fit content.
+	 *
+	 * @param {HTMLElement} cell The `.grid-widget-preview` element.
+	 */
+	observeGridCell ( cell ) {
+		if ( cell.dataset.ctcFitObserved || typeof ResizeObserver !== 'function' ) { return; }
+		cell.dataset.ctcFitObserved = '1';
+
+		if ( ! this.gridFitObserver ) {
+			this.gridFitObserver = new ResizeObserver( ( entries ) => {
+				entries.forEach( ( entry ) => this.fitGridCell( entry.target ) );
+			} );
+		}
+		this.gridFitObserver.observe( cell );
+	}
+
+	/**
+	 * Renders greetings dialog template.
+	 *
+	 * @param {Object} ctx   Shared template render context.
+	 * @param {string} side2 'left' | 'right' side anchor.
+	 * @param {string} side1 'top' | 'bottom' anchor.
+	 * @returns {Promise<string>} Note text, or empty string.
+	 */
+	async renderGreetings ( ctx, side2, side1 = 'bottom' ) {
+		const templateId = String( this.values.get( 'ht_ctc_greetings_options', 'greetings_template' ) || '' );
+		const disabled = templateId === '' || templateId === 'no';
+
+		const gDevice = String( this.values.get( 'ht_ctc_greetings_settings', 'g_device' ) || 'all' );
+		const appliesToDevice = greetingsAppliesTo( this.device, gDevice );
+
+		if ( disabled || ! appliesToDevice || ! this.uiState.greetingOpen ) {
 			this.greetingsBox.style.display = 'none';
 			this.greetingVisible = false;
+			this.container.classList.remove( 'ctc-mobile-g-fullwidth', 'ctc-g-side-left', 'ctc-g-side-right' );
+
+			if ( ! disabled && ! appliesToDevice ) {
+				return isMobile( this.device ) ?
+					'Greetings is set to desktop only, so it does not show on mobile.' :
+					'Greetings is set to mobile only, so it does not show on desktop.';
+			}
 			return '';
 		}
 
@@ -1001,10 +1076,15 @@ export default class PreviewManager {
 			return `Live preview is not yet available for the "${templateId}" greetings template.`;
 		}
 
-		// Box sizing by greetings size setting (same as the 2019 admin demo).
 		const gSize = this.values.get( 'ht_ctc_greetings_settings', 'g_size' ) || 's';
 		let minWidth = '300px';
 		if ( gSize === 'm' ) { minWidth = '330px'; } else if ( gSize === 'l' ) { minWidth = '360px'; }
+
+		const gPosition = String( this.values.get( 'ht_ctc_greetings_settings', 'g_position' ) || '' );
+		const gFullWidth = greetingsFullWidthOn( this.device, String( gSize ), gPosition );
+		this.container.classList.toggle( 'ctc-mobile-g-fullwidth', gFullWidth );
+		this.container.classList.toggle( 'ctc-g-side-left', gFullWidth && side2 === 'left' );
+		this.container.classList.toggle( 'ctc-g-side-right', gFullWidth && side2 !== 'left' );
 
 		const closeSide = ctx.isRtl ? 'left' : 'right';
 
@@ -1043,6 +1123,15 @@ export default class PreviewManager {
 			this.greetingsBox.style.left = '';
 			this.greetingsBox.style.right = '';
 			this.greetingsBox.style.setProperty( side2, '0px' );
+
+			// Position dialog above or below widget based on vertical anchor.
+			this.greetingsBox.style.top = '';
+			this.greetingsBox.style.bottom = '';
+			this.greetingsBox.style.setProperty(
+				side1 === 'top' ? 'top' : 'bottom',
+				'calc(100% + 12px)',
+			);
+
 			this.greetingsBox.style.display = 'block';
 			this.greetingVisible = true;
 		} catch ( error ) {
@@ -1054,3 +1143,4 @@ export default class PreviewManager {
 		return '';
 	}
 }
+

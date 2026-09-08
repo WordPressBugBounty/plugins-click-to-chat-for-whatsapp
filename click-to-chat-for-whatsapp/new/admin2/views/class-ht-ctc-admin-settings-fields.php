@@ -52,8 +52,8 @@ if ( ! class_exists( 'HT_CTC_Admin_Settings_Fields' ) ) {
 				'group-settings'            => 'group_settings',
 				'share-settings'            => 'share_settings',
 				'woo-settings'              => 'woo_settings',
-				'woo-overwrite-settings'    => 'woo_overwrite_settings',
 				'woo-add-whatsapp-settings' => 'woo_add_whatsapp_settings',
+				'woo-overwrite-settings'    => 'woo_overwrite_settings',
 				'support-settings'          => 'support_settings',
 				'pro-features'              => 'pro_features',
 			);
@@ -204,16 +204,6 @@ if ( ! class_exists( 'HT_CTC_Admin_Settings_Fields' ) ) {
 		}
 
 		/**
-		 * WooCommerce Settings Overwrite
-		 *
-		 * @return array
-		 */
-		public static function woo_overwrite_settings() {
-			HT_CTC_Utils::load_class( 'new/admin2/views/tabs/class-ht-ctc-settings-woo.php', 'HT_CTC_Settings_Woo' );
-			return HT_CTC_Settings_Woo::fields_overwrite();
-		}
-
-		/**
 		 * WooCommerce Settings Advanced
 		 *
 		 * @return array
@@ -221,6 +211,16 @@ if ( ! class_exists( 'HT_CTC_Admin_Settings_Fields' ) ) {
 		public static function woo_add_whatsapp_settings() {
 			HT_CTC_Utils::load_class( 'new/admin2/views/tabs/class-ht-ctc-settings-woo.php', 'HT_CTC_Settings_Woo' );
 			return HT_CTC_Settings_Woo::fields_advanced();
+		}
+
+		/**
+		 * WooCommerce Settings Overwrite
+		 *
+		 * @return array
+		 */
+		public static function woo_overwrite_settings() {
+			HT_CTC_Utils::load_class( 'new/admin2/views/tabs/class-ht-ctc-settings-woo.php', 'HT_CTC_Settings_Woo' );
+			return HT_CTC_Settings_Woo::fields_overwrite();
 		}
 
 		/**

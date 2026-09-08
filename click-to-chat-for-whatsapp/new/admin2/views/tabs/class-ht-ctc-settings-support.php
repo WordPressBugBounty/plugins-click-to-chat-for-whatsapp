@@ -65,7 +65,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Support' ) ) {
 						'field_type'   => 'block_content',
 						'id'           => 'support_ts_help_link',
 						'option_group' => 'ht_ctc_othersettings',
-						// todo(4.44) - add the documentation page URL
+						// todo: add a dedicated documentation page URL alongside the two guides below
 						'content'      => '<div>
 							<a href="https://holithemes.com/plugins/click-to-chat/troubleshoot/" target="_blank" class="external-link">View Complete Troubleshoot Guide <span class="dashicons dashicons-external"></span></a>
 						</div>

@@ -3,19 +3,15 @@
    ========================================================================== */
 .sidebar {
     width: 16rem;
-    /* background-color: var(--bg-glass); */
     background-color: transparent;
-    /* border-inline-end: 1px solid var(--border-color); */
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
-    /* backdrop-filter: blur(8px); */
     transition: transform 0.3s ease;
     position: fixed;
     top: var(--ctc-wp-adminbar-height);
     inset-inline-start: 0;
     bottom: 0;
-    /* .admin-header has z-index: 1000 so we are giving z-index: 1001 to sidebar */
     z-index: 1001;
     transform: translateX(-100%);
 }
@@ -90,9 +86,7 @@
 }
 
 .nav-item.active {
-    /* background: linear-gradient(90deg, var(--primary-light) 0%, transparent 100%); */
     background: none;
-    /* Brand teal accent for the active item; --primary-readable clears WCAG AA (≈5.3:1 on light). */
     color: var(--primary-readable);
     font-weight: 600;
 }
@@ -105,7 +99,6 @@
     transform: translateY(-50%);
     height: 1.5rem;
     width: 3px;
-    /* Match the active label + icon color so the whole active item is one tone. */
     background-color: var(--primary-readable);
     border-radius: 0 4px 4px 0;
 }
@@ -211,9 +204,6 @@
 /* hidden by default; shown at >=1024px via responsive.css */
 .right-sidebar {
     width: 350px;
-    /* Transparent panel, no border: the widget cards define the region —
-       a panel surface/divider on top reads as card-inside-card and adds
-       extra lines where panel + header + card borders meet. */
     background-color: transparent;
     display: none;
     flex-direction: column;
@@ -257,9 +247,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Roving tabindex means arrow keys move focus between these without a click,
-   so the ring is the only thing showing where you are. Inset, because the
-   buttons sit flush inside the .sidebar-tabs track. */
 .sidebar-tab-btn:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: -2px;
@@ -304,8 +291,6 @@
     animation: fadeIn 0.3s ease-out;
 }
 
-/* The tab-content panels are focusable scroll regions (tabindex="0") —
-   keyboard users need a visible ring when focus lands on them. */
 .sidebar-tab-content:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: -2px;
@@ -327,7 +312,6 @@
 /* Sidebar Widgets - General */
 .sidebar-widget {
     background-color: var(--bg-card);
-
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: 1.5rem;
@@ -348,10 +332,7 @@
     margin-bottom: 1rem;
 }
 
-/* Preview tab card — compact. The floating live preview shares the viewport's
-   right edge with this panel, so the shorter the card, the less an open
-   widget/greetings dialog overlaps its controls. Switch sits in the header
-   row; description is one small hint line under the controls. */
+/* Preview tab card */
 .preview-widget {
     padding: 1rem;
 }
@@ -369,22 +350,16 @@
     font-size: 0.8rem;
 }
 
-/* The dynamic note is usually empty — don't let it reserve space. */
 .preview-widget #ctc-preview-note:empty {
     display: none;
 }
 
-/* Contextual note as a small info callout, so it reads as feedback about the
-   last edit — distinct from the static hint below it. The info glyph is a
-   ::before (pseudo-content doesn't affect :empty, so the show/hide rules
-   above keep working), and the display:none → flex flip when a note arrives
-   restarts the fade-in. */
+/* Contextual preview note */
 .preview-widget #ctc-preview-note {
     display: flex;
     align-items: flex-start;
     gap: 0.4rem;
     padding: 0.5rem 0.6rem;
-    /* Same WhatsApp-green family as .feature-widget's tint, a touch stronger. */
     background: rgba(37, 211, 102, 0.08);
     border-inline-start: 3px solid var(--primary);
     border-radius: 6px;
@@ -401,17 +376,12 @@
     flex-shrink: 0;
 }
 
-/* One help line at a time: while the dynamic note has content it takes the
-   static hint's place, so the two never stack. When the note clears (JS sets
-   textContent to ''), :empty hides it above and the hint returns. */
+/* Hide static hint while dynamic note is displayed. */
 .preview-widget #ctc-preview-note:not(:empty) ~ .preview-hint {
     display: none;
 }
 
-/* Preview switched off → the device segment and help text have nothing to
-   act on; dim them as a cue (still clickable — flipping the segment while
-   off is harmless and remembered). Progressive enhancement: browsers
-   without :has() simply skip the dimming. */
+/* Dim controls when preview is disabled. */
 .preview-widget .widget-body {
     transition: opacity 0.2s ease;
 }
@@ -457,6 +427,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.4rem;
     width: 100%;
     margin-top: 1rem;
     padding: 0.75rem 1rem;
@@ -468,6 +439,13 @@
     cursor: pointer;
 }
 
+.widget-btn .dashicons {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 1;
+}
+
 .widget-btn-outline {
     background-color: transparent;
     border: 1px solid var(--border);
@@ -477,7 +455,6 @@
 .widget-btn-outline:hover {
     border-color: var(--primary);
     background-color: rgba(255, 255, 255, 0.05);
-    /* Slight bright indication on hover */
     color: var(--primary-readable);
 }
 
@@ -496,20 +473,10 @@
 
 /* PRO Widget Custom Classes */
 .ctc-pro-promo {
-    /* Gold for text needs theme-aware shades: the brand #eab308 is too light to
-       read on a white card (≈2:1 contrast), so light mode uses a darker amber
-       (≈5.7:1) and dark mode keeps the bright gold (≈8:1 on dark cards). */
     --ctc-gold-text: #a16207;
-    /* Extra breathing room above the promo, beyond the container's flex gap. */
     margin-top: 15px;
-
-    /* Airy treatment: skip the solid card surface other widgets get —
-       just a faint gold wash and border so it reads as a highlight,
-       not another content card. */
-    /* card bg */
     background: linear-gradient(135deg, rgba(234, 179, 8, 0.06), transparent 60%);
     border-color: rgba(234, 179, 8, 0.25);
-    /* card bgend */
 }
 
 html[data-theme="dark"] .ctc-pro-promo {
@@ -541,6 +508,32 @@ html[data-theme="dark"] .ctc-pro-promo {
     gap: 0.5rem;
 }
 
+.ctc-pro-feature-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.ctc-pro-feature-link:hover,
+.ctc-pro-feature-link:focus {
+    color: var(--ctc-gold-text);
+}
+
+.ctc-pro-feature-link:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.ctc-pro-feature-link .dashicons {
+    width: auto;
+    height: auto;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.7;
+}
+
 .ctc-pro-icon-small {
     color: var(--ctc-gold-text);
     font-size: 16px;
@@ -551,21 +544,15 @@ html[data-theme="dark"] .ctc-pro-promo {
     justify-content: center;
 }
 
-/* Extra class in the selector so this wins over `.widget-body p` (it was
-   losing on specificity, flattening the indent + spacing). */
 .ctc-pro-feature-list .ctc-pro-feature-desc {
     margin: 4px 0 0;
-    /* Align under the title text (16px icon + 8px gap). */
     margin-inline-start: 24px;
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.4;
 }
 
-/* Feedback tab — concrete prompts that lower the blank-page friction so
-   people actually share an idea instead of staring at a generic box.
-   Kept as a plain emoji list (no borders/cards/hover) so it reads as
-   examples, not a set of selectable options. */
+/* Feedback tab prompts */
 .ctc-feedback-prompts {
     margin: 0 0 1rem 0;
     padding-inline-start: 0;
@@ -590,7 +577,6 @@ html[data-theme="dark"] .ctc-pro-promo {
     line-height: 1.45;
 }
 
-/* Reassurance line under the prompts — quieter than body copy. */
 .widget-body .ctc-feedback-note {
     margin-bottom: 0;
     font-size: 0.8rem;
@@ -600,7 +586,6 @@ html[data-theme="dark"] .ctc-pro-promo {
 .ctc-btn-gold {
     background: #eab308 !important;
     border-color: #eab308 !important;
-    /* Dark text on the gold button — white on #eab308 is ≈2:1 contrast. */
     color: #422006 !important;
     box-shadow: 0 4px 15px -3px rgba(234, 179, 8, 0.4) !important;
 }
@@ -609,8 +594,6 @@ html[data-theme="dark"] .ctc-pro-promo {
     box-shadow: 0 8px 20px -4px rgba(234, 179, 8, 0.6) !important;
 }
 
-/* Quiet text link below the upgrade button — deep-links to the
-   PRO Features tab via the SPA's global hash-link interceptor. */
 .ctc-pro-see-all {
     display: flex;
     align-items: center;
@@ -628,9 +611,6 @@ html[data-theme="dark"] .ctc-pro-promo {
     text-decoration: none;
 }
 
-/* wp-admin core puts a box-shadow ring on every a:focus; since the SPA doesn't
-   reload, the link stays focused after a click and the ring lingers. Keep the
-   ring for keyboard users only (matches reset.css focus-visible pattern). */
 .ctc-pro-see-all:focus {
     box-shadow: none;
     outline: none;

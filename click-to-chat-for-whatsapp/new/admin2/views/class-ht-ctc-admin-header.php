@@ -109,7 +109,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Header' ) ) {
 					<div class="settings-dropdown-wrapper">
 						<button type="button" id="settings-toggle" class="settings-toggle" aria-label="<?php esc_attr_e( 'Settings', 'click-to-chat-for-whatsapp' ); ?>"
 							aria-haspopup="true" aria-expanded="false" aria-controls="settings-dropdown"
-							data-tip="Theme &amp; auto-save" data-tip-pos="bottom">
+							data-tip="Theme &amp; auto-save" data-tip-pos="bottom" data-tip-align="end">
 							<?php HT_CTC_Icons::render( 'settings', 'ctc-icon' ); ?>
 						</button>
 						<div id="settings-dropdown" class="settings-dropdown hidden">

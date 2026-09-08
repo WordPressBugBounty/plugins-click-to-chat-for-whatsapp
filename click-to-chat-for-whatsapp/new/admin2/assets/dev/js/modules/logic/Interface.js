@@ -1,12 +1,7 @@
 /**
  * Interface Logic
- * Manages the "Application Shell" - sidebar, navigation, global frame interactions.
  *
- * Flow Overview:
- * 1. Initial Load: `initNavigation` checks URL for `tab` param or `#hash`.
- * 2. Tab Activation: `activateTab` updates UI, saves state, and triggers `App.loadTabSettings` (Lazy Load).
- * 3. Deep Linking: If a section ID is present (e.g. #tab/section), `scrollToElement` handles the jump.
- * 4. Dynamic Handling: Since fields load via AJAX, `scrollToElement` uses a retry mechanism to "wait" for elements.
+ * Manages the application shell: sidebar, navigation, and panel interactions.
  */
 import { getCtcStorageItem, setCtcStorageItem } from '../core/Storage.js';
 import { log } from '../core/Utils.js';
@@ -19,13 +14,10 @@ export default class Interface {
 		// Deep-link target, held until its tab has actually rendered.
 		this.pendingTarget = null;
 
-		// `activateTab` awaits `loadTabSettings`, but that returns early when a
-		// load is already in flight (App.loadTabSettings), so awaiting it is not
-		// proof the fields exist. `tab:changed` is emitted after the render.
+		// Scroll to deep-link target once the tab has rendered.
 		this.app.events?.on( 'tab:changed', ( tabId ) => {
 			if ( ! this.pendingTarget ) { return; }
 
-			// Also emitted for in-card sub-tabs; only panels carry a deep link.
 			if ( ! document.getElementById( tabId )?.classList.contains( 'settings-panel' ) ) { return; }
 
 			const target = this.pendingTarget;
@@ -58,24 +50,12 @@ export default class Interface {
 
 		this.desktopQuery = window.matchMedia( '(min-width: 768px)' );
 
-		/*
-		 * Desktop sidebar width is a preference, not a per-load default. It used
-		 * to re-expand on every page load, so anyone who preferred the icon-only
-		 * rail had to collapse it again after each save/reload. Expanded stays
-		 * the default — only an explicit collapse is remembered.
-		 */
 		if ( this.desktopQuery.matches && sidebar ) {
 			sidebar.classList.toggle( 'expanded', true !== getCtcStorageItem( 'sidebar-collapsed' ) );
 		}
 
 		this.syncMenuToggleState( menuToggle, sidebar );
 
-		/*
-		 * Every dismiss path for the mobile drawer — the close button, a click
-		 * outside it, Escape — does the same three things. Stated once so a
-		 * later change cannot be applied to two of the three and quietly
-		 * missed on the third.
-		 */
 		const closeDrawer = () => {
 			sidebar.classList.remove( 'open' );
 			document.body.style.overflow = '';
@@ -114,7 +94,6 @@ export default class Interface {
 			}
 		} );
 
-		// Esc closes the mobile drawer, matching every other overlay on the page.
 		document.addEventListener( 'keydown', ( event ) => {
 			if ( 'Escape' !== event.key || ! sidebar ) { return; }
 			if ( this.desktopQuery.matches || ! sidebar.classList.contains( 'open' ) ) { return; }
@@ -123,8 +102,6 @@ export default class Interface {
 			menuToggle?.focus();
 		} );
 
-		// The breakpoint can be crossed by a resize/rotate, which swaps which
-		// class ('expanded' vs 'open') the toggle is reporting on.
 		this.desktopQuery.addEventListener( 'change', () =>
 			this.syncMenuToggleState( menuToggle, sidebar ) );
 
@@ -147,7 +124,6 @@ export default class Interface {
 				}
 			} );
 
-			// Esc closes the dropdown and returns focus to the button that opened it.
 			document.addEventListener( 'keydown', ( event ) => {
 				if ( 'Escape' !== event.key || settingsDropdown.classList.contains( 'hidden' ) ) { return; }
 				setDropdown( false );
@@ -157,16 +133,10 @@ export default class Interface {
 	}
 
 	/**
-	 * Keep the hamburger's ARIA state and tooltip in step with the sidebar.
+	 * Synchronize the menu toggle button's aria-expanded and data-tip state with the sidebar.
 	 *
-	 * The button is icon-only, so `aria-expanded` is the only thing telling a
-	 * screen reader what the click did, and the tooltip is its sighted
-	 * equivalent. Desktop toggles the labels (`expanded`), mobile slides the
-	 * whole drawer (`open`) — one attribute covers both, because from the
-	 * user's side it is the same question: is the menu showing?
-	 *
-	 * @param {HTMLElement|null} menuToggle The hamburger button.
-	 * @param {HTMLElement|null} sidebar    The sidebar it controls.
+	 * @param {HTMLElement|null} menuToggle Hamburger button.
+	 * @param {HTMLElement|null} sidebar    Sidebar element.
 	 */
 	static syncMenuToggleState ( menuToggle, sidebar ) {
 		if ( ! menuToggle || ! sidebar ) { return; }
@@ -186,8 +156,6 @@ export default class Interface {
 		log( 'Interface', 'Initializing Navigation...' );
 		const navItems = document.querySelectorAll( '.nav-item' );
 
-		// 1. Determine Initial Active Tab
-		// Order of priority: URL Parameter (?tab=) > URL Hash (#tab) > LocalStorage > Default (General)
 		const urlParams = new URLSearchParams( window.location.search );
 		const urlTabId = urlParams.get( 'tab' );
 		const hashTabId = window.location.hash.replace( '#', '' )
@@ -195,7 +163,6 @@ export default class Interface {
 
 		const activeTabId = urlTabId || hashTabId || getCtcStorageItem( 'active-tab' );
 
-		// 2. Initial Activation
 		const activeTab = activeTabId ?
 			document.querySelector( `.nav-item[data-tab="${activeTabId}"]` ) :
 			null;
@@ -205,10 +172,7 @@ export default class Interface {
 			const initialSectionId = window.location.hash.replace( '#', '' )
 				.split( '/' )[ 1 ];
 
-			// Queue the target; the `tab:changed` handler jumps once rendered.
 			this.pendingTarget = initialSectionId || null;
-
-			// If we have a section ID (deep link), we pass `skipScroll=true` to avoid jumping to top
 			this.activateTab( activeTabId, !! initialSectionId );
 		} else {
 			const defaultActive = document.querySelector( '.nav-item.active' );
@@ -219,17 +183,12 @@ export default class Interface {
 
 		Interface.updateMobileSectionLabel();
 
-		// 3. Tab Click Listeners
 		navItems.forEach( ( item ) => {
 			item.addEventListener( 'click', () => {
 				this.activateTab( item.getAttribute( 'data-tab' ) );
 			} );
 		} );
 
-		// 4. Logo / Home Click Logic
-		// The logo is a <div role="button" tabindex="0">, so it has to answer
-		// Enter/Space itself — a real <button> would inherit that for free, but
-		// this one wraps the mark and wordmark and is styled as a block.
 		const logoHome = document.getElementById( 'logo-home' );
 		if ( logoHome ) {
 			const goHome = () => {
@@ -241,7 +200,6 @@ export default class Interface {
 			logoHome.addEventListener( 'keydown', ( event ) => {
 				if ( 'Enter' !== event.key && ' ' !== event.key ) { return; }
 
-				// Space would otherwise scroll the page out from under the click.
 				event.preventDefault();
 				goHome();
 			} );
@@ -266,8 +224,7 @@ export default class Interface {
 			}
 		} );
 
-		// 6. Global Link Interceptor (Deep Links)
-		// Internal clicks on <a href="#tab-id/section-id">
+		// Global link interceptor for #tab-id/section-id deep links.
 		document.addEventListener( 'click', async ( event ) => {
 			const link = event.target.closest( 'a[href^="#"]' );
 			if ( ! link ) { return; }
@@ -281,16 +238,12 @@ export default class Interface {
 
 			if ( navItem ) {
 				event.preventDefault();
-
-				// Queue the target; the `tab:changed` handler jumps once rendered.
 				this.pendingTarget = sectionId || null;
-
-				// Switch tab (and prevent default scroll-to-top if we are targeting a sub-section)
 				await this.activateTab( tabId, !! sectionId );
 			}
 		} );
 
-		// 7. Drill-Down Menu Logic (Sidebar Submenus)
+		// Drill-down sidebar submenus.
 		document.addEventListener( 'click', ( event ) => {
 			const drillDownBtn = event.target.closest( '.drill-down-btn' );
 			const backBtn = event.target.closest( '.drill-down-back-btn' );
@@ -322,22 +275,14 @@ export default class Interface {
 	/**
 	 * Activates a settings tab.
 	 *
-	 * Flow:
-	 * 1. UI Switch (CSS classes)
-	 * 2. Persistence (LocalStorage)
-	 * 3. Scroll Management (Reset to top or stay put)
-	 * 4. Data Loading (Fetch fields via API if not loaded)
-	 *
-	 * @param {string} tabId - The ID of the tab to activate.
-	 * @param {boolean} skipScroll - If true, keeps the current scroll position (used for deep linking).
+	 * @param {string}  tabId      Tab ID to activate.
+	 * @param {boolean} skipScroll Whether to skip scrolling to the top.
 	 */
 	static async activateTab ( tabId, skipScroll = false ) {
 		const navItem = document.querySelector( `.nav-item[data-tab="${tabId}"]` );
 		const panel = document.getElementById( tabId );
 		if ( ! navItem || ! panel ) { return; }
 
-		// UI/State Updates. `aria-current` carries the same meaning as the
-		// `active` class for anyone who can't see which item is tinted.
 		document.querySelectorAll( '.nav-item' )
 			.forEach( nav => {
 				nav.classList.remove( 'active' );
@@ -351,7 +296,6 @@ export default class Interface {
 		panel.classList.add( 'active' );
 		setCtcStorageItem( 'active-tab', tabId );
 
-		// Drill-down menu sync
 		const parentMenu = navItem.closest( '.sidebar-menu' );
 		if ( parentMenu ) {
 			document.querySelectorAll( '.sidebar-menu' )
@@ -359,12 +303,10 @@ export default class Interface {
 			parentMenu.classList.add( 'active' );
 		}
 
-		// Scroll management
 		if ( ! skipScroll ) {
 			Interface.resetScrollTo();
 		}
 
-		// Lazy Load content
 		if ( panel.dataset.loaded === 'false' ) {
 			await Interface.app.loadTabSettings( tabId );
 		}
@@ -374,12 +316,7 @@ export default class Interface {
 
 		Interface.app.events?.emit( 'tab:changed', tabId );
 
-		// Mobile behavior: close sidebar after selection.
-		// The hamburger has to be told, same as every other dismiss path — this
-		// one sits outside initSidebar so it cannot use its closeDrawer helper,
-		// and without the sync it reported aria-expanded="true" (and offered
-		// "Collapse menu") over an already-closed drawer. It is the most common
-		// mobile gesture there is: open the menu, pick a section.
+		// Close mobile drawer after navigation.
 		const sidebar = document.getElementById( 'sidebar' );
 		if ( ! Interface.desktopQuery.matches && sidebar ) {
 			sidebar.classList.remove( 'open' );
@@ -391,34 +328,12 @@ export default class Interface {
 	/**
 	 * Scrolls to an element inside the active panel and highlights it.
 	 *
-	 * Callers must have the target's panel active already — the `tab:changed`
-	 * handler in `init()` waits for the render, and SettingsManager awaits
-	 * `activateTab` before calling this for a failed field.
-	 *
-	 * Two things here are load-bearing:
-	 *
-	 * 1. **The lookup is scoped to the panel.** Field ids repeat across panels
-	 *    (`side_1`, `same_settings` exist in general/group/share), so a global
-	 *    `getElementById` returns whichever copy comes first in the document —
-	 *    always the general-settings one — and a link into another tab would
-	 *    resolve to the wrong panel.
-	 * 2. **`scrollIntoView`, not a container scroll.** `.main-content` has
-	 *    `overflow-y: auto` but is never height-constrained, so it never
-	 *    scrolls — the window does, with the header and sidebars sticky over
-	 *    it. Scrolling `.main-content` explicitly is a silent no-op.
-	 *    The offset clearing the sticky header is `scroll-margin-top` in CSS.
-	 *
-	 * Targets hidden by a collapsed accordion or an inactive sub-tab are not
-	 * handled yet — they resolve but cannot be scrolled to.
-	 *
-	 * @param {string} elementId - The ID of the target element (Field ID, Card ID, etc.)
+	 * @param {string} elementId Target element ID.
 	 */
 	static scrollToElement ( elementId ) {
 		const panel = document.querySelector( '.settings-panel.active' );
 		if ( ! panel || ! elementId ) { return; }
 
-		// Compared rather than used as a `#id` selector: ids are not always valid
-		// CSS identifiers (`channels][whatsapp][enable`) and would throw.
 		const element = [ ...panel.querySelectorAll( '[id]' ) ]
 			.find( ( el ) => el.id === elementId );
 
@@ -427,7 +342,6 @@ export default class Interface {
 			return;
 		}
 
-		// Scroll to the wrapper group so the label and help text come along.
 		const target = element.closest( '.form-group' ) ||
 			element.closest( '.ctc-card' ) ||
 			element.closest( '.field-group' ) ||
@@ -440,7 +354,7 @@ export default class Interface {
 	}
 
 	/**
-	 * Inner Page Tabs Delegation (e.g. Settings within a Card)
+	 * Inner page tabs delegation.
 	 */
 	static initTabs () {
 		document.addEventListener( 'click', ( event ) => {
@@ -472,7 +386,7 @@ export default class Interface {
 	}
 
 	/**
-	 * Adaptive Help Icons Logic
+	 * Adaptive help icons toggle.
 	 */
 	static initHelpIcons () {
 		document.addEventListener( 'click', ( event ) => {
@@ -488,9 +402,7 @@ export default class Interface {
 	}
 
 	/**
-	 * WordPress Media Uploader integration
-	 *
-	 * @todo Refactor and move this event binding directly inside BlockUploadImage.js to make the component self-contained.
+	 * WordPress Media Uploader integration for greetings header image.
 	 */
 	static initGreetingsImage () {
 		let mediaUploader;
@@ -546,7 +458,7 @@ export default class Interface {
 	}
 
 	/**
-	 * Resets scroll position to top
+	 * Resets scroll position to top.
 	 */
 	static resetScrollTo () {
 		const target = document.querySelector( '.main-content' );
@@ -555,7 +467,7 @@ export default class Interface {
 	}
 
 	/**
-	 * Updates the current section label (Mobile Top Bar)
+	 * Updates the current section label (Mobile Top Bar).
 	 */
 	static updateMobileSectionLabel () {
 		const label = document.getElementById( 'mobile-section-label' );
@@ -567,48 +479,31 @@ export default class Interface {
 	}
 
 	/**
-	 * PRO widget (free version, right sidebar): show the feature items
-	 * relevant to the active tab. Each <li data-tabs="..."> lists the nav-tab
-	 * ids it belongs to; when none match the active tab, the items tagged
-	 * `default` are shown instead. Widget markup exists only without PRO.
+	 * Updates the right sidebar PRO widget items relevant to the active tab.
 	 *
-	 * On the 'pro-features' tab the whole widget is hidden — the full PRO
-	 * features page is already on screen, so the sidebar teaser is redundant.
-	 *
-	 * @param {string} tabId - The activated nav tab id (e.g. 'greetings-settings').
+	 * @param {string} tabId Active nav tab ID.
 	 */
 	static updateProWidget ( tabId ) {
 		const promoWidget = document.querySelector( '.ctc-pro-promo' );
 		if ( ! promoWidget ) { return; }
 
-		// Redundant on the PRO features page itself; show it everywhere else.
 		promoWidget.hidden = ( tabId === 'pro-features' );
 		if ( promoWidget.hidden ) { return; }
 
-		const items = promoWidget.querySelectorAll( '.ctc-pro-feature-list li[data-tabs]' );
+		const items = [ ...promoWidget.querySelectorAll( '.ctc-pro-feature-list li[data-tabs]' ) ];
 		if ( ! items.length ) { return; }
 
 		const matches = ( li, key ) => li.dataset.tabs.split( ' ' )
 			.includes( key );
-		const hasMatch = [ ...items ].some( li => matches( li, tabId ) );
+		const key = items.some( li => matches( li, tabId ) ) ? tabId : 'default';
 
 		items.forEach( li => {
-			li.hidden = ! matches( li, hasMatch ? tabId : 'default' );
+			li.hidden = ! matches( li, key );
 		} );
 	}
 
 	/**
-	 * Right Sidebar Tabs (Support / Feedback / Preview)
-	 *
-	 * A collapsible tablist: clicking the open tab closes the panel entirely,
-	 * so "no tab selected" is a real state here, not just an in-between.
-	 *
-	 * The markup declares role="tablist"/role="tab", which means `aria-selected`
-	 * and the roving `tabindex` — not the CSS classes — are what assistive tech
-	 * and the Tab key actually read. Toggling classes alone left the ARIA frozen
-	 * at whatever PHP printed, so Support was announced as the selected tab for
-	 * the life of the page no matter which one was showing, and Tab still landed
-	 * on all three buttons. `render()` is the single place that moves both.
+	 * Right sidebar tabs (Support / Feedback / Preview) with keyboard navigation.
 	 */
 	static initRightSidebar () {
 		const tabButtons = [ ...document.querySelectorAll( '.sidebar-tab-btn' ) ];
@@ -616,9 +511,6 @@ export default class Interface {
 		if ( ! tabButtons.length ) { return; }
 
 		const idOf = ( btn ) => btn.dataset.sidebarTab;
-
-		// Which button stays tabbable while the panel is closed — without it the
-		// whole tablist drops out of the tab order and can't be reopened by keyboard.
 		let lastOpenId = idOf( tabButtons.find( btn => btn.classList.contains( 'active' ) ) || tabButtons[ 0 ] );
 
 		/**
@@ -631,9 +523,6 @@ export default class Interface {
 				const isOpen = idOf( btn ) === tabId;
 				btn.classList.toggle( 'active', isOpen );
 				btn.setAttribute( 'aria-selected', isOpen ? 'true' : 'false' );
-
-				// role="tab" supports aria-expanded; it is what distinguishes
-				// "this tab is current" from "its panel is on screen".
 				btn.setAttribute( 'aria-expanded', isOpen ? 'true' : 'false' );
 				btn.tabIndex = ( idOf( btn ) === lastOpenId ) ? 0 : -1;
 			} );
@@ -648,14 +537,11 @@ export default class Interface {
 		};
 
 		/**
-		 * Resolve an arrow/Home/End press to the button focus should move to.
+		 * Resolves arrow/Home/End key navigation for tabs.
 		 *
-		 * The tablist is laid out in a row, so Left/Right are the arrows that
-		 * apply; in RTL the visual order is mirrored, so the step is too.
-		 *
-		 * @param {KeyboardEvent} event
-		 * @param {number}        index Index of the button currently focused.
-		 * @returns {HTMLElement|null}
+		 * @param {KeyboardEvent} event Keyboard event.
+		 * @param {number}        index Index of the currently focused button.
+		 * @returns {HTMLElement|null} Target button element or null.
 		 */
 		const nextFromKey = ( event, index ) => {
 			if ( 'Home' === event.key ) { return tabButtons[ 0 ]; }
@@ -679,20 +565,13 @@ export default class Interface {
 				const target = nextFromKey( event, index );
 				if ( ! target ) { return; }
 
-				// Otherwise Home/End jump the page and the arrows scroll it.
 				event.preventDefault();
-
-				// Follow-focus activation, same as the APG's automatic-activation
-				// pattern: the panel under the arrows is always the one showing,
-				// so keyboard and pointer end up in the same place.
 				render( idOf( target ) );
 				target.focus();
 			} );
 		} );
 
-		// Programmatic activation (e.g. PreviewManager surfaces a preview note
-		// while another tab — or none — is showing). Unlike a click, this never
-		// toggles the panel closed: it only makes the requested tab visible.
+		// Programmatic activation (e.g. PreviewManager).
 		document.addEventListener( 'ctc_open_sidebar_tab', ( event ) => {
 			const tabId = event.detail?.tab;
 			if ( ! tabId ) { return; }
@@ -701,7 +580,7 @@ export default class Interface {
 			render( tabId );
 		} );
 
-		// Bring the ARIA in line with whatever PHP rendered as active.
 		render( idOf( tabButtons.find( btn => btn.classList.contains( 'active' ) ) || tabButtons[ 0 ] ) );
 	}
 }
+

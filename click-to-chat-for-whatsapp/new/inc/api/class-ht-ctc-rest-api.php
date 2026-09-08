@@ -121,7 +121,9 @@ if ( ! class_exists( 'HT_CTC_Rest_API' ) ) {
 		 *       explicit deletion paths, validated via HT_CTC_API_Validator::validate_remove_paths.
 		 *       Permission: HT_CTC_API_Permissions::check_admin_settings_access.
 		 *   - GET  /get-fields/     → HT_CTC_Fields_Handler::get_settings_fields
-		 *       Requires the `group` arg (sanitize_text_field).
+		 *       Takes `group` (one slug → { fields: [...] }) or `groups` (comma-separated
+		 *       → { groups: { slug: [...] } }), both sanitize_text_field then allow-listed
+		 *       in the handler. At least one is required.
 		 *       Permission: HT_CTC_API_Permissions::check_admin_settings_access.
 		 */
 		public function register_admin_routes() {
@@ -184,8 +186,16 @@ if ( ! class_exists( 'HT_CTC_Rest_API' ) ) {
 					'callback'            => array( $fields_handler, 'get_settings_fields' ),
 					'permission_callback' => array( $permissions, 'check_admin_settings_access' ),
 					'args'                => array(
-						'group' => array(
-							'required'          => true,
+						'group'  => array(
+							'required'          => false,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						// Comma-separated slugs, for the background preload of the tabs
+						// the user has not opened yet. Neither arg is required on its
+						// own; the handler rejects a request that carries no group at
+						// all, and sanitizes and allow-lists each slug either way.
+						'groups' => array(
+							'required'          => false,
 							'sanitize_callback' => 'sanitize_text_field',
 						),
 					),

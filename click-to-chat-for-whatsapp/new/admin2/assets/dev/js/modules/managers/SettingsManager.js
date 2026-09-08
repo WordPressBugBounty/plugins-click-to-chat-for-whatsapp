@@ -787,9 +787,6 @@ export default class SettingsManager {
 	 * Recursively update form inputs with data from the server.
 	 * Matches inputs by name attribute using bracket notation.
 	 *
-	 * todo: have to test intl-tel number field (as hidden field have value)
-	 * todo: also check class-ht-ctc-formatting -> wa_number(); related changes.
-	 *
 	 * @param {HTMLFormElement} form
 	 * @param {Object} data
 	 * @param {string} prefix

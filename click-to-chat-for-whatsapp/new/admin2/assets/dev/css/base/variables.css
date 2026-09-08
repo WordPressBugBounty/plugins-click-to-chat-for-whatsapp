@@ -49,6 +49,13 @@
     --accent: hsl(var(--a-h), var(--a-s), var(--a-l));
     --bg-glass: var(--surface);
 
+    /* Typography - system stacks only. Naming a family we do not ship (e.g.
+       "Inter") makes the browser fetch some other plugin's @font-face for that
+       name; WooCommerce registers Inter, which cost 319 KB per admin load. */
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+        "Helvetica Neue", sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
     /* Geometry */
     --radius-sm: 12px;
     --radius-md: 20px;
@@ -57,6 +64,7 @@
     --radius: var(--radius-sm);
 
     /* Depth */
+    --highlight-inset: rgba(255, 255, 255, 0.5);
     --shadow-prism: 0 20px 50px -12px rgba(0, 0, 0, 0.2);
     --shadow-bloom: 0 0 30px -5px var(--primary-glow);
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -174,6 +182,8 @@ html[data-theme="dark"] {
     --primary-readable: hsl(var(--p-h), 100%, 50%);
     --primary-readable-hover: hsl(var(--p-h), 95%, 62%);
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+    --highlight-inset: rgba(255, 255, 255, 0.05);
 
     /* Success: the fill green is already bright enough for dark surfaces; it is
        the text/icon green that has to invert — dark-on-light becomes light-on-dark. */

@@ -59,7 +59,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Settings_Page' ) ) {
 						// submit_button();
 						?>
 
-						<!-- todo(4.44): will do it after initial release as planing to add dynamic way of identifying issues 
+						<!-- will do it after initial release as planing to add dynamic way of identifying issues 
 						may be at dashboard.php ..  <main class="main-content"> or a notification icon like in header with notification count and message.
 						-->
 						<div class="ctc-admin-notices"></div>

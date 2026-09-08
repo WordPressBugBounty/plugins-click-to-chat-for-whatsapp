@@ -19,18 +19,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 	class HT_CTC_Settings_Woo {
 
 		/**
-		 * Get fields for Overwrite Settings
-		 *
-		 * @return array
-		 */
-		public static function fields_overwrite() {
-			if ( ! class_exists( 'WooCommerce' ) ) {
-				return array();
-			}
-			return array( self::card_woo_settings() );
-		}
-
-		/**
 		 * Get fields for Advanced/Add WhatsApp Settings
 		 *
 		 * @return array
@@ -40,6 +28,18 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 				return array();
 			}
 			return array( self::card_advanced_woo_settings() );
+		}
+
+		/**
+		 * Get fields for Overwrite Settings
+		 *
+		 * @return array
+		 */
+		public static function fields_overwrite() {
+			if ( ! class_exists( 'WooCommerce' ) ) {
+				return array();
+			}
+			return array( self::card_woo_settings() );
 		}
 
 		/**
@@ -55,11 +55,11 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 
 			$fields = array();
 
-			// WooCommerce Settings
-			$fields[] = self::card_woo_settings();
-
-			// Advanced WooCommerce Settings
+			// Advanced WooCommerce Settings (Add WhatsApp)
 			$fields[] = self::card_advanced_woo_settings();
+
+			// WooCommerce Settings (Overwrite)
+			$fields[] = self::card_woo_settings();
 
 			return $fields;
 		}
@@ -91,7 +91,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 					'label'      => __( 'Style-3', 'click-to-chat-for-whatsapp' ),
 					'attributes' => array( 'data-contextual-id' => 'style_3' ),
 				),
-				'3_1' => array( // phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found
+				'3_1' => array( // phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found -- Key with underscore is distinct string in PHP associative array.
 					'label'      => __( 'Style-3 Extend', 'click-to-chat-for-whatsapp' ),
 					'attributes' => array( 'data-contextual-id' => 'style_3_1' ),
 				),
@@ -107,7 +107,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 					'label'      => __( 'Style-7', 'click-to-chat-for-whatsapp' ),
 					'attributes' => array( 'data-contextual-id' => 'style_7' ),
 				),
-				'7_1' => array( // phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found
+				'7_1' => array( // phpcs:ignore Universal.Arrays.DuplicateArrayKey.Found -- Key with underscore is distinct string in PHP associative array.
 					'label'      => __( 'Style-7 Extend', 'click-to-chat-for-whatsapp' ),
 					'attributes' => array( 'data-contextual-id' => 'style_7_1' ),
 				),
@@ -227,7 +227,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 							__( 'Call to Action', 'click-to-chat-for-whatsapp' ),
 							__( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ),
 							__( 'Display Settings', 'click-to-chat-for-whatsapp' ),
-							'https://holithemes.com/plugins/click-to-chat/pricing/',
+							HT_CTC_Utils::pro_url( 'inline', 'woo_page_level' ),
 							__( 'Time, Scroll Delay', 'click-to-chat-for-whatsapp' ),
 						)
 					),
@@ -340,13 +340,12 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 				$advanced_fields[] = array(
 					'field_type'  => 'block_pro_feature',
+					'icon'        => 'dashicons dashicons-clock',
 					'title'       => 'Apply Business Hours',
 					'badge'       => __( 'PRO', 'click-to-chat-for-whatsapp' ),
-					'description' => 'Apply business hours settings to WhatsApp added in WooCommerce Pages (single product, Shop)',
-					'control'     => array(
-						'type'     => 'switch',
-						'disabled' => true,
-					),
+					'description' => 'Let the shop and product-page buttons follow the same opening hours — going offline, or switching to another number, when you close.',
+					'button_text' => 'Learn more',
+					'url'         => HT_CTC_Utils::pro_url( 'teaser', 'woo_business_hours', 'https://holithemes.com/plugins/click-to-chat/docs/business-hours-online-offline/' ),
 				);
 			}
 

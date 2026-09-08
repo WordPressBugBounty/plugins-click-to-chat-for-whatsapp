@@ -14,7 +14,6 @@ export default function renderStyle1 ( ctx ) {
 	const addIcon = ctx.value( 'ht_ctc_s1', 's1_add_icon' ) ?? '';
 	let iconColor = ctx.value( 'ht_ctc_s1', 's1_icon_color' ) ?? '';
 	let iconSize = ctx.value( 'ht_ctc_s1', 's1_icon_size' ) ?? '';
-	const mobileFullWidth = ctx.value( 'ht_ctc_s1', 's1_m_fullwidth' ) ?? '';
 
 	if ( iconSize === '' ) {
 		iconSize = '15';
@@ -43,16 +42,15 @@ export default function renderStyle1 ( ctx ) {
 		} );
 	}
 
-	let fullWidthStyle = '';
-	if ( mobileFullWidth !== '' ) {
-		let css = '@media(max-width:1201px){';
-		css += '.ht-ctc.style-1{left:unset !important;right:0px !important;}';
-		css += '.ht-ctc.style-1,.ht-ctc .s1_btn{width:100%;}}';
-		fullWidthStyle = `<style id="ht-ctc-s1">${css}</style>`;
-	}
+	// Full Width on Mobile is NOT emitted as the frontend's
+	// `@media(max-width:1201px)` block. That query is about the browser window,
+	// and the preview's window is the admin — so it fired on a narrow admin
+	// screen (making the DESKTOP preview full width) and never fired on a wide
+	// one, which is backwards both ways. PreviewManager puts the rule on the
+	// container for the selected device instead; see ctc-mobile-w-fullwidth.
 
 	const buttonStyle = escapeAttr( buttonCss );
-	const html = `${fullWidthStyle}<button style="${buttonStyle}" ` +
+	const html = `<button style="${buttonStyle}" ` +
 		`class="ctc-analytics s1_btn ctc_s_1">
 		${icon}
 		<span class="ctc_cta">${escapeHTML( callToAction )}</span>

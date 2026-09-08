@@ -60,7 +60,7 @@ if ( '' !== $s1_add_icon ) {
 	include_once HT_CTC_PLUGIN_DIR . 'new/inc/assets/img/ht-ctc-svg-images.php';
 
 	// Generate the icon SVG
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped - SVG is escaped in its function.
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG is escaped in its function.
 	$icon_html = ht_ctc_singlecolor( $s1_svg_attrs );
 }
 

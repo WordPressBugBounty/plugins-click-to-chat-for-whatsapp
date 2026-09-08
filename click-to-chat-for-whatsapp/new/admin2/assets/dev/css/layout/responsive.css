@@ -4,10 +4,6 @@
 
 /* 640px + */
 @media (min-width: 640px) {
-    /* .admin-badge {
-       display: block;
-   } */
-
     .save-button .text-label {
         display: inline;
     }
@@ -16,7 +12,7 @@
         display: inline;
     }
 
-    .header-left h1 {
+    .header-left .logo-text {
         display: block;
     }
 }
@@ -30,21 +26,6 @@
     .mobile-only-content {
         display: none;
     }
-
-    /* .sidebar {
-        position: fixed;
-        top: 84px;
-        inset-inline-start: 160px;
-        bottom: 0;
-        transform: translateX(0%);
-        display: block;
-        width: 4rem;
-        transition: width 0.3s ease, inset-inline-start 0.3s ease;
-    }
-
-    body.folded .sidebar {
-        inset-inline-start: 36px;
-    } */
 
     .sidebar {
         position: sticky;
@@ -72,9 +53,7 @@
 
 
 
-    /* Collapsed (icon-only) state. Labels stay in the DOM and animate via
-       max-width/opacity — display:none can't transition and made the text pop
-       in/out abruptly while the sidebar width was still animating. */
+    /* Collapsed (icon-only) state. */
     .nav-item,
     .drill-down-btn {
         justify-content: center;
@@ -91,9 +70,6 @@
         opacity: 0;
         overflow: hidden;
         white-space: nowrap;
-        /* Labels longer than the expanded max-width clip with an ellipsis
-           instead of disappearing mid-word (base styles wrapped them, but
-           wrapping can't coexist with the width animation). */
         text-overflow: ellipsis;
         transition: max-width 0.3s ease, opacity 0.15s ease;
     }
@@ -109,47 +85,19 @@
         flex: 1;
         max-width: 12rem;
         opacity: 1;
-        /* Label fades in after the width has started opening up */
         transition: max-width 0.3s ease, opacity 0.2s ease 0.1s;
     }
 }
 
 /* 1024px + */
 @media (min-width: 1024px) {
-
-    /* .main-content {
-        margin-inline-start: 54px;
-        max-width: calc(100% - 54px - 350px);
-        transition: margin-inline-start 0.3s ease, max-width 0.3s ease;
-    }
-
-    body.folded .main-content {
-        margin-inline-start: 50px;
-        max-width: calc(100% - 50px - 350px);
-    }
-
-    .sidebar.expanded~.main-content {
-        margin-inline-start: 266px;
-        max-width: calc(100% - 266px - 350px);
-    }
-
-    body.folded .sidebar.expanded~.main-content {
-        margin-inline-start: 292px;
-        max-width: calc(100% - 292px - 350px);
-    } */
-
     .main-content {
         flex: 1;
         transition: padding 0.3s ease;
     }
 }
 
-/* 1200px + — reveal the right sidebar only once there is genuinely room for it.
-   The WordPress admin menu eats ~160px on the left, so showing the fixed 350px
-   sidebar from 1024px squeezed .main-content too far and clipped the fixed-width
-   segment controls (Show/Hide) on the Display & Customize tabs (the right edge
-   got cut by .main-content's overflow). Below 1200px the sidebar stays hidden
-   and the content takes the full width. */
+/* 1200px + */
 @media (min-width: 1200px) {
     .right-sidebar {
         display: flex;
@@ -158,6 +106,11 @@
         height: calc(100vh - var(--ctc-sticky-top) - var(--ctc-header-height));
         width: 350px;
         flex-shrink: 0;
+    }
+
+    /* Hide right sidebar on the PRO features panel to allow full width. */
+    .dashboard-content:has(#pro-features.settings-panel.active) .right-sidebar {
+        display: none;
     }
 }
 
@@ -201,7 +154,8 @@
         font-size: 0.75rem;
     }
 
-    h1 {
+    /* Scoped: the only <h1> here belongs to WP core's Insert/edit link modal. */
+    .ctc-admin-dashboard h1 {
         font-size: 1rem;
     }
 
@@ -211,14 +165,9 @@
         padding: 0.375rem;
     }
 
-    .header-left h1 {
+    .header-left .logo-text {
         display: none;
     }
-
-    /* .admin-badge {
-       display: none;
-   } */
-
 
     .switch-text {
         display: none;
@@ -277,11 +226,7 @@
         padding: 0.5rem;
     }
 
-    /* Segment control (Show/Hide/Global toggles): on very narrow screens the
-       fixed-width label + 210px control don't fit on one row and the control's
-       right edge gets clipped by .main-content's overflow. Stack the label above
-       the control (which keeps its fixed width and left-aligned edges) so nothing
-       is cut off. */
+    /* Stack segment control label and buttons vertically on narrow screens. */
     .field-radio-wrapper.segment-control {
         flex-direction: column;
         align-items: flex-start;
@@ -291,41 +236,14 @@
 
 /* Range 768-991 */
 @media (min-width: 768px) and (max-width: 991px) {
-
-    /* Sidebar */
     .sidebar {
         top: var(--ctc-sticky-top);
         width: 3.5rem;
     }
 
-    /* When your sidebar is expanded */
     .sidebar.expanded {
         width: 14rem;
     }
-
-    /* Main content */
-    /* 
-    .main-content {
-        margin-inline-start: 120px;
-        max-width: calc(100% - 120px);
-        transition: margin-inline-start 0.3s ease, max-width 0.3s ease;
-    }
-
-    body.folded .main-content {
-        margin-inline-start: 92px;
-        max-width: calc(100% - 92px);
-    }
-
-    .sidebar.expanded~.main-content {
-        margin-inline-start: 250px;
-        max-width: calc(100% - 250px);
-    }
-
-    body.folded .sidebar.expanded~.main-content {
-        margin-inline-start: 252px;
-        max-width: calc(100% - 252px);
-    }
-     */
 
     .main-content {
         padding: 1.5rem;
@@ -334,24 +252,6 @@
 
 /* Range 992-1199 */
 @media (min-width: 992px) and (max-width: 1199px) {
-
-    /* Sidebar positioning for larger tablets/small desktops */
-    /* 
-    .sidebar {
-        position: fixed;
-        top: 84px;
-        inset-inline-start: 160px;
-        bottom: 0;
-        width: 4rem;
-        transition: inset-inline-start 0.3s ease, width 0.3s ease;
-    }
-
-    body.folded .sidebar {
-        inset-inline-start: 36px;
-    } 
-    */
-
-
     .sidebar {
         top: var(--ctc-sticky-top);
         width: 4rem;
@@ -360,28 +260,4 @@
     .sidebar.expanded {
         width: 16rem;
     }
-
-    /* Main content adjustments */
-    /* 
-    .main-content {
-        margin-inline-start: 120px;
-        max-width: calc(100% - 120px);
-        transition: margin-inline-start 0.3s ease, max-width 0.3s ease;
-    }
-
-    body.folded .main-content {
-        margin-inline-start: 96px;
-        max-width: calc(100% - 96px);
-    }
-
-    .sidebar.expanded~.main-content {
-        margin-inline-start: 270px;
-        max-width: calc(100% - 270px);
-    }
-
-    body.folded .sidebar.expanded~.main-content {
-        margin-inline-start: 270px;
-        max-width: calc(100% - 270px);
-    }
-    */
 }

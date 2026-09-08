@@ -101,12 +101,44 @@
     transform: translateX(-50%) translateY(0) scale(1);
 }
 
+/*
+ * Edge alignment — data-tip-align="end".
+ *
+ * The bubble is centred on its control, so a control near the viewport edge gets a
+ * bubble that runs off it. The dashboard clips that overflow (see main.css), which
+ * stops the stray scrollbar but leaves the text cut. For controls that sit at the
+ * end of a row, pin the bubble's trailing edge to theirs instead. Logical
+ * properties so RTL flips with the layout; the ::before arrow stays on the control.
+ */
+[data-tip][data-tip-align="end"]::after {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    transform: translateY(3px) scale(0.96);
+    transform-origin: bottom right;
+}
+
+[data-tip][data-tip-align="end"][data-tip-pos="bottom"]::after {
+    transform: translateY(-3px) scale(0.96);
+    transform-origin: top right;
+}
+
+[data-tip][data-tip-align="end"]:hover::after,
+[data-tip][data-tip-align="end"]:focus-visible::after {
+    transform: translateY(0) scale(1);
+}
+
 /* Reduced motion: fade only, no rise/scale */
 @media (prefers-reduced-motion: reduce) {
     [data-tip]::after,
     [data-tip][data-tip-pos="bottom"]::after {
         transition: opacity 0.14s ease;
         transform: translateX(-50%);
+    }
+
+    /* End-aligned bubbles are pinned by inset, not shifted by a transform. */
+    [data-tip][data-tip-align="end"]::after,
+    [data-tip][data-tip-align="end"][data-tip-pos="bottom"]::after {
+        transform: none;
     }
 }
 

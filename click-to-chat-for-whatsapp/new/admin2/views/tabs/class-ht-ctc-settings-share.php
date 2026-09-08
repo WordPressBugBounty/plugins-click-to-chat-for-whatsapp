@@ -310,7 +310,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_share_whatsapp_share_settings', $values );
 			return $values;
 		}
 
@@ -326,10 +325,10 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 			$position_type_help = array(
 				__( 'Fixed: Position relative to the screen, stays at the same place even after page scroll', 'click-to-chat-for-whatsapp' ),
 				vsprintf(
-					'%1$s (PRO)<br><a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
+					'%1$s (PRO)<br><a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 					array(
 						__( 'Absolute: Position relative to the content (body tag) and moves with page scroll', 'click-to-chat-for-whatsapp' ),
-						'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block',
+						HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ),
 						__( 'more info', 'click-to-chat-for-whatsapp' ),
 					)
 				),
@@ -540,7 +539,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 					),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_share_share_widget_style_position', $values );
 			return $values;
 		}
 
@@ -562,7 +560,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 					self::device_display_field( 'Mobile Display', 'display_mobile' ),
 				),
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_share_devices', $values );
 			return $values;
 		}
 
@@ -665,7 +662,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 				'data_show_when' => 'single',
 				'fields'         => $pages_fields,
 			);
-			// $values = apply_filters( 'ht_ctc_fh_settings_fields_share_share_display_settings', $values );
 			return $values;
 		}
 

@@ -29,10 +29,6 @@ if ( ! class_exists( 'HT_CTC_Utils' ) ) {
 		 * @return bool True if file loaded successfully, false otherwise.
 		 */
 		public static function load_file( $file_path ) {
-			// if ( ! defined( 'HT_CTC_PLUGIN_DIR' ) ) {
-			// return false;
-			// }
-
 			// Security: strictly prevent any path traversal attempt.
 			if ( false !== strpos( $file_path, '..' ) ) {
 				return false;
@@ -152,60 +148,8 @@ if ( ! class_exists( 'HT_CTC_Utils' ) ) {
 				}
 			}
 
-			// $default_values = apply_filters('ht_ctc_fh_default_values', $default_values, $option_name);
 			return $default_values;
 		}
-
-
-		/**
-		 * Get option cached..
-		 */
-		// public static function get_option_cached($option_name, $if_not_exist_in_db = false) {
-
-		// static $merged_cache = array();
-
-		// if (isset($merged_cache[$option_name])) {
-		// return $merged_cache[$option_name];
-		// }
-
-		// $value = get_option($option_name);
-
-		// static $ht_ctc_defaults = null;
-
-		// if (null === $ht_ctc_defaults) {
-		// if (!class_exists('HT_CTC_Defaults')) {
-		// self::load_class('new/admin/db/defaults/class-ht-ctc-defaults.php', 'HT_CTC_Defaults');
-		// }
-
-		// if (class_exists('HT_CTC_Defaults')) {
-		// $ht_ctc_defaults = new HT_CTC_Defaults();
-		// } else {
-		// $ht_ctc_defaults = false; // Prevent repeated loading attempts
-		// }
-		// }
-
-		// $default_values = $if_not_exist_in_db;
-
-		// if ($ht_ctc_defaults) {
-		// if (is_callable(array($ht_ctc_defaults, $option_name))) {
-		// $default_values = $ht_ctc_defaults->$option_name();
-		// } else {
-		// $default_values = apply_filters('ht_ctc_fh_default_values', $default_values, $option_name);
-		// }
-		// }
-
-		// $result = $value;
-
-		// if (false === $value) {
-		// $result = $default_values;
-		// } elseif (is_array($value) && is_array($default_values)) {
-		// $result = array_merge($default_values, $value);
-		// }
-
-		// $merged_cache[$option_name] = $result;
-
-		// return $result;
-		// }
 
 		/**
 		 * Safely retrieve and sanitize a request variable (GET/POST).
@@ -278,6 +222,43 @@ if ( ! class_exists( 'HT_CTC_Utils' ) ) {
 
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Debug-gated helper.
 			error_log( $line );
+		}
+
+		/**
+		 * Build a URL with UTM campaign parameters for PRO upgrade links.
+		 *
+		 * Appends standard UTM source, medium, campaign, and plugin version parameters
+		 * to destination links.
+		 *
+		 * @param string $medium  Surface rendering the link: banner, sidebar, teaser,
+		 *                        pro_tab, plugins_page, menu, inline, toast.
+		 * @param string $content Optional. Feature or placement within that surface.
+		 * @param string $url     Optional. Destination page. Defaults to pricing.
+		 * @return string Unescaped URL - escape at the point of output.
+		 */
+		public static function pro_url( $medium, $content = '', $url = '' ) {
+
+			if ( '' === $url ) {
+				$url = 'https://holithemes.com/plugins/click-to-chat/pricing/';
+			}
+
+			$args = array(
+				'utm_source'   => 'ctc_main',
+				'utm_medium'   => sanitize_key( $medium ),
+				'utm_campaign' => 'pro_upgrade',
+			);
+
+			if ( '' !== $content ) {
+				$args['utm_content'] = sanitize_key( $content );
+			}
+
+			// Which build produced the click.
+			if ( defined( 'HT_CTC_VERSION' ) ) {
+				$args['ctc_v'] = HT_CTC_VERSION;
+			}
+
+			// build_query() (inside add_query_arg) does not encode, so encode first.
+			return add_query_arg( rawurlencode_deep( $args ), $url );
 		}
 	}
 

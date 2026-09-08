@@ -331,8 +331,6 @@ if ( ! class_exists( 'HT_CTC_Settings_Data' ) ) {
 				// 'whatsapp_number'          => 'ctc_sanitize_whatsapp_number',
 				'call_to_action'           => 'ctc_sanitize_emoji_text',
 				'pre_filled'               => 'ctc_sanitize_emoji_textarea',
-				'greeting'                 => 'sanitize_text_field', // todo: verify — not found in any current DB option group; may be unused or reserved
-				'enable_feature'           => 'sanitize_text_field', // todo: verify — not found in any current DB option group; may be unused or reserved
 
 				// general - position / layout (ht_ctc_chat_options)
 				'side_1_value'             => 'ctc_sanitize_normalize_css_suffix',

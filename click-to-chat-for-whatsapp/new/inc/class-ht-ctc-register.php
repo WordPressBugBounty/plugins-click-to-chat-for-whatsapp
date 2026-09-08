@@ -96,17 +96,17 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 
 				// deletes custom styles, ht_ctc_share, ht_ctc_switch
 				$like_s = $wpdb->esc_like( 'ht_ctc_s' ) . '%';
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct wildcard cleanup of custom style options during reset/uninstall.
 				$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s", $like_s ) );
 
 				// greetings
 				$like_g = $wpdb->esc_like( 'ht_ctc_g' ) . '%';
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct wildcard cleanup of greeting options during reset/uninstall.
 				$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->options WHERE option_name LIKE %s", $like_g ) );
 
 				// deletes page level settings - postmeta starting with ht_ctc_page*
 				$like_page = $wpdb->esc_like( 'ht_ctc_page' ) . '%';
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct wildcard cleanup of page-level postmeta during reset/uninstall.
 				$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE %s", $like_page ) );
 
 			}
@@ -158,7 +158,7 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 			$links['support'] = '<a target="_blank" href="https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0">' . __( 'Support', 'click-to-chat-for-whatsapp' ) . '</a>';
 
 			if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
-				$links['pro'] = '<a target="_blank" rel="noreferrer noopener" href="https://holithemes.com/plugins/click-to-chat/pricing/"><strong style="display: inline; color:#11a485;">' . __( 'PRO Version', 'click-to-chat-for-whatsapp' ) . '</strong></a>';
+				$links['pro'] = '<a target="_blank" rel="noopener" href="' . esc_url( HT_CTC_Utils::pro_url( 'plugins_page' ) ) . '"><strong style="display: inline; color:#11a485;">' . __( 'PRO Version', 'click-to-chat-for-whatsapp' ) . '</strong></a>';
 			}
 
 			return array_merge( $new_links, $links );

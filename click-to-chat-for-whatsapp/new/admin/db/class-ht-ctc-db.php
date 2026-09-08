@@ -61,6 +61,7 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 			$this->ht_ctc_othersettings();
 			$this->ht_ctc_chat_options();
 			$this->ht_ctc_s2();
+			$this->ht_ctc_admin_settings();
 			$this->ht_ctc_plugin_details();
 			// $this->ht_ctc_one_time();
 		}
@@ -264,6 +265,33 @@ if ( ! class_exists( 'HT_CTC_DB' ) ) {
 
 			$update_values = array_merge( $style_2, $db_values );
 			update_option( 'ht_ctc_s2', $update_values );
+		}
+
+
+
+		/**
+		 * Initialize admin settings.
+		 *
+		 * Sets default admin UI to 2026 for new installations only.
+		 *
+		 * This is not required after complete migration to new admin UI 2026(new and existing installations).
+		 *
+		 * @return void
+		 */
+		public function ht_ctc_admin_settings() {
+
+			// For new installs only, set default admin_ui to 2026.
+			if ( ! isset( $this->os['version'] ) ) {
+				$values = array(
+					'admin_ui' => '2026',
+				);
+
+				$db_values = get_option( 'ht_ctc_admin_settings', array() );
+				$db_values = ( is_array( $db_values ) ) ? $db_values : array();
+
+				$update_values = array_merge( $values, $db_values );
+				update_option( 'ht_ctc_admin_settings', $update_values );
+			}
 		}
 
 

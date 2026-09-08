@@ -111,7 +111,7 @@
 }
 
 .admin-header .logo-text {
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-main);
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.04em;

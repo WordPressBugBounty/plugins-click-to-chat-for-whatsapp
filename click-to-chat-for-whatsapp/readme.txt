@@ -3,7 +3,8 @@ Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 5.6
 Contributors: HoliThemes
-Stable tag: 4.43
+Donate link: https://holithemes.com/plugins/click-to-chat/pricing/
+Stable tag: 4.44
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +15,7 @@ WhatsApp Chat🔥. Let's make your Web page visitors contact you through 'WhatsA
 
 WhatsApp Chat. Let's make your Web page visitors contact you through "WhatsApp" or "WhatsApp Business" with a single click (WhatsApp Chat, Group).
 
-[Home](https://holithemes.com/plugins/click-to-chat/)  |  [Demo](https://holithemes.com/plugins/click-to-chat/list-of-styles/)  |  [Documentation](https://holithemes.com/plugins/click-to-chat/docs/)  |  [Support](https://holithemes.com/plugins/click-to-chat/support/)  |  [PRO](https://holithemes.com/plugins/click-to-chat/pricing/)
+[Home](https://holithemes.com/plugins/click-to-chat/)  |  [Demo](https://holithemes.com/plugins/click-to-chat/list-of-styles/)  |  [Documentation](https://holithemes.com/plugins/click-to-chat/docs/)  |  [Support](https://holithemes.com/plugins/click-to-chat/support/)  |  [PRO](https://holithemes.com/plugins/click-to-chat/pricing/?utm_source=ctc_main&utm_medium=wporg_readme&utm_campaign=pro_upgrade&utm_content=header)
 
 == WhatsApp Chat ==
 
@@ -235,11 +236,9 @@ Connect other applications using Integrate, Automation tools like Zapier, IFTTT,
     * Display greetings dynamically based on user actions such as 
         * Time: Time spent on the page, 
         * Scroll: Page scroll percentage, 
-        * Click: specific button clicks 
         * ViewPort: when an element becomes visible in the viewport.
 * Position to place
-    * Fixed: Fixed position on the screen (default position)
-    * Absolute: Fixed position to the body content. (Moves when the user scrolls the page)
+    * Absolute: Position relative to the content (body tag) and moves with page scroll
 * Time Delay & Scroll Delay: Display WhatsApp widget after a specified time delay or once the user scrolls a certain percentage of the page.
 * Display based on Website visitor's login status
 * Page-level settings: Fine-tune WhatsApp button behavior for individual pages. Change styles, time delays, scroll delay, Greetings Template, and Greetings Content
@@ -248,7 +247,7 @@ Connect other applications using Integrate, Automation tools like Zapier, IFTTT,
     * Overwrite settings for Shop, Checkout, and Account pages at page-level settings
 
 
-🔆 [PRO](https://holithemes.com/plugins/click-to-chat/pricing/)
+🔆 [PRO](https://holithemes.com/plugins/click-to-chat/pricing/?utm_source=ctc_main&utm_medium=wporg_readme&utm_campaign=pro_upgrade&utm_content=pro_section)
 
 == 🎯 Localization ==
 
@@ -285,10 +284,9 @@ PRO:
 
 * Time delay
 * Scroll delay
-* Selected time range in a day
-* Selected Days in a week
 * Website visitor login status
 * Website visitor country
+* Business hours: hide the widget outside your opening hours (time range in a day, days in a week)
 
 == ✅ Opt-in ==
 
@@ -556,6 +554,11 @@ Thank you for your support!
 
 == Changelog ==
 
+= 4.44 =
+* Enhancement: Admin live Preview the chat widget.
+* Enhancement: Settings pages load faster.
+* Enhancement: Clearer descriptions across the settings pages.
+
 = 4.43 =
 * New: Customize style and greetings settings inline directly within the style picker, eliminating the separate Customize tab.
 * Enhancement: Admin UI for a smoother experience.
@@ -605,6 +608,9 @@ Thank you for your support!
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)
 
 == Upgrade Notice ==
+
+= 4.44 =
+Enhancement: Admin live Preview the chat widget.
 
 = 4.43 =
 * New: Customize style and greetings settings inline directly within the style picker, eliminating the separate Customize tab.

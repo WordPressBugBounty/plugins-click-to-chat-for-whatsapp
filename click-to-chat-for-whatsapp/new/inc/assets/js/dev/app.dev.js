@@ -1446,6 +1446,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 							parameterKey = param.key;
 							parameterValue = param.value;
 						} else if ( typeof param === 'string' && isSafeObjectKey( param ) ) {
+							// const parameterDefinition = ctc_values[ param ];
 							const parameterDefinition = getSafeProperty( ctc_values, param );
 							if ( parameterDefinition && typeof parameterDefinition === 'object' ) {
 								parameterKey = parameterDefinition.key;
@@ -1642,6 +1643,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 								defKey = param.key;
 								defValue = param.value;
 							} else if ( typeof param === 'string' && isSafeObjectKey( param ) ) {
+								// const def = ctc_values[ param ];
 								const def = getSafeProperty( ctc_values, param );
 								if ( def && typeof def === 'object' ) {
 									defKey = def.key;
@@ -1713,6 +1715,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 								pixelParameterKey = param.key;
 								pixelParameterValue = param.value;
 							} else if ( typeof param === 'string' && isSafeObjectKey( param ) ) {
+								// const pixelParameterDefinition = ctc_values[ param ];
 								const pixelParameterDefinition = getSafeProperty(
 									ctc_values,
 									param,
@@ -1989,7 +1992,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 
 			// To solve CORS error: Use form-urlencoded even for 'json' format
 			// This makes it a "simple request" and avoids the preflight check.
-			// todo: json, else block produces same output will remove else. and if json checking.
+			// json, else block produces same output will remove else. and if json checking.
 			if ( 'json' === ctc.webhook_format ) {
 
 				// Convert to search params
@@ -2004,7 +2007,6 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 						params.append( key, ( typeof hookVal === 'object' ) ? JSON.stringify( hookVal ) : hookVal );
 					} );
 
-				// todo: test well..
 				// data = params;
 				data = params.toString();
 			} else {

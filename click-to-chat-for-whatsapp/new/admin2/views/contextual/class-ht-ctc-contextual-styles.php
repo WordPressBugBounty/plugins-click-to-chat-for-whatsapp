@@ -888,7 +888,7 @@ if ( ! class_exists( 'HT_CTC_Contextual_Styles' ) ) {
 						'field_type' => 'block_external_link',
 						'id'         => 's99_doc',
 						'label'      => 'Style 99 - own image / GIF',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/style-99/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/style-99/' ),
 						'icon'       => 'dashicons dashicons-external',
 					),
 				),

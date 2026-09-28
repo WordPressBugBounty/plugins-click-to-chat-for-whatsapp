@@ -514,10 +514,10 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 							// '%1$s <a target="_blank" href="%2$s">%3$s</a><br>%4$s - <a target="_blank" href="%5$s">%6$s</a><br>Display WhatsApp number input field using: <a href="%7$s">%8$s</a>',
 							array(
 								__( 'WhatsApp or WhatsApp business number with ', 'click-to-chat-for-whatsapp' ),
-								esc_url( 'https://holithemes.com/blog/country-codes/' ),
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/blog/country-codes/' ) ),
 								__( 'country code', 'click-to-chat-for-whatsapp' ),
 								__( '( E.g. 916123456789 - herein e.g. 91 is country code, 6123456789 is the mobile number )', 'click-to-chat-for-whatsapp' ),
-								esc_url( 'https://holithemes.com/plugins/click-to-chat/whatsapp-number/' ),
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/whatsapp-number/' ) ),
 								__( 'more info', 'click-to-chat-for-whatsapp' ),
 								// esc_url( admin_url( 'admin.php?page=click-to-chat&number-field=2' ) ),
 								// 'Intl input library',
@@ -546,7 +546,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 			 * while they are looking at the single number field. One quiet line
 			 * after the field - not a card, which would repeat what the PRO
 			 * widget in the sidebar already shows on this tab.
-			 * todo: improve the content, links
+			 * improve the content, links for multi-agent / random numbers note.
 			 */
 			// if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 			// $number_fields[] = array(
@@ -598,7 +598,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 			$values = array(
 				'field_type'     => 'card',
 				'title'          => __( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ),
-				'description'    => 'Set a pre-filled message that automatically appears in the WhatsApp chat window when a visitor clicks the chat button.',
+				'description'    => 'Set a pre-filled message that automatically appears in the WhatsApp chat window when a visitor clicks the chat widget.',
 				'data_watch'     => '#connection_type',
 				'data_show_when' => 'single',
 				'fields'         => array(
@@ -612,7 +612,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					array(
 						'field_type' => 'block_infobox',
 						// 'content'    => 'You can use variables like <code>{site_url}</code> and <code>{title}</code> in your message.',
-						'content'    => __( 'Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters', 'click-to-chat-for-whatsapp' ) . ' - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/docs/pre-filled-message/" class="external-link">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . ' <span class="dashicons dashicons-external"></span></a>',
+						'content'    => __( 'Text that is pre-filled in WhatsApp Chat window. Add variables {site}, {title}, {url}, [url] to replace with the site name, post title, current webpage URL and full URL including query parameters', 'click-to-chat-for-whatsapp' ) . ' - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/pre-filled-message/' ) ) . '" class="external-link">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . ' <span class="dashicons dashicons-external"></span></a>',
 						'class_pr'   => '',
 					),
 				),
@@ -652,7 +652,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/call-to-action/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/call-to-action/' ),
 						'label'      => __( 'Call to Action', 'click-to-chat-for-whatsapp' ),
 						'icon'       => 'dashicons dashicons-external',
 					),
@@ -684,7 +684,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					'%1$s (PRO)<br><a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 					array(
 						__( 'Absolute: Position relative to the content (body tag) and moves with page scroll', 'click-to-chat-for-whatsapp' ),
-						HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ),
+						esc_url( HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ) ),
 						__( 'more info', 'click-to-chat-for-whatsapp' ),
 					)
 				),
@@ -693,7 +693,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 			$values = array(
 				'field_type'     => 'card',
 				'title'          => 'Widget Style & Position',
-				'description'    => 'Choose how your chat button looks and where it appears',
+				'description'    => 'Choose how your chat widget looks and where it appears',
 				'data_watch'     => '#connection_type',
 				'data_show_when' => 'single',
 				'fields'         => array(
@@ -717,7 +717,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 										'options'      => $style_options,
 										'help'         => sprintf(
 											'<a target="_blank" href="%s" class="external-link">%s <span class="dashicons dashicons-external"></span></a>',
-											'https://holithemes.com/plugins/click-to-chat/list-of-styles/',
+											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
 											__( 'List of Styles', 'click-to-chat-for-whatsapp' )
 										),
 									),
@@ -786,7 +786,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 											'%1$s <a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											array(
 												__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
-												'https://holithemes.com/plugins/click-to-chat/position-to-place/',
+												esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/position-to-place/' ) ),
 												__( 'more info', 'click-to-chat-for-whatsapp' ),
 											)
 										),
@@ -899,7 +899,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 											'%1$s <a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											array(
 												__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
-												'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block',
+												esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ) ),
 												__( 'more info', 'click-to-chat-for-whatsapp' ),
 											)
 										),
@@ -914,7 +914,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 										'style'          => 'margin-top: 10px;',
 										'data_watch'     => '#mobile-style-tab #same_settings',
 										'data_hide_when' => '1',
-										'title'          => '<span class="not_samesettings select_styles_issue_description" style="font-size: 0.9em; display: inline;">If Styles for desktop, mobile not selected as expected <span style="color: #039be5; cursor: pointer;">Check this</span>, - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/select-styles/#styles-not-applied" class="external-link">more info <span class="dashicons dashicons-external"></span></a></span>',
+										'title'          => '<span class="not_samesettings select_styles_issue_description" style="font-size: 0.9em; display: inline;">If Styles for desktop, mobile not selected as expected <span style="color: #039be5; cursor: pointer;">Check this</span>, - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/select-styles/#styles-not-applied' ) ) . '" class="external-link">more info <span class="dashicons dashicons-external"></span></a></span>',
 										'fields'         => array(
 											array(
 												'field_type' => 'field_checkbox',
@@ -953,7 +953,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 				'fields'         => array(
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/url-structure/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/url-structure/' ),
 						'label'      => __( 'URL Structure', 'click-to-chat-for-whatsapp' ),
 					),
 					array(
@@ -1038,7 +1038,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/docs/custom-url/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/custom-url/' ),
 						'label'      => __( 'Custom URL', 'click-to-chat-for-whatsapp' ),
 					),
 				),
@@ -1060,7 +1060,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 						'icon'       => 'pointer-square',
 						'label'      => 'Custom Element',
 						'link'       => array(
-							'url'   => 'https://holithemes.com/plugins/click-to-chat/custom-element/',
+							'url'   => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/custom-element/' ),
 							'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
 						),
 						'content'    => sprintf(
@@ -1079,7 +1079,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 						'icon'       => 'code',
 						'label'      => 'Shortcode',
 						'link'       => array(
-							'url'   => 'https://holithemes.com/plugins/click-to-chat/shortcodes/',
+							'url'   => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/shortcodes/' ),
 							'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
 						),
 						'content'    => sprintf(
@@ -1087,7 +1087,7 @@ if ( ! class_exists( 'HT_CTC_Settings_General' ) ) {
 							<div class="ctc-feature-meta">
 								<div class="ctc-feature-meta-row"><span class="ctc-feature-meta-key">%2$s</span><code class="ctc-feature-code">[ht-ctc-chat]</code></div>
 							</div>',
-							'Display the chat button anywhere — paste this shortcode into any post, page, or widget area.',
+							'Display the chat widget anywhere — paste this shortcode into any post, page, or widget area.',
 							'Shortcode'
 						),
 					),

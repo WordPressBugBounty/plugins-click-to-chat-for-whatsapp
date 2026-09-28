@@ -97,6 +97,7 @@ const normalizeParamEntries = ( params ) => {
 		Object.keys( params )
 			.sort( ( prev, next ) => parseInt( prev ) - parseInt( next ) )
 			.forEach( ( key ) => {
+				// const data = params[ key ];
 				const data = getSafeProperty( params, key );
 				if ( data && typeof data === 'object' && data.key && data.value ) {
 					entries.push( { index: key, data } );
@@ -128,9 +129,12 @@ const createParameters = ( sectionConfig, config ) => {
 	placeholder.style.display = 'none';
 
 	const optionGroup = 'ht_ctc_othersettings';
+
+	// const options = config.initialSettings[ optionGroup ] || {};
 	const options = getSafeProperty( config.initialSettings, optionGroup ) || {};
 	const dbRow = optionGroup;
 
+	// const params = options[ sectionConfig.paramsKey ];
 	const params = getSafeProperty( options, sectionConfig.paramsKey );
 
 	// log( 'an', 'raw params', params );

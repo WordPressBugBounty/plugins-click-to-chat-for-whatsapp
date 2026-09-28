@@ -140,7 +140,7 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			// can leave the class present but missing a method the plugin calls, which
 			// would fatal with "call to undefined method" mid-render. If any required
 			// method is absent, bail so the site renders normally without the widget.
-			foreach ( array( 'get_request_var', 'get_option', 'load_file', 'load_class', 'debug_log', 'pro_url' ) as $required_util_method ) {
+			foreach ( array( 'get_request_var', 'get_option', 'load_file', 'load_class', 'debug_log', 'pro_url', 'doc_url' ) as $required_util_method ) {
 				if ( ! method_exists( 'HT_CTC_Utils', $required_util_method ) ) {
 					return;
 				}

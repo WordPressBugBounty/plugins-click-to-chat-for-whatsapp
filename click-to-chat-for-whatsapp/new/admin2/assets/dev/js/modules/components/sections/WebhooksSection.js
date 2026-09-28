@@ -41,6 +41,8 @@ export const createWebhooksParametersSection = ( field, context = document, conf
 	placeholder.style.display = 'none';
 
 	const optionGroup = 'ht_ctc_othersettings';
+
+	// const options = config.initialSettings[ optionGroup ] || {};
 	const options = getSafeProperty( config.initialSettings, optionGroup ) || {};
 	const dbRow = optionGroup;
 
@@ -54,6 +56,7 @@ export const createWebhooksParametersSection = ( field, context = document, conf
 			Object.keys( hookV )
 				.sort( ( prev, next ) => parseInt( prev ) - parseInt( next ) )
 				.forEach( key => {
+					// const val = hookV[ key ];
 					const val = getSafeProperty( hookV, key );
 					if ( val ) { values.push( val ); }
 				} );

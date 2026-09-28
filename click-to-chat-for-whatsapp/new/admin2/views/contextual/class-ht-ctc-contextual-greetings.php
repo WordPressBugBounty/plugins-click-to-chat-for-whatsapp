@@ -148,7 +148,7 @@ if ( ! class_exists( 'HT_CTC_Contextual_Greetings' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/docs/greetings-1/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/greetings-1/' ),
 						'label'      => 'Greetings-1',
 						'icon'       => 'dashicons dashicons-external',
 					),
@@ -191,7 +191,7 @@ if ( ! class_exists( 'HT_CTC_Contextual_Greetings' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/docs/greetings-2/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/greetings-2/' ),
 						'label'      => 'Greetings-2',
 						'icon'       => 'dashicons dashicons-external',
 					),

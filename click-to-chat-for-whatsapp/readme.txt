@@ -4,7 +4,7 @@ Tested up to: 7.1
 Requires PHP: 5.6
 Contributors: HoliThemes
 Donate link: https://holithemes.com/plugins/click-to-chat/pricing/
-Stable tag: 4.44
+Stable tag: 4.45
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -554,6 +554,9 @@ Thank you for your support!
 
 == Changelog ==
 
+= 4.45 =
+* Fix: Archive page titles and url in the greetings dialog and pre-filled message no longer include HTML markup.
+
 = 4.44 =
 * Enhancement: Admin live Preview the chat widget.
 * Enhancement: Settings pages load faster.
@@ -608,6 +611,9 @@ Thank you for your support!
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)
 
 == Upgrade Notice ==
+
+= 4.45 =
+Fix: Archive page titles and url in the greetings dialog no longer include HTML markup. Please update.
 
 = 4.44 =
 Enhancement: Admin live Preview the chat widget.

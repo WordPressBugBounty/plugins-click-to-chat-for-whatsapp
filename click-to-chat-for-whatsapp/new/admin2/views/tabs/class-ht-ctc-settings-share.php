@@ -272,7 +272,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 							'%1$s - <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 							array(
 								__( 'Placeholder {{url}} returns current webpage URL', 'click-to-chat-for-whatsapp' ),
-								'https://holithemes.com/plugins/click-to-chat/share-text/',
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/share-text/' ) ),
 								__( 'more info', 'click-to-chat-for-whatsapp' ),
 							)
 						),
@@ -287,7 +287,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 							'%1$s - <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 							array(
 								__( 'Text that appears along with WhatsApp icon/button', 'click-to-chat-for-whatsapp' ),
-								'https://holithemes.com/plugins/click-to-chat/call-to-action/',
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/call-to-action/' ) ),
 								__( 'more info', 'click-to-chat-for-whatsapp' ),
 							)
 						),
@@ -303,7 +303,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 							'%1$s - <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 							array(
 								__( 'If checked opens Web.WhatsApp directly on Desktop and in mobile WhatsApp App', 'click-to-chat-for-whatsapp' ),
-								'https://holithemes.com/plugins/click-to-chat/web-whatsapp/',
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/web-whatsapp/' ) ),
 								__( 'more info', 'click-to-chat-for-whatsapp' ),
 							)
 						),
@@ -328,7 +328,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 					'%1$s (PRO)<br><a target="_blank" rel="noopener" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 					array(
 						__( 'Absolute: Position relative to the content (body tag) and moves with page scroll', 'click-to-chat-for-whatsapp' ),
-						HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ),
+						esc_url( HT_CTC_Utils::pro_url( 'inline', 'position_absolute', 'https://holithemes.com/plugins/click-to-chat/position-to-place/#pro_block' ) ),
 						__( 'more info', 'click-to-chat-for-whatsapp' ),
 					)
 				),
@@ -410,7 +410,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 										'help'         => sprintf(
 											'%1$s - <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
-											'https://holithemes.com/plugins/click-to-chat/position-to-place/',
+											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/position-to-place/' ) ),
 											__( 'more info', 'click-to-chat-for-whatsapp' )
 										),
 									),
@@ -507,7 +507,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 										'help'           => sprintf(
 											'%1$s - <a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 											__( 'Add css units as suffix - e.g. 10px, 50%', 'click-to-chat-for-whatsapp' ),
-											'https://holithemes.com/plugins/click-to-chat/position-to-place/',
+											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/position-to-place/' ) ),
 											__( 'more info', 'click-to-chat-for-whatsapp' )
 										),
 									),
@@ -521,7 +521,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 										'style'          => 'margin-top: 10px;',
 										'data_watch'     => '#share-mobile-style-tab #same_settings',
 										'data_hide_when' => '1',
-										'title'          => '<span class="not_samesettings select_styles_issue_description" style="font-size: 0.9em; display: inline;">If Styles for desktop, mobile not selected as expected <span style="color: #039be5; cursor: pointer;">Check this</span>, - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/select-styles/#styles-not-applied" class="external-link">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . ' <span class="dashicons dashicons-external"></span></a></span>',
+										'title'          => '<span class="not_samesettings select_styles_issue_description" style="font-size: 0.9em; display: inline;">If Styles for desktop, mobile not selected as expected <span style="color: #039be5; cursor: pointer;">Check this</span>, - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/select-styles/#styles-not-applied' ) ) . '" class="external-link">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . ' <span class="dashicons dashicons-external"></span></a></span>',
 										// 'title'          => '<span class="not_samesettings select_styles_issue_description" style="font-size: 0.9em; display: inline;">If the selected styles are not appearing correctly due to caching <span style="color: #039be5; cursor: pointer;">Enable this option</span> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/select-styles/#styles-not-applied" class="external-link">more info <span class="dashicons dashicons-external"></span></a></span>',
 										'fields'         => array(
 											array(
@@ -647,7 +647,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 				array(
 					'field_type' => 'block_external_link',
 					'title'      => '',
-					'url'        => 'https://holithemes.com/plugins/click-to-chat/docs/show-hide-styles/',
+					'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/show-hide-styles/' ),
 					'label'      => __( 'Display Settings', 'click-to-chat-for-whatsapp' ),
 				),
 			);
@@ -679,7 +679,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Share' ) ) {
 						'icon'       => 'code',
 						'label'      => 'Shortcode',
 						'content'    => sprintf(
-							'%1$s: <code class="ctc-feature-code">[ht-ctc-share]</code> - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/shortcodes-share/" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a>',
+							'%1$s: <code class="ctc-feature-code">[ht-ctc-share]</code> - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/shortcodes-share/' ) ) . '" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a>',
 							__( 'Shortcodes for Share', 'click-to-chat-for-whatsapp' ),
 							__( 'more info', 'click-to-chat-for-whatsapp' )
 						),

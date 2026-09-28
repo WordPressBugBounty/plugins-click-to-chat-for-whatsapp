@@ -145,6 +145,9 @@ if ( ! class_exists( 'HT_CTC' ) ) {
 			// Settings page link.
 			add_filter( 'plugin_action_links_' . HT_CTC_PLUGIN_BASENAME, array( 'HT_CTC_Register', 'plugin_action_links' ) );
 
+			// Fresh activation - open the settings page once.
+			add_action( 'admin_init', array( 'HT_CTC_Register', 'activation_redirect' ) );
+
 			// When plugin updated - check version diff.
 			add_action( 'plugins_loaded', array( 'HT_CTC_Register', 'version_check' ) );
 		}

@@ -1309,7 +1309,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Other_Settings' ) ) {
 			</div>
 		</details>
 
-		<!-- todo: have to add or not.. ? -->
+		<!-- JavaScript loading setting (Normal, Async, Defer) -->
 		<details class="ctc_details">
 			<summary style="cursor:pointer;">JavaScript</summary>
 			<div class="m_side_15 m_top_5">

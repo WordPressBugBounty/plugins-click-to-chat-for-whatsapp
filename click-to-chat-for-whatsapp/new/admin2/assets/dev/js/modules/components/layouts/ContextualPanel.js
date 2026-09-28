@@ -327,6 +327,7 @@ export const showContextualPanel = async (
 		return false;
 	}
 
+	// const contextualConfig = contextualGroupData[ contextualId ];
 	const contextualConfig = getSafeProperty( contextualGroupData, contextualId, null );
 	const fields = contextualConfig ? contextualConfig.fields : null;
 

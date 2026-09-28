@@ -65,7 +65,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 						'field_type'   => 'field_checkbox',
 						'id'           => 'g_an',
 						'label'        => __( 'Google Analytics', 'click-to-chat-for-whatsapp' ),
-						'help'         => __( 'If Google Analytics installed creates an Event there', 'click-to-chat-for-whatsapp' ) . ' - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/google-analytics/">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . '</a>',
+						'help'         => __( 'If Google Analytics installed creates an Event there', 'click-to-chat-for-whatsapp' ) . ' - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/google-analytics/' ) ) . '">' . __( 'more info', 'click-to-chat-for-whatsapp' ) . '</a>',
 						'value'        => 'ga4',
 						'option_group' => 'ht_ctc_othersettings',
 					),
@@ -141,7 +141,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							'%1$s - <a target="_blank" href="%2$s">%3$s</a><br>',
 							array(
 								__( 'Create Event from Google Tag manager (GTM)', 'click-to-chat-for-whatsapp' ),
-								esc_url( 'https://holithemes.com/plugins/click-to-chat/create-event-from-google-tag-manager-using-datalayer-send-to-google-analytics/' ),
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/create-event-from-google-tag-manager-using-datalayer-send-to-google-analytics/' ) ),
 								__( 'dataLayer', 'click-to-chat-for-whatsapp' ),
 							)
 						),
@@ -211,7 +211,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							'%1$s - <a target="_blank" href="%2$s">%3$s</a><br>',
 							array(
 								__( 'If Meta Pixel installed creates an Event there', 'click-to-chat-for-whatsapp' ),
-								esc_url( 'https://holithemes.com/plugins/click-to-chat/facebook-pixel/' ),
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/facebook-pixel/' ) ),
 								__( 'more info', 'click-to-chat-for-whatsapp' ),
 							)
 						),
@@ -394,14 +394,14 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							array(
 								__( 'Integrate, Automation', 'click-to-chat-for-whatsapp' ),
 								__( 'using', 'click-to-chat-for-whatsapp' ),
-								'https://holithemes.com/plugins/click-to-chat/webhooks/',
+								esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/webhooks/' ) ),
 								__( 'Webhooks', 'click-to-chat-for-whatsapp' ),
 							)
 						),
 					),
 					array(
 						'field_type' => 'block_content',
-						'content'    => '<p class="description" style="margin:10px 0px;">To get the greetings form data, use the <a href="https://holithemes.com/plugins/click-to-chat/docs/greetings-form#webhooks" target="_blank">Greetings Form webhook</a> feature.</p>',
+						'content'    => '<p class="description" style="margin:10px 0px;">To get the greetings form data, use the <a href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/greetings-form#webhooks' ) ) . '" target="_blank">Greetings Form webhook</a> feature.</p>',
 					),
 					array(
 						'field_type'   => 'field_text',
@@ -474,7 +474,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							'session' => 'One click per session',
 						),
 						'default'      => 'all',
-						'help'         => '<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/analytics-count/">Analytics Count</a>',
+						'help'         => '<a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/analytics-count/' ) ) . '">Analytics Count</a>',
 					),
 					array(
 						'field_type'  => 'block_feature_box',
@@ -484,7 +484,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 						'badge'       => 'Info',
 						'badge_class' => 'interaction',
 						'link'        => array(
-							'url'   => 'https://holithemes.com/plugins/click-to-chat/analytics/',
+							'url'   => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/analytics/' ),
 							'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
 						),
 						'content'     => '<p class="ctc-feature-text">'
@@ -585,7 +585,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							'badge_class' => 'pro',
 							// todo: confirm the docs URL for URL-parameter values.
 							'link'        => array(
-								'url'   => 'https://holithemes.com/plugins/click-to-chat/analytics/',
+								'url'   => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/analytics/' ),
 								'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
 							),
 							'content'     => '<p class="ctc-feature-text">'
@@ -600,7 +600,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Analytics' ) ) {
 							'badge_class' => 'pro',
 							// todo: confirm the docs URL for cookie values.
 							'link'        => array(
-								'url'   => 'https://holithemes.com/plugins/click-to-chat/analytics/',
+								'url'   => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/analytics/' ),
 								'label' => __( 'more info', 'click-to-chat-for-whatsapp' ),
 							),
 							'content'     => '<p class="ctc-feature-text">'

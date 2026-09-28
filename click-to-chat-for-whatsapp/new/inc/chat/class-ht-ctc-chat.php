@@ -166,7 +166,7 @@ if ( ! class_exists( 'HT_CTC_Chat' ) ) {
 				} elseif ( function_exists( 'is_tax' ) && function_exists( 'single_term_title' ) && is_tax() ) {
 					$post_title = single_term_title( '', false );
 				} elseif ( function_exists( 'get_the_archive_title' ) ) {
-						$post_title = get_the_archive_title();
+					$post_title = esc_html( wp_strip_all_tags( get_the_archive_title() ) );
 				}
 			}
 

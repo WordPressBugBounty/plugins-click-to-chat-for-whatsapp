@@ -15,7 +15,7 @@ $greetings  = HT_CTC_Utils::get_option( 'ht_ctc_greetings_options' );
 
 
 // $ht_ctc_greetings['main_content'] = apply_filters( 'the_content', $ht_ctc_greetings['main_content'] );
-$ht_ctc_greetings['main_content'] = do_shortcode( $ht_ctc_greetings['main_content'] );
+// main_content shortcodes are processed in HT_CTC_Chat_Greetings (single sink); do not call do_shortcode() here.
 
 // css
 $main_css   = 'padding: 18px 20px 15px 20px;';

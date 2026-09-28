@@ -105,7 +105,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/animations/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/animations/' ),
 						'label'      => __( 'Animations', 'click-to-chat-for-whatsapp' ),
 						'icon'       => 'dashicons dashicons-external',
 					),
@@ -223,7 +223,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/notification-badge/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/notification-badge/' ),
 						'label'      => __( 'Notification Badge', 'click-to-chat-for-whatsapp' ),
 						'icon'       => 'dashicons dashicons-external',
 					),
@@ -251,7 +251,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					),
 					array(
 						'field_type' => 'block_external_link',
-						'url'        => 'https://holithemes.com/plugins/click-to-chat/custom-css/',
+						'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/custom-css/' ),
 						'label'      => 'CSS Code',
 						'icon'       => 'dashicons dashicons-external',
 					),
@@ -280,7 +280,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 						'help'         => sprintf(
 							'%1$s - <br><a target="_blank" href="%2$s" class="external-link">%3$s <span class="dashicons dashicons-external"></span></a>',
 							__( 'z-index value for the chat widget to ensure proper stacking and visibility', 'click-to-chat-for-whatsapp' ),
-							'https://holithemes.com/plugins/click-to-chat/z-index/',
+							esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/z-index/' ) ),
 							__( 'more info', 'click-to-chat-for-whatsapp' )
 						),
 					),
@@ -346,7 +346,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					'id'           => 'amp',
 					'label'        => __( 'AMP Compatibility', 'click-to-chat-for-whatsapp' ),
 					'option_group' => 'ht_ctc_othersettings',
-					'help'         => 'If any issue, uncheck this option and please contact us - <a target="_blank" href="https://holithemes.com/plugins/click-to-chat/amp-compatibility/" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
+					'help'         => 'If any issue, uncheck this option and please contact us - <a target="_blank" href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/amp-compatibility/' ) ) . '" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
 				);
 			}
 
@@ -360,7 +360,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					'get_footer' => 'get_footer',
 					'wp_head'    => 'wp_head',
 				),
-				'help'         => 'If the chat widget is not working with the wp_footer hook, change to get_footer or wp_head - <a href="https://holithemes.com/plugins/click-to-chat/chat-load-hook/" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
+				'help'         => 'If the chat widget is not working with the wp_footer hook, change to get_footer or wp_head - <a href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/chat-load-hook/' ) ) . '" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
 			);
 
 			$fields[] = array(
@@ -374,7 +374,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					'defer' => 'Defer',
 					'async' => 'Async',
 				),
-				'help'         => 'Async: load js files asynchronously <br> Defer: load asynchronously and execute after the DOM is loaded -<a href="https://holithemes.com/plugins/click-to-chat/docs/load-javascript-files/" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>.',
+				'help'         => 'Async: load js files asynchronously <br> Defer: load asynchronously and execute after the DOM is loaded -<a href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/load-javascript-files/' ) ) . '" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>.',
 			);
 
 			$fields[] = array(
@@ -388,7 +388,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 					'a'      => 'Link',
 				),
 				'help'         => '(Beta Stage)',
-				'help_click'   => 'Some click tracking tools only detect clicks on link or button elements. This option provides compatibility with those tools. <br><br> <strong>Default:</strong> The widget works as usual. Recommended if no special click tracking tools are in use. <br> <strong>Button (recommended for tracking):</strong> Renders the click surface as a button element — widely detected by click tracking tools. <br> <strong>Link:</strong> Renders it as a link element. Note: For privacy, the WhatsApp link is created at click time, so the element itself has no URL — tools that expect a URL on the link may not record these clicks. <br><br> Applies to the main click surfaces — the chat button and the greetings call-to-action. Shortcodes and custom placements keep their own markup. - <a href="https://holithemes.com/plugins/click-to-chat/analytics/" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
+				'help_click'   => 'Some click tracking tools only detect clicks on link or button elements. This option provides compatibility with those tools. <br><br> <strong>Default:</strong> The widget works as usual. Recommended if no special click tracking tools are in use. <br> <strong>Button (recommended for tracking):</strong> Renders the click surface as a button element — widely detected by click tracking tools. <br> <strong>Link:</strong> Renders it as a link element. Note: For privacy, the WhatsApp link is created at click time, so the element itself has no URL — tools that expect a URL on the link may not record these clicks. <br><br> Applies to the main click surfaces — the chat widget and the greetings call-to-action. Shortcodes and custom placements keep their own markup. - <a href="' . esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/analytics/' ) ) . '" target="_blank" class="external-link">more info <span class="dashicons dashicons-external"></span></a>',
 			);
 
 			$fields[] = array(
@@ -442,7 +442,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 				'field_type' => 'block_content',
 				'content'    => sprintf(
 					'<p>Any issues related to the Click to Chat plugin? Please <br><a href="%1$s" target="_blank" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a></p>',
-					'https://holithemes.com/plugins/click-to-chat/support',
+					esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/support' ) ),
 					__( 'Contact Us', 'click-to-chat-for-whatsapp' )
 				),
 			);

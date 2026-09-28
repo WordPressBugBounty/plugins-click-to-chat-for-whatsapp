@@ -220,14 +220,14 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 					'content'    => vsprintf(
 						'At <a target="_blank" href="%1$s" class="external-link">%2$s %3$s <span class="dashicons dashicons-external"></span></a> can overwrite: %4$s, %5$s, %6$s, %7$s. <br>(<a target="_blank" href="%8$s" class="external-link">PRO <span class="dashicons dashicons-external"></span></a>: Greetings, Style, %9$s)',
 						array(
-							'https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/',
+							esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/' ) ),
 							__( 'Page level', 'click-to-chat-for-whatsapp' ),
 							__( 'Settings', 'click-to-chat-for-whatsapp' ),
 							__( 'Number', 'click-to-chat-for-whatsapp' ),
 							__( 'Call to Action', 'click-to-chat-for-whatsapp' ),
 							__( 'Pre-filled Message', 'click-to-chat-for-whatsapp' ),
 							__( 'Display Settings', 'click-to-chat-for-whatsapp' ),
-							HT_CTC_Utils::pro_url( 'inline', 'woo_page_level' ),
+							esc_url( HT_CTC_Utils::pro_url( 'inline', 'woo_page_level' ) ),
 							__( 'Time, Scroll Delay', 'click-to-chat-for-whatsapp' ),
 						)
 					),
@@ -278,7 +278,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 										array(
 											'field_type' => 'block_external_link',
 											'id'         => 'woo_single_product_pages_doc',
-											'url'        => 'https://holithemes.com/plugins/click-to-chat/woocommerce-single-product-pages/',
+											'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/woocommerce-single-product-pages/' ),
 											'label'      => 'WooCommerce Single Product pages',
 											// 'label'      => 'View Documentation'
 										),
@@ -365,7 +365,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 									array(
 										'field_type' => 'block_external_link',
 										'id'         => 'woo_single_product_pages',
-										'url'        => 'https://holithemes.com/plugins/click-to-chat/add-whatsapp-in-woocommerce-single-product-pages/',
+										'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/add-whatsapp-in-woocommerce-single-product-pages/' ),
 										'label'      => 'Add WhatsApp in WooCommerce Single Product pages',
 									),
 									array(
@@ -399,7 +399,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 										'options'        => $style_options,
 										'help'           => sprintf(
 											'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a> <br> <strong>%3$s: 1, 4, 8</strong>',
-											'https://holithemes.com/plugins/click-to-chat/list-of-styles/',
+											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
 											__( 'List of Styles', 'click-to-chat-for-whatsapp' ),
 											'Recommended Styles'
 										),
@@ -464,7 +464,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 										'field_type' => 'block_external_link',
 										'id'         => 'woo_shop_page',
 										'label'      => 'WooCommerce Shop page',
-										'url'        => 'https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/',
+										'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/whatsapp-chat-in-woocommerce-shop-page/' ),
 									),
 									// filed_type: block_variables
 									self::variables_reference(),
@@ -518,7 +518,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 													'options' => $style_options,
 													'help' => sprintf(
 														'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a> <br> <strong>%3$s: 1, 8</strong>',
-														'https://holithemes.com/plugins/click-to-chat/list-of-styles/',
+														esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
 														__( 'List of Styles', 'click-to-chat-for-whatsapp' ),
 														'Recommended Styles'
 													),

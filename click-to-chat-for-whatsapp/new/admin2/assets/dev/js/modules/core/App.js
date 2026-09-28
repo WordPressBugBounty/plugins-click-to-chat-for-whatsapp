@@ -87,6 +87,7 @@ export default class App {
 				}
 
 				// Drop PHP-preloaded window global copy.
+				// window[ prefix ] = undefined;
 				Utils.setSafeProperty( window, prefix, undefined );
 			} catch ( error ) {
 				log( 'App', `Error clearing fields cache for ${group}`, error );
@@ -142,6 +143,7 @@ export default class App {
 	 * @param {Function} rendererFn Renderer function generating HTML.
 	 */
 	registerRenderer ( type, rendererFn ) {
+		// this.renderers[ type ] = rendererFn;
 		Utils.setSafeProperty( this.renderers, type, rendererFn );
 	}
 
@@ -213,6 +215,7 @@ export default class App {
 	 * @returns {Array|Object|null} Cached fields, or null on miss.
 	 */
 	getCachedFields ( cacheKey, windowKey ) {
+		// const preloaded = window[ windowKey ];
 		const preloaded = Utils.getSafeProperty( window, windowKey );
 		if ( preloaded ) { return preloaded; }
 
@@ -277,6 +280,7 @@ export default class App {
 		groups.forEach( group => {
 			const forGroup = request
 				.then( all => {
+					// const fields = all[ group ];
 					const fields = Utils.getSafeProperty( all, group );
 					if ( ! fields ) {
 						const msg = `Settings fields for "${ group }" were not returned by server.`;
@@ -438,6 +442,7 @@ export default class App {
 				const max = Math.min( index + chunkSize, totalFields );
 
 				for ( ; index < max; index++ ) {
+					// const field = fieldsToRender[ index ];
 					const field = Utils.getSafeProperty( fieldsToRender, String( index ) );
 					const el = this.createFieldElement( field );
 
@@ -546,6 +551,7 @@ export default class App {
 	runModuleMethod ( moduleObj, moduleConf, context, key ) {
 		if ( ! moduleObj || ! moduleConf.method ) { return; }
 		try {
+			// const methodFn = moduleObj[ moduleConf.method ];
 			const methodFn = Utils.getSafeProperty( moduleObj, moduleConf.method );
 			if ( typeof methodFn === 'function' ) {
 				methodFn( moduleConf.arg || context, context, this );

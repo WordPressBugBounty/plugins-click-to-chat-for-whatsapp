@@ -448,7 +448,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Customize' ) ) {
 							's99_doc',
 							'Style 99 - own image / GIF',
 							array(
-								'url'  => 'https://holithemes.com/plugins/click-to-chat/style-99/',
+								'url'  => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/style-99/' ),
 								'icon' => 'dashicons dashicons-external',
 							),
 						),

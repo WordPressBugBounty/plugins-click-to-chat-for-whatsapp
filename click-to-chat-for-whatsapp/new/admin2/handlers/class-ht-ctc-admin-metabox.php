@@ -103,7 +103,7 @@ if ( ! class_exists( 'HT_CTC_Admin_MetaBox' ) ) {
 
 		<p class="description">
 			<?php esc_html_e( 'Change values at', 'click-to-chat-for-whatsapp' ); ?>
-			<a target="_blank" href="https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/">
+			<a target="_blank" href="<?php echo esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/change-values-at-page-level/' ) ); ?>">
 				<?php esc_html_e( 'Page level', 'click-to-chat-for-whatsapp' ); ?>
 			</a>
 		</p>
@@ -215,7 +215,7 @@ if ( ! class_exists( 'HT_CTC_Admin_MetaBox' ) ) {
 				<label for="number"><?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?></label>
 				<input type="text" id="number" name="ht_ctc_pagelevel[number]" value="<?php echo esc_attr( $number ); ?>" placeholder="<?php echo esc_attr( $ph_number ); ?>">
 				<p class="ht-ctc-meta-description">
-					<a href="https://holithemes.com/plugins/click-to-chat/whatsapp-number/" target="_blank">
+					<a href="<?php echo esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/whatsapp-number/' ) ); ?>" target="_blank">
 						<?php esc_html_e( 'WhatsApp Number', 'click-to-chat-for-whatsapp' ); ?>
 					</a> <?php esc_html_e( 'with country code', 'click-to-chat-for-whatsapp' ); ?>
 				</p>

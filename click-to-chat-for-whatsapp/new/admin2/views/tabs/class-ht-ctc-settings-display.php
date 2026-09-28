@@ -239,14 +239,14 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 					'title'       => 'Page/Category Lists',
 					'description' => 'Specify individual pages (by ID) or categories (by name)',
 				),
-				self::list_field( sprintf( '%1$s (by ID)', __( 'Hide on this pages', 'click-to-chat-for-whatsapp' ) ), 'list_hideon_pages', 'Enter page IDs where you want to hide the chat button', '#global_display_show', 'show' ),
-				self::list_field( sprintf( '%1$s (by name)', __( 'Hide on this Category posts', 'click-to-chat-for-whatsapp' ) ), 'list_hideon_cat', 'Enter category names where you want to hide the chat button', '#global_display_show', 'show' ),
-				self::list_field( sprintf( '%1$s (by ID)', __( 'Show on this pages', 'click-to-chat-for-whatsapp' ) ), 'list_showon_pages', 'Enter page IDs where you want to show the chat button', '#global_display_hide', 'hide' ),
-				self::list_field( sprintf( '%1$s (by name)', __( 'Show on this Category posts', 'click-to-chat-for-whatsapp' ) ), 'list_showon_cat', 'Enter category names where you want to show the chat button', '#global_display_hide', 'hide' ),
+				self::list_field( sprintf( '%1$s (by ID)', __( 'Hide on this pages', 'click-to-chat-for-whatsapp' ) ), 'list_hideon_pages', 'Enter page IDs where you want to hide the chat widget', '#global_display_show', 'show' ),
+				self::list_field( sprintf( '%1$s (by name)', __( 'Hide on this Category posts', 'click-to-chat-for-whatsapp' ) ), 'list_hideon_cat', 'Enter category names where you want to hide the chat widget', '#global_display_show', 'show' ),
+				self::list_field( sprintf( '%1$s (by ID)', __( 'Show on this pages', 'click-to-chat-for-whatsapp' ) ), 'list_showon_pages', 'Enter page IDs where you want to show the chat widget', '#global_display_hide', 'hide' ),
+				self::list_field( sprintf( '%1$s (by name)', __( 'Show on this Category posts', 'click-to-chat-for-whatsapp' ) ), 'list_showon_cat', 'Enter category names where you want to show the chat widget', '#global_display_hide', 'hide' ),
 				array(
 					'field_type' => 'block_external_link',
 					'title'      => '',
-					'url'        => 'https://holithemes.com/plugins/click-to-chat/docs/show-hide-styles/',
+					'url'        => HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/docs/show-hide-styles/' ),
 					'label'      => __( 'Display Settings', 'click-to-chat-for-whatsapp' ),
 				),
 			);
@@ -335,7 +335,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 				/*
 				 * One teaser per capability PRO actually adds to THIS card
 				 * (country, login status, delay triggers). The ids and copy
-				 * follow the PRO tab catalogue in views/panels/pro-features.php,
+				 * follow the PRO tab catalogue in views/panels/class-ht-ctc-pro-features-panel.php,
 				 * so the same feature is described the same way wherever it is
 				 * promoted.
 				 */

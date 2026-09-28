@@ -55,6 +55,8 @@ export default class FormValues {
 	 */
 	groupValues ( group ) {
 		let merged = {};
+
+		// const saved = this.initialSettings?.[ group ];
 		const saved = getSafeProperty( this.initialSettings || {}, group );
 		if ( saved && typeof saved === 'object' ) {
 			try {
@@ -90,12 +92,17 @@ export default class FormValues {
 				keys.forEach( ( key, index ) => {
 					const isLast = index === keys.length - 1;
 					if ( isLast && ! isArrayField ) {
+						// target[ key ] = value;
 						setSafeProperty( target, key, value );
 						return;
 					}
+
+					// let next = target[ key ];
 					let next = getSafeProperty( target, key );
 					if ( ! next || typeof next !== 'object' ) {
 						next = ( isLast && isArrayField ) ? [] : {};
+
+						// target[ key ] = next;
 						setSafeProperty( target, key, next );
 					}
 					target = next;
@@ -110,12 +117,16 @@ export default class FormValues {
 		const deepMerge = ( target, source ) => {
 			Object.keys( source )
 				.forEach( ( key ) => {
+					// const value = source[ key ];
 					const value = getSafeProperty( source, key );
+
+					// const existing = target[ key ];
 					const existing = getSafeProperty( target, key );
 					if ( value !== null && typeof value === 'object' && ! Array.isArray( value ) &&
 						existing !== null && typeof existing === 'object' && ! Array.isArray( existing ) ) {
 						deepMerge( existing, value );
 					} else {
+						// target[ key ] = value;
 						setSafeProperty( target, key, value );
 					}
 				} );

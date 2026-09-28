@@ -73,6 +73,8 @@ const bindAction = ( eventType, attrName ) => {
 		}
 
 		const actionName = actionElement.getAttribute( attrName );
+
+		// const actionHandler = ActionRegistry[ actionName ];
 		const actionHandler = getSafeProperty( ActionRegistry, actionName );
 
 		if ( typeof actionHandler === 'function' ) {

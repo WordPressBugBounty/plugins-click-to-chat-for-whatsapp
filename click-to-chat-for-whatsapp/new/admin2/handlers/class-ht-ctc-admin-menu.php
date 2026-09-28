@@ -40,6 +40,18 @@ if ( ! class_exists( 'HT_CTC_Admin_Menu' ) ) {
 				array( $this, 'main_settings_page' ),
 				$icon
 			);
+
+			// // todo: at first itself displaying this might not be a good idea?.
+			// // Upgrade link.
+			// if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
+			// add_submenu_page(
+			// 'click-to-chat',
+			// 'Upgrade to PRO',
+			// '<span class="dashicons dashicons-star-filled" aria-hidden="true" style="color: #fbbf24; font-size: 16px; width: 16px; height: 16px; margin-right: 4px; vertical-align: text-bottom;"></span><span style="font-weight: 600;">Upgrade to PRO</span>',
+			// 'manage_options',
+			// esc_url( HT_CTC_Utils::pro_url( 'menu' ) )
+			// );
+			// }
 		}
 
 		/**

@@ -105,25 +105,29 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 				$post_title = esc_html( get_the_title() );
 			} elseif ( is_archive() ) {
 
-				if ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+				// Archive URL via get_pagenum_link() - built from the current request (query string
+				// included) and escaped; falls back to the sanitized request.
+				$page_url = get_pagenum_link( max( 1, (int) get_query_var( 'paged' ) ) );
+
+				if ( empty( $page_url ) && isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) {
 					$protocol    = ( isset( $_SERVER['HTTPS'] ) && 'on' === $_SERVER['HTTPS'] ) ? 'https' : 'http';
 					$http_host   = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
 					$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-					$page_url    = $protocol . '://' . $http_host . $request_uri;
+					$page_url    = esc_url_raw( $protocol . '://' . $http_host . $request_uri );
 				}
 
 				if ( is_category() ) {
-					$post_title = single_cat_title( '', false );
+					$post_title = esc_html( single_cat_title( '', false ) );
 				} elseif ( is_tag() ) {
-					$post_title = single_tag_title( '', false );
+					$post_title = esc_html( single_tag_title( '', false ) );
 				} elseif ( is_author() ) {
-					$post_title = get_the_author();
+					$post_title = esc_html( get_the_author() );
 				} elseif ( is_post_type_archive() ) {
-					$post_title = post_type_archive_title( '', false );
+					$post_title = esc_html( post_type_archive_title( '', false ) );
 				} elseif ( function_exists( 'is_tax' ) && function_exists( 'single_term_title' ) && is_tax() ) {
-					$post_title = single_term_title( '', false );
+					$post_title = esc_html( single_term_title( '', false ) );
 				} elseif ( function_exists( 'get_the_archive_title' ) ) {
-						$post_title = get_the_archive_title();
+					$post_title = esc_html( wp_strip_all_tags( get_the_archive_title() ) );
 				}
 			}
 
@@ -205,7 +209,8 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			}
 
 			// path to greetings template
-			$ht_ctc_greetings['path'] = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/' . $ht_ctc_greetings['greetings_template'] . '.php';
+			$ht_ctc_greetings['greetings_template'] = sanitize_file_name( $ht_ctc_greetings['greetings_template'] );
+			$ht_ctc_greetings['path']               = plugin_dir_path( HT_CTC_PLUGIN_FILE ) . 'new/inc/greetings/' . $ht_ctc_greetings['greetings_template'] . '.php';
 
 			// filter hook to update values...
 			$ht_ctc_greetings = apply_filters( 'ht_ctc_fh_greetings', $ht_ctc_greetings );
@@ -221,6 +226,8 @@ if ( ! class_exists( 'HT_CTC_Chat_Greetings' ) ) {
 			}
 			if ( '' !== $ht_ctc_greetings['main_content'] ) {
 				$ht_ctc_greetings['main_content'] = html_entity_decode( wp_kses( $ht_ctc_greetings['main_content'], $allowed_html ) );
+				// Single sink: process shortcodes on admin content prior to placeholder substitution.
+				$ht_ctc_greetings['main_content'] = do_shortcode( $ht_ctc_greetings['main_content'] );
 				$ht_ctc_greetings['main_content'] = str_replace( array( '{url}', '{title}', '{site}' ), array( $page_url, $post_title, HT_CTC_BLOG_NAME ), $ht_ctc_greetings['main_content'] );
 			}
 			if ( '' !== $ht_ctc_greetings['bottom_content'] ) {

@@ -19,7 +19,7 @@ $g_header_image_filename = 'header-image';
 $is_demo_page            = 'no';
 
 // $ht_ctc_greetings['main_content'] = apply_filters( 'the_content', $ht_ctc_greetings['main_content'] );
-$ht_ctc_greetings['main_content'] = do_shortcode( $ht_ctc_greetings['main_content'] );
+// main_content shortcodes are processed in HT_CTC_Chat_Greetings (single sink); do not call do_shortcode() here.
 
 // css
 $header_css = 'display: flex; align-items: center; padding: 12px 25px 12px 25px;';

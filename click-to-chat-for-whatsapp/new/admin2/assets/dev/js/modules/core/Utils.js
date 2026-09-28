@@ -309,6 +309,7 @@ export const getNestedValue = ( obj, optionGroup, fieldId ) => {
 
 	let current = obj;
 	for ( const key of keys ) {
+		// current = current[ key ];
 		current = getSafeProperty( current, key );
 		if ( ! current ) { return ''; }
 	}
@@ -327,11 +328,15 @@ export const setNestedValue = ( obj, keys, value ) => {
 	let current = obj;
 	keys.forEach( ( key, index ) => {
 		if ( index === keys.length - 1 ) {
+			// current[ key ] = value;
 			setSafeProperty( current, key, value );
 		} else {
+			// if ( ! current[ key ] ) { current[ key ] = {}; }
 			if ( ! getSafeProperty( current, key ) ) {
 				setSafeProperty( current, key, {} );
 			}
+
+			// current = current[ key ];
 			current = getSafeProperty( current, key );
 		}
 	} );
@@ -371,6 +376,7 @@ export const applyVariables = ( content, variables = true ) => {
 	// 2. Resolve global runtime variables
 	if ( variables ) {
 		result = result.replace( /\{(\w+)\}/g, ( match, key ) => {
+			// const val = runtime[ key ];
 			const val = getSafeProperty( runtime, key );
 			log( 'Utils', 'applyVariables()', '\n', `match: ${match}, key: ${key}, ${val ? `${match} replaced with ${val}` : `${match} not found in runTime to replace`}` );
 			return val !== undefined ? val : match;

@@ -24,17 +24,39 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 		 *
 		 * Checks WordPress version compatibility and initializes default options.
 		 *
+		 * @param bool $network_wide Whether the plugin is being network-activated (multisite).
 		 * @return void
 		 */
-		public static function activate() {
+		public static function activate( $network_wide = false ) {
 
 			if ( version_compare( get_bloginfo( 'version' ), '3.1.0', '<' ) ) {
 				wp_die( esc_html__( 'Please update WordPress.', 'click-to-chat-for-whatsapp' ) );
 			}
 
+			// Read before the db include below, which writes the version.
+			$plugin_details = get_option( 'ht_ctc_plugin_details' );
+			$is_fresh       = ! isset( $plugin_details['version'] );
+
 			// add default values to options db
 			// class-ht-ctc-db2.php - will call add ctc admin pages.
 			include_once HT_CTC_PLUGIN_DIR . '/new/admin/db/class-ht-ctc-db.php';
+
+			// Optional one-time redirect to the settings page (see activation_redirect()): runs after
+			// the defaults and inside a safety net, so it can never fail the activation. Only a fresh
+			// install activated on its own from the Plugins screen - not bulk, network, WP-CLI or AJAX.
+			global $pagenow;
+			try {
+				$is_single = 'plugins.php' === $pagenow && 'activate' === HT_CTC_Utils::get_request_var( 'action' );
+
+				if ( $is_fresh && $is_single && ! $network_wide ) {
+					set_transient( 'ht_ctc_activation_redirect', get_current_user_id(), MINUTE_IN_SECONDS );
+				}
+			} catch ( Throwable $e ) {
+				// Throwable is PHP 7+; on older PHP the catch simply never matches.
+				if ( class_exists( 'HT_CTC_Utils' ) ) {
+					HT_CTC_Utils::debug_log( 'activation redirect flag skipped', array( 'error' => $e->getMessage() ) );
+				}
+			}
 		}
 
 		/**
@@ -139,6 +161,51 @@ if ( ! class_exists( 'HT_CTC_Register' ) ) {
 				// self::activate();
 				self::version_changed();
 
+			}
+		}
+
+		/**
+		 * Open the settings page once, right after a fresh single activation.
+		 *
+		 * Only the Plugins screen reads the flag, and its first view consumes it. Redirects
+		 * only on the ?activate=true landing, and only for the admin who activated. Any
+		 * failure falls back to the normal Plugins page.
+		 *
+		 * @return void
+		 */
+		public static function activation_redirect() {
+			global $pagenow;
+
+			try {
+				if ( 'plugins.php' !== $pagenow || is_network_admin() ) {
+					return;
+				}
+
+				$user_id = get_transient( 'ht_ctc_activation_redirect' );
+				if ( false === $user_id ) {
+					return;
+				}
+				delete_transient( 'ht_ctc_activation_redirect' );
+
+				if ( '' === HT_CTC_Utils::get_request_var( 'activate' ) || get_current_user_id() !== (int) $user_id || ! current_user_can( 'manage_options' ) ) {
+					return;
+				}
+
+				// Something already printed output (another plugin or theme): the redirect header
+				// would fail and exit would leave a blank page.
+				if ( headers_sent() ) {
+					return;
+				}
+
+				// Exit only when the redirect was really sent - a wp_redirect filter can cancel it.
+				if ( wp_safe_redirect( admin_url( 'admin.php?page=click-to-chat' ) ) ) {
+					exit;
+				}
+			} catch ( Throwable $e ) {
+				// Throwable is PHP 7+; on older PHP the catch simply never matches.
+				if ( class_exists( 'HT_CTC_Utils' ) ) {
+					HT_CTC_Utils::debug_log( 'activation redirect skipped', array( 'error' => $e->getMessage() ) );
+				}
 			}
 		}
 

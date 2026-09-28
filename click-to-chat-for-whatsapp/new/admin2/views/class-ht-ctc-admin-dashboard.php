@@ -144,7 +144,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 					'id'    => 'display-settings',
 					'group' => 'display_settings',
 					'title' => __( 'Display Settings', 'click-to-chat-for-whatsapp' ),
-					'desc'  => 'Control where and when the chat button appears',
+					'desc'  => 'Control where and when the chat widget appears',
 				),
 				array(
 					'id'    => 'analytics-settings',
@@ -188,7 +188,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 				'id'    => 'group-settings',
 				'group' => 'group_settings',
 				'title' => __( 'Group Settings', 'click-to-chat-for-whatsapp' ),
-				'desc'  => 'Configure the WhatsApp group button for your site',
+				'desc'  => 'Configure the WhatsApp group widget for your site',
 			);
 
 			$settings_panels[] = array(
@@ -448,7 +448,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 								<p>Got a question? 😊 We’d love to hear from you!</p>
 								<?php
 								if ( defined( 'HT_CTC_PRO_VERSION' ) ) {
-									$support_url = 'https://holithemes.com/plugins/click-to-chat/support/';
+									$support_url = HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/support/' );
 								} else {
 									$support_url = 'https://wordpress.org/support/plugin/click-to-chat-for-whatsapp/#new-topic-0';
 								}
@@ -612,7 +612,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Dashboard' ) ) {
 									<li><span class="ctc-feedback-emoji" aria-hidden="true">💬</span> Just casual feedback — we love it</li>
 								</ul>
 								<p class="ctc-feedback-note">No idea is too small. Every message is read by our team. 😊</p>
-								<a href="https://holithemes.com/plugins/click-to-chat/support/" target="_blank" class="widget-btn widget-btn-primary">Share Your Idea</a>
+								<a href="<?php echo esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/support/' ) ); ?>" target="_blank" class="widget-btn widget-btn-primary">Share Your Idea</a>
 							</div>
 						</div>
 					</div>

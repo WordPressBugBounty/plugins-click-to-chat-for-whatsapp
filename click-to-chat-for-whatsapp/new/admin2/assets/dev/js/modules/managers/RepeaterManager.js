@@ -166,6 +166,8 @@ export default class RepeaterManager {
 	 */
 	static addItem ( button ) {
 		const callbackName = button.dataset.callback;
+
+		// const callback = this.repeaters[ callbackName ];
 		const callback = getSafeProperty( this.repeaters, callbackName );
 		if ( ! callback ) { return; }
 
@@ -224,6 +226,7 @@ export default class RepeaterManager {
 		// 3. Fire the registered callback with the container.
 		const callbackName = button.dataset.callback;
 		if ( callbackName ) {
+			// const removerFn = this.repeaters[ callbackName ];
 			const removerFn = getSafeProperty( this.repeaters, callbackName );
 			if ( typeof removerFn === 'function' ) {
 				removerFn( { container: containerSelector, button } );

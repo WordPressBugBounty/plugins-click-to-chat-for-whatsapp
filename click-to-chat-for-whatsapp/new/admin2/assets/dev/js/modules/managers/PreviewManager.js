@@ -15,6 +15,7 @@ import { noteForField, noteForTransition, hasUnresolvedVariable, NOTES } from '.
 import { buildWhatsAppUrl } from '../preview/wa-url.js';
 import { resolveClickAction } from '../preview/click-action.js';
 import { notificationBadgeHtml, applyBadgeOffset } from '../preview/notification-badge.js';
+import { animationKindFor, animate } from '../preview/animations.js';
 import { uniquifySvgIds } from '../preview/svg-ids.js';
 import SiteView from '../preview/site-view.js';
 import {
@@ -69,6 +70,10 @@ export default class PreviewManager {
 		this.optinGateActive = false;
 		this.ctaHardHidden = false;
 		this.toastVisible = false;
+
+		// The play render() starts next: 'load' on first show, then a queued field change.
+		this.pendingAnimation = 'load';
+
 		this.renderDebounced = debounce( () => this.render(), 120 );
 		this.gridUidCounter = 0;
 
@@ -118,7 +123,7 @@ export default class PreviewManager {
 			if ( note !== '' ) { return note; }
 		}
 
-		const fieldNote = noteForField( name )?.text || '';
+		const fieldNote = noteForField( name, ( group, key ) => this.values.get( group, key ) )?.text || '';
 		if ( fieldNote ) { return fieldNote; }
 
 		// Show note if value contains dynamic page variables.
@@ -181,6 +186,18 @@ export default class PreviewManager {
 
 		this.app.events?.on( 'tab:changed', ( tabId ) => {
 			if ( STYLE_GRID_TABS.includes( tabId ) ) { this.enhanceStyleGrids(); }
+		} );
+
+		// Animations card demo chips (Actions.js previewAnimation).
+		this.app.events?.on( 'preview:animation', ( kind ) => {
+			if ( ! this.enabled ) { this.setEnabled( true ); }
+
+			// Nothing plays with a modal greetings dialog (as live): say so. A chip runs outside
+			// render(), so render to show the note; a field edit gets it from its field note.
+			if ( ! this.playAnimation( kind ) ) {
+				this.transientNote = NOTES.animationsModal;
+				this.renderDebounced();
+			}
 		} );
 	}
 
@@ -681,7 +698,12 @@ export default class PreviewManager {
 			}
 
 			this.transientNote = fieldNote;
-			if ( this.enabled ) { this.renderDebounced(); }
+			if ( this.enabled ) {
+				// Queued into the same debounced render, so typing plays once on the new widget.
+				const animationKind = animationKindFor( name );
+				if ( animationKind && this.pendingAnimation !== 'load' ) { this.pendingAnimation = animationKind; }
+				this.renderDebounced();
+			}
 		};
 
 		const onFormEvent = ( event ) => {
@@ -707,6 +729,10 @@ export default class PreviewManager {
 
 		events.on( 'toast:show', () => {
 			this.toastVisible = true;
+
+			// A toast drops a queued field replay; only the first-show 'load' waits for the preview.
+			if ( this.pendingAnimation !== 'load' ) { this.pendingAnimation = ''; }
+
 			if ( this.enabled && this.container && this.toastCoversPreview() ) {
 				this.container.style.display = 'none';
 			}
@@ -716,6 +742,22 @@ export default class PreviewManager {
 			this.toastVisible = false;
 			if ( this.enabled ) { this.render(); }
 		} );
+	}
+
+	/**
+	 * Plays the animation / entry effect on the preview root — greetings, badge and style,
+	 * like the live .ht-ctc-chat (preview/animations.js owns the CSS, classes and timing).
+	 *
+	 * @param {'load'|'animation'|'entry'} kind 'load' = both, in the live site's page-load order.
+	 * @param {boolean} onlyIfChanged Skip when the animation settings are what last played (field changes).
+	 * @returns {boolean} false when nothing can play (modal greetings dialog, as live).
+	 */
+	playAnimation ( kind, onlyIfChanged = false ) {
+		// Mirrors HT_CTC_Hooks::animation_styles(): no animations on the live site with a modal greetings dialog.
+		if ( this.values.get( 'ht_ctc_greetings_settings', 'g_position' ) === 'modal' ) { return false; }
+
+		animate( this.container, kind, this.values, onlyIfChanged );
+		return true;
 	}
 
 	/**
@@ -755,8 +797,8 @@ export default class PreviewManager {
 		style.setProperty( side1, side1Value );
 		style.setProperty( side2, side2Value );
 
-		style.transformOrigin = `${side1} ${side2}`;
-		style.transform = '';
+		style.transformOrigin = '';
+		style.scale = '';
 
 		return { side1, side2 };
 	}
@@ -868,6 +910,16 @@ export default class PreviewManager {
 			this.persistState();
 		}
 
+		// First show: start the widget's animations as a page load on the live site does,
+		// before the widget is made visible so the entry effect starts with it. Later shows
+		// don't replay: only a field change (queued by onFieldChange, played if its settings differ)
+		// or a demo chip plays them again.
+		if ( this.pendingAnimation && ! this.toastCoversPreview() ) {
+			const kind = this.pendingAnimation;
+			this.pendingAnimation = '';
+			this.playAnimation( kind, kind !== 'load' );
+		}
+
 		this.syncStateClasses();
 
 		const renderNote = notes.join( ' ' );
@@ -880,7 +932,7 @@ export default class PreviewManager {
 			'Click to Chat — preview (press Esc to hide)';
 
 		if ( this.container.style.display === 'block' ) {
-			this.fitToBounds();
+			this.fitToBounds( side1, side2 );
 		}
 
 		// Dispatch post-render hook for extensions.
@@ -890,14 +942,19 @@ export default class PreviewManager {
 	}
 
 	/**
-	 * Scales container down if it exceeds the viewport bounds.
+	 * Scales container down if it exceeds the viewport bounds. Uses the scale property, not
+	 * transform, so CSS animations on the container compose with it instead of replacing
+	 * it, and sets the origin only while shrinking so at full size they keep their own.
+	 *
+	 * @param {string} side1 'top' | 'bottom' anchor.
+	 * @param {string} side2 'left' | 'right' anchor.
 	 */
-	fitToBounds () {
+	fitToBounds ( side1, side2 ) {
 		const el = this.container;
 		if ( ! el ) { return; }
 
 		if ( el.classList.contains( 'ctc-mobile-w-fullwidth' ) ) {
-			el.style.transform = '';
+			el.style.scale = '';
 			return;
 		}
 
@@ -914,7 +971,8 @@ export default class PreviewManager {
 
 		const scale = Math.min( 1, maxWidth / naturalWidth, maxHeight / naturalHeight );
 		if ( scale < 1 ) {
-			el.style.transform = `scale(${scale})`;
+			el.style.transformOrigin = `${side1} ${side2}`;
+			el.style.scale = String( scale );
 		}
 	}
 

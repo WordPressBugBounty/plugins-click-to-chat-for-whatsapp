@@ -2,7 +2,7 @@
 /**
  * Admin2 cache cleaner.
  *
- * After CTC settings are saved (signaled by update_option_ht_ctc_admin_pages),
+ * After CTC settings are saved (signaled by ht_ctc_ah_admin_after_save_settings),
  * flush caches owned by any popular caching/performance plugin that may be
  * holding stale front-end HTML containing the chat widget.
  *
@@ -41,14 +41,14 @@ if ( ! class_exists( 'HT_CTC_Admin_Cache_Cleaner' ) ) {
 		/**
 		 * Constructor: hook the cache flush.
 		 *
-		 * The following hooks were inherited from the legacy Admin 2019 architecture.
-		 * In Admin 2019, these pages had isolated save flows that did not trigger the global 'ht_ctc_admin_pages' update.
-		 * In Admin 2026, the REST API centralizes saving and always triggers 'after_save_settings'
-		 * via 'ht_ctc_ah_admin_after_save_settings', which updates 'ht_ctc_admin_pages'.
-		 * Hooking only 'update_option_ht_ctc_admin_pages' here avoids multiple cache flushes per save.
+		 * Hooked to the save action itself, not 'update_option_ht_ctc_admin_pages'.
+		 * That option is never created at install, so on the first save
+		 * update_option() falls through to add_option() and fires
+		 * 'add_option_ht_ctc_admin_pages' instead — the first save on a fresh
+		 * install never purged. Priority 20: after the counter bump (10).
 		 */
 		public function __construct() {
-			add_action( 'update_option_ht_ctc_admin_pages', array( $this, 'clear_cache' ) );
+			add_action( 'ht_ctc_ah_admin_after_save_settings', array( $this, 'clear_cache' ), 20 );
 
 			// // Legacy redundant hooks (Admin 2019). Kept commented for history.
 			// add_action( 'update_option_ht_ctc_cs_options', array( $this, 'clear_cache' ) );
@@ -140,10 +140,17 @@ if ( ! class_exists( 'HT_CTC_Admin_Cache_Cleaner' ) ) {
 				'litespeed_cache'  => array(
 					'label'  => 'LiteSpeed Cache',
 					'detect' => function () {
-						return class_exists( 'LiteSpeed_Cache_API' ) && method_exists( 'LiteSpeed_Cache_API', 'purge_all' );
+						return defined( 'LSCWP_V' ) || ( class_exists( 'LiteSpeed_Cache_API' ) && method_exists( 'LiteSpeed_Cache_API', 'purge_all' ) );
 					},
+					// v3+ purges through its documented action; LiteSpeed_Cache_API is
+					// the pre-3.0 class, kept only for sites still on it. Branch on the
+					// listener, not LSCWP_V — 2.x defines LSCWP_V too, but has no action.
 					'flush'  => function () {
-						LiteSpeed_Cache_API::purge_all();
+						if ( has_action( 'litespeed_purge_all' ) ) {
+							do_action( 'litespeed_purge_all' );
+						} elseif ( class_exists( 'LiteSpeed_Cache_API' ) && method_exists( 'LiteSpeed_Cache_API', 'purge_all' ) ) {
+							LiteSpeed_Cache_API::purge_all();
+						}
 					},
 				),
 				'cache_enabler'    => array(
@@ -250,8 +257,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Cache_Cleaner' ) ) {
 					$purged[ $id ] = $provider['label'];
 				} catch ( Throwable $e ) {
 					// class_exists guard on purpose: this is the safety net, so
-					// it must not be the thing that fatals. (Throwable is PHP 7+;
-					// on older PHP the catch simply never matches.)
+					// it must not be the thing that fatals.
 					if ( class_exists( 'HT_CTC_Utils' ) ) {
 						HT_CTC_Utils::debug_log(
 							'cache purge failed',
@@ -270,7 +276,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Cache_Cleaner' ) ) {
 		/**
 		 * Attempt to clear caches from popular caching/performance plugins.
 		 *
-		 * Hook callback (update_option_ht_ctc_admin_pages) — kept as an instance
+		 * Hook callback (ht_ctc_ah_admin_after_save_settings) — kept as an instance
 		 * method so the existing add_action() signature is unchanged.
 		 *
 		 * @return void
@@ -292,7 +298,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Cache_Cleaner' ) ) {
 			// - wp_cache_flush() wipes the ENTIRE object cache (Redis / Memcached). On a
 			// busy site this can cause a cache stampede / temporary 503s as every page
 			// refills its cached queries simultaneously. This handler fires after EVERY
-			// settings save (via update_option_ht_ctc_admin_pages → clear_cache).
+			// settings save (via ht_ctc_ah_admin_after_save_settings → clear_cache).
 			//
 			// Reasons it might still be needed (verify before removing):
 			// - Some object-cache implementations key the chat widget HTML or computed

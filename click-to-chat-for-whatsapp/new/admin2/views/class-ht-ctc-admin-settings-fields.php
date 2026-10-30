@@ -41,7 +41,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Settings_Fields' ) ) {
 				/*
 				 * Customize: settings now open inline at the style picker, via the
 				 * Contextual Settings Panel below. Unmapped, customize_settings()
-				 * commented out below, and the tab unregistered in HT_CTC_Admin_Dashboard
+				 * commented out below, and the tab unregistered in HT_CTC_Admin_Panels
 				 * — restore all three together, or none. HT_CTC_Settings_Customize itself
 				 * is untouched and still holds the full field list.
 				 *

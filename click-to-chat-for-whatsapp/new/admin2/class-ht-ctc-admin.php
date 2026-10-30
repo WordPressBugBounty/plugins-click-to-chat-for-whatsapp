@@ -9,7 +9,6 @@
  * @package Click_To_Chat
  * @subpackage Administration
  * @since 4.41
- *
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -72,6 +71,9 @@ if ( ! class_exists( 'HT_CTC_Admin' ) ) {
 			// page level settings meta box (admin2 copy; self-instantiates)
 			HT_CTC_Utils::load_file( 'new/admin2/handlers/class-ht-ctc-admin-metabox.php' );
 
+			// Deactivation feedback modal on plugins screen.
+			HT_CTC_Utils::load_file( 'new/inc/plugins-page/class-ht-ctc-deactivation-feedback.php' );
+
 			do_action( 'ht_ctc_ah_admin_includes' );
 		}
 
@@ -84,6 +86,9 @@ if ( ! class_exists( 'HT_CTC_Admin' ) ) {
 			}
 			if ( class_exists( 'HT_CTC_Admin_Page_Scripts' ) ) {
 				new HT_CTC_Admin_Page_Scripts();
+			}
+			if ( class_exists( 'HT_CTC_Deactivation_Feedback' ) ) {
+				new HT_CTC_Deactivation_Feedback();
 			}
 			do_action( 'ht_ctc_ah_admin_init_classes' );
 		}

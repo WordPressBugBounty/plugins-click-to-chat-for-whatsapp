@@ -66,8 +66,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Core_Hooks' ) ) {
 			// DB defaults init when the main CTC admin page (Admin2 SPA) loads.
 			add_action( 'load-toplevel_page_click-to-chat', array( $this, 'load_ctc_admin_page' ) );
 
-			// Bump counter after settings save (used by cache plugins to detect changes).
-			// i.e. ht_ctc_admin_pages update_option -> update_option_ht_ctc_admin_pages.
+			// Bump counter after settings save. The cache purge hooks the same action (priority 20).
 			add_action( 'ht_ctc_ah_admin_after_save_settings', array( $this, 'after_save_settings' ) );
 		}
 

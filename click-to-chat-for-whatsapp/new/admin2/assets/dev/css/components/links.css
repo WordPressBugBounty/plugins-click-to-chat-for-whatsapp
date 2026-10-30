@@ -63,6 +63,11 @@
     box-shadow: 0 2px 8px var(--primary-glow);
 }
 
+/* Same chip as an in-page action <button> (e.g. animation preview). */
+button.external-link--block {
+    cursor: pointer;
+}
+
 /* Keep icon size proportional to the link label using em units. */
 .external-link--block .dashicons {
     font-size: 1em;

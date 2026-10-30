@@ -15,7 +15,6 @@ $othersettings = get_option( 'ht_ctc_othersettings' );
 
 <div class="sidebar-content">
 
-	<?php if ( defined( 'HT_CTC_IS_NEW' ) && 'yes' === HT_CTC_IS_NEW ) { ?>
 	<div class="col s12 m8 l12 xl12">
 		<?php
 		// New Admin Interface 2026 requires PRO version 2.21+.
@@ -72,7 +71,6 @@ $othersettings = get_option( 'ht_ctc_othersettings' );
 			</div>
 		<?php } ?>
 	</div>
-	<?php } ?>
 
 	<div class="col s12 m8 l12 xl12">
 		<div class="row">

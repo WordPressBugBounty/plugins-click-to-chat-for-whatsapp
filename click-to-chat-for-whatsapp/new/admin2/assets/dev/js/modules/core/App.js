@@ -107,6 +107,7 @@ export default class App {
 			const isSuccess = this.utils.safeRun( () => ManagerClass.init( this ), name );
 
 			if ( isSuccess ) {
+				// i.e. this.managers[ name ] = ManagerClass (safe setter blocks __proto__-style keys)
 				Utils.setSafeProperty( this.managers, name, ManagerClass );
 			} else {
 				return;
@@ -127,11 +128,13 @@ export default class App {
 				}
 			}
 
+			// i.e. this.managers[ name ] = managerInstance
 			Utils.setSafeProperty( this.managers, name, managerInstance );
 		}
 
 		// Dispatch custom event for external extensions to hook into registered manager.
 		document.dispatchEvent( new CustomEvent( `ctc_manager_registered_${name}`, {
+			// i.e. manager: this.managers[ name ]
 			detail: { manager: Utils.getSafeProperty( this.managers, name ), app: this },
 		} ) );
 	}
@@ -156,6 +159,8 @@ export default class App {
 	 */
 	createFieldElement ( field, context = document ) {
 		const fieldType = field.field_type;
+
+		// i.e. this.renderers[ fieldType ]
 		const renderer = Utils.getSafeProperty( this.renderers, fieldType );
 
 		if ( typeof renderer === 'function' ) {

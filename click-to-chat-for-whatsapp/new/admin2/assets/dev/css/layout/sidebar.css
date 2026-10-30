@@ -381,15 +381,6 @@
     display: none;
 }
 
-/* Dim controls when preview is disabled. */
-.preview-widget .widget-body {
-    transition: opacity 0.2s ease;
-}
-
-.preview-widget:has(#ctc-preview-toggle:not(:checked)) .widget-body {
-    opacity: 0.45;
-}
-
 .widget-header .dashicons {
     color: var(--primary);
     font-size: 1.25rem;

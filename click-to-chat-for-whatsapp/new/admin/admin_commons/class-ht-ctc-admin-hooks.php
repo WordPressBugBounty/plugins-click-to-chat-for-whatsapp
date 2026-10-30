@@ -81,29 +81,12 @@ if ( ! class_exists( 'HT_CTC_Admin_Hooks' ) ) {
 			// It's Click to Chat - admin page.
 		/**
 		 * Fires when a Click to Chat admin screen loads.
-		 * Ensures required DB defaults are in place.
 		 *
 		 * @return void
 		 */
 		public function load_ctc_admin_page() {
 
 			do_action( 'ht_ctc_ah_admin_its_ctc_admin_page' );
-
-			/**
-			 * When the user enters any Click to Chat admin page,
-			 * ensure required options are initialized.
-			 *
-			 * DB: group, share, styles (style-2 adds while active).
-			 * Loads only if styles are not defined; checked using s1.
-			 *
-			 * DB and DB2 will also run when version changes
-			 * from class-ht-ctc-register.php -> version_changed().
-			 */
-			$s1 = HT_CTC_Utils::get_option( 'ht_ctc_s1' );
-
-			if ( ! isset( $s1['s1_text_color'] ) ) {
-				include_once HT_CTC_PLUGIN_DIR . '/new/admin/db/class-ht-ctc-db2.php';
-			}
 		}
 
 		// Clear cache marker is updated after sanitize on plugin admin pages.

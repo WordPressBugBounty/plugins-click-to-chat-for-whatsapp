@@ -70,6 +70,14 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 							'flip'         => 'Flip',
 						),
 					),
+					// demo chip: replays in the live preview. handler: Actions.js previewAnimation.
+					array(
+						'field_type'     => 'block_content',
+						'content'        => '<button type="button" class="external-link external-link--block" data-action-onclick="previewAnimation" data-preview-animation="animation"><span class="dashicons dashicons-controls-play"></span>Preview animation</button>',
+						'style'          => 'margin-top: -1.25rem;',
+						'data_watch'     => '#an_type',
+						'data_hide_when' => 'no-animation',
+					),
 					array(
 						'field_type'     => 'field_number',
 						'id'             => 'an_delay',
@@ -102,6 +110,13 @@ if ( ! class_exists( 'HT_CTC_Settings_Advanced' ) ) {
 							'center'          => 'Center (zoomIn)',
 							'corner'          => 'Corner (corner of icon)',
 						),
+					),
+					array(
+						'field_type'     => 'block_content',
+						'content'        => '<button type="button" class="external-link external-link--block" data-action-onclick="previewAnimation" data-preview-animation="entry"><span class="dashicons dashicons-controls-play"></span>Preview entry effect</button>',
+						'style'          => 'margin-top: -1.25rem;',
+						'data_watch'     => '#show_effect',
+						'data_hide_when' => 'no-show-effects,corner',
 					),
 					array(
 						'field_type' => 'block_external_link',

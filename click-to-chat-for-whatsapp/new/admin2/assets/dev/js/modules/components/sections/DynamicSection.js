@@ -3,7 +3,7 @@ import { escapeAttr } from '../../core/Utils.js';
 /**
  * Dynamic Section
  * field_type: "section_dynamic",
- * just like created at class-ht-ctc-admin-dashboard.php create panel and inside fields-container.
+ * just like created at class-ht-ctc-admin-panels.php create panel and inside fields-container.
  * and dispatch event ht_ctc_register_section_dynamic - which calls loadTabSettings
  * @param {*} field
  * @returns

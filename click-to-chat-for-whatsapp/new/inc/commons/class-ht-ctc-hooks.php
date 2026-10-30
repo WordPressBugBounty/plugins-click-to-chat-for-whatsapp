@@ -53,7 +53,7 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 		private function hooks() {
 			// ## Action Hooks ##
 			add_action( 'ht_ctc_ah_before_fixed_position', array( $this, 'comment' ) );
-			add_action( 'ht_ctc_ah_before_fixed_position', array( $this, 'css_styles' ) );
+			add_action( 'ht_ctc_ah_scripts_after', array( $this, 'animation_styles' ) );
 
 			// ## Filter Hooks ##
 			add_filter( 'ht_ctc_fh_chat', array( $this, 'chat_settings' ) );
@@ -68,28 +68,36 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 		 */
 
 		/**
-		 * Output animation styles before the fixed-position container.
+		 * Attach entry effect + button animation CSS to the main stylesheet, so it prints in <head>.
+		 *
+		 * Runs on ht_ctc_ah_scripts_after (wp_enqueue_scripts), right after
+		 * ht_ctc_main_css is enqueued. Was css_styles(): <style> blocks printed
+		 * beside each widget in <body>, which the W3C validator flags.
+		 *
+		 * @since 4.46
 		 *
 		 * @return void
 		 */
-		public function css_styles() {
+		public function animation_styles() {
 
-			$othersettings      = get_option( 'ht_ctc_othersettings' );
+			$othersettings = get_option( 'ht_ctc_othersettings' );
+
+			// if greetings dialog is modal, then dont add animations. its causing position issue i.e. due to animation-fill-mode: both;
+			// todo: make animations work with the modal too.
 			$greetings_settings = get_option( 'ht_ctc_greetings_settings' );
+			if ( isset( $greetings_settings['g_position'] ) && 'modal' === $greetings_settings['g_position'] ) {
+				return;
+			}
 
-			// Entry effects
+			include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-animations.php';
+			$animations = new HT_CTC_Animations();
+			$css        = '';
+
+			// 1. Entry effects
 			// check: - entry effect - 'center', 'corner' - have to make work as similar to other effects
 			$entry = ( isset( $othersettings['show_effect'] ) ) ? esc_attr( $othersettings['show_effect'] ) : '';
 
-			// if greetings dialog is modal, then dont add animations. its causing position issue i.e. due to animation-fill-mode: both;
-			// fix this. even if modal is added, animations have to work perfeclty
-			$is_greetings_modal = 'no';
-			if ( isset( $greetings_settings['g_position'] ) && 'modal' === $greetings_settings['g_position'] ) {
-				$is_greetings_modal = 'yes';
-			}
-
-			// todo: corner effect not added
-			if ( '' !== $entry && 'no-show-effects' !== $entry && 'no' === $is_greetings_modal ) {
+			if ( '' !== $entry && 'no-show-effects' !== $entry ) {
 
 				$an_duration = '1s';
 				$an_delay    = '0s';
@@ -100,25 +108,26 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 					$an_duration = '0.4s';
 				}
 
-				include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-animations.php';
-				$animations = new HT_CTC_Animations();
 				// $entry is a callback function name
-				$animations->entry( $entry, $an_duration, $an_delay, $an_itr );
+				$css .= $animations->entry_css( $entry, $an_duration, $an_delay, $an_itr );
 			}
 
-			// Animation styles
+			// 2. Animation styles
 			$an_type = ( isset( $othersettings['an_type'] ) ) ? esc_attr( $othersettings['an_type'] ) : '';
 
-			if ( '' !== $an_type && 'no-animation' !== $an_type && 'no' === $is_greetings_modal ) {
+			if ( '' !== $an_type && 'no-animation' !== $an_type ) {
 
 				$an_duration = '1s';
 				$an_delay    = ( isset( $othersettings['an_delay'] ) ) ? esc_attr( $othersettings['an_delay'] ) : '0';
 				$an_delay    = "{$an_delay}s";
 				$an_itr      = ( isset( $othersettings['an_itr'] ) ) ? esc_attr( $othersettings['an_itr'] ) : '1';
 
-				include_once HT_CTC_PLUGIN_DIR . 'new/inc/commons/class-ht-ctc-animations.php';
-				$animations = new HT_CTC_Animations();
-				$animations->animations( $an_type, $an_duration, $an_delay, $an_itr );
+				$css .= $animations->animations_css( $an_type, $an_duration, $an_delay, $an_itr );
+			}
+
+			// 3. Add inline styles
+			if ( '' !== $css ) {
+				wp_add_inline_style( 'ht_ctc_main_css', $css );
 			}
 		}
 
@@ -192,7 +201,7 @@ if ( ! class_exists( 'HT_CTC_Hooks' ) ) {
 
 			$ht_ctc_os['show_effect'] = ( isset( $othersettings['show_effect'] ) ) ? esc_attr( $othersettings['show_effect'] ) : '';
 
-			// show effect ? if 'corner' - then return time (for other effects - this->css_styles() handles)
+			// show effect ? if 'corner' - then return time (for other effects - this->animation_styles() handles)
 			if ( 'corner' === $ht_ctc_os['show_effect'] ) {
 				$ht_ctc_os['show_effect'] = 150;
 			}

@@ -7,6 +7,11 @@ import { setCtcStorageItem } from '../core/Storage.js';
 let isInitialized = false;
 
 /**
+ * The admin App (for app.events), handed in by initActions.
+ */
+let app = null;
+
+/**
  * Registry of available actions.
  * Maps action names (from PHP) directly to handler functions.
  */
@@ -58,6 +63,14 @@ const ActionRegistry = {
 		setCtcStorageItem( 'n_badge', 'admin_start' );
 		log( 'Actions', 'updateNotificationBadgeLS: n_badge → admin_start' );
 	},
+
+	/**
+	 * Animations card demo chips — replay in the live preview (PreviewManager).
+	 * data-preview-animation on the chip: 'animation' | 'entry'.
+	 */
+	previewAnimation: ( event, element ) => {
+		app?.events?.emit( 'preview:animation', element.getAttribute( 'data-preview-animation' ) );
+	},
 };
 
 /**
@@ -93,8 +106,14 @@ const bindAction = ( eventType, attrName ) => {
 /**
  * Handle custom actions triggered from the UI.
  * Uses centralized event delegation for better performance.
+ *
+ * @param {*}      arg        Module arg / context (App.runModuleMethod), unused.
+ * @param {*}      context    Unused.
+ * @param {Object} appInstance The admin App.
  */
-export const initActions = () => {
+export const initActions = ( arg, context, appInstance = null ) => {
+	app = appInstance || app || window.HTCtcAdminApp;
+
 	// Prevent double initialization when switching tabs
 	if ( isInitialized ) {
 		return;

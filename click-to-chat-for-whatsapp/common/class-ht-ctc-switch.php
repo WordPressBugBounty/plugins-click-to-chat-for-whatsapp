@@ -96,8 +96,8 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 			// 2. Fallback: If PRO is not loaded yet (e.g. Free loads first), check active plugins.
 			$active_plugins = (array) get_option( 'active_plugins', array() );
 
-			// Support for Multisite network-activated plugins.
-			// if ( function_exists( 'is_multisite' ) && is_multisite() ) {
+			// Network-activated is not in the site's active_plugins.
+			// if ( is_multisite() ) {
 			// $network_plugins = array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) );
 			// $active_plugins  = array_merge( $active_plugins, $network_plugins );
 			// }
@@ -146,31 +146,17 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				}
 			}
 
-			// New interface yes/no.
-			$is_new = '';
-
-			// User new/prev.
-			$user = '';
-
-				/**
-				 * For first-time users or those who switched to the new interface set $is_new to yes.
-				 *
-				 * Users who switch back to the previous interface or upgrade from an older
-				 * version will keep $is_new set to no.
-				 */
+			/**
+			 * New interface yes/no. New interface by default.
+			 *
+			 * Legacy users (ccw_options['number'] set) stay on the previous interface
+			 * unless they switched to the new one.
+			 */
 			$ccw_options = get_option( 'ccw_options' );
+			$is_new      = 'yes';
 
 			if ( isset( $ccw_options['number'] ) ) {
-				$user   = 'prev';
 				$is_new = 'no';
-			} else {
-				// new user - new interface
-				$user   = 'new';
-				$is_new = 'yes';
-			}
-
-			// Previous user and if switched.
-			if ( 'prev' === $user ) {
 
 				$ht_ctc_switch = get_option( 'ht_ctc_switch' );
 
@@ -195,11 +181,12 @@ if ( ! class_exists( 'HT_CTC_Switch' ) ) {
 				$admin_settings = get_option( 'ht_ctc_admin_settings', array() );
 				$admin_settings = is_array( $admin_settings ) ? $admin_settings : array();
 
-				// Default admin UI version (2019)
-				$admin_ui = isset( $admin_settings['admin_ui'] ) ? sanitize_text_field( $admin_settings['admin_ui'] ) : '2019';
+				// Default admin UI version (2026). 'admin_ui' is only stored by an explicit
+				// switch, so a stored '2019' is the user's choice and is kept. Sites on
+				$admin_ui = isset( $admin_settings['admin_ui'] ) ? sanitize_text_field( $admin_settings['admin_ui'] ) : '2026';
 
 				if ( ! in_array( $admin_ui, array( '2019', '2026' ), true ) ) {
-					$admin_ui = '2019';
+					$admin_ui = '2026';
 				}
 
 				// URL-based switching (?page=click-to-chat&admin_ui=2026 or 2019).

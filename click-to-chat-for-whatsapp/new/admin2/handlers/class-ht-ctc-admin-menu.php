@@ -41,7 +41,7 @@ if ( ! class_exists( 'HT_CTC_Admin_Menu' ) ) {
 				$icon
 			);
 
-			// // todo: at first itself displaying this might not be a good idea?.
+			// At first itself displaying this might not be a good idea?.
 			// // Upgrade link.
 			// if ( ! defined( 'HT_CTC_PRO_VERSION' ) ) {
 			// add_submenu_page(

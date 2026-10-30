@@ -10,11 +10,19 @@
  *                    (opt-in shows once; badge auto-hides) — 'info'.
  */
 
+// Mirrors HT_CTC_Hooks::animation_styles(): no animation CSS is added with a modal greetings dialog.
+const ANIMATIONS_MODAL = 'Animations don’t play on your live site while the Greetings dialog Position is Modal.';
+const greetingsModal = ( read ) => read( 'ht_ctc_greetings_settings', 'g_position' ) === 'modal';
+
 /**
  * Field-name prefix → note. The first match (by prefix) wins, so list more
  * specific prefixes first. Editing a matching field surfaces its note.
  *
- * @type {Array<{ match: string, type: string, text: string }>}
+ * `when` (optional) limits a note to the values it is true for, read from the
+ * form — e.g. the Corner note only while Corner is picked. An entry with `when`
+ * never matches without a reader.
+ *
+ * @type {Array<{ match: string, type: string, text: string, when?: ( read: ( group: string, key: string ) => * ) => boolean }>}
  */
 export const FIELD_NOTES = [
 	{
@@ -37,15 +45,17 @@ export const FIELD_NOTES = [
 		type: 'no-demo',
 		text: 'Custom CSS is applied on your live site, not in this preview.',
 	},
-	{
-		match: 'ht_ctc_othersettings[an_',
-		type: 'no-demo',
-		text: 'Animations play on your live site — the preview stays static.',
-	},
+
+	// Animations and entry effects play in the preview (preview/animations.js) — none with a
+	// modal greetings dialog (as live), and all but Corner, which live sites run with jQuery's
+	// show( 150 ) on top (app.dev.js display()). Modal first: there, Corner doesn't play live either.
+	{ match: 'ht_ctc_othersettings[an_', type: 'no-demo', when: greetingsModal, text: ANIMATIONS_MODAL },
+	{ match: 'ht_ctc_othersettings[show_effect', type: 'no-demo', when: greetingsModal, text: ANIMATIONS_MODAL },
 	{
 		match: 'ht_ctc_othersettings[show_effect',
 		type: 'no-demo',
-		text: 'The entry effect plays when the widget appears on your live site, not in this preview.',
+		when: ( read ) => read( 'ht_ctc_othersettings', 'show_effect' ) === 'corner',
+		text: 'The Corner entry effect plays on your live site, not in this preview.',
 	},
 
 	// Extension-specific field notes are registered by their respective extensions via PreviewManager.noteProviders.
@@ -67,11 +77,13 @@ export const FIELD_NOTES = [
  * The note for a changed field, or null when the field has none.
  *
  * @param {string} name e.g. 'ht_ctc_greetings_settings[g_position]'
+ * @param {( group: string, key: string ) => *} [read] Current form values (FormValues.get).
  * @returns {{ match: string, type: string, text: string }|null}
  */
-export const noteForField = ( name ) => {
+export const noteForField = ( name, read ) => {
 	if ( typeof name !== 'string' || name === '' ) { return null; }
-	return FIELD_NOTES.find( ( note ) => name.startsWith( note.match ) ) || null;
+	return FIELD_NOTES.find( ( note ) => name.startsWith( note.match ) &&
+		( ! note.when || ( typeof read === 'function' && note.when( read ) ) ) ) || null;
 };
 
 /*
@@ -106,6 +118,7 @@ export const NOTES = {
 	badgeHidden: 'The notification badge hides once the chat or greeting is opened; change a badge setting to show it again.',
 	sameTab: 'No preview link for navigation when Same-tab open (URL Structure).',
 	noNumber: 'Add a WhatsApp number to test the chat link.',
+	animationsModal: ANIMATIONS_MODAL,
 };
 
 /**

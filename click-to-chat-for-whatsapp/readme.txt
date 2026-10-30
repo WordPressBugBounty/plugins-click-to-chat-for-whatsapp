@@ -1,10 +1,10 @@
 === Click to Chat - HoliThemes ===
-Requires at least: 6.5
+Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 5.6
 Contributors: HoliThemes
 Donate link: https://holithemes.com/plugins/click-to-chat/pricing/
-Stable tag: 4.45
+Stable tag: 4.46
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -552,7 +552,21 @@ Thank you for your support!
 
 — The Click to Chat Team, HoliThemes
 
+== External Services ==
+
+* **HoliThemes Feedback API** (`holithemes.com`):
+  Used only when you explicitly choose to share feedback:
+  * **Feedback:** You can send us feedback from the plugin's admin page, or through the short survey shown when you deactivate the plugin. Both are optional — nothing is sent unless you choose to send ("Skip & deactivate" sends nothing).
+
+  Connecting to this service is entirely optional and never restricts or gates the use or deactivation of the plugin.
+  * Terms of Use: [HoliThemes Terms](https://holithemes.com/terms/)
+  * Privacy Policy: [HoliThemes Privacy Policy](https://holithemes.com/privacy/)
+
 == Changelog ==
+
+= 4.46 =
+* Enhancement: The live preview now plays animations and entry effects, with a replay button for each.
+* New: The new admin interface is now the default for every site.
 
 = 4.45 =
 * Fix: Archive page titles and url in the greetings dialog and pre-filled message no longer include HTML markup.
@@ -612,15 +626,12 @@ Thank you for your support!
 
 == Upgrade Notice ==
 
+= 4.46 =
+The new admin interface is now the default.
+
 = 4.45 =
 Fix: Archive page titles and url in the greetings dialog no longer include HTML markup. Please update.
 
-= 4.44 =
-Enhancement: Admin live Preview the chat widget.
-
-= 4.43 =
-* New: Customize style and greetings settings inline directly within the style picker, eliminating the separate Customize tab.
-* Enhancement: Admin UI for a smoother experience.
 
 = 4.42.1 =
 Fixes the phone number field in the settings page showing as a plain text field after updating to 4.42. Update recommended.

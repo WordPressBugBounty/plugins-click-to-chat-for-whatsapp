@@ -21,44 +21,56 @@ if ( ! class_exists( 'HT_CTC_Animations' ) ) {
 	class HT_CTC_Animations {
 
 		/**
-		 * Render base animation styles.
+		 * Build button animation CSS (no <style> wrapper).
+		 *
+		 * @since 4.46 Replaces animations(), which printed a <style> block in <body>.
 		 *
 		 * @param string     $animation  Animation identifier.
 		 * @param string     $duration   Animation duration (e.g. '1s').
 		 * @param string     $delay      Delay before the animation runs.
 		 * @param int|string $iterations Number of iterations to run.
 		 *
-		 * @return void
+		 * @return string
 		 */
-		public function animations( $animation, $duration, $delay, $iterations ) {
-			printf(
-				'<style id="ht-ctc-animations">.ht_ctc_animation{animation-duration:%1$s;animation-fill-mode:both;animation-delay:%2$s;animation-iteration-count:%3$s;}',
-				esc_attr( $duration ),
-				esc_attr( $delay ),
-				esc_attr( $iterations )
-			);
-
-			$callback = $this->resolve_callback( $animation );
-			if ( $callback ) {
-				$this->$callback( "ht_ctc_an_$animation" );
-			}
-
-			echo '</style>';
+		public function animations_css( $animation, $duration, $delay, $iterations ) {
+			return $this->build_css( 'ht_ctc_animation', "ht_ctc_an_$animation", $animation, $duration, $delay, $iterations );
 		}
 
 		/**
-		 * Render entry animation styles.
+		 * Build entry animation CSS (no <style> wrapper).
+		 *
+		 * @since 4.46 Replaces entry(), which printed a <style> block in <body>.
 		 *
 		 * @param string $animation  Animation identifier.
 		 * @param string $duration   Animation duration (e.g. '1s').
 		 * @param string $delay      Animation delay.
 		 * @param string $iterations Iteration count.
 		 *
-		 * @return void
+		 * @return string
 		 */
-		public function entry( $animation, $duration, $delay, $iterations ) {
-			printf(
-				'<style id="ht-ctc-entry-animations">.ht_ctc_entry_animation{animation-duration:%1$s;animation-fill-mode:both;animation-delay:%2$s;animation-iteration-count:%3$s;}',
+		public function entry_css( $animation, $duration, $delay, $iterations ) {
+			return $this->build_css( 'ht_ctc_entry_animation', "ht_ctc_an_entry_$animation", $animation, $duration, $delay, $iterations );
+		}
+
+		/**
+		 * Timing rule for the base class plus the animation's keyframes.
+		 *
+		 * Returned rather than printed so it can be attached to the main
+		 * stylesheet in <head> via wp_add_inline_style().
+		 *
+		 * @param string     $base_class Class carrying the timing rule.
+		 * @param string     $selector   Class the keyframes are bound to.
+		 * @param string     $animation  Animation identifier.
+		 * @param string     $duration   Animation duration.
+		 * @param string     $delay      Animation delay.
+		 * @param int|string $iterations Iteration count.
+		 *
+		 * @return string
+		 */
+		private function build_css( $base_class, $selector, $animation, $duration, $delay, $iterations ) {
+			$css = sprintf(
+				'.%1$s{animation-duration:%2$s;animation-fill-mode:both;animation-delay:%3$s;animation-iteration-count:%4$s;}',
+				$base_class,
 				esc_attr( $duration ),
 				esc_attr( $delay ),
 				esc_attr( $iterations )
@@ -66,10 +78,12 @@ if ( ! class_exists( 'HT_CTC_Animations' ) ) {
 
 			$callback = $this->resolve_callback( $animation );
 			if ( $callback ) {
-				$this->$callback( "ht_ctc_an_entry_$animation" );
+				ob_start();
+				$this->$callback( $selector );
+				$css .= ob_get_clean();
 			}
 
-			echo '</style>';
+			return $this->minify_css( $css );
 		}
 
 		/**

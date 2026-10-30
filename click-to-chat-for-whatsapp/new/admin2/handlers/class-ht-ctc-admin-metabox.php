@@ -397,7 +397,6 @@ if ( ! class_exists( 'HT_CTC_Admin_MetaBox' ) ) {
 			 * dropping unlisted keys would silently wipe every PRO page-level setting on
 			 * those sites. Unlisted keys are kept, sanitized with
 			 * DEFAULT_SANITIZE_CALLBACK — what 4.41 - 4.42.x did to every field.
-			 *
 			 */
 
 			// allow-list (1 of 2): keys already on this post stay allowed.

@@ -159,6 +159,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Display' ) ) {
 					self::device_display_field( 'Mobile Display', 'display_mobile' ),
 				),
 			);
+
 			return $values;
 		}
 

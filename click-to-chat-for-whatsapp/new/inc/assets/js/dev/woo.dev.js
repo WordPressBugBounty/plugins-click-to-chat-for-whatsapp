@@ -2,222 +2,209 @@
 /**
  * Click to Chat - WooCommerce Integration
  *
- * It applies styles of the cart buttons to chat widget(s1,s8) on single product and shop pages.
+ * 'Like Add to Cart' layout: styles the WhatsApp buttons (style 1, 8) like the theme's cart
+ * buttons on single product and shop pages, then shows them. They render hidden (display:none),
+ * so they don't flash unstyled.
+ *
+ * Buttons added later - AJAX filters, load more, infinite scroll, block-theme pagination -
+ * are handled the same way as they appear (MutationObserver). Clicks need nothing here:
+ * app.js delegates them from document.
  *
  * @package Click to Chat
  * @since 3.8
- * currenlty only loads if display like cart layout option is checked
- * at woo single product pages or shop page.
+ * Loads only when an enabled WooCommerce placement uses the cart layout -
+ * the WooCommerce check in HT_CTC_Scripts::register_scripts().
+ * Plain JS: uses neither jQuery nor app.js.
  */
-( function htCtcWooModule ( $ ) {
-	$( function handleWooReady () {
+( function htCtcWooModule () {
 
-		try {
-			/**
-			 * Check if cart button exists, if yes then apply styles to chat widget.
-			 *  single_add_to_cart_button: Single Product Page cart button
-			 *  add_to_cart_button: Shop/Archive Page cart button
-			 */
-			if (
-				document.querySelector( '.single_add_to_cart_button' ) ||
-				document.querySelector( '.add_to_cart_button' )
-			) {
-				initializeCartLayout();
-			} else if ( document.querySelector( '.ctc_woo_place' ) ) {
-				//  && !document.querySelector('.ctc_woo_schedule')
-				// in shop page - cart button might not exist
-				// display (might be added display none)
-				displayCtcWooPlace();
+	const PLACE_SELECTOR = '.ctc_woo_place';
+
+	// Buttons already handled - an AJAX script that moves a node re-adds it; don't redo it.
+	const processedPlaces = new WeakSet();
+
+	function initWoo () {
+		processPlaces( document.querySelectorAll( PLACE_SELECTOR ) );
+		watchForNewPlaces();
+	}
+
+	if ( 'loading' === document.readyState ) {
+		document.addEventListener( 'DOMContentLoaded', initWoo );
+	} else {
+		initWoo();
+	}
+
+	/**
+	 * Styles, then shows, each button not handled yet.
+	 * Showing never depends on the styling: a button with no cart button to copy from
+	 * (out of stock product, a shop page with no cart buttons) is shown as it is.
+	 *
+	 * @param {Iterable<HTMLElement>} places .ctc_woo_place elements.
+	 */
+	function processPlaces ( places ) {
+		const pendingPlaces = Array.from( places )
+			.filter( ( place ) => ! processedPlaces.has( place ) );
+
+		if ( ! pendingPlaces.length ) {
+			return;
+		}
+
+		const singleCartButton = document.querySelector( '.single_add_to_cart_button' );
+
+		// '.button.add_to_cart_button' (from Astra) first: a bare '.add_to_cart_button' can match a 'bag' icon sharing the class.
+		const shopCartButton =
+			document.querySelector( '.button.add_to_cart_button' ) ||
+			document.querySelector( '.add_to_cart_button' );
+
+		pendingPlaces.forEach( ( place ) => {
+			processedPlaces.add( place );
+
+			try {
+				styleLikeCart( place, singleCartButton, shopCartButton );
+			} catch ( error ) {
+				console.error( 'Error styling cart layout:', error );
 			}
-		} catch ( error ) {
-			console.error( 'Error initializing cart layout:', error );
-		}
 
-		/**
-		 * Displays the .ctc_woo_place element if .ctc_woo_schedule is not present.
-		 */
-		function displayCtcWooPlace () {
-			if ( ! document.querySelector( '.ctc_woo_schedule' ) ) {
-				$( '.ctc_woo_place' )
-					.css( {
-						display: $( '.ctc_woo_place' )
-							.attr( 'data-dt' ),
-					} );
-				$( '.ctc_woo_place' )
-					.show();
+			// .ctc_woo_schedule buttons are left to PRO business hours (pro.js).
+			if ( ! place.classList.contains( 'ctc_woo_schedule' ) ) {
+				place.style.display = place.getAttribute( 'data-dt' ) || 'block';
 			}
+		} );
+	}
+
+	/**
+	 * Runs processPlaces() on buttons inserted after load.
+	 *
+	 * Started only where buttons can turn up: a page that already has one, or a WooCommerce
+	 * page (body class) - woo.js is enqueued site-wide, and most pages need no observer.
+	 */
+	function watchForNewPlaces () {
+		if ( typeof MutationObserver === 'undefined' || ! document.body ) {
+			return;
 		}
 
-		/**
-			 * Initializes the cart layout for WooCommerce single and archive pages.
-			 *
-			 * .ctc_woo_single_cart_layout:
-			 * Click to Chat Widget adds at WooCommerce Single Product Page
-			 * based on position added at settings.
-			 * .ctc_woo_shop_cart_layout:
-			 * Click to Chat Widget adds at WooCommerce Shop/Archive Page
-			 * or related products list at single product page.
-			 */
-		function initializeCartLayout () {
-
-			const singleCartButton = document.querySelector( '.single_add_to_cart_button' );
-
-			/**
-				 * Single Product Page cart button adding by if-else condition
-				 * as it might be different for different themes.
-				 * '.button.add_to_cart_button' is sourced from Astra theme.
-				 */
-			const shopCartButton =
-				document.querySelector( '.button.add_to_cart_button' ) ||
-				document.querySelector( '.add_to_cart_button' );
-
-			// Single Product Page - s1 Button Styling
-			applyS1Styling( '.ctc_woo_single_cart_layout .s1_btn', singleCartButton );
-
-			// Shop/Archive Page - s1 Button Styling.
-			// issue: shopCartButton i.e. add_to_cart_button captures another 'bag' icon
-			// that shares the same class
-			applyS1Styling( '.ctc_woo_shop_cart_layout .s1_btn', shopCartButton, true );
-
-			// Apply s8 Styling for Shop/Archive Pages
-			// applyS8Styling('.ctc_woo_shop_cart_layout .s_8', singleCartButton);
-			applyS8Styling( '.ctc_woo_shop_cart_layout .s_8', shopCartButton );
-
-			// applyS8Styling('.ctc_woo_shop_cart_layout .s_8', shopCartButton, true);
-
-			// Apply s8 Styling for Single Product Pages
-			applyS8Styling( '.ctc_woo_single_cart_layout .s_8', singleCartButton );
+		const body = document.body;
+		const isWooPage = body.classList.contains( 'woocommerce' ) || body.classList.contains( 'woocommerce-page' );
+		if ( ! isWooPage && ! document.querySelector( PLACE_SELECTOR ) ) {
+			return;
 		}
 
-		/**
-		 * Applies styles to the cart buttons based on existing WooCommerce button styles.
-		 *
-		 * @param {string} selector - The selector for the target buttons.
-		 * @param {HTMLElement} sourceButton - The button whose styles should be copied.
-		 * @param {boolean} multiple - Whether to apply styles to multiple elements.
-		 */
-		function applyS1Styling ( selector, sourceButton, multiple = false ) {
-			const targetButtons = multiple ?
-				document.querySelectorAll( selector ) :
-				[ document.querySelector( selector ) ];
+		const observer = new MutationObserver( ( mutations ) => {
+			const addedPlaces = [];
 
-			if ( ! sourceButton || ! targetButtons.length || ! targetButtons[ 0 ] ) { return; }
+			mutations.forEach( ( mutation ) => {
+				mutation.addedNodes.forEach( ( node ) => {
+					if ( 1 !== node.nodeType ) {
+						return;
+					}
 
-			targetButtons.forEach( ( targetButton ) => {
-				copyNodeStyle( sourceButton, targetButton );
-				const textColor = $( targetButton )
-					.css( 'color' );
-				const bgColor = $( targetButton )
-					.css( 'background-color' );
-
-				$( targetButton )
-					.css( {
-						display: 'inline-flex',
-						width: 'fit-content',
-						'align-items': 'center',
-						color: textColor,
-						'background-color': bgColor,
-					} );
+					if ( node.matches( PLACE_SELECTOR ) ) {
+						addedPlaces.push( node );
+					} else if ( node.firstElementChild ) {
+						addedPlaces.push( ...node.querySelectorAll( PLACE_SELECTOR ) );
+					}
+				} );
 			} );
 
-			displayCtcWooPlace();
+			if ( addedPlaces.length ) {
+				processPlaces( addedPlaces );
+			}
+		} );
+
+		observer.observe( body, { childList: true, subtree: true } );
+	}
+
+	/**
+	 * .ctc_woo_single_cart_layout: the button on the single product page (position from settings).
+	 * .ctc_woo_shop_cart_layout: buttons in the shop/archive grid, or related products on a single page.
+	 *
+	 * @param {HTMLElement} place .ctc_woo_place element.
+	 * @param {?HTMLElement} singleCartButton
+	 * @param {?HTMLElement} shopCartButton
+	 */
+	function styleLikeCart ( place, singleCartButton, shopCartButton ) {
+		let cartButton = null;
+
+		if ( place.classList.contains( 'ctc_woo_single_cart_layout' ) ) {
+			cartButton = singleCartButton;
+		} else if ( place.classList.contains( 'ctc_woo_shop_cart_layout' ) ) {
+			cartButton = shopCartButton;
 		}
 
-		/**
-		 * Applies specific styling for .s8 elements based on the main cart button.
-		 *
-		 * @param {string} selector - The selector for the s8 elements.
-		 * @param {HTMLElement} referenceButton - The button to use as a style reference.
-		 */
-		function applyS8Styling ( selector, referenceButton ) {
-
-			// Select all elements, not just one
-			const targetElements = document.querySelectorAll( selector );
-
-			if ( ! targetElements.length || ! referenceButton ) { return; }
-
-			targetElements.forEach( ( targetElement ) => {
-				$( targetElement )
-					.css( {
-						'min-height': $( referenceButton )
-							.css( 'min-height' ),
-						'font-size': $( referenceButton )
-							.css( 'font-size' ),
-						'font-weight': $( referenceButton )
-							.css( 'font-weight' ),
-						'letter-spacing': $( referenceButton )
-							.css( 'letter-spacing' ),
-						'border-radius': $( referenceButton )
-							.css( 'border-radius' ),
-						width: 'fit-content',
-					} );
-			} );
-
-			displayCtcWooPlace();
+		if ( ! cartButton ) {
+			return;
 		}
 
-		/**
-		 * Copies computed styles from one element to another.
-		 *
-		 * @param {HTMLElement} sourceNode - The source element.
-		 * @param {HTMLElement} targetNode - The target element.
-		 */
-		function copyNodeStyle ( sourceNode, targetNode ) {
+		place.querySelectorAll( '.s1_btn' )
+			.forEach( ( button ) => applyS1Styling( button, cartButton ) );
+		place.querySelectorAll( '.s_8' )
+			.forEach( ( button ) => applyS8Styling( button, cartButton ) );
+	}
 
-			const computedStyle = window.getComputedStyle( sourceNode );
+	/**
+	 * Style 1: copies the cart button's look onto the WhatsApp button.
+	 *
+	 * @param {HTMLElement} targetButton - The WhatsApp button.
+	 * @param {HTMLElement} cartButton - The cart button to copy from.
+	 */
+	function applyS1Styling ( targetButton, cartButton ) {
+		copyCartButtonLook( cartButton, targetButton );
 
-			// Array.from( computedStyle )
-			// 	.forEach( ( property ) => {
-			// 		targetNode.style.setProperty(
-			// 			property,
-			// 			computedStyle.getPropertyValue( property ),
-			// 			computedStyle.getPropertyPriority( property ),
-			// 		);
-			// 	} );
+		// Read back what the button now computes to, before the layout properties below.
+		const targetStyle = window.getComputedStyle( targetButton );
 
-			// Avoid cloning every computed style property as it's expensive and
-			// unnecessary. Only copy the few styles that visually match the
-			// WooCommerce buttons.
-			const propertiesToCopy = [
-				'color',
-				'background-color',
-				'border-radius',
-				'border',
-				'padding',
-				'font-size',
-				'font-weight',
+		Object.assign( targetButton.style, {
+			display: 'inline-flex',
+			width: 'fit-content',
+			alignItems: 'center',
+			color: targetStyle.color,
+			backgroundColor: targetStyle.backgroundColor,
+		} );
+	}
 
-				// // more related
-				// 'letter-spacing',
-				// 'min-height',
-				// 'text-transform',
-				// 'box-shadow',
-				// 'line-height',
-				// 'font-family',
-				// 'opacity',
-				// 'visibility',
-				// 'transition',
-				// 'filter',
-				// 'cursor',
-				// 'outline',
-				// 'text-shadow',
-				// 'text-decoration',
-				// 'text-align',
-				// 'flex',
-				// 'align-items',
-				// 'justify-content',
-				// 'flex-direction',
-				// 'flex-wrap',
-			];
+	/**
+	 * Style 8: matches the cart button's size, font and corners (keeps its own colors).
+	 *
+	 * @param {HTMLElement} targetButton - The WhatsApp button.
+	 * @param {HTMLElement} cartButton - The cart button to match.
+	 */
+	function applyS8Styling ( targetButton, cartButton ) {
+		const cartStyle = window.getComputedStyle( cartButton );
 
-			propertiesToCopy.forEach( property => {
-				targetNode.style.setProperty(
-					property,
-					computedStyle.getPropertyValue( property ),
-					computedStyle.getPropertyPriority( property ),
-				);
-			} );
+		Object.assign( targetButton.style, {
+			minHeight: cartStyle.minHeight,
+			fontSize: cartStyle.fontSize,
+			fontWeight: cartStyle.fontWeight,
+			letterSpacing: cartStyle.letterSpacing,
+			borderRadius: cartStyle.borderRadius,
+			width: 'fit-content',
+		} );
+	}
 
-		}
-	} );
-} )( jQuery );
+	/**
+	 * Copies a few computed styles - only the ones that make it look like the cart button.
+	 * (Copying every computed property is expensive and drags in layout the button must not take.)
+	 *
+	 * @param {HTMLElement} cartButton   - The cart button.
+	 * @param {HTMLElement} targetButton - The WhatsApp button.
+	 */
+	function copyCartButtonLook ( cartButton, targetButton ) {
+		const cartStyle = window.getComputedStyle( cartButton );
+
+		[
+			'color',
+			'background-color',
+			'border-radius',
+			'border',
+			'padding',
+			'font-size',
+			'font-weight',
+		].forEach( ( property ) => {
+			targetButton.style.setProperty(
+				property,
+				cartStyle.getPropertyValue( property ),
+				cartStyle.getPropertyPriority( property ),
+			);
+		} );
+	}
+} )();

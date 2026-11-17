@@ -68,6 +68,45 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 
 		/**
+		 * Whether the 'Like Add to Cart' layout is active on single product pages (checked + style 1 or 8).
+		 *
+		 * @param array<string, mixed> $woo_options ht_ctc_woo_options.
+		 * @return bool
+		 */
+		public static function is_single_cart_layout( $woo_options ) {
+			return self::has_cart_layout_for( $woo_options, 'woo_single_layout_cart_btn', 'woo_style' );
+		}
+
+		/**
+		 * Whether the 'Like Add to Cart' layout is active on shop/archive pages (checked + style 1 or 8).
+		 *
+		 * @param array<string, mixed> $woo_options ht_ctc_woo_options.
+		 * @return bool
+		 */
+		public static function is_shop_cart_layout( $woo_options ) {
+			return self::has_cart_layout_for( $woo_options, 'woo_shop_layout_cart_btn', 'woo_shop_style' );
+		}
+
+		/**
+		 * Checks whether a placement has the 'Like Add to Cart' layout enabled with a supported style (1 or 8).
+		 *
+		 * The woo.js enqueue in HT_CTC_Scripts::register_scripts() repeats this check - change both together.
+		 *
+		 * @param array<string, mixed> $woo_options ht_ctc_woo_options.
+		 * @param string               $layout_key  Option key for the cart-layout checkbox.
+		 * @param string               $style_key   Option key for the placement style.
+		 * @return bool
+		 */
+		private static function has_cart_layout_for( $woo_options, $layout_key, $style_key ) {
+			if ( ! isset( $woo_options[ $layout_key ] ) || '' === $woo_options[ $layout_key ] ) {
+				return false;
+			}
+
+			$style = isset( $woo_options[ $style_key ] ) ? esc_attr( $woo_options[ $style_key ] ) : '8';
+			return '1' === $style || '8' === $style;
+		}
+
+		/**
 		 * Shop page, archive items add style..
 		 * Displays the WhatsApp button next to each product in the shop/archive grid.
 		 * Retrieves product data and replaces dynamic variables like {product} and {price}.
@@ -159,11 +198,10 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 			$pre_filled = str_replace( array( '{url}', '{title}', '{site}' ), array( $page_url, $post_title, HT_CTC_BLOG_NAME ), $pre_filled );
 
-			$woo_shop_margin_top      = ( isset( $woo_options['woo_shop_margin_top'] ) ) ? esc_attr( $woo_options['woo_shop_margin_top'] ) : '';
-			$woo_shop_layout_cart_btn = ( isset( $woo_options['woo_shop_layout_cart_btn'] ) ) ? esc_attr( $woo_options['woo_shop_layout_cart_btn'] ) : '';
-			$woo_shop_margin_right    = ( isset( $woo_options['woo_shop_margin_right'] ) ) ? esc_attr( $woo_options['woo_shop_margin_right'] ) : '';
-			$woo_shop_margin_bottom   = ( isset( $woo_options['woo_shop_margin_bottom'] ) ) ? esc_attr( $woo_options['woo_shop_margin_bottom'] ) : '';
-			$woo_shop_margin_left     = ( isset( $woo_options['woo_shop_margin_left'] ) ) ? esc_attr( $woo_options['woo_shop_margin_left'] ) : '';
+			$woo_shop_margin_top    = ( isset( $woo_options['woo_shop_margin_top'] ) ) ? esc_attr( $woo_options['woo_shop_margin_top'] ) : '';
+			$woo_shop_margin_right  = ( isset( $woo_options['woo_shop_margin_right'] ) ) ? esc_attr( $woo_options['woo_shop_margin_right'] ) : '';
+			$woo_shop_margin_bottom = ( isset( $woo_options['woo_shop_margin_bottom'] ) ) ? esc_attr( $woo_options['woo_shop_margin_bottom'] ) : '';
+			$woo_shop_margin_left   = ( isset( $woo_options['woo_shop_margin_left'] ) ) ? esc_attr( $woo_options['woo_shop_margin_left'] ) : '';
 
 			$css  = '';
 			$css .= 'cursor:pointer;';
@@ -192,11 +230,9 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 
 			// shop cart layout
 			// output : is in string ony '1', '8'
-			if ( '' !== $woo_shop_layout_cart_btn ) {
-				if ( '1' === $ht_ctc_woo_shop['style'] || '8' === $ht_ctc_woo_shop['style'] ) {
-					$class_names    .= ' ctc_woo_shop_cart_layout';
-					$display_from_js = 'yes';
-				}
+			if ( self::is_shop_cart_layout( $woo_options ) ) {
+				$class_names    .= ' ctc_woo_shop_cart_layout';
+				$display_from_js = 'yes';
 			}
 
 			$ht_ctc_woo_shop['shop_schedule'] = 'no';
@@ -314,7 +350,6 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			}
 
 			$woo_single_position_center = ( isset( $woo_options['woo_single_position_center'] ) ) ? esc_attr( $woo_options['woo_single_position_center'] ) : '';
-			$woo_single_layout_cart_btn = ( isset( $woo_options['woo_single_layout_cart_btn'] ) ) ? esc_attr( $woo_options['woo_single_layout_cart_btn'] ) : '';
 			$woo_single_margin_top      = ( isset( $woo_options['woo_single_margin_top'] ) ) ? esc_attr( $woo_options['woo_single_margin_top'] ) : '';
 			$woo_single_margin_right    = ( isset( $woo_options['woo_single_margin_right'] ) ) ? esc_attr( $woo_options['woo_single_margin_right'] ) : '';
 			$woo_single_margin_bottom   = ( isset( $woo_options['woo_single_margin_bottom'] ) ) ? esc_attr( $woo_options['woo_single_margin_bottom'] ) : '';
@@ -347,11 +382,9 @@ if ( ! class_exists( 'HT_CTC_WOO_Pages' ) ) {
 			$display_from_js = '';
 
 			// single - cart layout
-			if ( '' !== $woo_single_layout_cart_btn ) {
-				if ( '1' === $ht_ctc_woo_single_product['style'] || '8' === $ht_ctc_woo_single_product['style'] ) {
-					$class_names    .= ' ctc_woo_single_cart_layout';
-					$display_from_js = 'yes';
-				}
+			if ( self::is_single_cart_layout( $woo_options ) ) {
+				$class_names    .= ' ctc_woo_single_cart_layout';
+				$display_from_js = 'yes';
 			}
 
 			$ht_ctc_woo_single_product['single_schedule'] = 'no';

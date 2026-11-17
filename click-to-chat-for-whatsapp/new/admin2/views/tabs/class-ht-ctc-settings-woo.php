@@ -72,13 +72,17 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 		 * Style options for WooCommerce settings.
 		 *
 		 * Each option names the contextual item it stands for, so the Customize trigger
-		 * beside the select opens the right style without deriving an id from the stored
+		 * below the select opens the right style without deriving an id from the stored
 		 * value — '3_1' can open 'style_3_1' and nothing has to know how.
 		 *
+		 * Recommended styles are marked in their own label, so the advice is read where the
+		 * style is picked.
+		 *
+		 * @param string[] $recommended Style values to mark as recommended.
 		 * @return array
 		 */
-		private static function style_options() {
-			return array(
+		private static function style_options( $recommended = array() ) {
+			$options = array(
 				'1'   => array(
 					'label'      => __( 'Style-1', 'click-to-chat-for-whatsapp' ),
 					'attributes' => array( 'data-contextual-id' => 'style_1' ),
@@ -120,6 +124,14 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 					'attributes' => array( 'data-contextual-id' => 'style_99' ),
 				),
 			);
+
+			foreach ( $recommended as $style ) {
+				if ( isset( $options[ $style ] ) ) {
+					$options[ $style ]['label'] .= ' (Recommended)';
+				}
+			}
+
+			return $options;
 		}
 
 		/**
@@ -333,7 +345,8 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 		 * Advanced WooCommerce Settings Card
 		 */
 		private static function card_advanced_woo_settings() {
-			$style_options = self::style_options();
+			$single_style_options = self::style_options( array( '1', '4', '8' ) );
+			$shop_style_options   = self::style_options( array( '1', '8' ) );
 
 			// Advanced Fields: Business Hours
 			$advanced_fields = array();
@@ -396,13 +409,7 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 										'id'             => 'woo_style',
 										'label'          => __( 'Select Style', 'click-to-chat-for-whatsapp' ),
 										'option_group'   => 'ht_ctc_woo_options',
-										'options'        => $style_options,
-										'help'           => sprintf(
-											'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a> <br> <strong>%3$s: 1, 4, 8</strong>',
-											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
-											__( 'List of Styles', 'click-to-chat-for-whatsapp' ),
-											'Recommended Styles'
-										),
+										'options'        => $single_style_options,
 										'data_watch'     => '#woo_position',
 										'data_hide_when' => 'select',
 									),
@@ -411,12 +418,20 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 									 * Opens the picked style's settings inline, replacing the
 									 * "Customize the styles" link that sent the user off to the
 									 * Click to Chat -> Customize tab.
+									 *
+									 * The docs link sits here, not on the select, so the
+									 * button lands directly under the select it customizes.
 									 */
 									array(
 										'field_type'       => 'block_contextual_trigger',
 										'label'            => 'Customize',
 										'contextual_group' => 'contextual_styles',
 										'contextual_watch' => '#woo_style',
+										'help'             => sprintf(
+											'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a>',
+											esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
+											__( 'List of Styles', 'click-to-chat-for-whatsapp' )
+										),
 										'data_watch'       => '#woo_position',
 										'data_hide_when'   => 'select',
 									),
@@ -512,16 +527,10 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 											array(
 												array(
 													'field_type' => 'field_select',
-													'id'   => 'woo_shop_style',
+													'id' => 'woo_shop_style',
 													'label' => __( 'Select Style', 'click-to-chat-for-whatsapp' ),
 													'option_group' => 'ht_ctc_woo_options',
-													'options' => $style_options,
-													'help' => sprintf(
-														'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a> <br> <strong>%3$s: 1, 8</strong>',
-														esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
-														__( 'List of Styles', 'click-to-chat-for-whatsapp' ),
-														'Recommended Styles'
-													),
+													'options' => $shop_style_options,
 													'data_watch' => '#woo_shop_add_whatsapp',
 													'data_show_when' => '1',
 												),
@@ -538,12 +547,17 @@ if ( ! class_exists( 'HT_CTC_Settings_Woo' ) ) {
 											 */
 											array(
 												array(
-													'field_type'       => 'block_contextual_trigger',
-													'label'            => 'Customize',
+													'field_type' => 'block_contextual_trigger',
+													'label' => 'Customize',
 													'contextual_group' => 'contextual_styles',
 													'contextual_watch' => '#woo_shop_style',
-													'data_watch'       => '#woo_shop_add_whatsapp',
-													'data_show_when'   => '1',
+													'help' => sprintf(
+														'<a target="_blank" href="%1$s" class="external-link">%2$s <span class="dashicons dashicons-external"></span></a>',
+														esc_url( HT_CTC_Utils::doc_url( 'https://holithemes.com/plugins/click-to-chat/list-of-styles/' ) ),
+														__( 'List of Styles', 'click-to-chat-for-whatsapp' )
+													),
+													'data_watch' => '#woo_shop_add_whatsapp',
+													'data_show_when' => '1',
 												),
 											),
 											array(

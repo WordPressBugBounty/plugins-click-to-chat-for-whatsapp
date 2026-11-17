@@ -107,14 +107,31 @@ if ( ! class_exists( 'HT_CTC_Scripts' ) ) {
 			// app.js for all (chat)
 			wp_enqueue_script( 'ht_ctc_app_js', plugins_url( "new/inc/assets/js/$js", HT_CTC_PLUGIN_FILE ), array( 'jquery' ), HT_CTC_VERSION, $load_app_js_bottom );
 
-			// woocommerce
+			/**
+			 * WooCommerce: woo.js only for the 'Like Add to Cart' layout (style 1 or 8); same rule as
+			 * HT_CTC_WOO_Pages::has_cart_layout_for(), change both together.
+			 * Standalone: never make it an app.js dependency (if woo.js is dropped, app.js goes too).
+			 */
 			if ( class_exists( 'WooCommerce' ) ) {
 
-				// if - cart layout option is checked.
-				$woo_options = get_option( 'ht_ctc_woo_options' );
+				$woo_options = HT_CTC_Utils::get_option( 'ht_ctc_woo_options' );
 
-				if ( isset( $woo_options['woo_single_layout_cart_btn'] ) || isset( $woo_options['woo_shop_layout_cart_btn'] ) ) {
-					wp_enqueue_script( 'ht_ctc_woo_js', plugins_url( "new/inc/assets/js/$woo_js", HT_CTC_PLUGIN_FILE ), array( 'jquery' ), HT_CTC_VERSION, $load_app_js_bottom );
+				if ( is_array( $woo_options ) ) {
+
+					$single_style = isset( $woo_options['woo_style'] ) ? $woo_options['woo_style'] : '8';
+					$shop_style   = isset( $woo_options['woo_shop_style'] ) ? $woo_options['woo_shop_style'] : '8';
+
+					$single_cart = isset( $woo_options['woo_position'] ) && 'select' !== $woo_options['woo_position']
+						&& isset( $woo_options['woo_single_layout_cart_btn'] ) && '' !== $woo_options['woo_single_layout_cart_btn']
+						&& ( '1' === $single_style || '8' === $single_style );
+
+					$shop_cart = isset( $woo_options['woo_shop_add_whatsapp'] )
+						&& isset( $woo_options['woo_shop_layout_cart_btn'] ) && '' !== $woo_options['woo_shop_layout_cart_btn']
+						&& ( '1' === $shop_style || '8' === $shop_style );
+
+					if ( $single_cart || $shop_cart ) {
+						wp_enqueue_script( 'ht_ctc_woo_js', plugins_url( "new/inc/assets/js/$woo_js", HT_CTC_PLUGIN_FILE ), array( 'jquery' ), HT_CTC_VERSION, $load_app_js_bottom );
+					}
 				}
 			}
 

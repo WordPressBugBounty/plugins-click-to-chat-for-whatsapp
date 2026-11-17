@@ -410,6 +410,47 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 		// 	}
 		// }
 
+		/**
+		 * window.ht_ctc_ready - same queue as the current app.js (copy of its runReadyQueue),
+		 * so scripts like woo.js have one path on this file too. config only here: no api.
+		 *
+		 * @param {{config: Object, api: Object}} detail
+		 */
+		function runReadyQueue ( detail ) {
+			// Keep the same array (not a new object): code holding a reference to it still works.
+			const queue = Array.isArray( window.ht_ctc_ready ) ? window.ht_ctc_ready : [];
+			let flushing = false;
+
+			// Each callback isolated: an error in one must not stop app.js or the others.
+			const run = ( callback ) => {
+				if ( typeof callback !== 'function' ) { return; }
+				try {
+					callback( detail );
+				} catch ( error ) {
+					console.error( 'ht_ctc_ready callback failed:', error );
+				}
+			};
+
+			// First in, first out - a callback pushed while flushing waits its turn.
+			const flush = () => {
+				flushing = true;
+				while ( queue.length ) {
+					run( queue.shift() );
+				}
+				flushing = false;
+			};
+
+			// From now on push runs callbacks right away (late scripts).
+			queue.push = function pushAndRun ( ...callbacks ) {
+				Array.prototype.push.apply( queue, callbacks );
+				if ( ! flushing ) { flush(); }
+				return queue.length;
+			};
+
+			window.ht_ctc_ready = queue;
+			flush();
+		}
+
 		// Initialize the plugin after settings are loaded
 		function start () {
 
@@ -418,6 +459,11 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 			if ( el ) {
 				el.remove();
 			}
+
+			runReadyQueue( {
+				config: { ctc, ctc_values, is_mobile, url, post_title },
+				api: {},
+			} );
 
 			// Dispatch a custom event to notify other scripts that plugin settings are ready
 			// The event detail contains the `ctc` configuration object

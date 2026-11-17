@@ -585,7 +585,19 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 		// 	}
 		// }
 
-		// Build the payload for other scripts (pro.js, date.js, custom code, etc.)
+		/**
+		 * Build the payload for other scripts (pro.js, date.js, woo.js, custom code, etc.).
+		 * Handed out by window.ht_ctc_ready and the ht_ctc_event_init event - add new things
+		 * here and every consumer gets them.
+		 *
+		 *  config: ctc, ctc_values, is_mobile ('yes'|'no'), url, post_title
+		 *  api:    storage {get, set, raw}, ui, greetings {...}, notifications {...},
+		 *          chat {openLink, displaySettings}, utils {isSafeObjectKey, getSafeProperty, setSafeProperty}
+		 *
+		 * config.ctc is the live settings object (not a copy) - changes are seen by app.js.
+		 *
+		 * @returns {{config: Object, api: Object}}
+		 */
 		function buildHtCtcInitDetail () {
 
 			// ---------------------------------------------
@@ -675,6 +687,67 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 			};
 		}
 
+		/**
+		 * window.ht_ctc_ready - one call for other scripts, whatever order they load in:
+		 *
+		 *   ( window.ht_ctc_ready = window.ht_ctc_ready || [] ).push( ( detail ) => { ... } );
+		 *
+		 * Loaded before app.js: the callback waits in the array. Loaded after (async, delay-JS
+		 * plugins): push runs it at once. detail is the ht_ctc_event_init detail - see
+		 * buildHtCtcInitDetail() for what is available. Needs no script dependency on app.js.
+		 *
+		 * @param {{config: Object, api: Object}} detail
+		 */
+		function runReadyQueue ( detail ) {
+			// Keep the same array (not a new object): code holding a reference to it still works.
+			const queue = Array.isArray( window.ht_ctc_ready ) ? window.ht_ctc_ready : [];
+			let flushing = false;
+
+			// Each callback isolated: an error in one must not stop app.js or the others.
+			const run = ( callback ) => {
+				if ( typeof callback !== 'function' ) { return; }
+				try {
+					callback( detail );
+				} catch ( error ) {
+					console.error( 'ht_ctc_ready callback failed:', error );
+				}
+			};
+
+			// First in, first out - a callback pushed while flushing waits its turn.
+			const flush = () => {
+				flushing = true;
+				while ( queue.length ) {
+					run( queue.shift() );
+				}
+				flushing = false;
+			};
+
+			// From now on push runs callbacks right away (late scripts).
+			queue.push = function pushAndRun ( ...callbacks ) {
+				Array.prototype.push.apply( queue, callbacks );
+				if ( ! flushing ) { flush(); }
+				return queue.length;
+			};
+
+			window.ht_ctc_ready = queue;
+			flush();
+		}
+
+		/**
+		 * The one place init is announced - same detail on both paths, keep them together:
+		 *  - window.ht_ctc_ready: load-order safe (woo.js, new code).
+		 *  - ht_ctc_event_init: existing contract (add-ons, custom code) - don't remove.
+		 *
+		 * Only init is queued: it is a state that stays true. Per-click / per-display events
+		 * (ht_ctc_event_number, _analytics, _display) stay plain events - no replay for late scripts.
+		 *
+		 * @param {{config: Object, api: Object}} initDetail from buildHtCtcInitDetail().
+		 */
+		function announceInit ( initDetail ) {
+			runReadyQueue( initDetail );
+			document.dispatchEvent( new CustomEvent( 'ht_ctc_event_init', { detail: initDetail } ) );
+		}
+
 		// Initialize the plugin after settings are loaded
 		function start () {
 
@@ -689,8 +762,7 @@ const htCtcJq = ( typeof window !== 'undefined' && typeof window.jQuery === 'fun
 			}
 
 			// 🔹 New: global init event with config + api + shortcuts
-			const initDetail = buildHtCtcInitDetail();
-			document.dispatchEvent( new CustomEvent( 'ht_ctc_event_init', { detail: initDetail } ) );
+			announceInit( buildHtCtcInitDetail() );
 
 			// 🔹 Keep old event for backward compatibility
 			document.dispatchEvent( new CustomEvent(

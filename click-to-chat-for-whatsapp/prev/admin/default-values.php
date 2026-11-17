@@ -119,6 +119,14 @@ $values_cs = array(
 
 $db_values_cs = get_option( 'ccw_options_cs', array() );
 $update_values_cs = array_merge($values_cs, $db_values_cs);
+
+if ( isset( $update_values_cs['s99_desktop_img'] ) && false !== strpos( $update_values_cs['s99_desktop_img'], 'holithemes.com' ) ) {
+    $update_values_cs['s99_desktop_img'] = '';
+}
+if ( isset( $update_values_cs['s99_mobile_img'] ) && false !== strpos( $update_values_cs['s99_mobile_img'], 'holithemes.com' ) ) {
+    $update_values_cs['s99_mobile_img'] = '';
+}
+
 update_option('ccw_options_cs', $update_values_cs);
 
 /**

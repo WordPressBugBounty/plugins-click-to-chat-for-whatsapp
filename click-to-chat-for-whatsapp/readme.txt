@@ -4,7 +4,7 @@ Tested up to: 7.1
 Requires PHP: 5.6
 Contributors: HoliThemes
 Donate link: https://holithemes.com/plugins/click-to-chat/pricing/
-Stable tag: 4.46
+Stable tag: 4.47
 Tags: whatsapp, whatsapp business, click to chat, whatsapp chat, WooCommerce WhatsApp
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -564,6 +564,9 @@ Thank you for your support!
 
 == Changelog ==
 
+= 4.47 =
+* Enhancement: Adding Widget at WooCommerce single product pages, shop page.
+
 = 4.46 =
 * Enhancement: The live preview now plays animations and entry effects, with a replay button for each.
 * New: The new admin interface is now the default for every site.
@@ -625,6 +628,9 @@ Thank you for your support!
 [Changelog](https://holithemes.com/plugins/click-to-chat/changelog/)
 
 == Upgrade Notice ==
+
+= 4.47 =
+WooCommerce button fixes; Woo scripts load only where needed.
 
 = 4.46 =
 The new admin interface is now the default.
